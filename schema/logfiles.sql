@@ -153,3 +153,13 @@ INSERT INTO logfiles VALUES (
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
+
+INSERT INTO logfiles VALUES (
+  9, 'did', 'dnh', NULL,
+  'http://dnethack.ilbelkyr.de/xlogfile.txt',
+  'log.dnh',
+  NULL,
+  NULL,
+  FALSE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);

@@ -40,16 +40,6 @@
 
   "nh_aligns_ord" : [ "law", "neu", "cha" ],
 
-  "nh_variants_def" : {
-    "nh"  : "NetHack",
-    "ace" : "AceHack",
-    "nh4" : "NetHack4",
-    "unn" : "UnNetHack",
-    "gh"  : "GruntHack",
-    "sh"  : "SporkHack",
-    "dnh" : "dNetHack"
-  },
-
   "nh_combo_rules_def" : {
 
      "nh" : [
@@ -100,7 +90,8 @@
     "ace" : "AceHack",
     "sh"  : "SporkHack",
     "gh"  : "GruntHack",
-    "unh" : "UnNetHack"
+    "unh" : "UnNetHack",
+    "dnh" : "dNetHack"
   },
 
   "nh_variants_ord" : [
