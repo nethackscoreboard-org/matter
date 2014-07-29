@@ -8,6 +8,7 @@
 
 use strict;
 use DBI;
+use Getopt::Long;
 use NetHack;
 use NHdb;
 use utf8;
@@ -218,6 +219,18 @@ sub gen_page_recent
 }
 
 
+#============================================================================
+# Display usage help.
+#============================================================================
+
+sub help
+{
+  print "Usage: nhdb-stats.pl [options]\n\n";
+  print "  --help         get this information text\n";
+  print "  --variant=VAR  limit processing to specified variant(s)\n";
+  print "\n";
+}
+
 
 #============================================================================
 #===================  _  ====================================================     
@@ -228,6 +241,25 @@ sub gen_page_recent
 #===                           ==============================================
 #============================================================================
 
+#--- title
+
+tty_message(
+  "\n" .
+  "NetHack Statistics Aggregator -- Stats Generator\n" .
+  "================================================\n" .
+  "(c) 2013-14 Mandevil\n\n"
+);
+
+#--- process command-line
+
+my @cmd_variant;
+
+if(!GetOptions(
+  'variant=s' => \@cmd_variant
+)) {
+  help();
+  exit(1);
+}
 
 #--- lock file check/open
 
@@ -263,6 +295,9 @@ tty_message("Loaded list of logfiles\n");
 my @variants = ('all');
 push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
 for my $var (@variants) {
+  if(scalar(@cmd_variant)) {
+    next if scalar(@cmd_variant) && !grep { $var eq lc($_) } @cmd_variant;
+  }
   gen_page_recent('recent', $var);
   gen_page_recent('ascended', $var);
 }
