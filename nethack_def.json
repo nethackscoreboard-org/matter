@@ -1,0 +1,109 @@
+{
+  "nh_roles_def" : {
+    "arc" : "archeologist",
+    "bar" : "barbarian",
+    "cav" : "caveman",
+    "con" : "convict",
+    "hea" : "healer",
+    "kni" : "knight",
+    "mon" : "monk",
+    "pri" : "priest",
+    "ran" : "ranger",
+    "rog" : "rogue",
+    "sam" : "samurai",
+    "tou" : "tourist",
+    "val" : "valkyrie",
+    "wiz" : "wizard"
+   },
+
+  "nh_roles_ord" : [ 
+     "arc", "bar", "cav", "con", "hea", "kni", "mon",
+     "pri", "ran", "rog", "sam", "tou", "val", "wiz"
+  ],
+
+  "nh_races_def" : {
+    "hum" : "human",
+    "elf" : "elf",
+    "dwa" : "dwarf",
+    "gno" : "gnome",
+    "orc" : "orc",
+    "vam" : "vampire"
+  },
+
+  "nh_races_ord" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ],
+
+  "nh_aligns_def" : {
+    "law" : "lawful",
+    "neu" : "neutral",
+    "cha" : "chaotic"
+  },
+
+  "nh_aligns_ord" : [ "law", "neu", "cha" ],
+
+  "nh_variants_def" : {
+    "nh"  : "NetHack",
+    "ace" : "AceHack",
+    "nh4" : "NetHack4",
+    "unn" : "UnNetHack",
+    "gh"  : "GruntHack",
+    "sh"  : "SporkHack",
+    "dnh" : "dNetHack"
+  },
+
+  "nh_combo_rules_def" : {
+
+     "nh" : [
+       [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu", "!any" ],
+       [ "$bar", "%hum", "%orc",                 "#neu", "#cha", "!any" ],
+       [ "$cav", "%hum", "%dwa", "%gno",         "#law", "#neu", "!any" ],
+       [ "$hea", "%hum", "%gno",                 "#neu",         "!any" ],
+       [ "$kni", "%hum", "%law",                                 "!any" ],
+       [ "$mon", "%hum",                         "#any",         "!any" ],
+       [ "$pri", "%hum", "%elf",                                 "!any" ],
+       [ "$ran", "%hum", "%elf", "%gno",         "#neu", "#cha", "!any" ],
+       [ "$rog", "%hum", "%orc",                 "#cha",         "!any" ],
+       [ "$sam", "%hum",                         "#law",         "!any" ],
+       [ "$tou", "%hum",                         "#neu",         "!any" ],
+       [ "$val", "%hum", "%dwa",                 "#law", "#neu", "!fem" ],
+       [ "$wiz", "%hum", "%elf", "%gno", "%orc", "#neu", "#cha", "!any" ],
+
+       [ "%hum", "#any", "!any" ],
+       [ "%elf", "#cha", "!any" ],
+       [ "%dwa", "#law", "!any" ],
+       [ "%gno", "#neu", "!any" ],
+       [ "%orc", "#cha", "!any" ]
+     ]
+  },
+
+  "nh_conduct_bitmap_def" : {
+    "1"    : "food",
+    "2"    : "vegn",
+    "4"    : "vegt",
+    "8"    : "athe",
+    "16"   : "weap",
+    "32"   : "paci",
+    "64"   : "illi",
+    "128"  : "pile",
+    "256"  : "self",
+    "512"  : "wish",
+    "1024" : "arti",
+    "2048" : "geno"
+  },
+
+  "nh_conduct_bitmap_ord" : [
+    1024, 128, 256, 2048, 512, 8, 4, 2, 16, 64, 32, 1
+  ],
+
+  "nh_variants_def" : {
+    "nh"  : "NetHack",
+    "nh4" : "NetHack4",
+    "ace" : "AceHack",
+    "sh"  : "SporkHack",
+    "gh"  : "GruntHack",
+    "unh" : "UnNetHack"
+  },
+
+  "nh_variants_ord" : [
+    "nh", "ace", "nh4", "unh", "sh", "gh"
+  ]
+}
