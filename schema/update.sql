@@ -14,7 +14,9 @@
 
 CREATE TABLE update (
   variant char(3),
-  name varchar(48)
+  name varchar(48),
+  UNIQUE (variant, name)
 );
 
-CREATE UNIQUE INDEX idx_update ON (variant, name);
+GRANT INSERT ON update TO nhdbfeeder;
+GRANT SELECT ON update TO nhdbstats;

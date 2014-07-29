@@ -151,6 +151,48 @@ sub sql_insert_games
 
 
 #============================================================================
+# Write update info into "update" table. Use of savepoints is required in
+# order to mask collisions on INSERTs.
+#============================================================================
+
+sub sql_update_info
+{
+  my $dbh            = shift;
+  my $update_variant = shift;
+  my $update_name    = shift;
+  my ($qry, $re);
+
+  $dbh->{PrintError} = 0;
+
+  #--- write upadated variants
+
+  if(scalar(keys %$update_variant)) {
+    for my $var (keys %$update_variant, 'all') {
+      $dbh->do('SAVEPOINT update_var') or return $dbh->errstr();
+      $re = $dbh->do(qq{INSERT INTO update VALUES ('$var', '')});
+      if(!$re) {
+        my $err = $dbh->errstr();
+        if($err =~ /duplicate key .* \"update_variant_name_key\"/) {
+          $dbh->do('ROLLBACK TO SAVEPOINT update_var') or return $dbh->errstr();
+        } else {
+          return $dbh->errstr();
+        }
+      }
+    }
+  }
+
+  #--- write update player names
+
+  # NOT YET IMPLEMENTED
+
+  #--- finish successfully
+
+  $dbh->{PrintError} = 1;
+  return undef;
+}
+
+
+#============================================================================
 # Display usage help.
 #============================================================================
 
@@ -268,8 +310,12 @@ for my $log (@logfiles) {
 
   #--- user selection processing
 
-  next if scalar(@cmd_variant) && !grep { $log->{'variant'} eq lc($_) } @cmd_variant;
-  next if scalar(@cmd_server) && !grep { $log->{'server'} eq lc($_) } @cmd_server;
+  next if 
+    scalar(@cmd_variant) &&
+    !grep { $log->{'variant'} eq lc($_) } @cmd_variant;
+  next if
+    scalar(@cmd_server) &&
+    !grep { $log->{'server'} eq lc($_) } @cmd_server;
   
   eval { # <--- eval starts here -------------------------------------------
   
@@ -340,13 +386,29 @@ for my $log (@logfiles) {
     
     #--- now read content of the file
     
-    my $lc = 0;
-    my $tm = time();
-    my $ll = 0;
+    my $lc = 0;           # line counter
+    my $tm = time();      # timer
+    my $ll = 0;           # time of last info
+    my %update_name;      # updated names
+    my %update_variant;   # updated variants
+
     tty_message("  Processing file %s\n", $localfile);
-    while(my $l = <F>) {
+    
+    while(my $l = <F>) { #<<< read loop beings here
+
       chomp($l);
+
+    #--- parse log
+    
       my $pl = parse_log($l);
+
+    #--- mark updates
+
+    $update_variant{$log->{'variant'}} = 1;
+    $update_name{$pl->{'name'}}{$log->{'variant'}} = 1;
+
+    #--- insert row into database
+
       $qry = sql_insert_games($log->{'logfiles_i'}, $pl), "\n";
       if($qry) {
         $r = $dbh->do($qry);
@@ -355,15 +417,26 @@ for my $log (@logfiles) {
           die;
         }
       }
+
+    #--- display progress info
+
       if((time() - $tm) > 5) {
         $tm = time();
         tty_message("  Processing (%d lines, %d l/sec)\n", $lc, ($lc-$ll)/5 );
         $ll = $lc;
       }
       $lc++;
-    }
+
+    } #<<< read loop ends here
+
     tty_message("  Finished reading (%d lines)\n", $lc);
     
+    #--- write update info
+
+    my $re = sql_update_info($dbh, \%update_variant, \%update_name);
+    if($re) { die $re; }
+
+
     #--- update database with new position in the file
     
     $qry = 'UPDATE logfiles SET fpos = ? WHERE logfiles_i = ?';
