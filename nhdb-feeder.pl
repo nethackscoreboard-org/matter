@@ -10,8 +10,9 @@
 #============================================================================
 
 use strict;
-use DBI;
 use utf8;
+use DBI;
+use Getopt::Long;
 
 
 #============================================================================
@@ -150,6 +151,21 @@ sub sql_insert_games
 
 
 #============================================================================
+# Display usage help.
+#============================================================================
+
+sub help
+{
+  print "Usage: nhdb-feeder.pl [options]\n\n";
+  print "  --help         get this information text\n";
+  print "  --logfiles     display configured logfiles, then exit\n";
+  print "  --variant=VAR  limit processing to specified variant(s)\n";
+  print "  --server=SRV   limit processing to specified server(s)\n";
+  print "\n";
+}
+
+
+#============================================================================
 #===================  _  ====================================================
 #===  _ __ ___   __ _(_)_ __  ===============================================
 #=== | '_ ` _ \ / _` | | '_ \  ==============================================
@@ -159,15 +175,41 @@ sub sql_insert_games
 #============================================================================
 #============================================================================
 
-#--- lock file check/open
+#--- title
 
-if(-f $lockfile) {
-  print "Another instance running\n";
+tty_message(
+  "\n" .
+  "NetHack Statistics Aggregator -- Feeder\n" .
+  "=======================================\n" .
+  "(c) 2013-14 Mandevil\n\n"
+);
+
+#--- process commandline options
+
+my $cmd_logfiles;
+my @cmd_variant;
+my @cmd_server;
+
+if(!GetOptions(
+  'logfiles'  => \$cmd_logfiles,
+  'variant=s' => \@cmd_variant,
+  'server=s'  => \@cmd_server
+)) {
+  help();
   exit(1);
 }
-open(F, "> $lockfile") || die "Cannot open lock file $lockfile\n";
-print F $$, "\n";
-close(F);
+
+#--- lock file check/open
+
+if(!$cmd_logfiles) {
+  if(-f $lockfile) {
+    print "Another instance running\n";
+    exit(1);
+  }
+  open(F, "> $lockfile") || die "Cannot open lock file $lockfile\n";
+  print F $$, "\n";
+  close(F);
+}
 
 #--- connect to database
 
@@ -202,13 +244,32 @@ tty_message(
   (scalar(@logfiles) != 1 ? 's' : '')
 );
 
+#--- display logfiles, if requested
+
+if($cmd_logfiles) {
+  print "\n";
+  for my $log (@logfiles) {
+    printf(
+      "%-3s  %-3s  %s\n",
+      $log->{'server'},
+      $log->{'variant'},
+      $log->{'logurl'}
+    );
+  }
+  print "\n";
+  exit(0);
+}
+
 #--- iterate over logfiles
 
 for my $log (@logfiles) {
 
-  next if ($ARGV[0] && ($log->{'server'} ne $ARGV[0]));
-
   my $transaction_in_progress = 0;
+
+  #--- user selection processing
+
+  next if scalar(@cmd_variant) && !grep { $log->{'variant'} eq lc($_) } @cmd_variant;
+  next if scalar(@cmd_server) && !grep { $log->{'server'} eq lc($_) } @cmd_server;
   
   eval { # <--- eval starts here -------------------------------------------
   

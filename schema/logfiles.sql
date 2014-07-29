@@ -55,8 +55,8 @@ DROP TABLE logfiles;
 
 CREATE TABLE logfiles (
 	logfiles_i  int,
-  server      char(3) NOT NULL,
-  variant     char(3) NOT NULL,
+  server      varchar(3) NOT NULL,
+  variant     varchar(3) NOT NULL,
   version     varchar(16),
   logurl      varchar(128),
   localfile   varchar(128) NOT NULL,
