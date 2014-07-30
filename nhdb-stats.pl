@@ -228,6 +228,7 @@ sub help
   print "Usage: nhdb-stats.pl [options]\n\n";
   print "  --help         get this information text\n";
   print "  --variant=VAR  limit processing to specified variant(s)\n";
+  print "  --force        force processing of everything\n";
   print "\n";
 }
 
@@ -253,9 +254,11 @@ tty_message(
 #--- process command-line
 
 my @cmd_variant;
+my $cmd_force;
 
 if(!GetOptions(
-  'variant=s' => \@cmd_variant
+  'variant=s' => \@cmd_variant,
+  'force' => \$cmd_force
 )) {
   help();
   exit(1);
@@ -290,16 +293,45 @@ tty_message("Connected to database\n");
 sql_load_logfiles();
 tty_message("Loaded list of logfiles\n");
 
+#--- read what is to be updated
+
+my @update_variants;
+my $sth = $dbh->prepare(qq{SELECT variant FROM update WHERE name = ''});
+my $re = $sth->execute();
+if(!$re) {
+  tty_message("Failed to read from update table (%s)\n", $sth->errstr());
+  die;
+} else {
+  while(my ($a) = $sth->fetchrow_array()) {
+    push(@update_variants, $a);
+  }
+}
+
 #--- generate pages
 
-my @variants = ('all');
-push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
+my @variants;
+if($cmd_force) {
+  @variants = ('all');
+  push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
+} else {
+  @variants = @update_variants;
+}
+if(scalar(@variants)) {
+  tty_message("Following variants scheduled to update: %s\n", join(',', @variants));
+} else {
+  tty_message("No variants scheduled to update\n");
+}
 for my $var (@variants) {
   if(scalar(@cmd_variant)) {
     next if scalar(@cmd_variant) && !grep { $var eq lc($_) } @cmd_variant;
   }
   gen_page_recent('recent', $var);
   gen_page_recent('ascended', $var);
+
+#--- delete update flags
+
+  $dbh->do(qq{DELETE FROM update WHERE variant = '$var' AND name = ''});
+
 }
 
 #--- disconnect from database
