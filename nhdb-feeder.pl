@@ -183,7 +183,20 @@ sub sql_update_info
 
   #--- write update player names
 
-  # NOT YET IMPLEMENTED
+  for my $name (keys %$update_name) {
+    for my $var (keys %{$update_name->{$name}}, 'all') {
+      $dbh->do('SAVEPOINT update_name') or return $dbh->errstr();
+      $re = $dbh->do(qq{INSERT INTO update VALUES ('$var', '$name')});
+      if(!$re) {
+        my $err = $dbh->errstr();
+        if($err =~ /duplicate key .* \"update_variant_name_key\"/) {
+          $dbh->do('ROLLBACK TO SAVEPOINT update_name') or return $dbh->errstr();
+        } else {
+          return $dbh->errstr();
+        }
+      }
+    }
+  }
 
   #--- finish successfully
 
