@@ -416,7 +416,10 @@ for my $log (@logfiles) {
       my $pl = parse_log($l);
 
     #--- mark updates
-
+    # FIXME: There's subtle potential issue with this, since
+    # scummed games do trigger these updates; I haven't decided
+    # if we want this or not.
+    
     $update_variant{$log->{'variant'}} = 1;
     $update_name{$pl->{'name'}}{$log->{'variant'}} = 1;
 
