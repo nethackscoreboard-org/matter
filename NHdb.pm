@@ -7,6 +7,7 @@
 package NHdb;
 require Exporter;
 use NetHack;
+use JSON;
 use POSIX qw(strftime);
 use integer;
 use strict;
@@ -62,6 +63,25 @@ my @field_numeric = qw(
   n points turns duration hp wonpct ascended played tscore maxlvl
   scumcnt ncond dlvl maxconducts
 );
+
+
+#=== this holds all defs
+
+our $nhdb_def;
+
+
+#===========================================================================
+#=== BEGIN SECTION =========================================================
+#===========================================================================
+
+BEGIN
+{
+  local $/;
+  my $fh;
+  open($fh, '<', 'nhdb_def.json') or die;
+  my $def_json = <$fh>;
+  $nhdb_def = decode_json($def_json);
+}
 
 
 #===========================================================================
