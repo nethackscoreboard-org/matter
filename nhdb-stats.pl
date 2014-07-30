@@ -7,10 +7,12 @@
 #============================================================================
 
 use strict;
+use warnings;
 use DBI;
 use Getopt::Long;
 use NetHack;
 use NHdb;
+use Template;
 use utf8;
 
 
@@ -27,7 +29,11 @@ my $logfiles;
 #============================================================================
 
 my $lockfile = '/tmp/nhdb-stats.lock';
-my $http_root = '/home/httpd/nh';
+my $http_root = $NHdb::nhdb_def->{'http_root'};
+my $tt = Template->new(
+  'OUTPUT_PATH' => $http_root,
+  'INCLUDE_PATH' => 'templates'
+);
 
 #--- page definitions
 
@@ -142,6 +148,36 @@ sub sql_load_logfiles
     my $logfiles_i  = $row->{'logfiles_i'};
     $logfiles->{$logfiles_i} = $row;
   }
+}
+
+
+#============================================================================
+#============================================================================
+
+sub gen_page_info
+{
+  my ($re, $sth);
+  my %data;
+
+  #--- get database data
+
+  $sth = $dbh->prepare(q{SELECT count(*) FROM games});
+  $sth->execute() or die;
+  ($data{'inf_games_total'}) = $sth->fetchrow_array();
+  
+  $sth = $dbh->prepare(q{SELECT count(*) FROM games WHERE scummed IS TRUE});
+  $sth->execute() or die;
+  ($data{'inf_games_scum'}) = $sth->fetchrow_array();
+
+  $sth = $dbh->prepare(q{SELECT count(*) FROM games WHERE ascended IS TRUE});
+  $sth->execute() or die;
+  ($data{'inf_games_asc'}) = $sth->fetchrow_array();
+  
+  #--- generate page
+
+  $data{'cur_time'} = scalar(localtime());
+  $tt->process('general.tt', \%data, "general.html")
+    or die $tt->error();
 }
 
 
@@ -333,6 +369,10 @@ for my $var (@variants) {
   $dbh->do(qq{DELETE FROM update WHERE variant = '$var' AND name = ''});
 
 }
+
+#---
+
+gen_page_info();
 
 #--- disconnect from database
 
