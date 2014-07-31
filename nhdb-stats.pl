@@ -117,11 +117,17 @@ sub tty_message
 sub sql_load
 {
   my $qry = shift;
+  my @arg = shift;
   my @a;
   my $cnt = 1;
 
   my $sth = $dbh->prepare($qry);
-  my $r = $sth->execute();
+  my $r;
+  if(scalar(@a) == 0) {
+    $r = $sth->execute();
+  } else {
+    $r = $sth->execute(@arg);
+  }
   if(!$r) {
     return sprintf('Failed to query database (%s)', $sth->errstr());
   }
@@ -159,6 +165,8 @@ sub gen_page_info
   my ($re, $sth);
   my %data;
 
+  tty_message("Generating generic stats\n");
+
   #--- get database data
 
   $sth = $dbh->prepare(q{SELECT count(*) FROM games});
@@ -176,13 +184,13 @@ sub gen_page_info
   #--- generate page
 
   $data{'cur_time'} = scalar(localtime());
-  $tt->process('general.tt', \%data, "general.html")
+  $tt->process('general.tt', \%data, 'general.html')
     or die $tt->error();
 }
 
 
 #============================================================================
-# Generate page(s) for recent games.
+# Generate "Recent Games" and "Ascended Games" pages.
 #============================================================================
 
 sub gen_page_recent
@@ -190,67 +198,94 @@ sub gen_page_recent
   my $page = shift;
   my $variant = shift;
   my @variants = ('all');
-  
+  my ($view, $sth, $r);
+  my %data;
+
   #--- init
 
   tty_message('Creating recent games page %s (%s): ', $page, $variant);
-  my $view = $page{$page}[2];
   push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
 
+  #--- select source view
+
+  if($page eq 'recent') {
+    $view = 'games_recent';
+  } elsif($page eq 'ascended') {
+    $view = 'ascended_recent';
+  } else {
+    die "Undefined page";
+  }
   #--- pull data from database
 
-  my $query = qq{SELECT * FROM $view LIMIT 100};
-  if($variant ne 'all') {
-    $query = qq{SELECT * FROM $view WHERE variant = '$variant' LIMIT 100};
+  if($variant eq 'all') {
+    $sth = $dbh->prepare(qq{SELECT * FROM $view LIMIT 100});
+    $r = $sth->execute();
+  } else {
+    $sth = $dbh->prepare(qq{SELECT * FROM $view WHERE variant = ? LIMIT 100});
+    $r = $sth->execute($variant);
   }
-  my $a = sql_load($query);
-  die "Failed to load data ($a)" if !ref($a);
-  tty_message('loaded from db');
+  if(!$r) {
+    die sprintf('Failed to query database (%s)', $sth->errstr());
+  }
 
-  #--- open page file
+  #--- pull (and transform) data from database
 
-  my $page_file = sprintf($page{$page}[0], $variant);
-  open(F, '> ' . $page_file)
-    || die sprintf('Failed to open file %s', $page{recent});
-  html_head(*F, $page{$page}[1]);
-  print F '<p id="varmenu">';
-  for my $tvar (@variants) {
-    my $class = 'unselected';
-    my $varname;
-    my $link = sprintf($page{$page}[0], $tvar);
-    $link =~ s{.*/}{};
-    if($tvar eq $variant) { $class = 'selected'; }
-    if($tvar eq 'all') {
-      $varname = 'All';
-    } else {
-      $varname = $NetHack::nh_def->{'nh_variants_def'}{$tvar};
+  my $cnt = 1;
+  my @a;
+  while(my $row = $sth->fetchrow_hashref()) {
+
+  #--- line numbers
+
+    $row->{n} = $cnt++;
+
+  #--- convert realtime to human-readable form
+
+    $row->{'realtime'} = format_duration($row->{'realtime'});
+
+  #--- include conducts in the ascended message
+
+    if($row->{'ascended'}) {
+      my @c = nh_conduct($row->{'conduct'});
+      $row->{'ncond'} = scalar(@c);
+      $row->{'tcond'} = join(' ', @c);
+      if(scalar(@c) == 0) {
+        $row->{death} = 'ascended with all conducts broken';
+      } else {
+        $row->{death} = sprintf(
+          qq{ascended with %d conduct%s intact (%s)},
+          scalar(@c), (scalar(@c) == 1 ? '' : 's'), $row->{'tcond'}
+        );
+      }
     }
-    if($class eq 'selected') {
-      print F html_span($varname, $class), ' ';
-    } else {
-      print F html_ahref($link, html_span($varname, $class)), "\n";
+
+  #--- game dump URL
+
+    if($logfiles->{$row->{'logfiles_i'}}{'dumpurl'}) {
+      $row->{'dump'} = url_substitute(
+        $logfiles->{$row->{'logfiles_i'}}{'dumpurl'},
+        $row
+      );
     }
+
+  #--- finish (push row into an array)
+
+    push(@a, $row);
   }
-  print F '</p>';
-  print F q{<table class="bordered">};
+  tty_message('loaded from db (%d lines)', scalar(@a));
 
-  #--- output page content
+  #--- supply additional data
 
-  html_table_head(*F, $page{$page}[3]);
+  $data{'result'}   = \@a;
+  $data{'cur_time'} = scalar(localtime());
+  $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
+  $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'variant'}  = $variant;
 
-  for my $row (@$a) {
-    print F format_row(
-      $row,
-      $page{$page}[3],
-      $logfiles->{$row->{'logfiles_i'}}
-    );
-  }
+  #--- process template
 
-  #--- close page file
+  $tt->process("$page.tt", \%data, "$page.$variant.html")
+    or die $tt->error();
 
-  print F q{</table>};
-  html_close(*F);
-  close(F);
   tty_message(", done\n");
 }
 
@@ -361,6 +396,8 @@ for my $var (@variants) {
   if(scalar(@cmd_variant)) {
     next if scalar(@cmd_variant) && !grep { $var eq lc($_) } @cmd_variant;
   }
+  #gen_page_recent('recent', $var);
+  #gen_page_recent('ascended', $var);
   gen_page_recent('recent', $var);
   gen_page_recent('ascended', $var);
 
@@ -370,7 +407,7 @@ for my $var (@variants) {
 
 }
 
-#---
+#--- generic info page
 
 gen_page_info();
 
