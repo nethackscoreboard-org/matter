@@ -13,10 +13,10 @@
 -- name encountered in the log	
 
 CREATE TABLE update (
-  variant char(3),
+  variant varchar(3),
   name varchar(48),
   UNIQUE (variant, name)
 );
 
 GRANT INSERT ON update TO nhdbfeeder;
-GRANT SELECT ON update TO nhdbstats;
+GRANT SELECT, DELETE ON update TO nhdbstats;

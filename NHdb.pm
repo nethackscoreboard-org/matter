@@ -23,6 +23,7 @@ our @EXPORT = qw(
   html_close
   html_table_head
   format_row
+  url_substitute
 );
 
 
