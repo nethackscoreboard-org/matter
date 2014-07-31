@@ -267,6 +267,12 @@ sub gen_page_recent
       );
     }
 
+  #--- realtime (aka duration)
+
+  if($row->{'variant'} eq 'ace' || $row->{'variant'} eq 'nh4') {
+    $row->{'realtime'} = '';
+  }
+
   #--- finish (push row into an array)
 
     push(@a, $row);
