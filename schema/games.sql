@@ -54,7 +54,7 @@ GRANT USAGE ON games_seq TO nhdbfeeder;
 
 --- views
 
-CREATE VIEW games_recent AS
+CREATE VIEW v_games_recent AS
   SELECT 
     logfiles_i, name, server, variant, role, race, gender, align,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
@@ -66,9 +66,9 @@ CREATE VIEW games_recent AS
   WHERE scummed = FALSE
   ORDER BY endtime AT TIME ZONE 'UTC' DESC;
 
-GRANT SELECT ON games_recent TO nhdbstats;
+GRANT SELECT ON v_games_recent TO nhdbstats;
 
-CREATE VIEW ascended_recent AS
+CREATE VIEW v_ascended_recent AS
   SELECT
     logfiles_i, name, server, variant, role, race, gender, align,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
@@ -80,4 +80,18 @@ CREATE VIEW ascended_recent AS
   WHERE ascended = TRUE
   ORDER BY endtime AT TIME ZONE 'UTC' DESC;
 
-GRANT SELECT ON ascended_recent TO nhdbstats;
+GRANT SELECT ON v_ascended_recent TO nhdbstats;
+
+CREATE VIEW v_ascended AS
+  SELECT
+    logfiles_i, name, server, variant, role, race, gender, align,
+    endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
+    deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
+    games.version, ascended
+  FROM
+    games
+    LEFT JOIN logfiles USING ( logfiles_i )
+  WHERE ascended = TRUE
+  ORDER BY endtime AT TIME ZONE 'UTC' ASC;
+
+GRANT SELECT ON v_ascended TO nhdbstats;

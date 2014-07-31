@@ -32,53 +32,8 @@ my $lockfile = '/tmp/nhdb-stats.lock';
 my $http_root = $NHdb::nhdb_def->{'http_root'};
 my $tt = Template->new(
   'OUTPUT_PATH' => $http_root,
-  'INCLUDE_PATH' => 'templates'
-);
-
-#--- page definitions
-
-my %page = (
-  
-  'recent' => [ 
-    "$http_root/recent.%s.html",
-    'Recent Games',
-    'games_recent', 
-    [ qw(
-      n
-      server
-      variant
-      name
-      character
-      points
-      turns
-      duration
-      dlvl
-      hp
-      time
-      death
-    ) ]
-  ],
-  
-  'ascended' => [ 
-    "$http_root/ascended.%s.html",
-    'Ascended Games',
-    'ascended_recent',
-    [ qw(
-      n
-      server
-      variant
-      name
-      character
-      points
-      turns
-      duration
-      dlvl
-      hp
-      time
-      ncond%2
-      conducts%0
-    ) ]
-  ]
+  'INCLUDE_PATH' => 'templates',
+  'RELATIVE' => 1
 );
 
 
@@ -209,9 +164,9 @@ sub gen_page_recent
   #--- select source view
 
   if($page eq 'recent') {
-    $view = 'games_recent';
+    $view = 'v_games_recent';
   } elsif($page eq 'ascended') {
-    $view = 'ascended_recent';
+    $view = 'v_ascended_recent';
   } else {
     die "Undefined page";
   }
@@ -310,6 +265,7 @@ sub help
 }
 
 
+
 #============================================================================
 #===================  _  ====================================================     
 #===  _ __ ___   __ _(_)_ __  ===============================================
@@ -393,8 +349,8 @@ if($cmd_force) {
 } else {
   @variants = @update_variants;
 }
-if(scalar(@variants)) {
-  tty_message("Following variants scheduled to update: %s\n", join(',', @variants));
+if(scalar(@update_variants)) {
+  tty_message("Following variants scheduled to update: %s\n", join(',', @update_variants));
 } else {
   tty_message("No variants scheduled to update\n");
 }
@@ -402,8 +358,6 @@ for my $var (@variants) {
   if(scalar(@cmd_variant)) {
     next if scalar(@cmd_variant) && !grep { $var eq lc($_) } @cmd_variant;
   }
-  #gen_page_recent('recent', $var);
-  #gen_page_recent('ascended', $var);
   gen_page_recent('recent', $var);
   gen_page_recent('ascended', $var);
 
@@ -415,7 +369,9 @@ for my $var (@variants) {
 
 #--- generic info page
 
-gen_page_info();
+if($cmd_force || grep('all', @update_variants)) {
+  gen_page_info();
+}
 
 #--- disconnect from database
 
