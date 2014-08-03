@@ -34,7 +34,7 @@
   <td class="numeric">[% row.n %]</td>
   <td>[% row.server %]</td>
   <td>[% row.variant %]</td>
-  <td>[% row.name %]</td>
+  <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
   <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
 [% IF row.dump -%]
   <td class="numeric"><a href="[% row.dump %]">[% number(row.points) %]</a></td>

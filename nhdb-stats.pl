@@ -303,6 +303,7 @@ sub sql_load_logfiles
 sub row_fix
 {
   my $row = shift;
+  my $variant = shift;
 
   #--- convert realtime to human-readable form
 
@@ -338,6 +339,13 @@ sub row_fix
   if($row->{'variant'} eq 'ace' || $row->{'variant'} eq 'nh4') {
     $row->{'realtime'} = '';
   }
+
+  #--- player page
+
+  $row->{'plrpage'} = url_substitute(
+    sprintf("players/%%U/%%u.%s.html", $variant),
+    $row
+  );
 }
 
 
@@ -418,7 +426,7 @@ sub gen_page_recent
   my $cnt = 1;
   my @a;
   while(my $row = $sth->fetchrow_hashref()) {
-    row_fix($row);
+    row_fix($row, $variant);
     $row->{n} = $cnt++;
     push(@a, $row);
   }
@@ -457,13 +465,15 @@ sub gen_page_player
 
   tty_message("Creating page for $name/$variant");
 
+  #=== all ascended games ==================================================
+
   #--- prepare query
 
   $query = q{SELECT * FROM v_ascended WHERE name = ?};
   @arg = ($name);
   if($variant ne 'all') {
-    $query .= ' AND variant  = ?';
-    push(@arg, $variant)
+    $query .= ' AND variant = ?';
+    push(@arg, $variant);
   }
   $sth = $dbh->prepare($query);
   $r = $sth->execute(@arg);
@@ -474,16 +484,63 @@ sub gen_page_player
   #--- pull data
 
   my $cnt = 1;
-  my @a;
+  my $a = [];
   while(my $row = $sth->fetchrow_hashref()) {
-    row_fix($row);
+    row_fix($row, $variant);
     $row->{'n'} = $cnt++;
-    push(@a, $row);
+    push(@$a, $row);
+  }
+  $sth->finish();
+  $data{'result_ascended'} = $a;
+
+  #=== recent ascensions ===================================================
+
+  #--- first get count of number of games
+
+  if(1) {
+  $query = q{SELECT count(*) FROM games WHERE scummed IS FALSE AND name = ?};
+  @arg = ($name);
+  if($variant ne 'all') {
+    $query = q{SELECT count(*) FROM games LEFT JOIN logfiles USING (logfiles_i) WHERE scummed IS FALSE AND name = ? AND variant = ?};
+    push(@arg, $variant);
+  }
+  $sth = $dbh->prepare($query);
+  $r = $sth->execute(@arg);
+  if(!$r) {
+    return 'Database query failed (' . $sth->errstr() . ')';
+  }
+  ($data{games_count}) = $sth->fetchrow_array();
   }
 
-  #--- supply additional data
+  #--- prepare query
 
-  $data{'result'}   = \@a;
+  $query = q{SELECT * FROM v_games_recent WHERE name = ?};
+  @arg = ($name);
+  if($variant ne 'all') {
+    $query .= ' AND variant = ?';
+    push(@arg, $variant);
+  }
+  $query .= ' LIMIT 15';
+  $sth = $dbh->prepare($query);
+  $r = $sth->execute(@arg);
+  if(!$r) {
+    return 'Database query failed (' . $sth->errstr() . ')';
+  }
+
+  #--- pull data
+
+  $a = [];
+  my $cnt = $data{'games_count'};
+  while(my $row = $sth->fetchrow_hashref()) {
+    row_fix($row, $variant);
+    $row->{'n'} = $cnt--;
+    push(@$a, $row);
+  }
+  $sth->finish();
+  $data{'result_recent'} = $a;
+
+  #=== additional data =====================================================
+
   $data{'cur_time'} = scalar(localtime());
   $data{'name'} = $name;
   $data{'variant'} = $variant;
@@ -491,8 +548,9 @@ sub gen_page_player
     [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ],
     [ keys %{$player_combos->{$name}} ]
   );
-  #$data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
   $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
+
+  #=========================================================================
 
   #--- determine filename
 
