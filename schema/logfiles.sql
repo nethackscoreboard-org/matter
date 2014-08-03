@@ -163,3 +163,83 @@ INSERT INTO logfiles VALUES (
   FALSE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
+
+INSERT INTO logfiles VALUES (
+  2006, 'dev', 'nh', NULL,
+  NULL,
+  'devnull-2006.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  2007, 'dev', 'nh', NULL,
+  NULL,
+  'devnull-2007.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  2008, 'dev', 'nh', NULL,
+  NULL,
+  'devnull-2008.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  2009, 'dev', 'nh', NULL,
+  NULL,
+  'devnull-2009.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  2010, 'dev', 'nh', NULL,
+  NULL,
+  'devnull-2010.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  2011, 'dev', 'nh', NULL,
+  NULL,
+  'devnull-2011.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  2012, 'dev', 'nh', NULL,
+  NULL,
+  'devnull-2012.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  2013, 'dev', 'nh', NULL,
+  NULL,
+  'devnull-2013.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);

@@ -398,6 +398,7 @@ for my $log (@logfiles) {
 
     if($log->{'static'}) {
       tty_message("  Static logfile, skipping retrieval\n");
+      $fsize[1] = $fsize[0];
     } elsif(!$log->{'logurl'}) {
       tty_message("  Log URL not defined, skipping retrieval\n");
     } else {
@@ -462,6 +463,10 @@ for my $log (@logfiles) {
     while(my $l = <F>) { #<<< read loop beings here
 
       chomp($l);
+
+    #--- devnull logs are special-cased here
+
+      $l =~ s/^.*?\s// if $log->{'server'} eq 'dev';
 
     #--- parse log
     
