@@ -68,6 +68,25 @@ sub tty_message
 
 
 #============================================================================
+# Order an array by using reference array
+#============================================================================
+
+sub array_sort_by_reference
+{
+  my $ref = shift;
+  my $ary = shift;
+  my @result;
+
+  for my $x (@$ref) {
+    if(grep { $x eq $_ } @$ary) {
+      push(@result, $x);
+    }
+  }
+  return \@result;
+}
+
+
+#============================================================================
 # Create list of player-variant pairs to be updated.
 #============================================================================
 
@@ -162,7 +181,7 @@ sub update_schedule_players
       }
     }
     tty_message("  Forcing update of %d pages\n", scalar(@pages_forced));
-    return(\@pages_forced);
+    return(\@pages_forced, \%player_combos);
   }
 
   #--- get list of updated players
@@ -192,7 +211,7 @@ sub update_schedule_players
     scalar(@pages_updated),
     $cnt - scalar(@pages_updated)
   );
-  return(\@pages_updated);
+  return(\@pages_updated, \%player_combos);
 }
 
 
@@ -427,8 +446,9 @@ sub gen_page_recent
 
 sub gen_page_player
 {
-  my $name     = shift;
-  my $variant  = shift;
+  my $name          = shift;
+  my $variant       = shift;
+  my $player_combos = shift;
   my @variants = ('all');
   my ($query, @arg, $sth, $r);
   my %data;
@@ -467,7 +487,11 @@ sub gen_page_player
   $data{'cur_time'} = scalar(localtime());
   $data{'name'} = $name;
   $data{'variant'} = $variant;
-  $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
+  $data{'variants'} = array_sort_by_reference(
+    [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ],
+    [ keys %{$player_combos->{$name}} ]
+  );
+  #$data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
   $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
 
   #--- determine filename
@@ -518,6 +542,8 @@ sub gen_page_player
 # players is enabled by default; explicitly disabling is very useful when
 # using --force, as this otherwise makes the program refresh all user pages
 # which is very time consuming
+#
+# --aggr, --noaggr enable/disable generating aggregate pages
 #============================================================================
 
 sub help
@@ -528,6 +554,7 @@ sub help
   print "  --force        force processing of everything\n";
   print "  --player=NAME  update only given player\n";
   print "  --noplayers    disable generating player pages\n";
+  print "  --noaggr       disable generating aggregate pages\n";
   print "\n";
 }
 
@@ -557,12 +584,14 @@ my @cmd_variant;
 my $cmd_force;
 my @cmd_player;
 my $cmd_players = 1;
+my $cmd_aggr = 1;
 
 if(!GetOptions(
   'variant=s' => \@cmd_variant,
-  'force' => \$cmd_force,
-  'player=s' => \@cmd_player,
-  'players' => \$cmd_players
+  'force'     => \$cmd_force,
+  'player=s'  => \@cmd_player,
+  'players!'  => \$cmd_players,
+  'aggr!'     => \$cmd_aggr
 )) {
   help();
   exit(1);
@@ -599,37 +628,39 @@ tty_message("Loaded list of logfiles\n");
 
 #--- read what is to be updated
 
-my $update_variants = update_schedule_variants($cmd_force, \@cmd_variant);
-tty_message(
-  "Following variants scheduled to update: %s\n",
-  join(',', @$update_variants)
-);
+if($cmd_aggr) {
+  my $update_variants = update_schedule_variants($cmd_force, \@cmd_variant);
+  tty_message(
+    "Following variants scheduled to update: %s\n",
+    join(',', @$update_variants)
+  );
 
 #--- generate aggregate pages
 
-for my $var (@$update_variants) {
-  gen_page_recent('recent', $var);
-  gen_page_recent('ascended', $var);
-  $dbh->do(
-    q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ''},
-    undef, $var
-  );
+  for my $var (@$update_variants) {
+    gen_page_recent('recent', $var);
+    gen_page_recent('ascended', $var);
+    $dbh->do(
+      q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ''},
+      undef, $var
+    );
+  }
 }
 
 #--- generate per-player pages
 
-my $pages_update = update_schedule_players(
-  $cmd_force, \@cmd_variant, \@cmd_player
-);
-for my $pg (@$pages_update) {
-  gen_page_player(@$pg);
-  $dbh->do(
-    q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ?},
-    undef, $pg->[1], $pg->[0]
+if($cmd_players) {
+  my ($pages_update, $player_combos) = update_schedule_players(
+    $cmd_force, \@cmd_variant, \@cmd_player
   );
+  for my $pg (@$pages_update) {
+    gen_page_player(@$pg, $player_combos);
+    $dbh->do(
+      q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ?},
+      undef, $pg->[1], $pg->[0]
+    );
+  }
 }
-
-#gen_page_player('Mandevil', 'all');
 
 #--- generic info page
 
