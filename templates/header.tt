@@ -1,9 +1,10 @@
+[%- DEFAULT defcss="default.css" -%]
 <!doctype html>
 
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="default.css">
+  <link rel="stylesheet" type="text/css" href="[% defcss %]">
   <title>[% title %]</title>
 </head>
 
