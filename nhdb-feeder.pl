@@ -14,6 +14,8 @@ use utf8;
 use DBI;
 use Getopt::Long;
 
+$| = 1;
+
 
 #============================================================================
 #=== definitions ============================================================
@@ -162,21 +164,25 @@ sub sql_update_info
   my $update_name    = shift;
   my ($qry, $re);
 
-  $dbh->{PrintError} = 0;
-
-  #--- write upadated variants
+  #--- write updated variants
 
   if(scalar(keys %$update_variant)) {
     for my $var (keys %$update_variant, 'all') {
-      $dbh->do('SAVEPOINT update_var') or return $dbh->errstr();
-      $re = $dbh->do(qq{INSERT INTO update VALUES ('$var', '')});
+      $re = $dbh->do(
+        q{UPDATE update SET upflag = TRUE WHERE variant = ? AND name = ''},
+        undef, $var
+      );
       if(!$re) {
-        my $err = $dbh->errstr();
-        if($err =~ /duplicate key .* \"update_variant_name_key\"/) {
-          $dbh->do('ROLLBACK TO SAVEPOINT update_var') or return $dbh->errstr();
-        } else {
-          return $dbh->errstr();
-        }
+        return $dbh->errstr();
+      }
+      
+      # if no entry was updated, we have to create one instead
+      elsif($re == 0) {
+        $re = $dbh->do(
+          q{INSERT INTO update VALUES (?,'',TRUE)},
+          undef, $var
+        );
+        if(!$re) { return $dbh->errstr(); }
       }
     }
   }
@@ -185,13 +191,17 @@ sub sql_update_info
 
   for my $name (keys %$update_name) {
     for my $var (keys %{$update_name->{$name}}, 'all') {
-      $dbh->do('SAVEPOINT update_name') or return $dbh->errstr();
-      $re = $dbh->do(qq{INSERT INTO update VALUES ('$var', '$name')});
-      if(!$re) {
-        my $err = $dbh->errstr();
-        if($err =~ /duplicate key .* \"update_variant_name_key\"/) {
-          $dbh->do('ROLLBACK TO SAVEPOINT update_name') or return $dbh->errstr();
-        } else {
+      $re = $dbh->do(
+        q{UPDATE update SET upflag = TRUE WHERE variant = ? AND name = ?},
+        undef, $var, $name
+      );
+      if(!$re) { return $dbh->errstr(); }
+      if($re == 0) { 
+        $re = $dbh->do(
+          q{INSERT INTO update VALUES (?, ?, TRUE)},
+          undef, $var, $name
+        );
+        if(!$re) {
           return $dbh->errstr();
         }
       }
@@ -200,7 +210,6 @@ sub sql_update_info
 
   #--- finish successfully
 
-  $dbh->{PrintError} = 1;
   return undef;
 }
 
@@ -313,6 +322,49 @@ if($cmd_logfiles) {
   }
   print "\n";
   exit(0);
+}
+
+#--- check update table
+# this code checks if update table has any rows in it;
+# when finds none, it assumes it is uninitialized and
+# initializes it
+
+tty_message("Checking update table");
+my $sth = $dbh->prepare('SELECT count(*) FROM update');
+my $r = $sth->execute();
+if(!$r) {
+  die sprintf("Cannot count update table (%s)", $sth->errstr());
+}
+my ($cnt_update) = $sth->fetchrow_array();
+$sth->finish();
+if($cnt_update == 0) {
+  tty_message(", failed (no entries)\n");
+  tty_message("Initializing update table, step 1");
+  $r = $dbh->do(
+    'INSERT INTO update ' .
+    'SELECT variant, name ' .
+    'FROM games LEFT JOIN logfiles USING (logfiles_i) ' .
+    'GROUP BY variant, name'
+  );
+  if(!$r) {
+    die sprintf("Failed to initialize the update table (%s)", $sth->errstr());
+  } else {
+    tty_message(" (%d entries)", $r);
+  }
+  tty_message(", step 2");
+  $r = $dbh->do(
+    q{INSERT INTO update } .
+    q{SELECT 'all', name, FALSE } .
+    q{FROM games LEFT JOIN logfiles USING (logfiles_i) } .
+    q{GROUP BY name}
+  );
+  if(!$r) {
+    die sprintf("Failed to initialize the update table (%s)", $sth->errstr());
+    } else {
+      tty_message(" (%d entries)\n", $r)
+    }
+} else {
+  tty_message(", OK (%d entries)\n", $cnt_update);
 }
 
 #--- iterate over logfiles
@@ -451,7 +503,6 @@ for my $log (@logfiles) {
 
     my $re = sql_update_info($dbh, \%update_variant, \%update_name);
     if($re) { die $re; }
-
 
     #--- update database with new position in the file
     
