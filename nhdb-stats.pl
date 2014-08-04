@@ -497,7 +497,6 @@ sub gen_page_player
 
   #--- first get count of number of games
 
-  if(1) {
   $query = q{SELECT count(*) FROM games WHERE scummed IS FALSE AND name = ?};
   @arg = ($name);
   if($variant ne 'all') {
@@ -510,7 +509,6 @@ sub gen_page_player
     return 'Database query failed (' . $sth->errstr() . ')';
   }
   ($data{games_count}) = $sth->fetchrow_array();
-  }
 
   #--- prepare query
 
