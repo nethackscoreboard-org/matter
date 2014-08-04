@@ -12,44 +12,6 @@
 [% END %]
 </p>
 
-<table class="bordered">
-
-<tr>
-  <th>&nbsp;</th>
-  <th>srv</th>
-  <th>var</th>
-  <th>name</th>
-  <th>character</th>
-  <th>points</th>
-  <th>turns</th>
-  <th>duration</th>
-  <th>dlvl</th>
-  <th>HP</th>
-  <th>time</th>
-  <th>death reason</th>
-</tr>
-
-[% FOREACH row IN result %]
-<tr[% IF row.ascended %] class="win"[% END %]>
-  <td class="numeric">[% row.n %]</td>
-  <td>[% row.server %]</td>
-  <td>[% row.variant %]</td>
-  <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
-  <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
-[% IF row.dump -%]
-  <td class="numeric"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
-[%- ELSE -%]
-  <td class="numeric">[% number(row.points) %]</td>
-[%- END %]
-  <td class="numeric">[% row.turns %]</td>
-  <td class="numeric">[% row.realtime %]</td>
-  <td class="numeric">[% row.deathlev %]/[% row.maxlvl %]</td>
-  <td class="numeric">[% row.hp %]/[% row.maxhp %]</td>
-  <td>[% row.endtime %]</td>
-  <td>[% row.death %]</td>
-</tr>
-[% END %]
-
-</table>
+[% INCLUDE tab_recent.tt %]
 
 [% INCLUDE footer.tt %]
