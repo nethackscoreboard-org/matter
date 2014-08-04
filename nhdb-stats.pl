@@ -87,6 +87,35 @@ sub array_sort_by_reference
 
 
 #============================================================================
+# Load SQL query into array of hashref with some additional processing.
+#============================================================================
+
+sub sql_load
+{
+  my $query     = shift;         # 1. database query
+  my $cnt_start = shift;         # 2. counter start (opt)
+  my $cnt_incr  = shift;         # 3. counter increment (opt)
+  my $preproc   = shift;         # 4. subroutine to pre-process row
+  my (@args)    = @_;            # R. arguments to db query
+  my @result;
+
+  my $sth = $dbh->prepare($query);
+  my $r = $sth->execute(@args);
+  if(!$r) { return $sth->errstr(); }
+  while(my $row = $sth->fetchrow_hashref()) {
+    &$preproc($row) if $preproc;
+    if(defined $cnt_start) {
+      $row->{'n'} = $cnt_start;
+      $cnt_start += $cnt_incr;
+    }
+    push(@result, $row);
+  }
+  $sth->finish();
+  return \@result;
+}
+
+
+#============================================================================
 # Create list of player-variant pairs to be updated.
 #============================================================================
 
@@ -392,6 +421,7 @@ sub gen_page_recent
   my $variant = shift;
   my @variants = ('all');
   my ($view, $sth, $r);
+  my (@arg, $query, $result);
   my %data;
 
   #--- init
@@ -408,33 +438,28 @@ sub gen_page_recent
   } else {
     die "Undefined page";
   }
+
+  #--- prepare query;
+
+  $query = qq{SELECT * FROM $view LIMIT 100};
+  if($variant ne 'all') {
+    $query = qq{SELECT * FROM $view WHERE variant = ? LIMIT 100};
+    @arg = ($variant);
+  }
+
   #--- pull data from database
 
-  if($variant eq 'all') {
-    $sth = $dbh->prepare(qq{SELECT * FROM $view LIMIT 100});
-    $r = $sth->execute();
-  } else {
-    $sth = $dbh->prepare(qq{SELECT * FROM $view WHERE variant = ? LIMIT 100});
-    $r = $sth->execute($variant);
-  }
-  if(!$r) {
-    die sprintf('Failed to query database (%s)', $sth->errstr());
-  }
-
-  #--- pull (and transform) data from database
-
-  my $cnt = 1;
-  my @a;
-  while(my $row = $sth->fetchrow_hashref()) {
-    row_fix($row, $variant);
-    $row->{n} = $cnt++;
-    push(@a, $row);
-  }
-  tty_message('loaded from db (%d lines)', scalar(@a));
+  $result = sql_load(
+    $query, 1, 1,
+    sub { row_fix($_[0], $variant); },
+    @arg
+  );
+  return sprintf('Failed to query database (%s)', $sth->errstr) if !ref($result);
+  tty_message('loaded from db (%d lines)', scalar(@$result));
 
   #--- supply additional data
 
-  $data{'result'}   = \@a;
+  $data{'result'}   = $result;
   $data{'cur_time'} = scalar(localtime());
   $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
   $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
@@ -459,7 +484,8 @@ sub gen_page_player
   my $player_combos = shift;
   my @variants = ('all');
   my ($query, @arg, $sth, $r);
-  my %data;
+  my %data;                         # data fed to TT2
+  my $result;                       # rows from db (aref)
 
   #--- info
 
@@ -467,35 +493,21 @@ sub gen_page_player
 
   #=== all ascended games ==================================================
 
-  #--- prepare query
-
   $query = q{SELECT * FROM v_ascended WHERE name = ?};
   @arg = ($name);
   if($variant ne 'all') {
     $query .= ' AND variant = ?';
     push(@arg, $variant);
   }
-  $sth = $dbh->prepare($query);
-  $r = $sth->execute(@arg);
-  if(!$r) {
-    return 'Database query failed (' . $sth->errstr() . ')';
-  }
+  $result = sql_load(
+    $query, 1, 1,
+    sub { row_fix($_[0], $variant); },
+    @arg
+  );
+  return $result if !ref($result);
+  $data{'result_ascended'} = $result;
 
-  #--- pull data
-
-  my $cnt = 1;
-  my $a = [];
-  while(my $row = $sth->fetchrow_hashref()) {
-    row_fix($row, $variant);
-    $row->{'n'} = $cnt++;
-    push(@$a, $row);
-  }
-  $sth->finish();
-  $data{'result_ascended'} = $a;
-
-  #=== recent ascensions ===================================================
-
-  #--- first get count of number of games
+  #=== number of matching games ============================================
 
   $query = q{SELECT count(*) FROM games WHERE scummed IS FALSE AND name = ?};
   @arg = ($name);
@@ -503,14 +515,11 @@ sub gen_page_player
     $query = q{SELECT count(*) FROM games LEFT JOIN logfiles USING (logfiles_i) WHERE scummed IS FALSE AND name = ? AND variant = ?};
     push(@arg, $variant);
   }
-  $sth = $dbh->prepare($query);
-  $r = $sth->execute(@arg);
-  if(!$r) {
-    return 'Database query failed (' . $sth->errstr() . ')';
-  }
-  ($data{games_count}) = $sth->fetchrow_array();
+  $result = sql_load($query, undef, undef, undef, @arg);
+  return $result if !ref($result);
+  $data{'games_count'} = $result->[0]{'count'};
 
-  #--- prepare query
+  #=== recent ascensions ===================================================
 
   $query = q{SELECT * FROM v_games_recent WHERE name = ?};
   @arg = ($name);
@@ -519,23 +528,13 @@ sub gen_page_player
     push(@arg, $variant);
   }
   $query .= ' LIMIT 15';
-  $sth = $dbh->prepare($query);
-  $r = $sth->execute(@arg);
-  if(!$r) {
-    return 'Database query failed (' . $sth->errstr() . ')';
-  }
-
-  #--- pull data
-
-  $a = [];
-  my $cnt = $data{'games_count'};
-  while(my $row = $sth->fetchrow_hashref()) {
-    row_fix($row, $variant);
-    $row->{'n'} = $cnt--;
-    push(@$a, $row);
-  }
-  $sth->finish();
-  $data{'result_recent'} = $a;
+  $result = sql_load(
+    $query, $data{'games_count'}, -1,
+    sub { row_fix($_[0], $variant); },
+    @arg
+  );
+  return $result if !ref($result);
+  $data{'result_recent'} = $result;
 
   #=== additional data =====================================================
 
