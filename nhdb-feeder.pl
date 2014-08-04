@@ -153,8 +153,7 @@ sub sql_insert_games
 
 
 #============================================================================
-# Write update info into "update" table. Use of savepoints is required in
-# order to mask collisions on INSERTs.
+# Write update info into "update" table.
 #============================================================================
 
 sub sql_update_info
@@ -472,13 +471,6 @@ for my $log (@logfiles) {
     
       my $pl = parse_log($l);
 
-    #--- mark updates
-    # FIXME: There's subtle potential issue with this, since
-    # scummed games do trigger these updates; I haven't decided
-    # if we want this or not.
-    
-    $update_variant{$log->{'variant'}} = 1;
-    $update_name{$pl->{'name'}}{$log->{'variant'}} = 1;
 
     #--- insert row into database
 
@@ -489,6 +481,15 @@ for my $log (@logfiles) {
           tty_message("  Failure during inserting new records\n");
           die;
         }
+
+    #--- mark updates
+    # FIXME: There's subtle potential issue with this, since
+    # scummed games do trigger these updates; I haven't decided
+    # if we want this or not.
+    
+        $update_variant{$log->{'variant'}} = 1;
+        $update_name{$pl->{'name'}}{$log->{'variant'}} = 1;
+
       }
 
     #--- display progress info
