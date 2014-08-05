@@ -85,6 +85,7 @@
 [% END %]
 </tr>
 
+[% IF result_ascended.size %]
 <tr>
 <th>ascensions</th>
 [% FOREACH role IN nh_roles %]
@@ -100,6 +101,7 @@
 <td class="numeric">[% value %]</td>
 [% END %]
 </tr>
+[% END %]
 
 </table>
 
@@ -128,6 +130,7 @@
 [% END %]
 </tr>
 
+[% IF result_ascended.size %]
 <tr>
 <th>ascensions</th>
 [% FOREACH race IN nh_races %]
@@ -143,6 +146,7 @@
 <td class="numeric">[% value %]</td>
 [% END %]
 </tr>
+[% END %]
 
 </table>
 
@@ -171,6 +175,7 @@
 [% END %]
 </tr>
 
+[% IF result_ascended.size %]
 <tr>
 <th>ascensions</th>
 [% FOREACH align IN nh_aligns %]
@@ -186,6 +191,7 @@
 <td class="numeric">[% value %]</td>
 [% END %]
 </tr>
+[% END %]
 
 </table>
 
@@ -195,8 +201,8 @@
 
 [% INCLUDE tab_recent.tt result=result_recent %]
 
-[% IF result_ascended.size %]
 
+[% IF result_ascended.size %]
 
 <h3>Ascended Games</h3>
 
