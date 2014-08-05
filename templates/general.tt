@@ -2,6 +2,17 @@
 [% USE percent = format("%0.1f%%") %]
 [% INCLUDE header.tt title="General Statistics" %]
 
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+<a href="recent.[% variant %].html">Recent Games</a>
+</div>
+
+<div class="page_content">
+<h1>General Statistics</h1>
+
 <table class="bordered">
 
 <tr>

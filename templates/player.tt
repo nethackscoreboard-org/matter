@@ -1,5 +1,18 @@
 [%- INCLUDE header.tt title=name defcss="../../default.css" -%]
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+[%- USE percent = format("%0.1f%%") -%]
+
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+<a href="../../recent.[% variant %].html">Recent Games</a> |
+<a href="../../ascended.[% variant %].html">Ascended Games</a>
+</div>
+
+<div class="page_content">
+<h1>[% name %]</h1>
 
 <p id="varmenu">
 [% FOREACH var IN variants %]
@@ -13,6 +26,170 @@
 </p>
 
 <hr>
+<h3>Overall Stats</h3>
+
+<table class="bordered">
+
+<tr>
+<th>games</th>
+<th>wins</th>
+<th>wins %</th>
+<th>scum</th>
+<th>first game</th>
+<th>last game</th>
+</tr>
+
+<tr>
+<td class="numeric">[% games_count_all %]</td>
+<td class="numeric">[% games_count_asc %]</td>
+<td class="numeric">[% IF games_count_asc == 0 %][% percent(0) %][% ELSE %][% percent(games_count_asc / games_count_all * 100) %][% END %]
+<td class="numeric">[% games_count_scum %]</td>
+[% IF games_first.dump -%]
+<td class="numeric"><a href="[% games_first.dump %]">[% games_first.endtime %]</a></td>
+[%- ELSE -%]
+  <td class="numeric">[% games_first.endtime %]</td>
+[%- END %]
+[% IF games_last.dump -%]
+<td class="numeric"><a href="[% games_last.dump %]">[% games_last.endtime %]</a></td>
+[%- ELSE -%]
+  <td class="numeric">[% games_last.endtime %]</td>
+[%- END %]
+</tr>
+
+</table>
+
+<h3>Roles, races, alignments</h3>
+
+<table class="bordered">
+
+<tr>
+<th>roles</th>
+[% FOREACH role IN nh_roles %]
+<th>[% role.ucfirst %]</th>
+[% END %]
+</tr>
+
+<tr>
+<th>all games</th>
+[% FOREACH role IN nh_roles %]
+<td class="numeric">[% result_roles_all.item(role) %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>all games %</th>
+[% FOREACH role IN nh_roles %]
+[% SET value = result_roles_all.item(role) %]
+[% IF value; value = percent((value) / games_count_all * 100); END %]
+<td class="numeric">[% value %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>ascensions</th>
+[% FOREACH role IN nh_roles %]
+<td class="numeric">[% result_roles_asc.item(role) %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>ascensions %</th>
+[% FOREACH role IN nh_roles %]
+[% SET value = result_roles_asc.item(role) %]
+[% IF value; value = percent((value) / games_count_asc * 100); END %]
+<td class="numeric">[% value %]</td>
+[% END %]
+</tr>
+
+</table>
+
+<table class="bordered" style="margin-top : 1em; float : left; margin-right : 2em;">
+
+<tr>
+<th>races</th>
+[% FOREACH race IN nh_races %]
+<th>[% race.ucfirst %]</th>
+[% END %]
+</tr>
+
+<tr>
+<th>all games</th>
+[% FOREACH race IN nh_races %]
+<td class="numeric">[% result_races_all.item(race) %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>all games %</th>
+[% FOREACH race IN nh_races %]
+[% SET value = result_races_all.item(race) %]
+[% IF value; value = percent((value) / games_count_all * 100); END %]
+<td class="numeric">[% value %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>ascensions</th>
+[% FOREACH race IN nh_races %]
+<td class="numeric">[% result_races_asc.item(race) %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>ascensions %</th>
+[% FOREACH race IN nh_races %]
+[% SET value = result_races_asc.item(race) %]
+[% IF value; value = percent((value) / games_count_asc * 100); END %]
+<td class="numeric">[% value %]</td>
+[% END %]
+</tr>
+
+</table>
+
+<table class="bordered" style="margin-top : 1em;">
+
+<tr>
+<th>alignments</th>
+[% FOREACH align IN nh_aligns %]
+<th>[% align.ucfirst %]</th>
+[% END %]
+</tr>
+
+<tr>
+<th>all games</th>
+[% FOREACH align IN nh_aligns %]
+<td class="numeric">[% result_aligns_all.item(align) %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>all games %</th>
+[% FOREACH align IN nh_aligns %]
+[% SET value = result_aligns_all.item(align) %]
+[% IF value; value = percent((value) / games_count_all * 100); END %]
+<td class="numeric">[% value %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>ascensions</th>
+[% FOREACH align IN nh_aligns %]
+<td class="numeric">[% result_aligns_asc.item(align) %]</td>
+[% END %]
+</tr>
+
+<tr>
+<th>ascensions %</th>
+[% FOREACH align IN nh_aligns %]
+[% SET value = result_aligns_asc.item(align) %]
+[% IF value; value = percent((value) / games_count_asc * 100); END %]
+<td class="numeric">[% value %]</td>
+[% END %]
+</tr>
+
+</table>
+
+
 
 <h3>Recent Games</h3>
 
@@ -20,10 +197,12 @@
 
 [% IF result_ascended.size %]
 
+
 <h3>Ascended Games</h3>
 
 [% INCLUDE tab_ascended.tt result=result_ascended %]
 
 [% END %]
+
 
 [% INCLUDE footer.tt %]

@@ -506,8 +506,9 @@ sub gen_page_player
   );
   return $result if !ref($result);
   $data{'result_ascended'} = $result;
+  $data{'games_count_asc'} = scalar(@$result);
 
-  #=== number of matching games ============================================
+  #=== total number of games ================================================
 
   $query = q{SELECT count(*) FROM games WHERE scummed IS FALSE AND name = ?};
   @arg = ($name);
@@ -517,9 +518,35 @@ sub gen_page_player
   }
   $result = sql_load($query, undef, undef, undef, @arg);
   return $result if !ref($result);
-  $data{'games_count'} = $result->[0]{'count'};
+  $data{'games_count_all'} = int($result->[0]{'count'});
 
-  #=== recent ascensions ===================================================
+  #=== number of scummed games =============================================
+
+  $query = q{SELECT count(*) FROM games WHERE scummed IS TRUE AND name = ?};
+  @arg = ($name);
+  if($variant ne 'all') {
+    $query = q{SELECT count(*) FROM games LEFT JOIN logfiles USING (logfiles_i) WHERE scummed IS TRUE AND name = ? AND variant = ?};
+    push(@arg, $variant);
+  }
+  $result = sql_load($query, undef, undef, undef, @arg);
+  return $result if !ref($result);
+  $data{'games_count_scum'} = $result->[0]{'count'};
+
+  #=== the first game ======================================================
+
+  $query = q{SELECT * FROM v_games WHERE name = ?};
+  @arg = ($name);
+  if($variant ne 'all') {
+    $query .= q{ AND variant = ?};
+    push(@arg, $variant);
+  }
+  $query .= ' LIMIT 1';
+  $result = sql_load(
+    $query, undef, undef, sub { row_fix($_[0], $variant); }, @arg
+  );
+  $data{'games_first'} = $result->[0];
+
+  #=== recent games ========================================================
 
   $query = q{SELECT * FROM v_games_recent WHERE name = ?};
   @arg = ($name);
@@ -529,15 +556,151 @@ sub gen_page_player
   }
   $query .= ' LIMIT 15';
   $result = sql_load(
-    $query, $data{'games_count'}, -1,
+    $query, $data{'games_count_all'}, -1,
     sub { row_fix($_[0], $variant); },
     @arg
   );
   return $result if !ref($result);
   $data{'result_recent'} = $result;
+  $data{'games_last'} = $result->[0];
+
+  #=== games by roles/all ==================================================
+
+  $query = 'SELECT lower(role) AS role, count(*) ' .
+           'FROM games LEFT JOIN logfiles USING (logfiles_i) ' .
+           'WHERE scummed IS NOT TRUE AND %s GROUP BY role';
+  my $where = 'name = ?';
+  @arg = ($name);
+  if($variant ne 'all') {
+    $where .= ' AND variant = ?';
+    push(@arg, $variant);
+  }
+  $query = sprintf($query, $where);
+  $result = sql_load(
+    $query, undef, undef, undef, @arg
+  );
+  return $result if !ref($result);
+  my %roles_all;
+  for my $r (@$result) {
+    $roles_all{$r->{'role'}} = $r->{'count'};
+  }
+  $data{'result_roles_all'} = \%roles_all;
+
+  #=== games by roles/ascended =============================================
+
+  $query = 'SELECT lower(role) AS role, count(*) ' .
+           'FROM games LEFT JOIN logfiles USING (logfiles_i) ' .
+           'WHERE ascended IS TRUE AND %s GROUP BY role';
+  $where = 'name = ?';
+  @arg = ($name);
+  if($variant ne 'all') {
+    $where .= ' AND variant = ?';
+    push(@arg, $variant);
+  }
+  $query = sprintf($query, $where);
+  $result = sql_load(
+    $query, undef, undef, undef, @arg
+  );
+  return $result if !ref($result);
+  my %roles_asc;
+  for my $r (@$result) {
+    $roles_asc{$r->{'role'}} = $r->{'count'};
+  }
+  $data{'result_roles_asc'} = \%roles_asc;
+
+  #=== games by races/all ==================================================
+
+  $query = 'SELECT lower(race) AS race, count(*) ' .
+           'FROM games LEFT JOIN logfiles USING (logfiles_i) ' .
+           'WHERE scummed IS NOT TRUE AND %s GROUP BY race';
+  $where = 'name = ?';
+  @arg = ($name);
+  if($variant ne 'all') {
+    $where .= ' AND variant = ?';
+    push(@arg, $variant);
+  }
+  $query = sprintf($query, $where);
+  $result = sql_load(
+    $query, undef, undef, undef, @arg
+  );
+  return $result if !ref($result);
+  my %races_all;
+  for my $r (@$result) {
+    $races_all{$r->{'race'}} = $r->{'count'};
+  }
+  $data{'result_races_all'} = \%races_all;
+
+  #=== games by races/ascended =============================================
+
+  $query = 'SELECT lower(race) AS race, count(*) ' .
+           'FROM games LEFT JOIN logfiles USING (logfiles_i) ' .
+           'WHERE ascended IS TRUE AND %s GROUP BY race';
+  $where = 'name = ?';
+  @arg = ($name);
+  if($variant ne 'all') {
+    $where .= ' AND variant = ?';
+    push(@arg, $variant);
+  }
+  $query = sprintf($query, $where);
+  $result = sql_load(
+    $query, undef, undef, undef, @arg
+  );
+  return $result if !ref($result);
+  my %races_asc;
+  for my $r (@$result) {
+    $races_asc{$r->{'race'}} = $r->{'count'};
+  }
+  $data{'result_races_asc'} = \%races_asc;
+
+  #=== games by alignments/all =============================================
+
+  $query = 'SELECT lower(align) AS align, count(*) ' .
+           'FROM games LEFT JOIN logfiles USING (logfiles_i) ' .
+           'WHERE scummed IS NOT TRUE AND %s GROUP BY align';
+  $where = 'name = ?';
+  @arg = ($name);
+  if($variant ne 'all') {
+    $where .= ' AND variant = ?';
+    push(@arg, $variant);
+  }
+  $query = sprintf($query, $where);
+  $result = sql_load(
+    $query, undef, undef, undef, @arg
+  );
+  return $result if !ref($result);
+  my %align_all;
+  for my $r (@$result) {
+    $align_all{$r->{'align'}} = $r->{'count'};
+  }
+  $data{'result_aligns_all'} = \%align_all;
+
+  #=== games by alignments/ascended ========================================
+
+  $query = 'SELECT lower(align) AS align, count(*) ' .
+           'FROM games LEFT JOIN logfiles USING (logfiles_i) ' .
+           'WHERE ascended IS TRUE AND %s GROUP BY align';
+  $where = 'name = ?';
+  @arg = ($name);
+  if($variant ne 'all') {
+    $where .= ' AND variant = ?';
+    push(@arg, $variant);
+  }
+  $query = sprintf($query, $where);
+  $result = sql_load(
+    $query, undef, undef, undef, @arg
+  );
+  return $result if !ref($result);
+  my %align_asc;
+  for my $r (@$result) {
+    $align_asc{$r->{'align'}} = $r->{'count'};
+  }
+  $data{'result_aligns_asc'} = \%align_asc;
 
   #=== additional data =====================================================
 
+  $data{'nh_roles'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'roles'};
+  $data{'nh_races'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'races'};
+  $data{'nh_aligns'} = $NetHack::nh_def->{'nh_aligns_ord'};
   $data{'cur_time'} = scalar(localtime());
   $data{'name'} = $name;
   $data{'variant'} = $variant;
@@ -545,7 +708,7 @@ sub gen_page_player
     [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ],
     [ keys %{$player_combos->{$name}} ]
   );
-  $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'vardef'} = $NetHack::nh_def->{'nh_variants_def'};
 
   #=========================================================================
 

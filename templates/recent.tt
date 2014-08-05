@@ -1,6 +1,17 @@
 [%- INCLUDE header.tt title="Recent Games" -%]
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
 
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+<a href="ascended.[% variant %].html">Ascended Games</a>
+</div>
+
+<div class="page_content">
+<h1>Recent Games</h1>
+
 <p id="varmenu">
 [% FOREACH var IN variants %]
   [% IF var == 'all'; label = 'All'; ELSE; label = vardef.item(var); END %]

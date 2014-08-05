@@ -16,11 +16,6 @@
     "wiz" : "wizard"
    },
 
-  "nh_roles_ord" : [ 
-     "arc", "bar", "cav", "con", "hea", "kni", "mon",
-     "pri", "ran", "rog", "sam", "tou", "val", "wiz"
-  ],
-
   "nh_races_def" : {
     "hum" : "human",
     "elf" : "elf",
@@ -29,8 +24,6 @@
     "orc" : "orc",
     "vam" : "vampire"
   },
-
-  "nh_races_ord" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ],
 
   "nh_aligns_def" : {
     "law" : "lawful",
@@ -96,5 +89,67 @@
 
   "nh_variants_ord" : [
     "nh", "ace", "nh4", "unh", "sh", "gh"
-  ]
+  ],
+
+  
+  "nh_variants" : {
+
+    "all" : {
+       "roles" : [ 
+        "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran",
+        "rog", "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ]
+    },
+    
+    "nh" : {
+      "roles" : [ 
+        "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
+        "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+    },
+    
+    "ace" : {
+      "roles" : [ 
+        "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
+        "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+    },
+    
+    "nh4" : {
+      "roles" : [ 
+        "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
+        "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+    },
+    
+    "unh" : {
+      "roles" : [ 
+        "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran",
+        "rog", "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ]
+    },
+    
+    "sh" : {
+      "roles" : [ 
+        "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
+        "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+    },
+    
+    "gh" : {
+      "roles" : [ 
+        "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
+        "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+    }
+
+  }
+
 }
