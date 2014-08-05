@@ -391,11 +391,15 @@ for my $log (@logfiles) {
     $fsize[0] = -s $localfile;
     tty_message("Processing %s/%s started\n", $log->{'variant'}, $log->{'server'});
     tty_message("  Localfile is %s\n", $localfile);
-    tty_message("  Logfile URL is %s\n", $log->{'logurl'});
+    tty_message("  Logfile URL is %s\n", $log->{'logurl'}) if $log->{'logurl'};
 
     #--- retrieve file
 
     if($log->{'static'}) {
+      if($fpos) {
+        tty_message("  Skipping already processed static logfile\n");
+        die "OK\n";
+      }
       tty_message("  Static logfile, skipping retrieval\n");
       $fsize[1] = $fsize[0];
     } elsif(!$log->{'logurl'}) {
