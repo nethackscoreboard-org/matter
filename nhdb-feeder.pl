@@ -412,6 +412,10 @@ for my $log (@logfiles) {
       tty_message(", done (received %d bytes)\n", $fsize[1] - $fsize[0]);
       if(($fsize[1] - $fsize[0]) < 1 && $log->{'fpos'}) {
         tty_message("  No data received, skipping further processing\n");
+        $dbh->do(
+          'UPDATE logfiles SET lastchk = current_timestamp WHERE logfiles_i = ?',
+          undef, $log->{'logfiles_i'}
+        );
         die "OK\n";
       }
     }
@@ -516,7 +520,7 @@ for my $log (@logfiles) {
 
     #--- update database with new position in the file
     
-    $qry = 'UPDATE logfiles SET fpos = ? WHERE logfiles_i = ?';
+    $qry = 'UPDATE logfiles SET fpos = ?, lastchk = current_timestamp WHERE logfiles_i = ?';
     $sth = $dbh->prepare($qry);
     $r = $sth->execute($fsize[1], $log->{'logfiles_i'});
     if(!$r) {
