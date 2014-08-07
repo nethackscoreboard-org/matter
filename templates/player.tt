@@ -8,7 +8,8 @@
 
 <div class="toplinks">
 <a href="../../recent.[% variant %].html">Recent Games</a> |
-<a href="../../ascended.[% variant %].html">Ascended Games</a>
+<a href="../../ascended.[% variant %].html">Ascended Games</a> |
+<a href="../../about.html">About</a>
 </div>
 
 <div class="page_content">
@@ -42,7 +43,7 @@
 <tr>
 <td class="numeric">[% games_count_all %]</td>
 <td class="numeric">[% games_count_asc %]</td>
-<td class="numeric">[% IF games_count_asc == 0 %][% percent(0) %][% ELSE %][% percent(games_count_asc / games_count_all * 100) %][% END %]
+<td class="numeric">[% IF games_count_asc == 0 %][% percent(0) %][% ELSE %][% percent(games_count_asc / ( games_count_all + games_count_scum ) * 100) %][% END %]
 <td class="numeric">[% games_count_scum %]</td>
 [% IF games_first.dump -%]
 <td class="numeric"><a href="[% games_first.dump %]">[% games_first.endtime %]</a></td>

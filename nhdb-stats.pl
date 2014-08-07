@@ -730,6 +730,37 @@ sub gen_page_player
 
 
 #============================================================================
+#============================================================================
+
+sub gen_page_about
+{
+  my %data;
+
+  #--- info
+
+  tty_message('Creating About page');
+
+  #--- pull data from db
+
+  my $query = q{SELECT *, to_char(lastchk, 'YYYY-MM-DD HH24:MM') as lastchk_trunc FROM logfiles WHERE oper IS TRUE ORDER BY logfiles_i};
+  my $result = sql_load($query);
+  return $result if !ref($result);
+  $data{'logfiles'} = $result;
+
+  #--- generate page
+
+  $data{'cur_time'} = scalar(localtime());
+  $tt->process('about.tt', \%data, 'about.html')
+    or die $tt->error();
+
+  #--- finish
+
+  tty_message(", done\n");
+  return undef;
+}
+
+
+#============================================================================
 # Display usage help.
 #
 # Semantics description, this should be moved into some other text, but for
@@ -885,6 +916,10 @@ if($cmd_players) {
 #if(grep('all', @$update_variants)) {
 #  gen_page_info();
 #}
+
+#--- about page
+
+gen_page_about();
 
 #--- disconnect from database
 

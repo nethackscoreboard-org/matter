@@ -6,7 +6,8 @@
 <div class="page">
 
 <div class="toplinks">
-<a href="ascended.[% variant %].html">Ascended Games</a>
+<a href="ascended.[% variant %].html">Ascended Games</a> |
+<a href="about.html">About</a>
 </div>
 
 <div class="page_content">

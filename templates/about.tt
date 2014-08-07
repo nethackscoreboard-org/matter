@@ -1,0 +1,53 @@
+[%- INCLUDE header.tt title="About NetHack Scoreboard" -%]
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+<a href="recent.all.html">Recent Games</a> |
+<a href="ascended.all.html">Ascended Games</a>
+</div>
+
+<div class="page_content">
+<h1>About NetHack Scoreboard</h1>
+
+<hr>
+
+<p>
+NetHack Scoreboard is a website that retrieves logfiles from multiple
+public NetHack servers and processes them to provide consolidated
+statistics to users. Users, who have the same nicks on multiple servers
+also have their personal statistics put together into one summary view.
+</p>
+
+<hr>
+
+<h3>Data Sources</h3>
+<table class="bordered">
+
+<tr>
+<th>id</th>
+<th>srv</th>
+<th>var</th>
+<th>logfile</th>
+<th>static</th>
+<th>size</th>
+<th>lastchk</th>
+</tr>
+
+[% FOREACH row IN logfiles %]
+<tr>
+<td class="numeric">[% row.logfiles_i %]</td>
+<td>[% row.server %]</td>
+<td>[% row.variant %]</td>
+<td>[% row.logurl %]</td>
+<td>[%IF row.static; "YES"; ELSE; "NO"; END %]</td>
+<td class="numeric">[% number(row.fpos) %]</td>
+<td>[% row.lastchk_trunc %]</td>
+</tr>
+[% END %]
+</table>
+
+[% INCLUDE footer.tt %]

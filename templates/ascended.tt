@@ -6,7 +6,8 @@
 <div class="page">
 
 <div class="toplinks">
-<a href="recent.[% variant %].html">Recent Games</a>
+<a href="recent.[% variant %].html">Recent Games</a> |
+<a href="about.html">About</a>
 </div>
 
 <div class="page_content">
