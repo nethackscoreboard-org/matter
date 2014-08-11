@@ -98,11 +98,8 @@ sub sql_insert_games
   push(@values, sprintf(q{'%s'},$logfiles_i));
   
   #--- conduct
-  # convert conduct field into decimal; all variants but NH4/Ace log
-  # this field as hexadecimal
-  if($l->{'conduct'} =~ /^0x/) { $l->{'conduct'} = hex($l->{'conduct'}); }
   push(@fields, 'conduct');
-  push(@values, sprintf('%d::bit(16)', $l->{'conduct'}));
+  push(@values, sprintf('%d::bit(16)', $l->{'conduct'} + 0));
 
   #--- achieve
   push(@fields, 'achieve');
