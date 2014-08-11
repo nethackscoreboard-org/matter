@@ -742,7 +742,7 @@ sub gen_page_about
 
   #--- pull data from db
 
-  my $query = q{SELECT *, to_char(lastchk, 'YYYY-MM-DD HH24:MM') as lastchk_trunc FROM logfiles WHERE oper IS TRUE ORDER BY logfiles_i};
+  my $query = q{SELECT *, to_char(lastchk, 'YYYY-MM-DD HH24:MI') as lastchk_trunc FROM logfiles WHERE oper IS TRUE ORDER BY logfiles_i};
   my $result = sql_load($query);
   return $result if !ref($result);
   $data{'logfiles'} = $result;
