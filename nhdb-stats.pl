@@ -379,6 +379,56 @@ sub row_fix
 
 
 #============================================================================
+# Create structure for calendar view of ascensions (ie. ascensions by years/
+# /months)
+#============================================================================
+
+sub ascensions_calendar_view
+{
+  my $data = shift;
+  my %acc;
+  my @result;
+
+  #--- assert data received
+
+  if(scalar(@$data) == 0) { die 'No data received by ascensions_calendar_view()'; }
+
+  #--- create year/months counts in hash
+
+  for my $ascension (@$data) {
+    $ascension->{'endtime'} =~ /^(\d{4})-(\d{2})-\d{2}\s/;
+    my ($year, $month) = ($1, $2+0);
+    if(!exists($acc{$year}{$month})) { $acc{$year}{$month} = 0; }
+    $acc{$year}{$month}++;
+    if(!defined($acc{'year_low'}) || $year < $acc{'year_low'}) {
+      $acc{'year_low'} = $year;
+    }
+    if(!defined($acc{'year_hi'}) || $year > $acc{'year_hi'}) {
+      $acc{'year_hi'} = $year;
+    }
+  }
+
+  #--- now turn the data into an array
+
+  for(my $year = $acc{'year_low'}; $year <= $acc{'year_hi'}; $year++) {
+    my @row = ($year);
+    my $yearly_total = 0;
+    for my $month (1..12) {
+      my $value = exists($acc{$year}{$month}) ? $acc{$year}{$month} : 0;
+      push(@row, $value);
+      $yearly_total += $value;
+    }
+    push(@row, $yearly_total);
+    push(@result, \@row);
+  }
+
+  #--- finish
+
+  return \@result;
+}
+
+
+#============================================================================
 #============================================================================
 
 sub gen_page_info
@@ -706,6 +756,7 @@ sub gen_page_player
   # variant   -- variant (including 'all')
   # variants  -- all supported variants
   # vardef    -- contains variant full-names
+  # result_*  -- various result tables/datasets
 
   $data{'nh_roles'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'roles'};
   $data{'nh_races'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'races'};
@@ -718,6 +769,8 @@ sub gen_page_player
     [ keys %{$player_combos->{$name}} ]
   );
   $data{'vardef'} = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'result_calendar'} = ascensions_calendar_view($data{'result_ascended'})
+    if $data{'games_count_asc'};
 
   #=========================================================================
 

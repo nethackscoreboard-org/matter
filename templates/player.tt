@@ -209,7 +209,39 @@
 
 [% INCLUDE tab_ascended.tt result=result_ascended %]
 
+<h3>Ascension Calendar</h3>
+
+<table class="bordered">
+
+<tr>
+<th></th>
+<th>&nbsp;1</th><th>&nbsp;2</th><th>&nbsp;3</th><th>&nbsp;4</th>
+<th>&nbsp;5</th><th>&nbsp;6</th><th>&nbsp;7</th><th>&nbsp;8</th>
+<th>&nbsp;9</th><th>10</th><th>11</th><th>12</th>
+<th>&nbsp;Σ</th>
+</tr>
+
+[% FOREACH row IN result_calendar %]
+[% SET th = 0 %]
+<tr>
+[% FOREACH col IN row %]
+[% IF th == 0 %]
+<th>[% col %]</th>
+[% ELSIF th == 13 %]
+<td class="numeric"><b>[% col %]</b></td>
+[% ELSE %]
+<td class="numeric">[% IF col > 0 %][% col %][% END %]</td>
 [% END %]
+[% SET th = th + 1 %]
+[% END %]
+</tr>
+[% END %]
+
+</table>
+
+[% END %]
+
+
 
 
 [% INCLUDE footer.tt %]
