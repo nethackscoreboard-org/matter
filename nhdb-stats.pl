@@ -698,6 +698,15 @@ sub gen_page_player
 
   #=== additional data =====================================================
 
+  # nh_roles  -- all known roles for given variant
+  # nh_races  -- all known races for given variant
+  # nh_aligns -- all known aligments 
+  # cur_time  -- current time (formatted)
+  # name      -- player name
+  # variant   -- variant (including 'all')
+  # variants  -- all supported variants
+  # vardef    -- contains variant full-names
+
   $data{'nh_roles'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'roles'};
   $data{'nh_races'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'races'};
   $data{'nh_aligns'} = $NetHack::nh_def->{'nh_aligns_ord'};
