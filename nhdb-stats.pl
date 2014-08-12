@@ -341,7 +341,7 @@ sub row_fix
   #--- include conducts in the ascended message
 
   if($row->{'ascended'}) {
-    my @c = nh_conduct($row->{'conduct'});
+    my @c = nh_conduct($row->{'conduct'}, $variant);
     $row->{'ncond'} = scalar(@c);
     $row->{'tcond'} = join(' ', @c);
     if(scalar(@c) == 0) {

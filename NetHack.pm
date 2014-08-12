@@ -43,19 +43,37 @@ BEGIN
 
 #===========================================================================
 # This function takes conduct bitmap and returns either number of conducts
-# or list of conduct abbreviations, depending on context
+# or list of conduct abbreviations, depending on context. The list of
+# conduct abbreviations is ordered according to ordering in
+# "nh_conduct_ord".
 #===========================================================================
 
 sub nh_conduct
 {
-	my $conduct_bitfield = shift;
+	my $conduct_bitfield = shift;    # 1. conduct field from xlogfile
+  my $variant          = shift;    # 2. variant code
   my @conducts;
+
+  #--- choose mapping to be used
+
+  my $bitmap_def = $nh_def->{'nh_conduct_bitmap_def'};
+  if(exists($nh_def->{nh_variants}{$variant}{conduct})) {
+    $bitmap_def = $nh_def->{nh_variants}{$variant}{conduct};
+  }
+
+  #--- get reverse code-to-value mapping for conducts
+
+  my %con_to_val;
+  for my $v (keys %$bitmap_def) {
+    $con_to_val{$bitmap_def->{$v}} = $v;
+  }
 
 	#--- get ordered list of conducts
 
-	for my $c (@{$nh_def->{'nh_conduct_bitmap_ord'}}) {
-		if($conduct_bitfield & $c) {
-      push(@conducts, $nh_def->{'nh_conduct_bitmap_def'}{$c});
+	for my $c (@{$nh_def->{'nh_conduct_ord'}}) {
+    my $v = $con_to_val{$c};
+		if($conduct_bitfield & $v) {
+      push(@conducts, $c);
 		}
 	}
 

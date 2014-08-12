@@ -73,8 +73,9 @@
     "2048" : "geno"
   },
 
-  "nh_conduct_bitmap_ord" : [
-    1024, 128, 256, 2048, 512, 8, 4, 2, 16, 64, 32, 1
+  "nh_conduct_ord" : [
+    "arti", "pile", "self", "pudd", "algn", "geno", "wish", "athe",
+    "vegt", "vegn", "weap", "elbe", "illi", "paci", "food"
   ],
 
   "nh_variants_def" : {
@@ -123,7 +124,24 @@
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "conduct" : {
+        "1"     : "food",
+        "2"     : "vegn",
+        "4"     : "vegt",
+        "8"     : "athe",
+        "16"    : "weap",
+        "32"    : "paci",
+        "64"    : "illi",
+        "128"   : "pile",
+        "256"   : "self",
+        "512"   : "wish",
+        "1024"  : "arti",
+        "2048"  : "geno",
+        "4096"  : "elbe",
+        "8192"  : "pudd",
+        "16384" : "algn"
+      }
     },
     
     "unh" : {
