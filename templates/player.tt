@@ -7,30 +7,35 @@
 <div class="page">
 
 <div class="toplinks">
-<a href="../../recent.[% variant %].html">Recent Games</a> |
-<a href="../../ascended.[% variant %].html">Ascended Games</a> |
-<a href="../../about.html">About</a>
+  <a href="../../recent.[% variant %].html">Recent Games</a> |
+  <a href="../../ascended.[% variant %].html">Ascended Games</a> |
+  <a href="../../about.html">About</a>
 </div>
 
 <div class="page_content">
+
 <h1>[% name %]</h1>
 
 <p id="varmenu">
-[% FOREACH var IN variants %]
-  [% IF var == 'all'; label = 'All'; ELSE; label = vardef.item(var); END %]
+[%- FOREACH var IN variants -%]
+  [%- IF var == 'all'; label = 'All'; ELSE; label = vardef.item(var); END -%]
   [% IF variant == var %]
-    <span class="selected">[% label %]</span>
-  [% ELSE %]
-    <a href="[% name %].[% var %].html"><span class="unselected">[% label %]</span></a>
-  [% END %]
-[% END %]
+  <span class="selected">[% label %]</span>
+  [%- ELSE %]
+  <a href="[% name %].[% var %].html"><span class="unselected">[% label %]</span></a>
+  [%- END -%]
+[%- END %]
 </p>
 
 <hr>
+
+
+
 <h3>Overall Stats</h3>
 
 <table class="bordered">
 
+<thead>
 <tr>
 <th>games</th>
 <th>wins</th>
@@ -39,7 +44,9 @@
 <th>first game</th>
 <th>last game</th>
 </tr>
+</thead>
 
+<tbody>
 <tr>
 <td class="numeric">[% games_count_all %]</td>
 <td class="numeric">[% games_count_asc %]</td>
@@ -56,143 +63,168 @@
   <td class="numeric">[% games_last.endtime %]</td>
 [%- END %]
 </tr>
+</tbody>
 
 </table>
+
+
 
 <h3>Roles, races, alignments</h3>
 
 <table class="bordered">
 
+<thead>
 <tr>
 <th>roles</th>
-[% FOREACH role IN nh_roles %]
+[% FOREACH role IN nh_roles -%]
 <th>[% role.ucfirst %]</th>
-[% END %]
+[% END -%]
 </tr>
+</thead>
+
+<tbody>
 
 <tr>
 <th>all games</th>
-[% FOREACH role IN nh_roles %]
+[% FOREACH role IN nh_roles -%]
 <td class="numeric">[% result_roles_all.item(role) %]</td>
-[% END %]
+[% END -%]
 </tr>
 
 <tr>
 <th>all games %</th>
-[% FOREACH role IN nh_roles %]
-[% SET value = result_roles_all.item(role) %]
-[% IF value; value = percent((value) / games_count_all * 100); END %]
+[%- FOREACH role IN nh_roles -%]
+[%- SET value = result_roles_all.item(role) -%]
+[%- IF value; value = percent((value) / games_count_all * 100); END -%]
 <td class="numeric">[% value %]</td>
-[% END %]
+[% END -%]
 </tr>
 
-[% IF result_ascended.size %]
+[% IF result_ascended.size -%]
 <tr>
 <th>ascensions</th>
-[% FOREACH role IN nh_roles %]
+[% FOREACH role IN nh_roles -%]
 <td class="numeric">[% result_roles_asc.item(role) %]</td>
-[% END %]
+[% END -%]
 </tr>
 
 <tr>
 <th>ascensions %</th>
-[% FOREACH role IN nh_roles %]
-[% SET value = result_roles_asc.item(role) %]
-[% IF value; value = percent((value) / games_count_asc * 100); END %]
+[% FOREACH role IN nh_roles -%]
+[%- SET value = result_roles_asc.item(role) -%]
+[%- IF value; value = percent((value) / games_count_asc * 100); END -%]
 <td class="numeric">[% value %]</td>
-[% END %]
+[% END -%]
 </tr>
-[% END %]
+[% END -%]
+
+</tbody>
 
 </table>
 
 <table class="bordered" style="margin-top : 1em; float : left; margin-right : 2em;">
 
+<thead>
+
 <tr>
 <th>races</th>
-[% FOREACH race IN nh_races %]
+[% FOREACH race IN nh_races -%]
 <th>[% race.ucfirst %]</th>
-[% END %]
+[% END -%]
 </tr>
+
+</thead>
+
+<tbody>
 
 <tr>
 <th>all games</th>
-[% FOREACH race IN nh_races %]
+[% FOREACH race IN nh_races -%]
 <td class="numeric">[% result_races_all.item(race) %]</td>
-[% END %]
+[% END -%]
 </tr>
 
 <tr>
 <th>all games %</th>
-[% FOREACH race IN nh_races %]
-[% SET value = result_races_all.item(race) %]
-[% IF value; value = percent((value) / games_count_all * 100); END %]
+[% FOREACH race IN nh_races -%]
+[%- SET value = result_races_all.item(race) -%]
+[%- IF value; value = percent((value) / games_count_all * 100); END -%]
 <td class="numeric">[% value %]</td>
-[% END %]
+[% END -%]
 </tr>
 
-[% IF result_ascended.size %]
+[% IF result_ascended.size -%]
 <tr>
 <th>ascensions</th>
-[% FOREACH race IN nh_races %]
+[% FOREACH race IN nh_races -%]
 <td class="numeric">[% result_races_asc.item(race) %]</td>
-[% END %]
+[% END -%]
 </tr>
 
 <tr>
 <th>ascensions %</th>
-[% FOREACH race IN nh_races %]
-[% SET value = result_races_asc.item(race) %]
-[% IF value; value = percent((value) / games_count_asc * 100); END %]
+[% FOREACH race IN nh_races -%]
+[%- SET value = result_races_asc.item(race) -%]
+[%- IF value; value = percent((value) / games_count_asc * 100); END -%]
 <td class="numeric">[% value %]</td>
-[% END %]
+[% END -%]
 </tr>
-[% END %]
+[% END -%]
+
+</tbody>
 
 </table>
 
 <table class="bordered" style="margin-top : 1em;">
 
+<thead>
+
 <tr>
 <th>alignments</th>
-[% FOREACH align IN nh_aligns %]
+[% FOREACH align IN nh_aligns -%]
 <th>[% align.ucfirst %]</th>
-[% END %]
+[% END -%]
 </tr>
+
+</thead>
+
+<tbody>
 
 <tr>
 <th>all games</th>
-[% FOREACH align IN nh_aligns %]
+[% FOREACH align IN nh_aligns -%]
 <td class="numeric">[% result_aligns_all.item(align) %]</td>
-[% END %]
+[% END -%]
 </tr>
 
 <tr>
 <th>all games %</th>
-[% FOREACH align IN nh_aligns %]
-[% SET value = result_aligns_all.item(align) %]
-[% IF value; value = percent((value) / games_count_all * 100); END %]
+[% FOREACH align IN nh_aligns -%]
+[%- SET value = result_aligns_all.item(align) -%]
+[%- IF value; value = percent((value) / games_count_all * 100); END -%]
 <td class="numeric">[% value %]</td>
-[% END %]
+[% END -%]
 </tr>
 
-[% IF result_ascended.size %]
+[% IF result_ascended.size -%]
 <tr>
 <th>ascensions</th>
-[% FOREACH align IN nh_aligns %]
+[% FOREACH align IN nh_aligns -%]
 <td class="numeric">[% result_aligns_asc.item(align) %]</td>
-[% END %]
+[% END -%]
 </tr>
 
 <tr>
 <th>ascensions %</th>
-[% FOREACH align IN nh_aligns %]
-[% SET value = result_aligns_asc.item(align) %]
-[% IF value; value = percent((value) / games_count_asc * 100); END %]
+[% FOREACH align IN nh_aligns -%]
+[%- SET value = result_aligns_asc.item(align) -%]
+[%- IF value; value = percent((value) / games_count_asc * 100); END -%]
 <td class="numeric">[% value %]</td>
-[% END %]
+[% END -%]
 </tr>
-[% END %]
+[% END -%]
+
+</tbody>
 
 </table>
 
@@ -209,9 +241,13 @@
 
 [% INCLUDE tab_ascended.tt result=result_ascended %]
 
+
+
 <h3>Ascension Calendar</h3>
 
 <table class="bordered">
+
+<thead>
 
 <tr>
 <th></th>
@@ -221,27 +257,30 @@
 <th>&nbsp;Σ</th>
 </tr>
 
-[% FOREACH row IN result_calendar %]
-[% SET th = 0 %]
+</thead>
+
+<tbody>
+
+[% FOREACH row IN result_calendar -%]
+[%- SET th = 0 -%]
 <tr>
-[% FOREACH col IN row %]
-[% IF th == 0 %]
+[% FOREACH col IN row -%]
+[%- IF th == 0 -%]
 <th>[% col %]</th>
-[% ELSIF th == 13 %]
+[% ELSIF th == 13 -%]
 <td class="numeric"><b>[% col %]</b></td>
-[% ELSE %]
+[% ELSE -%]
 <td class="numeric">[% IF col > 0 %][% col %][% END %]</td>
-[% END %]
-[% SET th = th + 1 %]
-[% END %]
+[% END -%]
+[%- SET th = th + 1 -%]
+[%- END -%]
 </tr>
-[% END %]
+
+[% END -%]
+</tbody>
 
 </table>
 
 [% END %]
-
-
-
 
 [% INCLUDE footer.tt %]
