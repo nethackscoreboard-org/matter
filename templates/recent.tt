@@ -1,5 +1,17 @@
-[%- INCLUDE header.tt title="Recent Games" -%]
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+[% IF result_ascended.size -%]  
+  <script type="text/javascript" src="/nh/js/jquery.js"></script> 
+  <script type="text/javascript" src="/nh/js/tablesorter.js"></script>
+  <script type="text/javascript" src="/nh/js/tabsort.js"></script>
+[% END -%]
+  <title>Recent Games</title>
+</head>
 
 <body class="page_back">
 

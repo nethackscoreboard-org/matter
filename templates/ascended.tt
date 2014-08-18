@@ -1,5 +1,12 @@
-[%- INCLUDE header.tt title="Ascended Games" -%]
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <title>Ascended Games</title>
+</head>
 
 <body class="page_back">
 

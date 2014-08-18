@@ -1,5 +1,12 @@
-[%- INCLUDE header.tt title="About NetHack Scoreboard" -%]
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <title>About NetHack Scoreboard</title>
+</head>
 
 <body class="page_back">
 
