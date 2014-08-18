@@ -1,4 +1,6 @@
-<table class="bordered">
+<table[% IF id %] id="[% id %]"[% END %] class="bordered">
+
+<thead>
 
 <tr>
   <th>&nbsp;</th>
@@ -9,13 +11,17 @@
 [%- END -%]
   <th>character</th>
   <th>points</th>
-  <th>turns</th>
+  <th>turns&nbsp;&nbsp;</th>
   <th>duration</th>
-  <th>dlvl</th>
+  <th>dlvl&nbsp;</th>
   <th>HP</th>
   <th>time</th>
   <th colspan="2">conducts</th>
 </tr>
+
+</thead>
+
+<tbody>
 
 [% FOREACH row IN result %]
 <tr[% IF row.ascended %] class="win"[% END %]>
@@ -27,18 +33,20 @@
 [%- END %]
   <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
 [% IF row.dump -%]
-  <td class="numeric"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
+  <td class="numeric" data-sortkey="[% row.points %]"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
 [%- ELSE -%]
-  <td class="numeric">[% number(row.points) %]</td>
+  <td class="numeric" data-sortkey="[% row.points %]">[% number(row.points) %]</td>
 [%- END %]
   <td class="numeric">[% row.turns %]</td>
-  <td class="numeric">[% row.realtime %]</td>
-  <td class="numeric">[% row.deathlev %]/[% row.maxlvl %]</td>
-  <td class="numeric">[% row.hp %]/[% row.maxhp %]</td>
+  <td class="numeric" data-sortkey="[% row.realtime_raw %]">[% row.realtime %]</td>
+  <td class="numeric" data-sortkey="[%row.maxlvl %]">[% row.deathlev %]/[% row.maxlvl %]</td>
+  <td class="numeric" data-sortkey="[% row.maxhp %]">[% row.hp %]/[% row.maxhp %]</td>
   <td>[% row.endtime %]</td>
   <td class="numeric">[% row.ncond %]</td>
   <td>[% row.tcond %]</td>
 </tr>
 [%- END %]
+
+</tbody>
 
 </table>

@@ -1,6 +1,19 @@
-[%- INCLUDE header.tt title=name defcss="../../default.css" -%]
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
 [%- USE percent = format("%0.1f%%") -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+[% IF result_ascended.size -%]  
+  <script type="text/javascript" src="/nh/js/jquery.js"></script> 
+  <script type="text/javascript" src="/nh/js/tablesorter.js"></script>
+  <script type="text/javascript" src="/nh/js/tabsort.js"></script>
+[% END -%]
+  <title>[% name %]</title>
+</head>
+
 
 <body class="page_back">
 
@@ -239,7 +252,7 @@
 
 <h3>Ascended Games</h3>
 
-[% INCLUDE tab_ascended.tt result=result_ascended %]
+[% INCLUDE tab_ascended.tt result=result_ascended id='ascended' %]
 
 
 
