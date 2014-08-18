@@ -10,3 +10,5 @@ CREATE TABLE translations (
 
 GRANT SELECT ON translations TO nhdbfeeder;
 GRANT SELECT ON translations TO nhdbstats;
+
+INSERT INTO translations VALUES ( 'dev', 'mandevil', 'Mandevil');
