@@ -336,6 +336,7 @@ sub row_fix
 
   #--- convert realtime to human-readable form
 
+  $row->{'realtime_raw'} = defined $row->{'realtime'} ? $row->{'realtime'} : 0;
   $row->{'realtime'} = format_duration($row->{'realtime'});
 
   #--- include conducts in the ascended message
