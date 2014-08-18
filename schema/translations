@@ -1,0 +1,12 @@
+----------------------------------------------------------------------------
+--- tables 
+----------------------------------------------------------------------------
+
+CREATE TABLE translations (
+  server    varchar(3) NOT NULL,
+  name_from varchar(48) NOT NULL,
+  name_to   varchar(48) NOT NULL
+);
+
+GRANT SELECT ON translations TO nhdbfeeder;
+GRANT SELECT ON translations TO nhdbstats;

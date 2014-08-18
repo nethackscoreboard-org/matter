@@ -26,6 +26,14 @@ my $lockfile = '/tmp/nhdb-feeder.lock';
 
 
 #============================================================================
+#=== globals ================================================================
+#============================================================================
+
+my %translations;               # name-to-name translations
+my $translations_cnt = 0;       # number of name translation
+
+
+#============================================================================
 #=== functions =============================================================
 #============================================================================
 
@@ -71,6 +79,7 @@ sub parse_log
 sub sql_insert_games
 {
   my $logfiles_i = shift;
+  my $server = shift;
   my $l = shift;
   my @fields;
   my @values;
@@ -86,11 +95,19 @@ sub sql_insert_games
   if($l->{'name'} eq 'wizard') { return undef; }
 
   #--- regular fields
-  for my $k (qw(name role race gender gender0 align align0 deathdnum deathlev deaths hp maxhp maxlvl points turns realtime version)) {
+  for my $k (qw(role race gender gender0 align align0 deathdnum deathlev deaths hp maxhp maxlvl points turns realtime version)) {
     if(exists $l->{$k}) {
       push(@fields, $k);
       push(@values, sprintf(q{'%s'}, $l->{$k}));
     }
+  }
+
+  #--- name
+  push(@fields, 'name');
+  if(exists($translations{$server}{$l->{'name'}})) {
+    push(@values, sprintf(q{'%s'}, $translations{$server}{$l->{'name'}}));
+  } else {
+    push(@values, sprintf(q{'%s'}, $l->{'name'}));
   }
 
   #--- logfiles_i
@@ -323,6 +340,24 @@ if($cmd_logfiles) {
   exit(0);
 }
 
+#--- load list of translations
+
+$qry = q{SELECT server, name_from, name_to FROM translations};
+$sth = $dbh->prepare($qry);
+$r = $sth->execute();
+if(!$r) {
+  die 'Database query failed (' . $sth->errstr() . ')';
+}
+while(my @a = $sth->fetchrow_array()) {
+  $translations{$a[0]}{$a[1]} = $a[2];
+  $translations_cnt++;
+}
+tty_message(
+  "Loaded %d name translation%s\n",
+  $translations_cnt,
+  ($translations_cnt != 1 ? 's' : '')
+);
+
 #--- check update table
 # this code checks if update table has any rows in it;
 # when finds none, it assumes it is uninitialized and
@@ -482,7 +517,7 @@ for my $log (@logfiles) {
 
     #--- insert row into database
 
-      $qry = sql_insert_games($log->{'logfiles_i'}, $pl), "\n";
+      $qry = sql_insert_games($log->{'logfiles_i'}, $log->{'server'}, $pl), "\n";
       if($qry) {
         $r = $dbh->do($qry);
         if(!$r) {
