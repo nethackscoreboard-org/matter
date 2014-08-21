@@ -87,6 +87,47 @@ sub array_sort_by_reference
 
 
 #============================================================================
+# Pluralize noun
+#============================================================================
+
+sub pl
+{
+  my ($s, $n) = @_;
+
+  return sprintf('%d %s', $n, $n != 1 ? $s . 's' : $s);
+}
+
+
+#============================================================================
+# Format age received as years, months, days and hours.
+#============================================================================
+
+sub fmt_age
+{
+   my ($yr, $mo, $da, $hr) = @_;
+   my @result;
+
+   if($yr) {
+     push(@result, pl('year', $yr));
+   }
+   if($mo) {
+     push(@result, pl('month', $mo));
+   }
+   if($da) {
+     push(@result, pl('day', $da));
+   }
+   if($hr && !$yr) {
+     push(@result, pl('hour', $hr));
+   }
+   if(scalar(@result) == 0) {
+     push(@result, 'recently');
+   }
+
+   return join(' ', @result);
+}
+
+
+#============================================================================
 # Load SQL query into array of hashref with some additional processing.
 #============================================================================
 
@@ -327,6 +368,8 @@ sub sql_load_logfiles
 
 
 #============================================================================
+# Some additional processing of a row of data from games table (formats
+# fields into human readable format, mostly).
 #============================================================================
 
 sub row_fix
@@ -824,6 +867,55 @@ sub gen_page_about
 
 
 #============================================================================
+#============================================================================
+
+sub gen_page_front
+{
+  my %data;
+
+  #--- info
+
+  tty_message('Creating front page');
+
+  #--- perform database pull
+
+  for my $variant (@{$NetHack::nh_def->{nh_variants_ord}}) {
+    my $query = q{SELECT * FROM v_ascended_recent WHERE variant = ? LIMIT 1};
+    my $sth = $dbh->prepare($query);
+    my $r = $sth->execute($variant);
+    if(!$r) {
+      die $sth->errstr();      
+    } elsif($r > 0) {
+      my $row = $sth->fetchrow_hashref();
+      row_fix($row, $variant);
+      $row->{'age'} = fmt_age(
+        $row->{'age_years'}, 
+        $row->{'age_months'}, 
+        $row->{'age_days'}, 
+        $row->{'age_hours'}
+      );
+      $data{'last_ascensions'}{$variant} = $row;
+    } else {
+      $data{'last_ascensions'}{$variant} = undef;
+    }
+  }
+
+  #--- generate page
+
+  $data{'variants'} = $NetHack::nh_def->{nh_variants_ord};
+  $data{'vardef'} = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'cur_time'} = scalar(localtime());
+  $tt->process('front.tt', \%data, 'index.html')
+    or die $tt->error();
+
+  #--- finish
+
+  tty_message(", done\n");
+  return undef;
+}
+
+
+#============================================================================
 # Display usage help.
 #
 # Semantics description, this should be moved into some other text, but for
@@ -979,6 +1071,10 @@ if($cmd_players) {
 #if(grep('all', @$update_variants)) {
 #  gen_page_info();
 #}
+
+#--- frount page
+
+gen_page_front();
 
 #--- about page
 

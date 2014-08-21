@@ -83,12 +83,30 @@ CREATE VIEW v_games AS
 GRANT SELECT ON v_games TO nhdbstats;
 
 
+CREATE VIEW v_games_all AS
+  SELECT 
+    logfiles_i, name, server, variant, role, race, gender, align,
+    endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
+    deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
+    games.version, ascended
+  FROM 
+    games
+    LEFT JOIN logfiles USING ( logfiles_i )
+  ORDER BY endtime AT TIME ZONE 'UTC' ASC;
+
+GRANT SELECT ON v_games TO nhdbstats;
+
+
 CREATE VIEW v_ascended_recent AS
   SELECT
     logfiles_i, name, server, variant, role, race, gender, align,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
-    games.version, ascended
+    games.version, ascended,
+    extract('year' from age(current_timestamp, endtime)) AS age_years,
+    extract('month' from age(current_timestamp, endtime)) AS age_months,
+    extract('day' from age(current_timestamp, endtime)) AS age_days,
+    extract('hour' from age(current_timestamp, endtime)) AS age_hours
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
