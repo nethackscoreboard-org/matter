@@ -53,9 +53,9 @@ GRANT USAGE ON games_seq TO nhdbfeeder;
 --- views
 ----------------------------------------------------------------------------
 
-CREATE VIEW v_games_recent AS
+CREATE OR REPLACE VIEW v_games_recent AS
   SELECT 
-    logfiles_i, name, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, server, variant, role, race, gender, align,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
@@ -68,9 +68,9 @@ CREATE VIEW v_games_recent AS
 GRANT SELECT ON v_games_recent TO nhdbstats;
 
 
-CREATE VIEW v_games AS
+CREATE OR REPLACE VIEW v_games AS
   SELECT 
-    logfiles_i, name, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, server, variant, role, race, gender, align,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
@@ -83,9 +83,9 @@ CREATE VIEW v_games AS
 GRANT SELECT ON v_games TO nhdbstats;
 
 
-CREATE VIEW v_games_all AS
+CREATE OR REPLACE VIEW v_games_all AS
   SELECT 
-    logfiles_i, name, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, server, variant, role, race, gender, align,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
@@ -97,9 +97,9 @@ CREATE VIEW v_games_all AS
 GRANT SELECT ON v_games TO nhdbstats;
 
 
-CREATE VIEW v_ascended_recent AS
+CREATE OR REPLACE VIEW v_ascended_recent AS
   SELECT
-    logfiles_i, name, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, server, variant, role, race, gender, align,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
     games.version, ascended,
@@ -116,9 +116,9 @@ CREATE VIEW v_ascended_recent AS
 GRANT SELECT ON v_ascended_recent TO nhdbstats;
 
 
-CREATE VIEW v_ascended AS
+CREATE OR REPLACE VIEW v_ascended AS
   SELECT
-    logfiles_i, name, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, server, variant, role, race, gender, align,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
     games.version, ascended
