@@ -580,12 +580,16 @@ sub gen_page_player
   my ($query, @arg, $sth, $r);
   my %data;                         # data fed to TT2
   my $result;                       # rows from db (aref)
+  my %ascs_by_rowid;                # ascensions ref'd by rowid
 
   #--- info
 
   tty_message("Creating page for $name/$variant");
 
   #=== all ascended games ==================================================
+  # load all player's ascension in ordered array of hashrefs; also we create
+  # extra hashref %ascs_by_rowid that allows us to later reference the games
+  # by their rowid fields
 
   $query = q{SELECT * FROM v_ascended WHERE name = ?};
   @arg = ($name);
@@ -595,7 +599,10 @@ sub gen_page_player
   }
   $result = sql_load(
     $query, 1, 1,
-    sub { row_fix($_[0], $variant); },
+    sub { 
+      row_fix($_[0], $variant);
+      $ascs_by_rowid{$_[0]{'rowid'}} = $_[0];
+    },
     @arg
   );
   return $result if !ref($result);
@@ -790,8 +797,94 @@ sub gen_page_player
   }
   $data{'result_aligns_asc'} = \%align_asc;
 
-  #=== additional data =====================================================
+  #== streaks ==============================================================
+  # get player's streaks; the data structure we load it in is ordered
+  # array of following hashrefs:
+  #
+  # { 
+  #   "streaks_i" : INTEGER,
+  #   "open"      : BOOLEAN,
+  #   "games"     : [ rowid1, ..., rowidN ]
+  # }
+  
+  my (@streaks, $current_streak);
+  $query = 
+    'SELECT rowid, streaks_i, open ' .
+    'FROM streaks ' .
+    'JOIN logfiles USING ( logfiles_i ) ' .
+    'JOIN games_set_map USING ( games_set_i ) ' .
+    'JOIN games USING ( rowid ) ' .
+    'WHERE %s ' .
+    'ORDER BY num_games DESC, streaks_i, endtime ASC';
+  $where = 'streaks.name = ?';
+  @arg = ($name);
+  if($variant ne 'all') {
+    $where .= ' AND variant = ?';
+    push(@arg, $variant);
+  }
+  $query = sprintf($query, $where);
+  $result = sql_load(
+    $query, undef, undef,
+    sub {
+      if(
+        !ref($current_streak)
+        || $current_streak->{'streaks_i'} != $_[0]->{'streaks_i'}
+      ) {
+        push(@streaks, $current_streak) if ref($current_streak);
+        $current_streak = {
+          'streaks_i' => $_[0]->{'streaks_i'},
+          'open'      => $_[0]->{'open'},
+          'games'     => []
+        };
+      }
+      push(@{$current_streak->{'games'}}, $_[0]->{'rowid'});
+    },
+    @arg
+  );
+  push(@streaks, $current_streak) if ref($current_streak);
+  return $result if !ref($result);
+  $result = undef;
 
+  #--- now some reprocessing for TT2
+  # =1=
+  # /dev/null streaks are (for now) always considered closed;
+  # FIXME: This should really auto-switch after expiring
+  # /dev/null tournament; let's have this fixed for /dev/null
+  # =2=
+  # On the player page, we display list of open (active) streaks on top,
+  # this include potiential (num_games = 1) streaks as well
+  # =3=
+  # We make separate counts of the two streak counts: real streaks
+  # (streaks.num games > 1) and open streaks (streaks.open = true)
+
+  $data{'result_streak_cnt_open'} = 0;
+  $data{'result_streak_cnt_all'} = 0;
+  $data{'result_streaks'} = [];
+  for(my $i = 0; $i < scalar(@streaks); $i++) {
+    my $row = {};
+    my $games_num = scalar(@{$streaks[$i]->{'games'}});
+    my $game_first = $streaks[$i]->{'games'}[0];
+    my $game_last = $streaks[$i]->{'games'}[$games_num - 1];
+    @{$data{'result_streaks'}}[$i] = $row;
+    $row->{'n'}          = $i + 1;
+    $row->{'wins'}       = $games_num;
+    $row->{'server'}     = $ascs_by_rowid{$game_first}{'server'};
+    $row->{'open'}       = $streaks[$i]->{'open'};
+    $row->{'open'}       = 0 if $row->{'server'} eq 'dev';
+    $row->{'variant'}    = $ascs_by_rowid{$game_first}{'variant'};
+    $row->{'start'}      = $ascs_by_rowid{$game_first}{'endtime'};
+    $row->{'start_dump'} = $ascs_by_rowid{$game_first}{'dump'};
+    $row->{'end'}        = $ascs_by_rowid{$game_last}{'endtime'};
+    $row->{'end_dump'}   = $ascs_by_rowid{$game_last}{'dump'};
+    $row->{'glist'}      = [];
+    for my $game_rowid (@{$streaks[$i]->{'games'}}) {
+      push(@{$row->{'glist'}}, $ascs_by_rowid{$game_rowid});
+    }
+    $data{'result_streak_cnt_open'}++ if($row->{'open'});
+    $data{'result_streak_cnt_all'}++ if $games_num > 1;
+  }
+
+  #=== additional data =====================================================
   # nh_roles  -- all known roles for given variant
   # nh_races  -- all known races for given variant
   # nh_aligns -- all known aligments 

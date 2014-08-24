@@ -82,6 +82,58 @@
 </table>
 
 
+[% IF result_streak_cnt_open %]
+<h3>Active Streaks</h3>
+
+<table class="bordered">
+
+<tr>
+<th></th>
+<th>wins</th>
+<th>srv</th>
+<th>var</th>
+<th>start</th>
+<th>end</th>
+<th>games</th>
+</tr>
+
+[% FOREACH row IN result_streaks %]
+[% IF row.open %]
+<tr>
+<td class="numeric">[% row.n %]</td>
+[% IF row.open %]
+<td class="numeric"><span class="streak-open">[% row.wins %]</span></td>
+[% ELSE %]
+<td class="numeric">[% row.wins %]</td>
+[% END %]
+<td>[% row.server %]</td>
+<td>[% row.variant %]</td>
+[% IF row.start_dump %]
+<td><a href="[% row.start_dump %]">[% row.start %]</a></td>
+[% ELSE %]
+<td>[% row.start %]</td>
+[% END %]
+
+[% IF row.end_dump %]
+<td><a href="[% row.end_dump %]">[% row.end %]</a></td>
+[% ELSE %]
+<td>[% row.end %]</td>
+[% END %]
+
+<td>
+[% FOREACH game IN row.glist %]
+<span class="combono"><a href="#asc[% game.n %]">[% game.n %]</a></span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
+[% END %]
+</td>
+</tr>
+[% END %]
+[% END %]
+
+
+</table>
+[% END %]
+
+
 
 <h3>Roles, races, alignments</h3>
 
@@ -254,6 +306,60 @@
 <h3>Ascended Games</h3>
 
 [% INCLUDE tab_ascended.tt result=result_ascended id='ascended' %]
+
+
+
+
+[% IF result_streak_cnt_all %]
+<h3>Streaks of Ascensions</h3>
+
+<table class="bordered">
+
+<tr>
+<th></th>
+<th>wins</th>
+<th>srv</th>
+<th>var</th>
+<th>start</th>
+<th>end</th>
+<th>games</th>
+</tr>
+
+[% FOREACH row IN result_streaks %]
+[% IF row.wins > 1 %]
+<tr>
+<td class="numeric">[% row.n %]</td>
+[% IF row.open %]
+<td class="numeric"><span class="streak-open">[% row.wins %]</span></td>
+[% ELSE %]
+<td class="numeric">[% row.wins %]</td>
+[% END %]
+<td>[% row.server %]</td>
+<td>[% row.variant %]</td>
+[% IF row.start_dump %]
+<td><a href="[% row.start_dump %]">[% row.start %]</a></td>
+[% ELSE %]
+<td>[% row.start %]</td>
+[% END %]
+
+[% IF row.end_dump %]
+<td><a href="[% row.end_dump %]">[% row.end %]</a></td>
+[% ELSE %]
+<td>[% row.end %]</td>
+[% END %]
+
+<td>
+[% FOREACH game IN row.glist %]
+<span class="combono"><a href="#asc[% game.n %]">[% game.n %]</a></span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
+[% END %]
+</td>
+</tr>
+[% END %]
+[% END %]
+
+</table>
+[% END %]
+
 
 
 
