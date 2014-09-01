@@ -56,7 +56,8 @@ GRANT USAGE ON games_seq TO nhdbfeeder;
 CREATE OR REPLACE VIEW v_games_recent AS
   SELECT 
     rowid, logfiles_i, name, server, variant, role, race, gender, align,
-    endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH:MI') AS endtime,
+    endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
   FROM 
@@ -71,7 +72,8 @@ GRANT SELECT ON v_games_recent TO nhdbstats;
 CREATE OR REPLACE VIEW v_games AS
   SELECT 
     rowid, logfiles_i, name, server, variant, role, race, gender, align,
-    endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH:MI') AS endtime,
+    endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
   FROM 
@@ -86,7 +88,8 @@ GRANT SELECT ON v_games TO nhdbstats;
 CREATE OR REPLACE VIEW v_games_all AS
   SELECT 
     rowid, logfiles_i, name, server, variant, role, race, gender, align,
-    endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH:MI') AS endtime,
+    endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
   FROM 
@@ -100,7 +103,8 @@ GRANT SELECT ON v_games TO nhdbstats;
 CREATE OR REPLACE VIEW v_ascended_recent AS
   SELECT
     rowid, logfiles_i, name, server, variant, role, race, gender, align,
-    endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH:MI') AS endtime,
+    endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
     games.version, ascended,
     extract('year' from age(current_timestamp, endtime)) AS age_years,
