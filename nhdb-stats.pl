@@ -1165,7 +1165,7 @@ if($cmd_players) {
 #  gen_page_info();
 #}
 
-#--- frount page
+#--- front page
 
 gen_page_front();
 
