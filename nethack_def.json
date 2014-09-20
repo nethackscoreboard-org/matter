@@ -2,11 +2,14 @@
   "nh_roles_def" : {
     "arc" : "archeologist",
     "bar" : "barbarian",
+    "bin" : "binder",
     "cav" : "caveman",
     "con" : "convict",
     "hea" : "healer",
     "kni" : "knight",
     "mon" : "monk",
+    "nob" : "noble",
+    "pir" : "pirate",
     "pri" : "priest",
     "ran" : "ranger",
     "rog" : "rogue",
@@ -17,10 +20,13 @@
    },
 
   "nh_races_def" : {
+    "clk" : "clockwork automaton",
     "hum" : "human",
     "elf" : "elf",
+    "dro" : "drow",
     "dwa" : "dwarf",
     "gno" : "gnome",
+    "inc" : "incantifier",
     "orc" : "orc",
     "vam" : "vampire"
   },
@@ -28,10 +34,9 @@
   "nh_aligns_def" : {
     "law" : "lawful",
     "neu" : "neutral",
-    "cha" : "chaotic"
+    "cha" : "chaotic",
+    "non" : "non-aligned"
   },
-
-  "nh_aligns_ord" : [ "law", "neu", "cha" ],
 
   "nh_combo_rules_def" : {
 
@@ -89,18 +94,23 @@
   },
 
   "nh_variants_ord" : [
-    "nh", "ace", "nh4", "unh", "sh", "gh"
+    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh"
   ],
 
   
   "nh_variants" : {
 
     "all" : {
-       "roles" : [ 
-        "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran",
-        "rog", "sam", "tou", "val", "wiz"
+      "roles" : [ 
+        "arc", "bar", "bin", "cav", "con", "hea", "kni", "mon", "nob",
+        "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ]
+      "races" : [ 
+        "clk", "dro", "dwa", "elf", "gno", "hum", "inc", "orc", "vam" 
+      ],
+      "aligns" : [
+        "law", "neu", "cha", "non"
+      ]
     },
     
     "nh" : {
@@ -108,7 +118,8 @@
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "aligns" : [ "law", "neu", "cha" ]
     },
     
     "ace" : {
@@ -117,6 +128,7 @@
         "sam", "tou", "val", "wiz"
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "aligns" : [ "law", "neu", "cha" ],
       "conduct" : {
         "1"     : "food",
         "2"     : "vegn",
@@ -140,6 +152,7 @@
         "sam", "tou", "val", "wiz"
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "aligns" : [ "law", "neu", "cha" ],
       "conduct" : {
         "1"     : "food",
         "2"     : "vegn",
@@ -164,7 +177,8 @@
         "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran",
         "rog", "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ]
+      "races" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ],
+      "aligns" : [ "law", "neu", "cha" ]
     },
     
     "sh" : {
@@ -172,7 +186,8 @@
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "aligns" : [ "law", "neu", "cha" ]
     },
     
     "gh" : {
@@ -180,7 +195,19 @@
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc" ]
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "aligns" : [ "law", "neu", "cha" ]    
+    },
+
+    "dnh" : {
+      "roles" : [
+        "arc", "bar", "bin", "cav", "con", "hea", "kni", "mon", "nob",
+        "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
+      ],
+      "races" : [
+        "clk", "dro", "dwa", "elf", "gno", "hum", "inc", "orc", "vam" 
+      ],
+      "aligns" : [ "law", "neu", "cha", "non" ]
     }
 
   }

@@ -897,7 +897,7 @@ sub gen_page_player
 
   $data{'nh_roles'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'roles'};
   $data{'nh_races'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'races'};
-  $data{'nh_aligns'} = $NetHack::nh_def->{'nh_aligns_ord'};
+  $data{'nh_aligns'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'aligns'};
   $data{'cur_time'} = scalar(localtime());
   $data{'name'} = $name;
   $data{'variant'} = $variant;
