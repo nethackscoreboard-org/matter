@@ -44,7 +44,7 @@
 [% FOREACH var IN variants %]
 [% row = last_ascensions.item(var) %]
 <tr>
-<th>[% vardef.item(var) %]</th>
+<th><a href="ascended.[% var %].html">[% vardef.item(var) %]</a></th>
 <td>[% row.server %]</td>
 <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
