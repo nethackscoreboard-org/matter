@@ -1148,7 +1148,8 @@ sub gen_page_about
 sub gen_page_front
 {
   my %data;
-
+  my @variants;
+  
   #--- info
 
   tty_message('Creating front page');
@@ -1156,9 +1157,24 @@ sub gen_page_front
   #--- perform database pull
 
   for my $variant (@{$NetHack::nh_def->{nh_variants_ord}}) {
-    my $query = q{SELECT * FROM v_ascended_recent WHERE variant = ? LIMIT 1};
+
+    #--- check if any games exist for given variant
+    
+    my $query = q{SELECT rowid FROM v_games_recent WHERE variant = ? LIMIT 1};
     my $sth = $dbh->prepare($query);
     my $r = $sth->execute($variant);
+    if(!$r) {
+      die $sth->errstr();
+    }
+    $sth->finish();
+    next if $r == 0;
+    push(@variants, $variant);
+      
+    #--- retrieve the last won game
+    
+    $query = q{SELECT * FROM v_ascended_recent WHERE variant = ? LIMIT 1};
+    $sth = $dbh->prepare($query);
+    $r = $sth->execute($variant);
     if(!$r) {
       die $sth->errstr();      
     } elsif($r > 0) {
@@ -1178,7 +1194,7 @@ sub gen_page_front
 
   #--- generate page
 
-  $data{'variants'} = $NetHack::nh_def->{nh_variants_ord};
+  $data{'variants'} = \@variants;
   $data{'vardef'} = $NetHack::nh_def->{'nh_variants_def'};
   $data{'cur_time'} = scalar(localtime());
   $tt->process('front.tt', \%data, 'index.html')
