@@ -95,14 +95,25 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  3, 'unn', 'unh', '5',
-  'http://un.nethack.nu/logs/xlogfile',
-  'log.unn',
-  'http://un.nethack.nu/user/%u/dumps/%u.%e.txt.html',
+  3, 'une', 'unh', '5',
+  'http://un.nethack.nu/logs/xlogfile-eu',
+  'log.une',
+  'http://un.nethack.nu/user/%u/dumps/eu/%u.%e.txt.html',
   'http://un.nethack.nu/rcfiles/%u.nethackrc',
   TRUE, FALSE, TRUE,
-  'Europe/Berlin', NULL, NULL
+  'UTC', NULL, NULL
 );
+
+INSERT INTO logfiles VALUES (
+  10, 'unu', 'unh', '5',
+  'http://un.nethack.nu/logs/xlogfile-us',
+  'log.unu',
+  'http://un.nethack.nu/user/%u/dumps/us/%u.%e.txt.html',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 
 INSERT INTO logfiles VALUES (
   4, 'n4o', 'nh4', '4.3',
