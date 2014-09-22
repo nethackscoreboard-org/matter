@@ -5,6 +5,9 @@
 -- also referenced from nhdb configuration (nhdb-def.json)! Don't
 -- change this, preferably.
 --
+-- descr
+-- Description of the entry; only shown on the About page
+--
 -- server
 -- Three letter server acronym in lowercase (such as "nao" for
 -- nethack.alt.org, "ade" for acehack.de etc.).
@@ -54,7 +57,8 @@
 DROP TABLE logfiles;
 
 CREATE TABLE logfiles (
-	logfiles_i  int,
+  logfiles_i  int,
+  descr       varchar(32),
   server      varchar(3) NOT NULL,
   variant     varchar(3) NOT NULL,
   version     varchar(16),
@@ -75,7 +79,8 @@ GRANT SELECT, UPDATE ON logfiles TO nhdbfeeder;
 GRANT SELECT ON logfiles TO nhdbstats;
 
 INSERT INTO logfiles VALUES (
-  1, 'nao', 'nh', '3.4.3',
+  1, 'nethack.alt.org', 
+  'nao', 'nh', '3.4.3',
   'http://alt.org/nethack/xlogfile.full.txt',
   'log.nao',
   'http://alt.org/nethack/userdata/%U/%u/dumplog/%s.nh343.txt',
@@ -85,7 +90,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2, 'ade', 'nh', '3.4.3',
+  2, 'acehack.de',
+  'ade', 'nh', '3.4.3',
   'http://acehack.de/nethackxlogfile',
   'log.ade-vanilla',
   'https://acehack.de/userdata/%u/nethack/dumplog/%s',
@@ -95,7 +101,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  3, 'une', 'unh', '5',
+  3, 'eu.un.nethack.nu', 
+  'une', 'unh', '5',
   'http://un.nethack.nu/logs/xlogfile-eu',
   'log.une',
   'http://un.nethack.nu/user/%u/dumps/eu/%u.%e.txt.html',
@@ -105,7 +112,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  10, 'unu', 'unh', '5',
+  10, 'us.un.nethack.nu',
+  'unu', 'unh', '5',
   'http://un.nethack.nu/logs/xlogfile-us',
   'log.unu',
   'http://un.nethack.nu/user/%u/dumps/us/%u.%e.txt.html',
@@ -116,7 +124,8 @@ INSERT INTO logfiles VALUES (
 
 
 INSERT INTO logfiles VALUES (
-  4, 'n4o', 'nh4', '4.3',
+  4, 'nethack4.org (4.3)', 
+  'n4o', 'nh4', '4.3',
   'http://nethack4.org/xlogfile.txt',
   'log.n4o',
   NULL,
@@ -126,7 +135,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  5, 'ade', 'ace', NULL,
+  5, 'acehack.de (AceHack)',
+  'ade', 'ace', NULL,
   'http://acehack.de/xlogfile',
   'log.ade-ace', 
   'https://acehack.de/userdata/%u/dumplog/%s',
@@ -136,7 +146,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  6, 'shc', 'sh', NULL,
+  6, 'sporkhack.com',
+  'shc', 'sh', NULL,
   'http://sporkhack.com/xlogfile',
   'log.shc',
   NULL,
@@ -146,7 +157,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  7, 'gho', 'gh', NULL,
+  7, 'grunthack.org',
+  'gho', 'gh', NULL,
   'http://grunthack.org/xlogfile',
   'log.gho', 
   'http://grunthack.org/userdata/%U/%u/dumplog/%s.gh020.txt',
@@ -156,7 +168,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  8, 'n4o', 'nh4', '4.2',
+  8, 'nethack4.org (4.2)',
+  'n4o', 'nh4', '4.2',
   'http://nethack4.org/4.2-xlogfile',
   'log.4.2.n4o',
   NULL,
@@ -166,7 +179,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  9, 'did', 'dnh', NULL,
+  9, 'dnethack.ilbelkyr.de', 
+  'did', 'dnh', NULL,
   'http://dnethack.ilbelkyr.de/xlogfile.txt',
   'log.dnh',
   'http://dnethack.ilbelkyr.de/userdata/%u/dumplog/%s.dnao.txt',
@@ -176,7 +190,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
- 11, 'aeu', 'ace', NULL,
+ 11, 'acehack.eu',
+ 'aeu', 'ace', NULL,
  NULL,
  'log.aeu',
  'https://acehack.de/aeu/%u/dumplog/%s',
@@ -186,7 +201,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2006, 'dev', 'nh', NULL,
+  2006, '/dev/null 2006',
+  'dev', 'nh', NULL,
   NULL,
   'devnull-2006.log',
   NULL,
@@ -196,7 +212,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2007, 'dev', 'nh', NULL,
+  2007, '/dev/null 2007',
+  'dev', 'nh', NULL,
   NULL,
   'devnull-2007.log',
   NULL,
@@ -206,7 +223,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2008, 'dev', 'nh', NULL,
+  2008, '/dev/null 2008',
+  'dev', 'nh', NULL,
   NULL,
   'devnull-2008.log',
   NULL,
@@ -216,7 +234,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2009, 'dev', 'nh', NULL,
+  2009, '/dev/null 2009',
+  'dev', 'nh', NULL,
   NULL,
   'devnull-2009.log',
   NULL,
@@ -226,7 +245,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2010, 'dev', 'nh', NULL,
+  2010, '/dev/null 2010',
+  'dev', 'nh', NULL,
   NULL,
   'devnull-2010.log',
   NULL,
@@ -236,7 +256,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2011, 'dev', 'nh', NULL,
+  2011, '/dev/null 2011',
+  'dev', 'nh', NULL,
   NULL,
   'devnull-2011.log',
   NULL,
@@ -246,7 +267,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2012, 'dev', 'nh', NULL,
+  2012, '/dev/null 2012',
+  'dev', 'nh', NULL,
   NULL,
   'devnull-2012.log',
   NULL,
@@ -256,7 +278,8 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2013, 'dev', 'nh', NULL,
+  2013, '/dev/null 2014',
+  'dev', 'nh', NULL,
   NULL,
   'devnull-2013.log',
   NULL,
