@@ -1148,7 +1148,6 @@ sub gen_page_about
 sub gen_page_front
 {
   my %data;
-  my @variants;
   
   #--- info
 
@@ -1168,7 +1167,6 @@ sub gen_page_front
     }
     $sth->finish();
     next if $r == 0;
-    push(@variants, $variant);
       
     #--- retrieve the last won game
     
@@ -1192,9 +1190,16 @@ sub gen_page_front
     }
   }
 
+  #--- sort the results
+  
+  my @variants_ordered = sort {
+    $data{'last_ascensions'}{$a}{'age_raw'} 
+    <=> $data{'last_ascensions'}{$b}{'age_raw'}
+  } keys %{$data{'last_ascensions'}};
+  
   #--- generate page
 
-  $data{'variants'} = \@variants;
+  $data{'variants'} = \@variants_ordered;
   $data{'vardef'} = $NetHack::nh_def->{'nh_variants_def'};
   $data{'cur_time'} = scalar(localtime());
   $tt->process('front.tt', \%data, 'index.html')

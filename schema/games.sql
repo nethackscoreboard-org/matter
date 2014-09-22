@@ -107,10 +107,26 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
     games.version, ascended,
-    extract('year' from age(current_timestamp, endtime)) AS age_years,
-    extract('month' from age(current_timestamp, endtime)) AS age_months,
-    extract('day' from age(current_timestamp, endtime)) AS age_days,
-    extract('hour' from age(current_timestamp, endtime)) AS age_hours
+    extract('year'  from age(
+      current_timestamp AT TIME ZONE 'UTC', 
+      endtime AT TIME ZONE 'UTC')
+    ) AS age_years,
+    extract('month' from age(
+      current_timestamp AT TIME ZONE 'UTC',
+      endtime AT TIME ZONE 'UTC')
+    ) AS age_months,
+    extract('day'   from age(
+      current_timestamp AT TIME ZONE 'UTC',
+      endtime AT TIME ZONE 'UTC')
+    ) AS age_days,
+    extract('hour'  from age(
+      current_timestamp AT TIME ZONE 'UTC',
+      endtime AT TIME ZONE 'UTC')
+    ) AS age_hours,
+    round(extract('epoch' from age(
+      current_timestamp AT TIME ZONE 'UTC', 
+      endtime AT TIME ZONE 'UTC')
+    )) AS age_raw
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
