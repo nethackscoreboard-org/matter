@@ -57,6 +57,7 @@ there will be new roles, races and even one new alignment.
 <th>id</th>
 <th>srv</th>
 <th>var</th>
+<th>description</th>
 <th>logfile</th>
 <th>static</th>
 <th>size</th>
@@ -68,6 +69,7 @@ there will be new roles, races and even one new alignment.
 <td class="numeric">[% row.logfiles_i %]</td>
 <td>[% row.server %]</td>
 <td>[% row.variant %]</td>
+<td>[% row.descr %]</td>
 <td>[% row.logurl %]</td>
 <td>[%IF row.static; "YES"; ELSE; "NO"; END %]</td>
 <td class="numeric">[% number(row.fpos) %]</td>
