@@ -176,6 +176,16 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
+ 11, 'aeu', 'ace', NULL,
+ NULL,
+ 'log.aeu',
+ 'https://acehack.de/aeu/%u/dumplog/%s',
+ NULL,
+ TRUE, TRUE, FALSE,
+ 'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
   2006, 'dev', 'nh', NULL,
   NULL,
   'devnull-2006.log',
