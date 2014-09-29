@@ -32,7 +32,7 @@ BEGIN
 {
   local $/;
   my $fh;
-  open($fh, '<', 'nhdb_def.json') or die;
+  open($fh, '<', 'cfg/nhdb_def.json') or die;
   my $def_json = <$fh>;
   $nhdb_def = decode_json($def_json);
 }

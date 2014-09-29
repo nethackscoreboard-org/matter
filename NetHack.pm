@@ -30,7 +30,7 @@ BEGIN
 {
   local $/;
   my $fh;
-  open($fh, '<', 'nethack_def.json');
+  open($fh, '<', 'cfg/nethack_def.json');
   my $def_json = <$fh>;
   $nh_def = decode_json($def_json);
 }
