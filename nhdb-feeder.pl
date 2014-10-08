@@ -13,6 +13,7 @@ use strict;
 use utf8;
 use DBI;
 use Getopt::Long;
+use NHdb;
 
 $| = 1;
 
@@ -441,14 +442,9 @@ if(!$cmd_logfiles) {
 
 #--- connect to database
 
-$dbh = DBI->connect(
-  'dbi:Pg:dbname=nhdb', 
-  'nhdbfeeder', 
-  'tO0HYvQLdSG4Muah', 
-  { AutoCommit => 1, pg_enable_utf => 1 }
-);
+$dbh = dbconn('nhdbfeeder');
 if(!ref($dbh)) {
-  die sprintf('Failed to connect to the database (%s)', $DBI::errstr);
+  die sprintf('Failed to connect to the database (%s)', $dbh);
 }
 
 #--- get list of logfiles to process
@@ -835,7 +831,7 @@ for my $log (@logfiles) {
 
 #--- disconnect from database
 
-$dbh->disconnect();
+dbdone('nhdbfeeder');
 
 #--- release lock file
 

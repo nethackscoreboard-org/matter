@@ -1,3 +1,19 @@
 {
-	"http_root" : "/home/httpd/nh"
+  "http_root" : "/home/httpd/nh",
+
+  "db" : {
+
+  	"nhdbfeeder" : {
+	  "dbname" : "nhdb",
+	  "dbuser" : "nhdbfeeder",
+	  "dbpass" : "tO0HYvQLdSG4Muah"
+    },
+
+  	"nhdbstats" : {
+	  "dbname" : "nhdb",
+	  "dbuser" : "nhdbstats",
+	  "dbpass" : "zQaHOypOFyna2fm7"
+    }
+
+  }
 }

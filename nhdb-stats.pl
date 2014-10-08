@@ -1311,14 +1311,9 @@ tty_message("Created lockfile\n");
 
 #--- connect to database
 
-$dbh = DBI->connect(
-  'dbi:Pg:dbname=nhdb', 
-   'nhdbstats', 
-   'zQaHOypOFyna2fm7', 
-   { AutoCommit => 1, pg_enable_utf => 1 }
-);
+$dbh = dbconn('nhdbstats');
 if(!ref($dbh)) {
-  die sprintf('Failed to connect to the database (%s)', $DBI::errstr);
+  die sprintf('Failed to connect to the database (%s)', $dbh);
 }
 tty_message("Connected to database\n");
 
@@ -1380,7 +1375,7 @@ gen_page_about();
 
 #--- disconnect from database
 
-$dbh->disconnect();
+dbdone('nhdbstats');
 tty_message("Disconnected from database\n");
 
 #--- release lock file

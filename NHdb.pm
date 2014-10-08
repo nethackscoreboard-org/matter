@@ -8,6 +8,7 @@ package NHdb;
 require Exporter;
 use NetHack;
 use JSON;
+use DBI;
 use POSIX qw(strftime);
 use integer;
 use strict;
@@ -17,6 +18,8 @@ use strict;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
+  dbconn
+  dbdone
   format_duration
   url_substitute
 );
@@ -25,6 +28,7 @@ our @EXPORT = qw(
 #=== module variables ======================================================
 
 our $nhdb_def;     # this holds configuration info (from "nhdb_def.json")
+my %dbconn;        # database connection paramters and handle(s)
 
 
 #===========================================================================
@@ -38,6 +42,103 @@ BEGIN
   open($fh, '<', 'cfg/nhdb_def.json') or die;
   my $def_json = <$fh>;
   $nhdb_def = decode_json($def_json);
+}
+
+
+#===========================================================================
+# Initialize database connection parameters.
+#===========================================================================
+
+sub dbinit
+{
+  my (
+    $id,       # 1. connection id
+    $dbname,   # 2. database name
+    $dbuser,   # 3. user name
+    $dbpass,   # 4. password
+    $hostname  # 5. database host (optional)
+  ) = @_;
+
+  $dbconn{$id} = {
+    'dbname' => $dbname,
+    'dbuser' => $dbuser,
+    'dbpass' => $dbpass,
+    'dbhost' => $hostname,
+    'conn'   => undef
+  };
+}
+
+
+#===========================================================================
+# Close database handle.
+#===========================================================================
+
+sub dbdone
+{
+  my ($id) = @_;
+  my $dbh;
+  
+  $dbh = $dbconn{$id}{conn};
+  if(!ref($dbh)) { return undef; }
+  $dbh->disconnect;
+  $dbconn{$id}{conn} = undef;
+}
+
+
+#===========================================================================
+# This function returns database handle associated with given id. If the
+# handle is not open, it opens it according to the parameters in the
+# configuration (that is in %nhdb_def). If opening the handle fails, the
+# error text is returned as scalar string value (ie. if the returned value
+# is a ref, it's the db handle, if it is not a ref, it's an error).
+#===========================================================================
+
+sub dbconn
+{
+  my $id = shift;
+  my $dbh;
+
+  #--- if the handle is open, just return it
+
+  if(exists $dbconn{$id}{'conn'} && $dbconn{$id}{'conn'}) {
+    return $dbconn{$id}{'conn'};
+  }
+
+  #--- if the id doesn't exist, initialize it
+
+  if(!exists $dbconn{$id}) {
+    if(exists $nhdb_def->{'db'}{$id}) {
+      my $db = $nhdb_def->{'db'}{$id};
+      dbinit(
+        $id,
+        $db->{'dbname'},
+        $db->{'dbuser'},
+        $db->{'dbpass'},
+        exists $db->{'dbhost'} ? $db->{'dbhost'} : undef
+      );
+    } else {
+      return "Database id '$id' not configured";
+    }
+  }
+
+  #--- otherwise, try to open the handle
+
+  my $src;
+  $src = sprintf('dbi:Pg:dbname=%s', $nhdb_def->{'db'}{$id}{'dbname'});
+  $src .= sprintf(';host=%s', $nhdb_def->{'db'}{$id}{'dbhost'})
+    if $nhdb_def->{'db'}{$id}{'dbhost'};
+  $dbh = DBI->connect(
+    $src,
+    $nhdb_def->{'db'}{$id}{'dbuser'},
+    $nhdb_def->{'db'}{$id}{'dbpass'},
+    {
+      AutoCommit => 1,
+      pg_enable_utf => 1
+    }
+  );
+  if(!ref($dbh)) { return DBI::errstr; }
+  $dbconn{$id}{'conn'} = $dbh;
+  return $dbh;
 }
 
 
