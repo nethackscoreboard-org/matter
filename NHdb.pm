@@ -12,6 +12,9 @@ use POSIX qw(strftime);
 use integer;
 use strict;
 
+
+#=== module exports ========================================================
+
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
   format_duration
@@ -19,9 +22,9 @@ our @EXPORT = qw(
 );
 
 
-#=== this holds all defs
+#=== module variables ======================================================
 
-our $nhdb_def;
+our $nhdb_def;     # this holds configuration info (from "nhdb_def.json")
 
 
 #===========================================================================
