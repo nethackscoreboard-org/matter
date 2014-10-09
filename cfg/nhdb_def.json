@@ -4,16 +4,16 @@
   "db" : {
 
   	"nhdbfeeder" : {
-	  "dbname" : "nhdb",
-	  "dbuser" : "nhdbfeeder",
-	  "dbpass" : "tO0HYvQLdSG4Muah"
+	    "dbname" : "nhdb",
+	    "dbuser" : "nhdbfeeder"
     },
 
   	"nhdbstats" : {
-	  "dbname" : "nhdb",
-	  "dbuser" : "nhdbstats",
-	  "dbpass" : "zQaHOypOFyna2fm7"
+	    "dbname" : "nhdb",
+	    "dbuser" : "nhdbstats"
     }
 
-  }
+  },
+
+  "auth" : "auth.json"
 }

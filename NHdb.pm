@@ -39,9 +39,22 @@ BEGIN
 {
   local $/;
   my $fh;
+
+  #--- read the main config file
+
   open($fh, '<', 'cfg/nhdb_def.json') or die;
   my $def_json = <$fh>;
+  close($fh);
   $nhdb_def = decode_json($def_json);
+
+  #--- read the file with db passwords (if defined)
+
+  if(exists $nhdb_def->{'auth'}) {
+    open($fh, '<', 'cfg/' . $nhdb_def->{'auth'}) or die;
+    $def_json = <$fh>;
+    close($fh);
+    $nhdb_def->{'auth'} = decode_json($def_json);
+  }
 }
 
 
@@ -100,7 +113,7 @@ sub dbconn
 
   #--- if the handle is open, just return it
 
-  if(exists $dbconn{$id}{'conn'} && $dbconn{$id}{'conn'}) {
+  if(exists $dbconn{$id} && $dbconn{$id}{'conn'}) {
     return $dbconn{$id}{'conn'};
   }
 
@@ -109,11 +122,20 @@ sub dbconn
   if(!exists $dbconn{$id}) {
     if(exists $nhdb_def->{'db'}{$id}) {
       my $db = $nhdb_def->{'db'}{$id};
+      my $dbuser = $db->{'dbuser'};
+      my $dbpass;
+
+      if(exists $nhdb_def->{'auth'}) {
+        $dbpass = $nhdb_def->{'auth'}{$dbuser};
+      } else {
+        $dbpass = $db->{'dbpass'};
+      }
+
       dbinit(
         $id,
         $db->{'dbname'},
-        $db->{'dbuser'},
-        $db->{'dbpass'},
+        $dbuser,
+        $dbpass,
         exists $db->{'dbhost'} ? $db->{'dbhost'} : undef
       );
     } else {
@@ -121,16 +143,16 @@ sub dbconn
     }
   }
 
-  #--- otherwise, try to open the handle
+  #--- and try to open the handle
 
   my $src;
-  $src = sprintf('dbi:Pg:dbname=%s', $nhdb_def->{'db'}{$id}{'dbname'});
-  $src .= sprintf(';host=%s', $nhdb_def->{'db'}{$id}{'dbhost'})
-    if $nhdb_def->{'db'}{$id}{'dbhost'};
+  $src = sprintf('dbi:Pg:dbname=%s', $dbconn{$id}{'dbname'});
+  $src .= sprintf(';host=%s', $dbconn{$id}{'dbhost'})
+    if $dbconn{$id}{'dbhost'};
   $dbh = DBI->connect(
     $src,
-    $nhdb_def->{'db'}{$id}{'dbuser'},
-    $nhdb_def->{'db'}{$id}{'dbpass'},
+    $dbconn{$id}{'dbuser'},
+    $dbconn{$id}{'dbpass'},
     {
       AutoCommit => 1,
       pg_enable_utf => 1
