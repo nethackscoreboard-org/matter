@@ -24,7 +24,7 @@ $| = 1;
 
 my $dbh;
 my $logfiles;
-
+my $devnull = 0;
 
 #============================================================================
 #=== definitions ============================================================
@@ -1245,6 +1245,13 @@ sub gen_page_front
 # which is very time consuming
 #
 # --aggr, --noaggr enable/disable generating aggregate pages
+#
+# --dev, --nodev enable/disable processing for /dev/null/nethack tournament;
+# "--dev" means forced processing of current year even if it's not November
+# (this is meant for post-tournament reprocessing); "--nodev" will disable
+# devnull processing no matter what; omitting the "--[no]dev" entirely will
+# make for processing devnull if definition exists for current year and it
+# is November.
 #============================================================================
 
 sub help
@@ -1256,6 +1263,7 @@ sub help
   print "  --player=NAME  update only given player\n";
   print "  --noplayers    disable generating player pages\n";
   print "  --noaggr       disable generating aggregate pages\n";
+  print "  --nodev        disable devnull processing\n";
   print "\n";
 }
 
@@ -1286,13 +1294,15 @@ my $cmd_force;
 my @cmd_player;
 my $cmd_players = 1;
 my $cmd_aggr = 1;
+my $cmd_devnull;
 
 if(!GetOptions(
   'variant=s' => \@cmd_variant,
   'force'     => \$cmd_force,
   'player=s'  => \@cmd_player,
   'players!'  => \$cmd_players,
-  'aggr!'     => \$cmd_aggr
+  'aggr!'     => \$cmd_aggr,
+  'dev!'      => \$cmd_devnull
 )) {
   help();
   exit(1);
@@ -1321,6 +1331,26 @@ tty_message("Connected to database\n");
 
 sql_load_logfiles();
 tty_message("Loaded list of logfiles\n");
+
+#--- determine devnull processing
+
+# do following block if not forced disable (--nodev)
+if(!(defined($cmd_devnull) && !$cmd_devnull)) {
+  # collect required information
+  my @time = gmtime();
+  my ($mo, $yr) = @time[4..5];
+  $yr += 1900;
+  my $def_ok =
+    exists $NHdb::nhdb_def->{'devnull'}
+    && exists $NHdb::nhdb_def->{'devnull'}{"$yr"};
+  # enable devnull if the conditions are met
+  $devnull = 1 if(
+    ($mo == 10 && $def_ok && !defined($cmd_devnull))
+    || ($def_ok && $cmd_devnull)
+  );
+  tty_message("/dev/null/nethack %d processing enabled\n", $yr)
+    if $devnull;
+}
 
 #--- read what is to be updated
 
