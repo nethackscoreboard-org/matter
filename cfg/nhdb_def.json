@@ -15,5 +15,10 @@
 
   },
 
-  "auth" : "auth.json"
+  "auth" : "auth.json",
+
+  "devnull" : {
+    "http_root" : "/home/httpd/devnull/%Y",
+    "2014" : 2013
+  }
 }
