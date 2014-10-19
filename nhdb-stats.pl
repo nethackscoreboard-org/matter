@@ -25,6 +25,8 @@ $| = 1;
 my $dbh;
 my $logfiles;
 my $devnull = 0;
+my $devnull_path;
+
 
 #============================================================================
 #=== definitions ============================================================
@@ -415,10 +417,17 @@ sub row_fix
 
   #--- player page
 
-  $row->{'plrpage'} = url_substitute(
-    sprintf("players/%%U/%%u.%s.html", $variant),
-    $row
-  );
+  if($logfiles->{$row->{'logfiles_i'}}{'server'} eq 'dev') {
+    $row->{'plrpage'} = url_substitute(
+      sprintf("players/%%u.html", $variant),
+      $row
+    );
+  } else {
+    $row->{'plrpage'} = url_substitute(
+      sprintf("players/%%U/%%u.%s.html", $variant),
+      $row
+    );
+  }
 }
 
 
@@ -506,21 +515,40 @@ sub gen_page_info
 
 
 #============================================================================
-# Generate "Recent Games" and "Ascended Games" pages.
+# Generate "Recent Games" and "Ascended Games" pages. This function is used
+# for both regular and devnull pages. The arg #5 (filtering queries by
+# logfiles_i field) is currently used as indication of devnull page
+# generation; it's bit unsystematic and probably should be changed.
 #============================================================================
 
 sub gen_page_recent
 {
-  my $page = shift;
-  my $variant = shift;
+  #--- arguments
+
+  my (
+    $page,         # 1. "recent"|"ascended"
+    $variant,      # 2. variant filter
+    $template,     # 3. TT template file
+    $html,         # 4. target html file
+    $logfiles_i    # 5. logfile source filter (optional)
+  ) = @_;
+
+  #--- other variables
+
   my @variants = ('all');
   my ($view, $sth, $r);
-  my (@arg, $query, $result);
+  my (@arg, @cond, $query_lst, $query_cnt, $result);
+  my $cnt_start = 1;
+  my $cnt_incr = 1;
   my %data;
 
   #--- init
 
-  tty_message('Creating recent games page %s (%s): ', $page, $variant);
+  tty_message(
+    'Creating %s page (%s): ', 
+    $page, 
+    $logfiles_i ? $logfiles->{$logfiles_i}{'server'} : $variant
+  );
   push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
 
   #--- select source view
@@ -535,24 +563,46 @@ sub gen_page_recent
 
   #--- prepare query;
 
-  $query = qq{SELECT * FROM $view LIMIT 100};
-  if($variant ne 'all') {
-    $query = qq{SELECT * FROM $view WHERE variant = ? LIMIT 100};
+  $query_lst = qq{SELECT * FROM $view };
+  if($variant && $variant ne 'all') {
+    @cond = ('variant = ?');
     @arg = ($variant);
+  }
+  if($logfiles_i) {
+    @cond = ('logfiles_i = ?');
+    @arg = ($logfiles_i);
+  }
+  if(scalar(@cond)) {
+    $query_lst .= 'WHERE ' . join(' AND ', @cond);
+    $query_lst .= ' ';
+  }
+  $query_cnt = $query_lst;
+  $query_lst .= 'LIMIT 100' unless ($page eq 'ascended' && $logfiles_i);
+  $query_cnt =~ s/\*/count(*)/;
+
+  #--- get count of games for /dev/null
+
+  if($logfiles_i) {
+    $result = sql_load($query_cnt, undef, undef, undef, @arg);
+    return $result if !ref($result);
+    $data{'games_count'} = $cnt_start = int($result->[0]{'count'});
+    $cnt_incr = -1;
+    tty_message('%d games, ', $data{'games_count'});
   }
 
   #--- pull data from database
 
   $result = sql_load(
-    $query, 1, 1,
+    $query_lst, $cnt_start, $cnt_incr,
     sub { row_fix($_[0], $variant); },
     @arg
   );
-  return sprintf('Failed to query database (%s)', $sth->errstr) if !ref($result);
+  return sprintf('Failed to query database (%s)', $result) if !ref($result);
   tty_message('loaded from db (%d lines)', scalar(@$result));
 
   #--- supply additional data
 
+  $data{'devnull'}  = $devnull if $devnull;
   $data{'result'}   = $result;
   $data{'cur_time'} = scalar(localtime());
   $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
@@ -561,7 +611,7 @@ sub gen_page_recent
 
   #--- process template
 
-  $tt->process("$page.tt", \%data, "$page.$variant.html")
+  $tt->process($template, \%data, $html)
     or die $tt->error();
 
   tty_message(", done\n");
@@ -1344,12 +1394,20 @@ if(!(defined($cmd_devnull) && !$cmd_devnull)) {
     exists $NHdb::nhdb_def->{'devnull'}
     && exists $NHdb::nhdb_def->{'devnull'}{"$yr"};
   # enable devnull if the conditions are met
-  $devnull = 1 if(
+  if(
     ($mo == 10 && $def_ok && !defined($cmd_devnull))
     || ($def_ok && $cmd_devnull)
-  );
-  tty_message("/dev/null/nethack %d processing enabled\n", $yr)
-    if $devnull;
+  ) {
+    $devnull = $NHdb::nhdb_def->{'devnull'}{"$yr"} ;
+    $devnull_path = $NHdb::nhdb_def->{'devnull'}{'http_path'};
+    $devnull_path =~ s/%Y/$yr/;
+  };
+  if($devnull) {
+    tty_message(
+      "/dev/null/nethack %d processing enabled (path %s)\n", 
+      $yr, $devnull_path
+    );
+  }
 }
 
 #--- read what is to be updated
@@ -1364,9 +1422,27 @@ if($cmd_aggr) {
 #--- generate aggregate pages
 
   for my $var (@$update_variants) {
-    gen_page_recent('recent', $var);
-    gen_page_recent('ascended', $var);
+    
+    #--- regular stats
+    gen_page_recent('recent', $var, 'recent.tt', "recent.$var.html");
+    gen_page_recent('ascended', $var, 'ascended.tt', "ascended.$var.html");
     gen_page_streaks($var);
+
+    #--- /dev/null stats
+    if($devnull && $var eq 'nh') {
+      gen_page_recent(
+        'recent', $var, 'recent-dev.tt', 
+        $devnull_path . '/recent.html', 
+        $devnull
+      );
+      gen_page_recent(
+        'ascended', $var, 'ascended-dev.tt', 
+        $devnull_path . '/ascended.html', 
+        $devnull
+      );
+    }
+
+    #--- clear update flag
     $dbh->do(
       q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ''},
       undef, $var

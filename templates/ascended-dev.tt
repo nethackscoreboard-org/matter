@@ -1,0 +1,25 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <title>Ascended Games</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+<a href="./">Overview</a> |
+<a href="recent.html">Recent Games</a>
+</div>
+
+<div class="page_content">
+<h1>Ascended Games</h1>
+
+[% INCLUDE tab_ascended.tt %]
+
+[% INCLUDE footer.tt %]

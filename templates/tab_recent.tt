@@ -2,8 +2,10 @@
 
 <tr>
   <th>&nbsp;</th>
+[%- IF NOT devnull -%]
   <th>srv</th>
   <th>var</th>
+[%- END -%]
 [%- IF not name -%]
   <th>name</th>
 [%- END -%]
@@ -20,8 +22,10 @@
 [% FOREACH row IN result %]
 <tr[% IF row.ascended %] class="win"[% END %]>
   <td class="numeric">[% row.n %]</td>
+[%- IF NOT devnull -%]
   <td>[% row.server %]</td>
   <td>[% row.variant %]</td>
+[%- END -%]
 [%- IF not name -%]
   <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 [%- END -%]
