@@ -27,8 +27,12 @@
   <td>[% row.variant %]</td>
 [%- END -%]
 [%- IF not name -%]
+[%- IF devnull -%]
+  <td><a href="[% row.plrpage %]">[% row.name_orig %]</a></td>
+[%- ELSE -%]
   <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 [%- END -%]
+[%- END %]
   <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
 [% IF row.dump -%]
   <td class="numeric"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
