@@ -252,6 +252,10 @@ sub sql_insert_games
     }
   }
 
+  #--- name (before translation)
+  push(@fields, 'name_orig');
+  push(@values, sprintf(q{'%s'}, $l->{'name'}));
+  
   #--- name
   push(@fields, 'name');
   if(exists($translations{$server}{$l->{'name'}})) {
