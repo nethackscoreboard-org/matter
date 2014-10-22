@@ -1644,26 +1644,28 @@ if($cmd_aggr) {
     gen_page_recent('ascended', $var, 'ascended.tt', "ascended.$var.html");
     gen_page_streaks($var);
 
-    #--- /dev/null stats
-    if($devnull && $var eq 'nh') {
-      gen_page_recent(
-        'recent', $var, 'recent-dev.tt', 
-        $devnull_path . '/recent.html', 
-        $devnull
-      );
-      gen_page_recent(
-        'ascended', $var, 'ascended-dev.tt', 
-        $devnull_path . '/ascended.html', 
-        $devnull
-      );
-    }
-
     #--- clear update flag
     $dbh->do(
       q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ''},
       undef, $var
     );
   }
+}
+
+#--- generate /dev/null ascended and recent pages
+
+#--- /dev/null stats
+if($devnull && $cmd_aggr) {
+  gen_page_recent(
+    'recent', 'nh', 'recent-dev.tt', 
+    $devnull_path . '/recent.html', 
+    $devnull
+  );
+  gen_page_recent(
+    'ascended', 'nh', 'ascended-dev.tt', 
+    $devnull_path . '/ascended.html', 
+    $devnull
+  );
 }
 
 #--- generate /dev/null player list
