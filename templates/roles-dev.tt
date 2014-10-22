@@ -1,0 +1,70 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+[%- USE percent = format("%0.1f%%") -%]
+[% USE Dumper %]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <title>Roles</title>
+</head>
+
+
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+  <a href="./">Overview</a> |
+  <a href="recent.html">Recent Games</a> |
+  <a href="ascended.html">Ascended Games</a> |
+  <a href="players.html">Players</a> 
+</div>
+
+<div class="page_content">
+
+<h1>Roles</h1>
+
+<hr>
+
+<h3>Archeologist</h3>
+[% INCLUDE tab_ascended.tt result=result.item('arc') id='archeologist' %]
+
+<h3>Barbarian</h3>
+[% INCLUDE tab_ascended.tt result=result.item('bar') id='barbarian' %]
+
+<h3>Caveman</h3>
+[% INCLUDE tab_ascended.tt result=result.item('cav') id='caveman' %]
+
+<h3>Healer</h3>
+[% INCLUDE tab_ascended.tt result=result.item('hea') id='healer' %]
+
+<h3>Knight</h3>
+[% INCLUDE tab_ascended.tt result=result.item('kni') id='knight' %]
+
+<h3>Monk</h3>
+[% INCLUDE tab_ascended.tt result=result.item('mon') id='monk' %]
+
+<h3>Priest</h3>
+[% INCLUDE tab_ascended.tt result=result.item('pri') id='priest' %]
+
+<h3>Ranger</h3>
+[% INCLUDE tab_ascended.tt result=result.item('ran') id='ranger' %]
+
+<h3>Rogue</h3>
+[% INCLUDE tab_ascended.tt result=result.item('rog') id='rogue' %]
+
+<h3>Samurai</h3>
+[% INCLUDE tab_ascended.tt result=result.item('sam') id='samurai' %]
+
+<h3>Tourist</h3>
+[% INCLUDE tab_ascended.tt result=result.item('tou') id='tourist' %]
+
+<h3>Valkyrie</h3>
+[% INCLUDE tab_ascended.tt result=result.item('val') id='valkyrie' %]
+
+<h3>Wizard</h3>
+[% INCLUDE tab_ascended.tt result=result.item('wiz') id='wizard' %]
+
+[% INCLUDE footer.tt %]

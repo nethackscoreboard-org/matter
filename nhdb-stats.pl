@@ -1412,6 +1412,73 @@ sub gen_page_dev_player
 
 
 #============================================================================
+# Generate /dev/null Roles page, that is page where ascensions are grouped
+# by their role. This function includes redundant load of database data
+# (already loaded once by gen_page_recent()); this should be optimized.
+#============================================================================
+
+sub gen_page_dev_roles
+{
+  #--- arguments
+
+  my (
+    $logfiles_i      # 1. logfile id
+  ) = @_;
+
+  #--- other variables
+
+  my $query;
+  my $result;
+  my %data;
+
+  #--- init
+
+  tty_message('Creating roles page (dev)');
+
+  #--- database query
+
+  $query = 
+    q{SELECT * FROM v_ascended WHERE logfiles_i = ? } .
+    q{ORDER BY role, endtime AT TIME ZONE 'UTC' ASC};
+
+  $result = sql_load(
+    $query, undef, undef,
+    sub { row_fix($_[0], 'nh'); },
+    $logfiles_i
+  );
+  return $result if !ref($result);
+
+  #--- reprocessing
+
+  my $cnt;
+  my $role = '';
+  for my $row (@$result) {
+    if($role ne $row->{'role'}) {
+      $role = $row->{'role'};
+      $cnt = 1;
+    }
+    push(@{$data{'result'}{lc($role)}}, $row);
+    $row->{'n'} = $cnt++;
+  }
+
+  #--- supply additional data
+
+  $data{'devnull'} = $devnull;
+  $data{'cur_time'} = scalar(localtime());
+
+  #--- process template
+
+  $tt->process('roles-dev.tt', \%data, $devnull_path . '/roles.html')
+    or die $tt->error();
+
+  #--- finish
+
+  tty_message(", done\n");
+
+}
+
+
+#============================================================================
 # Display usage help.
 #
 # Semantics description, this should be moved into some other text, but for
@@ -1628,6 +1695,12 @@ if($cmd_players) {
 
 if($devnull && $cmd_players) {
   gen_page_dev_player($devnull, 'player-dev.tt');
+}
+
+#--- generate /dev/null roles page
+
+if($devnull && $cmd_aggr) {
+  gen_page_dev_roles($devnull);
 }
 
 #--- generic info page
