@@ -1263,6 +1263,66 @@ sub gen_page_front
 
 
 #============================================================================
+# Generate ordered list of players for /dev/null.
+#============================================================================
+
+sub gen_page_dev_player_list
+{
+  #--- arguments
+
+  my (
+    $logfiles_i,    # 1. logfile id
+    $template,      # 2. TT template file
+    $html           # 3. target html file
+  ) = @_;
+
+  #--- other variables
+
+  my $query;
+  my %data;
+  my $result;
+
+  #--- init
+
+  tty_message('Creating player list page (dev): ');
+
+  #--- database query
+
+  $query = <<'EOHD';
+    SELECT
+      name_orig,
+      count(*) AS all,
+      sum(ascended::int) AS won,
+      sum((not scummed)::int) AS valid,
+      sum(points) AS score,
+      max(maxlvl) AS maxlvl,
+      max(case when ascended then bitcount(conduct) else 0 end) AS ncond
+    FROM v_games_all
+    WHERE logfiles_i = ?
+    GROUP BY name_orig
+    ORDER BY won DESC, "all" ASC
+EOHD
+
+  $result = sql_load($query, 1, 1, undef, $logfiles_i);
+  return $result if !ref($result);
+  $data{'result'} = $result;
+
+  #--- supply additional data
+
+  $data{'cur_time'} = scalar(localtime());
+
+  #--- process template
+
+  $tt->process($template, \%data, $html)
+    or die $tt->error();
+
+  #--- finish
+
+  tty_message("done\n");
+}
+
+
+#============================================================================
 # Display usage help.
 #
 # Semantics description, this should be moved into some other text, but for
@@ -1448,6 +1508,15 @@ if($cmd_aggr) {
       undef, $var
     );
   }
+}
+
+#--- generate /dev/null player list
+
+if($devnull) {
+  gen_page_dev_player_list(
+    $devnull, 'playerlist-dev.tt', 
+    $devnull_path . '/players.html'
+  );
 }
 
 #--- generate per-player pages

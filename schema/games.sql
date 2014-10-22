@@ -93,13 +93,13 @@ CREATE OR REPLACE VIEW v_games_all AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH:MI') AS endtime,
     endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
-    games.version, ascended
+    games.version, ascended, scummed
   FROM 
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   ORDER BY endtime AT TIME ZONE 'UTC' ASC;
 
-GRANT SELECT ON v_games TO nhdbstats;
+GRANT SELECT ON v_games_all TO nhdbstats;
 
 
 CREATE OR REPLACE VIEW v_ascended_recent AS
@@ -151,3 +151,20 @@ CREATE OR REPLACE VIEW v_ascended AS
   ORDER BY endtime AT TIME ZONE 'UTC' ASC;
 
 GRANT SELECT ON v_ascended TO nhdbstats;
+
+
+----------------------------------------------------------------------------
+--- functions
+----------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION bitcount(i integer) RETURNS integer AS $$
+DECLARE n integer;
+DECLARE amount integer;
+  BEGIN
+    amount := 0;
+    FOR n IN 1..16 LOOP
+      amount := amount + ((i >> (n-1)) & 1);
+    END LOOP;
+    RETURN amount;
+  END
+$$ LANGUAGE plpgsql;
