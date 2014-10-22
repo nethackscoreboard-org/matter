@@ -1323,6 +1323,95 @@ EOHD
 
 
 #============================================================================
+# Generate per-player pages for /dev/null.
+#============================================================================
+
+sub gen_page_dev_player
+{
+  #--- arguments
+
+  my (
+    $logfiles_i,     # 1. logfile id
+    $template,       # 2. TT template file
+  ) = @_;
+
+  #--- other variables
+
+  my $dbh = dbconn('nhdbstats');
+  my $query;
+  my $query_asc;
+  my $query_all;
+  my @plr;
+
+  #--- init
+
+  tty_message('  Updating player pages (dev)');
+
+  #--- first get list of players
+
+  die "Cannot connect to database\n" if !ref($dbh);
+  $query = 'SELECT name_orig FROM games WHERE logfiles_i = ? GROUP BY name_orig';
+  my $sth = $dbh->prepare($query);
+  my $r = $sth->execute($logfiles_i);
+  while(my ($p) = $sth->fetchrow_array()) {
+    push(@plr, $p)
+  }
+  tty_message(", %d players", scalar(@plr));
+
+  #--- database queries
+
+  $query_asc = 
+    'SELECT * FROM v_ascended ' .
+    'WHERE logfiles_i = ? AND name_orig = ?';
+  $query_all =
+    'SELECT * FROM v_games ' .
+    'WHERE logfiles_i = ? AND name_orig = ?';
+
+  #--- iterate over the list of names ----------------------------------------
+
+  for my $p (@plr) {
+    my $result;
+    my %data;
+
+  #--- perform queries
+
+    $result = sql_load(
+      $query_asc, 1, 1, 
+      sub { row_fix($_[0], 'nh'); },
+      $logfiles_i, $p
+    );
+    return $result if !ref($result);
+    $data{'result_asc'} = [ reverse(@$result) ];
+    $result = sql_load(
+      $query_all, 1, 1,
+      sub { row_fix($_[0], 'nh'); },
+      $logfiles_i, $p
+    );
+    return $result if !ref($result);
+    $data{'result_all'} = [ reverse(@$result) ];
+
+  #--- supply additional data
+
+    $data{'devnull'} = $devnull;
+    $data{'name'} = $p;
+    $data{'cur_time'} = scalar(localtime());
+
+  #--- process template
+
+    $tt->process($template, \%data, "$devnull_path/players/" . $p . '.html')
+      or die $tt->error();
+
+  #--- end of loop -----------------------------------------------------------
+
+  }
+
+  #--- finish
+
+  tty_message(", done\n");
+}
+
+
+#============================================================================
 # Display usage help.
 #
 # Semantics description, this should be moved into some other text, but for
@@ -1532,6 +1621,13 @@ if($cmd_players) {
       undef, $pg->[1], $pg->[0]
     );
   }
+}
+
+#--- generate /dev/null per-player pages
+# at this moment, all player pages are updated every time
+
+if($devnull && $cmd_players) {
+  gen_page_dev_player($devnull, 'player-dev.tt');
 }
 
 #--- generic info page

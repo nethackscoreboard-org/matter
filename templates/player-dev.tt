@@ -1,0 +1,40 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+[%- USE percent = format("%0.1f%%") -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <title>[% name %]</title>
+</head>
+
+
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+  <a href="../">Overview</a> |
+  <a href="../recent.html">Recent Games</a> |
+  <a href="../ascended.html">Ascended Games</a> |
+  <a href="../players.html">Players</a> 
+</div>
+
+<div class="page_content">
+
+<h1>[% name %]</h1>
+
+<hr>
+
+[% IF result_asc.size %]
+<h3>Ascended Games</h3>
+
+[% INCLUDE tab_ascended.tt result=result_asc id='ascended' %]
+[% END %]
+
+<h3>All Games</h3>
+
+[% INCLUDE tab_recent.tt result=result_all id='all' %]
+
+[% INCLUDE footer.tt %]
