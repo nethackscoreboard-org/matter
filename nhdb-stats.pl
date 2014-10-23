@@ -568,6 +568,7 @@ sub process_streaks
     $row->{'turns'}      = $streak->{'turncount'};
     $row->{'name'}       = $game_first->{'name'};
     $row->{'plrpage'}    = $game_first->{'plrpage'};
+    $row->{'name_orig'}  = $game_first->{'name_orig'};
     $row->{'glist'}      = [];
     my $games_cnt = 1;
     for my $game (@{$streak->{'games'}}) {
@@ -1730,12 +1731,12 @@ EOHD
   #---------------------------------------------------------------------------
 
   $query = 'SELECT count(*) FROM games WHERE logfiles_i = ?';
-  $result = sql_load($query, undef, undef,undef, $logfiles_i);
+  $result = sql_load($query, undef, undef, undef, $logfiles_i);
   die if !ref($result);
   $data{'result_total_games'} = $result->[0]{'count'};
 
   $query = 'SELECT count(*) FROM games WHERE logfiles_i = ? AND scummed IS NOT TRUE';
-  $result = sql_load($query, undef, undef,undef, $logfiles_i);
+  $result = sql_load($query, undef, undef, undef, $logfiles_i);
   die if !ref($result);
   $data{'result_total_valid'} = $result->[0]{'count'};
   tty_message(', general');
