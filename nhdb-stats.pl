@@ -436,7 +436,7 @@ sub sql_load_streaks
   }
 
   if($logfiles_i) {
-    push(@conds, 'logfiles_i = ?');
+    push(@conds, 'streaks.logfiles_i = ?');
     push(@args, $logfiles_i);
   }
 
@@ -496,7 +496,7 @@ sub sql_load_streaks
   }
 
   if($logfiles_i) {
-    push(@conds, 'logfiles_i = ?');
+    push(@conds, 'streaks.logfiles_i = ?');
     push(@args, $logfiles_i);
   }
 
@@ -1715,6 +1715,15 @@ EOHD
   return $result if !ref($result);
   $data{'result_top5_lowscore'} = $result;
   tty_message(', top5 low (%d)', scalar(@$result));
+
+  #---------------------------------------------------------------------------
+  #-- "Streaks" --------------------------------------------------------------
+  #---------------------------------------------------------------------------
+
+  my ($streaks_ord, $streaks) = sql_load_streaks(undef, $logfiles_i, undef);
+  return $streaks_ord if !ref($streaks_ord);
+  $data{'result_streaks'} = process_streaks($streaks_ord, $streaks);
+  tty_message(', streaks (%d)', scalar(@$streaks_ord));
 
   #---------------------------------------------------------------------------
   #-- "General Info" ---------------------------------------------------------
