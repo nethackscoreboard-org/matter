@@ -1,0 +1,173 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+[%- USE percent = format("%0.1f%%") -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <title>/dev/null/nethack [% devnull %]</title>
+</head>
+
+
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+  <a href="./">Overview</a> |
+  <a href="recent.html">Recent Games</a> |
+  <a href="ascended.html">Ascended Games</a> |
+  <a href="roles.html">Roles</a> |
+  <a href="players.html">Players</a> 
+</div>
+
+<div class="page_content">
+
+<h1>/dev/null/nethack Tournament [% devnull %]</h1>
+
+<hr>
+
+<p>This page is a supplement to the main <a
+href="http://nethack.devnull.net/tournament/scoreboard.shtml">scoreboard
+pages</a>. There's no guarantee of accuracy or timeliness. The pages update
+every 10 minutes. All games shorter than 10 turns are excluded from the
+statistics. Players are ranked by their number of ascensions, in case of ties,
+ascension ratio is used. Author of this page can be contacted as Mandevil on
+#nethack on FreeNode IRC network. Page design was "borrowed" from DCSS
+scoreboard site. This page is part of the 
+<a href="https://voyager.lupomesky.cz/nh/">NetHack Scoreboard</a>.</p>
+
+<hr>
+
+<div style="display : inline-block; margin-right : 4em;">
+
+<h3>Best Players</h3>
+
+<table class="bordered">
+
+<thead>
+
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>won</th>
+  <th>played</th>
+  <th>%</th>
+  <th>score</th>
+  <th>cond</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+[% FOREACH row IN result_best_plr %]
+<tr>
+  <td class="numeric">[% row.n %]</td>
+  <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
+  <td class="numeric">[% row.won %]</td>
+  <td class="numeric">[% row.all %]</td>
+  <td class="numeric">[% percent(row.won / row.all * 100) %]</td>
+  <td class="numeric">[% number(row.score) %]</td>
+  <td class="numeric">[% row.ncond %]</td>
+</tr>
+[% END %]
+
+</tbody>
+
+</table>
+
+</div>
+
+<div style="display : inline-block">
+
+<h3>Recent Ascensions</h3>
+
+<table class="bordered">
+
+<thead>
+
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>character</th>
+  <th>score</th>
+  <th>turns</th>
+  <th>duration</th>
+  <th>time</th>
+  <th>cond</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+[% FOREACH row IN result_recent_wins %]
+<tr>
+  <td class="numeric">[% row.n %]</td>
+  <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
+  <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
+  <td class="numeric">[% number(row.points) %]</td>
+  <td class="numeric">[% number(row.turns) %]</td>
+  <td class="numeric">[% row.realtime %]</td>
+  <td>[% row.endtime %]</td>
+  <td class="numeric">[% row.ncond %]</td>
+</tr>
+[% END %]
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<h3>Fastest Games By Game Time</h3>
+
+[% INCLUDE "tab_front-dev.tt" result=result_top5_turns %]
+
+
+<h3>Fastest Games By Real Time</h3>
+
+[% INCLUDE "tab_front-dev.tt" result=result_top5_rt %]
+
+
+<h3>Best Conduct Games</h3>
+
+[% INCLUDE "tab_front-dev.tt" result=result_top5_conduct %]
+
+
+<h3>Low Scored Games</h3>
+
+[% INCLUDE "tab_front-dev.tt" result=result_top5_lowscore %]
+
+
+<h3>General</h3>
+
+<table class="bordered">
+
+<tbody>
+<tr>
+  <th>games total</th>
+  <td class="numeric">[% result_total_games %]</td>
+</tr>
+<tr>
+  <th>games scummed</th>
+  <td class="numeric">[% result_total_games - result_total_valid %] / 
+    [% percent((result_total_games - result_total_valid) / result_total_games * 100) %]</td>
+</tr>
+<tr>
+  <th>games valid</th>
+  <td class="numeric">[% result_total_valid %] /
+  [% percent(result_total_valid / result_total_games * 100) %]</td>
+</tr>
+<tr>
+  <th>games ascended</th>
+  <td class="numeric">[% result_total_ascended %] / [% percent(result_total_ascended / result_total_valid * 100) %]%</td>
+</tr>
+</tbody>
+
+</table>
+
+[% INCLUDE footer.tt %]

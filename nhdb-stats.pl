@@ -26,6 +26,7 @@ my $dbh;
 my $logfiles;
 my $devnull = 0;
 my $devnull_path;
+my $devnull_year;
 
 
 #============================================================================
@@ -1479,6 +1480,185 @@ sub gen_page_dev_roles
 
 
 #============================================================================
+# Generate /dev/null front page.
+#============================================================================
+
+sub gen_page_dev_front
+{
+  #--- arguments
+
+  my (
+    $logfiles_i     # 1. logfile id
+  ) = @_;
+
+  #--- other variables
+
+  my %data;
+  my $query;
+  my $result;
+
+  #--- init
+
+  tty_message('Creating front page (dev)');
+
+  #---------------------------------------------------------------------------
+  #--- "Best Players" --------------------------------------------------------
+  #---------------------------------------------------------------------------
+
+  $query = <<'EOHD';
+    SELECT
+      name_orig,
+      count(*) AS all,
+      sum(ascended::int) AS won,
+      sum(points) AS score,
+      max(case when ascended then bitcount(conduct) else 0 end) AS ncond
+    FROM v_games_all
+    WHERE logfiles_i = ?
+    GROUP BY name_orig
+    HAVING sum(ascended::int) > 0
+    ORDER BY won DESC, "all" ASC
+    LIMIT 5
+EOHD
+  
+  $result = sql_load($query, 1, 1, undef, $logfiles_i);
+  return $result if !ref($result);
+  $data{'result_best_plr'} = $result;
+  tty_message(', best plr (%d)', scalar(@$result));
+
+  #---------------------------------------------------------------------------
+  #--- "Recent Ascensions" ---------------------------------------------------
+  #---------------------------------------------------------------------------
+
+  #--- first get total number of ascensions
+
+  $query = 'SELECT count(*) FROM v_ascended WHERE logfiles_i = ?';
+  $result = sql_load($query, undef, undef, undef, $logfiles_i);
+  return $result if !ref($result);
+  $data{'result_total_ascended'} = $result->[0]{'count'};
+
+  #--- now get the last 5 ascensions
+
+  $query = <<'EOHD';
+    SELECT *
+    FROM v_ascended_recent
+    WHERE logfiles_i = ?
+    LIMIT 5
+EOHD
+
+  $result = sql_load(
+    $query, 
+    $result->[0]{'count'}, -1, 
+    sub { row_fix($_[0], 'nh'); },
+    $logfiles_i
+  );
+  return $result if !ref($result);
+  $data{'result_recent_wins'} = $result;
+  tty_message(', recent wins (%d)', scalar(@$result));
+
+  #---------------------------------------------------------------------------
+  #-- "Fastest Games By Game Time" -------------------------------------------
+  #---------------------------------------------------------------------------
+
+  $query = <<'EOHD';
+    SELECT *
+    FROM v_ascended
+    WHERE logfiles_i = ?
+    ORDER BY turns ASC
+    LIMIT 5
+EOHD
+
+  $result = sql_load($query, 1, 1, sub { row_fix($_[0], 'nh'); }, $logfiles_i);
+  return $result if !ref($result);
+  $data{'result_top5_turns'} = $result;
+  tty_message(', top5 turns (%d)', scalar(@$result));
+  
+  #---------------------------------------------------------------------------
+  #-- "Fastest Games By Real Time" -------------------------------------------
+  #---------------------------------------------------------------------------
+
+  $query = <<'EOHD';
+    SELECT *
+    FROM v_ascended
+    WHERE logfiles_i = ?
+    ORDER BY realtime ASC
+    LIMIT 5
+EOHD
+
+  $result = sql_load($query, 1, 1, sub { row_fix($_[0], 'nh'); }, $logfiles_i);
+  return $result if !ref($result);
+  $data{'result_top5_rt'} = $result;
+  tty_message(', top5 rt (%d)', scalar(@$result));
+
+  #---------------------------------------------------------------------------
+  #-- "Best Conduct Games" ---------------------------------------------------
+  #---------------------------------------------------------------------------
+
+  $query = <<'EOHD';
+    SELECT *
+    FROM v_ascended
+    WHERE logfiles_i = ?
+    ORDER BY bitcount(conduct) DESC, turns ASC
+    LIMIT 5
+EOHD
+
+  $result = sql_load($query, 1, 1, sub { row_fix($_[0], 'nh'); }, $logfiles_i);
+  return $result if !ref($result);
+  $data{'result_top5_conduct'} = $result;
+  tty_message(', top5 cond (%d)', scalar(@$result));
+
+  #---------------------------------------------------------------------------
+  #-- "Low Scored Games" -----------------------------------------------------
+  #---------------------------------------------------------------------------
+
+  $query = <<'EOHD';
+    SELECT *
+    FROM v_ascended
+    WHERE logfiles_i = ?
+    ORDER BY points ASC, turns ASC
+    LIMIT 5
+EOHD
+
+  $result = sql_load($query, 1, 1, sub { row_fix($_[0], 'nh'); }, $logfiles_i);
+  return $result if !ref($result);
+  $data{'result_top5_lowscore'} = $result;
+  tty_message(', top5 low (%d)', scalar(@$result));
+
+  #---------------------------------------------------------------------------
+  #-- "General Info" ---------------------------------------------------------
+  #---------------------------------------------------------------------------
+
+  $query = 'SELECT count(*) FROM games WHERE logfiles_i = ?';
+  $result = sql_load($query, undef, undef,undef, $logfiles_i);
+  die if !ref($result);
+  $data{'result_total_games'} = $result->[0]{'count'};
+
+  $query = 'SELECT count(*) FROM games WHERE logfiles_i = ? AND scummed IS NOT TRUE';
+  $result = sql_load($query, undef, undef,undef, $logfiles_i);
+  die if !ref($result);
+  $data{'result_total_valid'} = $result->[0]{'count'};
+  tty_message(', general');
+
+  #---------------------------------------------------------------------------
+  #---------------------------------------------------------------------------
+  #---------------------------------------------------------------------------
+
+  #--- supply additional data
+
+  $data{'devnull'} = $devnull_year;
+  $data{'cur_time'} = scalar(localtime());
+
+  #--- process template
+
+  $tt->process('front-dev.tt', \%data, $devnull_path . '/index.html')
+    or die $tt->error();
+
+  #--- finish
+
+  tty_message(", done\n");
+}
+
+
+#============================================================================
 # Display usage help.
 #
 # Semantics description, this should be moved into some other text, but for
@@ -1617,6 +1797,7 @@ if(!(defined($cmd_devnull) && !$cmd_devnull)) {
     $devnull = $NHdb::nhdb_def->{'devnull'}{"$yr"} ;
     $devnull_path = $NHdb::nhdb_def->{'devnull'}{'http_path'};
     $devnull_path =~ s/%Y/$yr/;
+    $devnull_year = $yr;
   };
   if($devnull) {
     tty_message(
@@ -1703,6 +1884,12 @@ if($devnull && $cmd_players) {
 
 if($devnull && $cmd_aggr) {
   gen_page_dev_roles($devnull);
+}
+
+#--- generate /dev/null front page
+
+if($devnull && $cmd_aggr) {
+  gen_page_dev_front($devnull);
 }
 
 #--- generic info page
