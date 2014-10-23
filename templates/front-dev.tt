@@ -143,6 +143,42 @@ scoreboard site. This page is part of the
 [% INCLUDE "tab_front-dev.tt" result=result_top5_lowscore %]
 
 
+<h3>Streaks</h3>
+
+<table class="bordered">
+
+<thead>
+
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>len</th>
+  <th>turns</th>
+  <th>streak games</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+[% FOREACH row IN result_streaks %]
+<tr>
+  <td class="numeric">[% row.n %]</td>
+  <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
+  <td class="numeric">[% row.wins %]</td>
+  <td class="numeric">[% number(row.turns) %]</td>
+  <td>
+[%- FOREACH game IN row.glist -%]
+<span class="combono">[% game.n %]</span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
+[% END %]
+</td>
+</tr>
+[% END %]
+</tbody>
+
+</table>
+
+
 <h3>General</h3>
 
 <table class="bordered">
