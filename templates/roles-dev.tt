@@ -1,6 +1,5 @@
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
 [%- USE percent = format("%0.1f%%") -%]
-[% USE Dumper %]
 <!doctype html>
 
 <html>
