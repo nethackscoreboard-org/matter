@@ -371,6 +371,219 @@ sub sql_load_logfiles
 
 
 #============================================================================
+# Load streak information from database. The streaks are ordered by number
+# of games and sum of turns in streak games (lower is better).
+#
+# The data structure built in memory here is following:
+#
+# --- this defines streak ordering and is just array of integeres - row ids
+# --- into the 'streaks' table
+# @streaks_ord = ( streak_i, streak_i, ..., streak_i );
+#
+# --- this contains all the data needed; the %ROW is one row from join
+# --- query accross 'games', 'logfiles' and 'streaks' tables
+# %streaks = (
+#   streaks_i => {
+#     'turncount' => TURNCOUNT,
+#     'num_games' => NUMGAMES,
+#     'games'     => [ %ROW, %ROW, ... , %ROW ]
+#   },
+#   ...
+# )
+#
+#============================================================================
+
+sub sql_load_streaks
+{
+  #--- arguments
+
+  my (
+    $variant,         # 1. variant
+    $logfiles_i,      # 2. logfiles id
+    $limit            # 3. limit the query
+  ) = @_;
+
+  #--- other variables
+
+  my @streaks_ord;   # ordered list of streaks_i
+  my %streaks;       # streaks_i-keyed hash with all info
+  my ($query, $sth, $r, @conds, @args);
+
+  #---------------------------------------------------------------------------
+  #--- get ordered list of streaks with turncounts ---------------------------
+  #---------------------------------------------------------------------------
+
+  #--- the query -> ( streaks_i, turns_sum, num_games, open )
+
+  $query = 
+  q{SELECT streaks_i, sum(turns) AS turns_sum, num_games, open } .
+  q{FROM streaks } .
+  q{JOIN logfiles USING ( logfiles_i ) } .
+  q{JOIN games_set_map USING ( games_set_i ) } .
+  q{JOIN games USING ( rowid ) } .
+  q{WHERE %s } .
+  q{GROUP BY games_set_i, num_games, streaks_i } .
+  q{ORDER BY num_games DESC, turns_sum ASC};
+
+  #--- conditions
+
+  push(@conds, 'num_games > ?');
+  push(@args, 1);
+
+  if($variant && $variant ne 'all') {
+    push(@conds, 'variant = ?');
+    push(@args, $variant);
+  }
+
+  if($logfiles_i) {
+    push(@conds, 'logfiles_i = ?');
+    push(@args, $logfiles_i);
+  }
+
+  $query = sprintf($query, join(' AND ', @conds));
+
+  #--- query limit
+
+  if($limit) {
+    $query .= sprintf(' LIMIT %d', $limit);
+  }
+
+  #--- execute query
+
+  $sth = $dbh->prepare($query);
+  $r = $sth->execute(@args);
+  if(!$r) { return $sth->errstr(); }
+
+  while(my $row = $sth->fetchrow_hashref()) {
+    push(@streaks_ord, $row->{'streaks_i'});
+    $streaks{$row->{'streaks_i'}} = {
+      'turncount' => $row->{'turns_sum'},
+      'num_games' => $row->{'num_games'},
+      'open'      => $row->{'open'},
+      'games'     => []
+    };
+  }
+
+  #-------------------------------------------------------------------------
+  #--- get list of streak games --------------------------------------------
+  #-------------------------------------------------------------------------
+
+  #--- prepare query
+  # FIXME: this query pulls down too much data; the query above pulls down
+  # first 100 streaks, but this query pulls down everything with streak length
+  # 2 or more 
+
+  $query = 
+  q{SELECT *, } .
+  q{to_char(starttime,'YYYY-MM-DD HH24:MI') as starttime_fmt, } .
+  q{to_char(endtime,'YYYY-MM-DD HH24:MI') as endtime_fmt } .
+  q{FROM streaks } .
+  q{JOIN logfiles USING ( logfiles_i ) } .
+  q{JOIN games_set_map USING ( games_set_i ) } .
+  q{JOIN games USING ( rowid ) } .
+  q{WHERE %s };
+
+  #--- conditions
+  @conds = (); 
+  @args = ();
+
+  push(@conds, 'num_games > ?');
+  push(@args, 1);
+
+  if($variant && $variant ne 'all') {
+    push(@conds, 'variant = ?');
+    push(@args, $variant);
+  }
+
+  if($logfiles_i) {
+    push(@conds, 'logfiles_i = ?');
+    push(@args, $logfiles_i);
+  }
+
+  $query = sprintf($query, join(' AND ', @conds));
+
+  #--- execute query
+
+  $sth = $dbh->prepare($query);
+  $r = $sth->execute(@args);
+  if(!$r) { return $sth->errstr(); }
+
+  while(my $row = $sth->fetchrow_hashref()) {
+ 
+    if(exists($streaks{$row->{'streaks_i'}})) {
+      row_fix($row, $variant);
+      push(
+        @{$streaks{$row->{'streaks_i'}}{'games'}},
+        $row
+      );
+    }
+  }
+
+  #--- finish
+
+  return (\@streaks_ord, \%streaks);
+}
+
+
+#============================================================================
+# Function takes streak information loaded from database using
+# sql_load_streaks() and creates data structure that is used by templates
+# to produce final HTML.
+#============================================================================
+
+sub process_streaks
+{
+  #--- arguments
+
+  my (
+    $streaks_ord,   # 1. (aref) list of streak_i's
+    $streaks        # 2. (href) info about streaks (key is streak_i)
+  ) = @_;
+
+  #--- other variables
+
+  my @result;
+
+  #--- processing
+
+  for(my $i = 0; $i < scalar(@$streaks_ord); $i++) {
+    
+    my $streak = $streaks->{$streaks_ord->[$i]};
+    my $games_num = scalar(@{$streak->{'games'}});
+    my $game_first = $streak->{'games'}[0];
+    my $game_last = $streak->{'games'}[$games_num - 1];
+    
+    $result[$i] = my $row = {};
+    
+    $row->{'n'}          = $i + 1;
+    $row->{'wins'}       = $games_num;
+    $row->{'server'}     = $game_first->{'server'};
+    $row->{'open'}       = $streak->{'open'};
+    $row->{'open'}       = 0 if $row->{'server'} eq 'dev';
+    $row->{'variant'}    = $game_first->{'variant'};
+    $row->{'start'}      = $game_first->{'endtime_fmt'};
+    $row->{'start_dump'} = $game_first->{'dump'};
+    $row->{'end'}        = $game_last->{'endtime_fmt'};
+    $row->{'end_dump'}   = $game_last->{'dump'};
+    $row->{'turns'}      = $streak->{'turncount'};
+    $row->{'name'}       = $game_first->{'name'};
+    $row->{'plrpage'}    = $game_first->{'plrpage'};
+    $row->{'glist'}      = [];
+    my $games_cnt = 1;
+    for my $game (@{$streak->{'games'}}) {
+      $game->{'n'} = $games_cnt++;
+      push(@{$row->{'glist'}}, $game);
+    }
+  
+  }
+
+  #--- return
+
+  return \@result;
+}
+
+
+#============================================================================
 # Some additional processing of a row of data from games table (formats
 # fields into human readable format, mostly).
 #============================================================================
@@ -1011,137 +1224,17 @@ sub gen_page_streaks
 
   #--- init
 
-  tty_message('Creating Streaks page (%s): ', $variant);
+  tty_message('Creating Streaks page (%s)', $variant);
   push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
 
-  #-------------------------------------------------------------------------
-  #--- get ordered list of streaks with turncounts -------------------------
-  #-------------------------------------------------------------------------
+  #--- load streak list
 
-  # Unlike the player streak list, this is ordered by sum of streak turns,
-  # this is why there are two queriest instead of one.
-
-  #--- prepare query
-
-  $query = 
-  q{SELECT streaks_i, sum(turns) AS turns_sum, num_games, open } .
-  q{FROM streaks } .
-  q{JOIN logfiles USING ( logfiles_i ) } .
-  q{JOIN games_set_map USING ( games_set_i ) } .
-  q{JOIN games USING ( rowid ) } .
-  q{WHERE %s } .
-  q{GROUP BY games_set_i, num_games, streaks_i } .
-  q{ORDER BY num_games DESC, turns_sum ASC LIMIT 100 };
-
-  push(@conds, 'num_games > ?');
-  push(@args, 1);
-
-  if($variant ne 'all') {
-    push(@conds, 'variant = ?');
-    push(@args, $variant);
-  }
-
-  $query = sprintf($query, join(' AND ', @conds));
-
-  #--- pull and store query result
-  
-  $sth = $dbh->prepare($query);
-  $r = $sth->execute(@args);
-  if(!$r) { return $sth->errstr(); }
-
-  my @streaks_ord;  # ordered list of streaks_i
-  my %streaks;      # streaks_i keyed hash with all info
-
-  while(my $row = $sth->fetchrow_hashref()) {
-    push(@streaks_ord, $row->{'streaks_i'});
-    $streaks{$row->{'streaks_i'}} = {
-      'turncount' => $row->{'turns_sum'},
-      'num_games' => $row->{'num_games'},
-      'open'      => $row->{'open'},
-      'games'     => []
-    };
-  }
-
-  tty_message('turncounts (%d lines)', scalar(@streaks_ord));
-
-  #-------------------------------------------------------------------------
-  #--- get list of streak games --------------------------------------------
-  #-------------------------------------------------------------------------
-
-  #--- prepare query
-  # FIXME: this query pulls down too much data; the query above pulls down
-  # first 100 streaks, but this query pulls down everything with streak length
-  # 2 or more 
-
-  @conds = (); @args = ();
-  $query = 
-  q{SELECT *, } .
-  q{to_char(starttime,'YYYY-MM-DD HH24:MI') as starttime_fmt, } .
-  q{to_char(endtime,'YYYY-MM-DD HH24:MI') as endtime_fmt } .
-  q{FROM streaks } .
-  q{JOIN logfiles USING ( logfiles_i ) } .
-  q{JOIN games_set_map USING ( games_set_i ) } .
-  q{JOIN games USING ( rowid ) } .
-  q{WHERE %s };
-
-  push(@conds, 'num_games > ?');
-  push(@args, 1);
-
-  if($variant ne 'all') {
-    push(@conds, 'variant = ?');
-    push(@args, $variant);
-  }
-
-  $query = sprintf($query, join(' AND ', @conds));
-
-  #--- pull and store query result
-
-  $sth = $dbh->prepare($query);
-  $r = $sth->execute(@args);
-  if(!$r) { return $sth->errstr(); }
-
-  while(my $row = $sth->fetchrow_hashref()) {
- 
-    if(exists($streaks{$row->{'streaks_i'}})) {
-      row_fix($row, $variant);
-      push(
-        @{$streaks{$row->{'streaks_i'}}{'games'}},
-        $row
-      );
-    }
-  }
+  my ($streaks_ord, $streaks) = sql_load_streaks($variant, undef, 100);
+  return $streaks_ord if !ref($streaks_ord);
 
   #--- reprocessing for TT2
-  # see description for player streaks, format of data fed to TT2 is very
-  # similar
 
-  $data{'result'} = [];
-  for(my $i = 0; $i < scalar(@streaks_ord); $i++) {
-    my $streak = $streaks{$streaks_ord[$i]};
-    my $games_num = scalar(@{$streak->{'games'}});
-    my $game_first = $streak->{'games'}[0];
-    my $game_last = $streak->{'games'}[$games_num - 1];
-    @{$data{'result'}}[$i] = my $row = {};
-    $row->{'n'}          = $i + 1;
-    $row->{'wins'}       = $games_num;
-    $row->{'server'}     = $game_first->{'server'};
-    $row->{'open'}       = $streak->{'open'};
-    $row->{'open'}       = 0 if $row->{'server'} eq 'dev';
-    $row->{'variant'}    = $game_first->{'variant'};
-    $row->{'start'}      = $game_first->{'endtime_fmt'};
-    $row->{'start_dump'} = $game_first->{'dump'};
-    $row->{'end'}        = $game_last->{'endtime_fmt'};
-    $row->{'end_dump'}   = $game_last->{'dump'};
-    $row->{'turns'}      = $streak->{'turncount'};
-    $row->{'name'}       = $game_first->{'name'};
-    $row->{'plrpage'}    = $game_first->{'plrpage'};
-    $row->{'glist'}      = [];
-    my $games_cnt = 1;
-    for my $game (@{$streak->{'games'}}) {
-      $game->{'n'} = $games_cnt++;
-      push(@{$row->{'glist'}}, $game);
-    }
-  }
+  $data{'result'} = process_streaks($streaks_ord, $streaks);
 
   #--- supply additional data
 
