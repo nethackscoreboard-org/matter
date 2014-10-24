@@ -1529,6 +1529,14 @@ sub gen_page_dev_player
     return $result if !ref($result);
     $data{'result_all'} = [ reverse(@$result) ];
 
+  #--- load streaks
+
+    my ($streaks_ord, $streaks) = sql_load_streaks(
+      undef, $logfiles_i, $p, undef, 2
+    );
+    return $streaks_ord if !ref($streaks_ord);
+    $data{'result_streaks'} = process_streaks($streaks_ord, $streaks);
+
   #--- supply additional data
 
     $data{'devnull'} = $devnull;

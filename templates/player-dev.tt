@@ -28,6 +28,49 @@
 
 <hr>
 
+[% IF result_streaks.size %]
+<h3>Streaks</h3>
+
+<table class="bordered">
+
+<thead>
+
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>len</th>
+  <th>turns</th>
+  <th>streak games</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+[% FOREACH row IN result_streaks %]
+<tr>
+  <td class="numeric">[% row.n %]</td>
+  <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
+[% IF row.open %]
+  <td class="numeric"><span class="streak-open">[% row.wins %]</span></td>
+[% ELSE %]
+  <td class="numeric">[% row.wins %]</td>
+[% END %]
+  <td class="numeric">[% number(row.turns) %]</td>
+  <td>
+[%- FOREACH game IN row.glist -%]
+<span class="combono">[% game.n %]</span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
+[% END %]
+</td>
+</tr>
+[% END %]
+</tbody>
+
+</table>
+
+[% END %]
+
+
 [% IF result_asc.size %]
 <h3>Ascended Games</h3>
 
