@@ -3,7 +3,9 @@
 -- logfiles_i
 -- Integer used to reference the logfiles entry; note that it is
 -- also referenced from nhdb configuration (nhdb-def.json)! Don't
--- change this, preferably.
+-- change this, preferably. Also, for /dev/null games, this id
+-- MUST be the year of the tournament. See function process_streaks()
+-- in nhdb-stats.pl.
 --
 -- descr
 -- Description of the entry; only shown on the About page

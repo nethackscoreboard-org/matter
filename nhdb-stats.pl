@@ -71,6 +71,19 @@ sub tty_message
 
 
 #============================================================================
+# Return current month and year
+#============================================================================
+
+sub get_month_year
+{
+  my @time = gmtime();
+  my ($mo, $yr) = @time[4..5];
+  $yr += 1900;
+  return ($mo, $yr);
+}
+
+
+#============================================================================
 # Order an array by using reference array
 #============================================================================
 
@@ -559,7 +572,6 @@ sub process_streaks
     $row->{'wins'}       = $games_num;
     $row->{'server'}     = $game_first->{'server'};
     $row->{'open'}       = $streak->{'open'};
-    $row->{'open'}       = 0 if $row->{'server'} eq 'dev';
     $row->{'variant'}    = $game_first->{'variant'};
     $row->{'start'}      = $game_first->{'endtime_fmt'};
     $row->{'start_dump'} = $game_first->{'dump'};
@@ -575,7 +587,20 @@ sub process_streaks
       $game->{'n'} = $games_cnt++;
       push(@{$row->{'glist'}}, $game);
     }
+
+  #--- close open streaks for finished /dev/null tournaments
+  # note, that this relies on logfile_i to be the year of the /dev/null
+  # tournament! This should probably be changed so that there's extra
+  # db field for this.
   
+    if($row->{'server'} eq 'dev') {
+      my $date_game = $game_first->{'logfiles_i'} * 100 + 10;
+      my ($mo, $yr) = get_month_year();
+      my $date_current = $yr * 100 + $mo;
+      if($date_current > $date_game) {
+        $row->{'open'} = 0;    
+      }
+    }
   }
 
   #--- return
@@ -1886,9 +1911,7 @@ tty_message("Loaded list of logfiles\n");
 # do following block if not forced disable (--nodev)
 if(!(defined($cmd_devnull) && !$cmd_devnull)) {
   # collect required information
-  my @time = gmtime();
-  my ($mo, $yr) = @time[4..5];
-  $yr += 1900;
+  my ($mo, $yr) = get_month_year();
   my $def_ok =
     exists $NHdb::nhdb_def->{'devnull'}
     && exists $NHdb::nhdb_def->{'devnull'}{"$yr"};
