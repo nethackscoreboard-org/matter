@@ -165,7 +165,11 @@ scoreboard site. This page is part of the
 <tr>
   <td class="numeric">[% row.n %]</td>
   <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
+[% IF row.open %]
+  <td class="numeric"><span class="streak-open">[% row.wins %]</span></td>
+[% ELSE %]
   <td class="numeric">[% row.wins %]</td>
+[% END %]
   <td class="numeric">[% number(row.turns) %]</td>
   <td>
 [%- FOREACH game IN row.glist -%]
@@ -188,19 +192,32 @@ scoreboard site. This page is part of the
   <th>games total</th>
   <td class="numeric">[% result_total_games %]</td>
 </tr>
+
 <tr>
   <th>games scummed</th>
-  <td class="numeric">[% result_total_games - result_total_valid %] / 
-    [% percent((result_total_games - result_total_valid) / result_total_games * 100) %]</td>
+  <td class="numeric">[% result_total_games - result_total_valid %]
+    [% IF result_total_games > 0 %]
+    / [% percent((result_total_games - result_total_valid) / result_total_games * 100) %]
+    [% END %]
+  </td>
 </tr>
+
 <tr>
   <th>games valid</th>
-  <td class="numeric">[% result_total_valid %] /
-  [% percent(result_total_valid / result_total_games * 100) %]</td>
+  <td class="numeric">[% result_total_valid %]
+  [% IF result_total_games > 0 %]
+  / [% percent(result_total_valid / result_total_games * 100) %]
+  [% END %]
+  </td>
 </tr>
+
 <tr>
   <th>games ascended</th>
-  <td class="numeric">[% result_total_ascended %] / [% percent(result_total_ascended / result_total_valid * 100) %]%</td>
+  <td class="numeric">[% result_total_ascended %] 
+  [% IF result_total_valid > 0 %]
+  / [% percent(result_total_ascended / result_total_valid * 100) %]%
+  [% END %]
+  </td>
 </tr>
 </tbody>
 
