@@ -1,4 +1,6 @@
-<table[% IF id %] id="[% id %]"[% END %] class="bordered">
+[% IF tabcl; tabcl = tabcl _ ' bordered'; ELSE; tabcl = 'bordered'; END %]
+
+<table[% IF id %] id="[% id %]"[% END %] class="[% tabcl %]">
 
 <thead>
 

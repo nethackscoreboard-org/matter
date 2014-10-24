@@ -7,6 +7,9 @@
 <head>
   <link rel="stylesheet" type="text/css" href="/nh/default.css">
   <title>Roles</title>
+  <script type="text/javascript" src="/nh/js/jquery.js"></script> 
+  <script type="text/javascript" src="/nh/js/tablesorter.js"></script>
+  <script type="text/javascript" src="/nh/js/tabsort-dev.js"></script>
 </head>
 
 
@@ -28,42 +31,42 @@
 <hr>
 
 <h3>Archeologist</h3>
-[% INCLUDE tab_ascended.tt result=result.item('arc') id='archeologist' %]
+[% INCLUDE tab_ascended.tt result=result.item('arc') id='archeologist' tabcl='sortasc' %]
 
 <h3>Barbarian</h3>
-[% INCLUDE tab_ascended.tt result=result.item('bar') id='barbarian' %]
+[% INCLUDE tab_ascended.tt result=result.item('bar') id='barbarian' tabcl='sortasc' %]
 
 <h3>Caveman</h3>
-[% INCLUDE tab_ascended.tt result=result.item('cav') id='caveman' %]
+[% INCLUDE tab_ascended.tt result=result.item('cav') id='caveman' tabcl='sortasc' %]
 
 <h3>Healer</h3>
-[% INCLUDE tab_ascended.tt result=result.item('hea') id='healer' %]
+[% INCLUDE tab_ascended.tt result=result.item('hea') id='healer' tabcl='sortasc' %]
 
 <h3>Knight</h3>
-[% INCLUDE tab_ascended.tt result=result.item('kni') id='knight' %]
+[% INCLUDE tab_ascended.tt result=result.item('kni') id='knight' tabcl='sortasc' %]
 
 <h3>Monk</h3>
-[% INCLUDE tab_ascended.tt result=result.item('mon') id='monk' %]
+[% INCLUDE tab_ascended.tt result=result.item('mon') id='monk' tabcl='sortasc' %]
 
 <h3>Priest</h3>
-[% INCLUDE tab_ascended.tt result=result.item('pri') id='priest' %]
+[% INCLUDE tab_ascended.tt result=result.item('pri') id='priest' tabcl='sortasc' %]
 
 <h3>Ranger</h3>
-[% INCLUDE tab_ascended.tt result=result.item('ran') id='ranger' %]
+[% INCLUDE tab_ascended.tt result=result.item('ran') id='ranger' tabcl='sortasc' %]
 
 <h3>Rogue</h3>
-[% INCLUDE tab_ascended.tt result=result.item('rog') id='rogue' %]
+[% INCLUDE tab_ascended.tt result=result.item('rog') id='rogue' tabcl='sortasc' %]
 
 <h3>Samurai</h3>
-[% INCLUDE tab_ascended.tt result=result.item('sam') id='samurai' %]
+[% INCLUDE tab_ascended.tt result=result.item('sam') id='samurai' tabcl='sortasc' %]
 
 <h3>Tourist</h3>
-[% INCLUDE tab_ascended.tt result=result.item('tou') id='tourist' %]
+[% INCLUDE tab_ascended.tt result=result.item('tou') id='tourist' tabcl='sortasc' %]
 
 <h3>Valkyrie</h3>
-[% INCLUDE tab_ascended.tt result=result.item('val') id='valkyrie' %]
+[% INCLUDE tab_ascended.tt result=result.item('val') id='valkyrie' tabcl='sortasc' %]
 
 <h3>Wizard</h3>
-[% INCLUDE tab_ascended.tt result=result.item('wiz') id='wizard' %]
+[% INCLUDE tab_ascended.tt result=result.item('wiz') id='wizard' tabcl='sortasc' %]
 
 [% INCLUDE footer.tt %]

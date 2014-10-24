@@ -7,6 +7,9 @@
 <head>
   <link rel="stylesheet" type="text/css" href="/nh/default.css">
   <title>Players</title>
+  <script type="text/javascript" src="/nh/js/jquery.js"></script> 
+  <script type="text/javascript" src="/nh/js/tablesorter.js"></script>
+  <script type="text/javascript" src="/nh/js/tabsort-dev.js"></script>
 </head>
 
 <body class="page_back">
@@ -23,7 +26,7 @@
 <div class="page_content">
 <h1>Players</h1>
 
-<table class="bordered">
+<table class="bordered sortplr">
 
 <thead>
 <tr>
@@ -46,8 +49,8 @@
   <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
   <td class="numeric">[% row.won %]</td>
   <td class="numeric">[% row.all %]</td>
-  <td class="numeric">[% percent(row.won / row.all * 100) %]</td>
-  <td class="numeric">[% number(row.score) %]</td>
+  <td class="numeric" data-sortkey="[% row.won / row.all %]">[% percent(row.won / row.all * 100) %]</td>
+  <td class="numeric" data-sortkey="[% row.score %]">[% number(row.score) %]</td>
   <td class="numeric">[% row.ncond %]</td>
   <td class="numeric">[% row.maxlvl %]</td>
   <td class="numeric">[% row.all - row.valid %]</td>

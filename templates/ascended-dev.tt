@@ -6,6 +6,11 @@
 <head>
   <link rel="stylesheet" type="text/css" href="/nh/default.css">
   <title>Ascended Games</title>
+[% IF result.size -%]  
+  <script type="text/javascript" src="/nh/js/jquery.js"></script> 
+  <script type="text/javascript" src="/nh/js/tablesorter.js"></script>
+  <script type="text/javascript" src="/nh/js/tabsort-dev.js"></script>
+[% END -%]
 </head>
 
 <body class="page_back">
@@ -22,6 +27,6 @@
 <div class="page_content">
 <h1>Ascended Games</h1>
 
-[% INCLUDE tab_ascended.tt %]
+[% INCLUDE tab_ascended.tt id="ascended" %]
 
 [% INCLUDE footer.tt %]
