@@ -28,7 +28,7 @@
 [%- END -%]
 [%- IF not name -%]
 [%- IF devnull -%]
-  <td><a href="[% row.plrpage %]">[% row.name_orig %]</a></td>
+  <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
 [%- ELSE -%]
   <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 [%- END -%]
