@@ -389,7 +389,7 @@ sub sql_load_logfiles
 #
 # The data structure built in memory here is following:
 #
-# --- this defines streak ordering and is just array of integeres - row ids
+# --- this defines streak ordering and is just array of integers - row ids
 # --- into the 'streaks' table
 # @streaks_ord = ( streak_i, streak_i, ..., streak_i );
 #
@@ -404,6 +404,12 @@ sub sql_load_logfiles
 #   ...
 # )
 #
+# Arguments: 1. variant id, 'all' or undef; 2. logfiles_i value, used for
+# selecting /dev/null games; 3. player name, this is normally the 'name'
+# field, but when logfiles_i is true, then 'name_orig' is used instead (again
+# this is for /dev/null processing); 4. LIMIT value; 5. list streaks with
+# at least this many games (no value or value of 0-1 means listing even
+# potential streaks).
 #============================================================================
 
 sub sql_load_streaks
@@ -413,7 +419,9 @@ sub sql_load_streaks
   my (
     $variant,         # 1. variant
     $logfiles_i,      # 2. logfiles id
-    $limit            # 3. limit the query
+    $name,            # 3. player name
+    $limit,           # 4. limit the query
+    $num_games        # 5. games-in-a-streak cutoff value
   ) = @_;
 
   #--- other variables
@@ -440,8 +448,10 @@ sub sql_load_streaks
 
   #--- conditions
 
-  push(@conds, 'num_games > ?');
-  push(@args, 1);
+  if($num_games) {
+    push(@conds, 'num_games >= ?');
+    push(@args, $num_games);
+  }
 
   if($variant && $variant ne 'all') {
     push(@conds, 'variant = ?');
@@ -451,6 +461,15 @@ sub sql_load_streaks
   if($logfiles_i) {
     push(@conds, 'streaks.logfiles_i = ?');
     push(@args, $logfiles_i);
+  }
+
+  if($name) {
+    if($logfiles_i) {
+      push(@conds, 'games.name_orig = ?');
+    } else {
+      push(@conds, 'games.name = ?');
+    }      
+    push(@args, $name);
   }
 
   $query = sprintf($query, join(' AND ', @conds));
@@ -592,7 +611,7 @@ sub process_streaks
   # note, that this relies on logfile_i to be the year of the /dev/null
   # tournament! This should probably be changed so that there's extra
   # db field for this.
-  
+
     if($row->{'server'} eq 'dev') {
       my $date_game = $game_first->{'logfiles_i'} * 100 + 10;
       my ($mo, $yr) = get_month_year();
@@ -1255,7 +1274,7 @@ sub gen_page_streaks
 
   #--- load streak list
 
-  my ($streaks_ord, $streaks) = sql_load_streaks($variant, undef, 100);
+  my ($streaks_ord, $streaks) = sql_load_streaks($variant, undef, undef, 100, 2);
   return $streaks_ord if !ref($streaks_ord);
 
   #--- reprocessing for TT2
@@ -1746,7 +1765,7 @@ EOHD
   #-- "Streaks" --------------------------------------------------------------
   #---------------------------------------------------------------------------
 
-  my ($streaks_ord, $streaks) = sql_load_streaks(undef, $logfiles_i, undef);
+  my ($streaks_ord, $streaks) = sql_load_streaks(undef, $logfiles_i, undef, undef, 2);
   return $streaks_ord if !ref($streaks_ord);
   $data{'result_streaks'} = process_streaks($streaks_ord, $streaks);
   tty_message(', streaks (%d)', scalar(@$streaks_ord));
