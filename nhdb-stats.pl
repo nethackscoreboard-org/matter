@@ -1814,6 +1814,81 @@ EOHD
 
 
 #============================================================================
+# Generate Combos table for /dev/null
+#============================================================================
+
+sub gen_page_dev_combos
+{
+  #--- arguments
+
+  my (
+    $logfiles_i     # 1. logfile id
+  ) = @_;
+
+  #--- other variables
+
+  my $query;
+  my %data;
+
+  #--- init
+
+  tty_message('Generating Combos page (dev)');
+
+  #--- query
+
+  $query = <<'EOHD';
+    SELECT * FROM games WHERE logfiles_i = ? AND scummed IS FALSE
+EOHD
+  my $result = sql_load($query, undef, undef, undef , $logfiles_i);
+  return $result if !ref($result);
+
+  #--- reprocessing
+
+  my (%played_race, %won_race);
+  my (%played_role, %won_role);
+  my (%played_combo, %won_combo);
+  my (%played_align, %won_align);
+  my %combo;
+
+  for my $row (@$result) {
+    no warnings;
+    if($row->{'ascended'}) {
+      $won_race{$row->{'race'}}++;
+      $won_role{$row->{'role'}}++;
+      $won_align{$row->{'race'}}{$row->{'align0'}}++;
+      $combo{$row->{'role'}}{$row->{'race'}}{$row->{'align0'}}{'won'}++;
+    }
+    $played_race{$row->{'race'}}++;
+    $played_role{$row->{'role'}}++;
+    $played_align{$row->{'race'}}{$row->{'align0'}}++;
+    $combo{$row->{'role'}}{$row->{'race'}}{$row->{'align0'}}{'pld'}++;
+  }
+
+  $data{'p_race'} = \%played_race;
+  $data{'p_role'} = \%played_role;
+  $data{'p_align'} = \%played_align;
+  $data{'w_race'} = \%won_race;
+  $data{'w_role'} = \%won_role;
+  $data{'w_align'} = \%won_align;
+  $data{'combo'} = \%combo;
+
+  #--- supply additional data
+
+  $data{'devnull'} = $devnull_year if $devnull;
+  $data{'cur_time'} = scalar(localtime());
+
+  #--- process template
+
+  $tt->process('combos-dev.tt', \%data,  $devnull_path . '/combos.html')
+    or die $tt->error();
+
+  #--- finish
+
+  tty_message(", done\n");
+}
+
+
+#============================================================================
 # Display usage help.
 #
 # Semantics description, this should be moved into some other text, but for
@@ -2043,6 +2118,12 @@ if($devnull && $cmd_aggr) {
 
 if($devnull && $cmd_aggr) {
   gen_page_dev_front($devnull);
+}
+
+#--- generate /dev/null front page
+
+if($devnull && $cmd_aggr) {
+  gen_page_dev_combos($devnull);
 }
 
 #--- generic info page

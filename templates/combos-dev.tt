@@ -1,0 +1,707 @@
+[% MACRO pcombo(combo) BLOCK %]
+  [% IF combo.won %]
+    <span class="won">
+  [% END %]
+  [% combo.pld %]
+  [% IF combo.won %]
+    </span>
+  [% END %]
+[% END -%]
+[% MACRO wcombo(combo) BLOCK %]
+  [% IF combo.won %]
+    <span class="won">
+  [% END %]
+  [% combo.won %]
+  [% IF combo.won %]
+    </span>
+  [% END %]
+[% END -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <title>Combos</title>
+</head>
+
+
+<body class="page_back">
+
+<div class="page">
+
+<div class="toplinks">
+  <a href="./">Overview</a> |
+  <a href="recent.html">Recent Games</a> |
+  <a href="ascended.html">Ascended Games</a> |
+  <a href="players.html">Players</a> |
+  <a href="roles.html">Roles</a> 
+</div>
+
+<div class="page_content">
+
+<h1>Combos</h1>
+
+<hr>
+
+
+<h3>Played Combos</h3>
+
+<table class="bordered">
+
+<thead>
+
+<tr>
+  <th></th>
+  <th colspan="3" class="center">Human</th>
+  <th colspan="3" class="center">Elf</th>
+  <th colspan="3" class="center">Dwarf</th>
+  <th colspan="3" class="center">Gnome</th>
+  <th colspan="3" class="center">Orc</th>
+  <th></th>
+</tr>
+
+<tr>
+  <td></td>
+  <td colspan="3" class="subtotal1">[% p_race.Hum %]</td>
+  <td colspan="3" class="subtotal1">[% p_race.Elf %]</td>
+  <td colspan="3" class="subtotal1">[% p_race.Dwa %]</td>
+  <td colspan="3" class="subtotal1">[% p_race.Gno %]</td>
+  <td colspan="3" class="subtotal1">[% p_race.Orc %]</td>
+  <td>&nbsp;</td>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+  <th>Archeologist</th>
+  <td class="numeric">[% pcombo(combo.Arc.Hum.Law) %]</td>
+  <td class="numeric">[% pcombo(combo.Arc.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Arc.Dwa.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Arc.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Arc %]</td>
+</tr>
+
+<tr>
+  <th>Barbarian</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Bar.Hum.Neu) %]</td>
+  <td class="numeric">[% pcombo(combo.Bar.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Bar.Orc.Cha) %]</td>
+  <td class="subtotal2">[% p_role.Bar %]</td>
+</tr>
+
+<tr>
+  <th>Caveman</th>
+  <td class="numeric">[% pcombo(combo.Cav.Hum.Law) %]</td>
+  <td class="numeric">[% pcombo(combo.Cav.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Cav.Dwa.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Cav.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Cav %]</td>
+</tr>
+
+<tr>
+  <th>Healer</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Hea.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Hea.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Hea %]</td>
+</tr>
+
+<tr>
+  <th>Knight</th>
+  <td class="numeric">[% pcombo(combo.Kni.Hum.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Kni %]</td>
+</tr>
+
+<tr>
+  <th>Monk</th>
+  <td class="numeric">[% pcombo(combo.Mon.Hum.Law) %]</td>
+  <td class="numeric">[% pcombo(combo.Mon.Hum.Neu) %]</td>
+  <td class="numeric">[% pcombo(combo.Mon.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Mon %]</td>
+</tr>
+
+<tr>
+  <th>Priest</th>
+  <td class="numeric">[% pcombo(combo.Pri.Hum.Law) %]</td>
+  <td class="numeric">[% pcombo(combo.Pri.Hum.Neu) %]</td>
+  <td class="numeric">[% pcombo(combo.Pri.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Pri.Elf.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Pri %]</td>
+</tr>
+
+<tr>
+  <th>Ranger</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Ran.Hum.Neu) %]</td>
+  <td class="numeric">[% pcombo(combo.Ran.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Ran.Elf.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Ran.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Ran.Orc.Cha) %]</td>
+  <td class="subtotal2">[% p_role.Ran %]</td>
+</tr>
+
+<tr>
+  <th>Rogue</th>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Rog.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Rog.Orc.Cha) %]</td>
+  <td class="subtotal2">[% p_role.Rog %]</td>
+</tr>
+
+<tr>
+  <th>Samurai</th>
+  <td class="numeric">[% pcombo(combo.Sam.Hum.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Sam %]</td>
+</tr>
+
+<tr>
+  <th>Tourist</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Tou.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Tou %]</td>
+</tr>
+
+<tr>
+  <th>Valkyrie</th>
+  <td class="numeric">[% pcombo(combo.Val.Hum.Law) %]</td>
+  <td class="numeric">[% pcombo(combo.Val.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Val.Dwa.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% p_role.Val %]</td>
+</tr>
+
+<tr>
+  <th>Wizard</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Wiz.Hum.Neu) %]</td>
+  <td class="numeric">[% pcombo(combo.Wiz.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Wiz.Elf.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Wiz.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% pcombo(combo.Wiz.Orc.Cha) %]</td>
+  <td class="subtotal2">[% p_role.Wiz %]</td>
+</tr>
+
+</tbody>
+
+<tfoot>
+
+<tr>
+  <td>&nbsp;</td>
+  <td class="subtotal1">[% p_align.Hum.Law %]</td>
+  <td class="subtotal1">[% p_align.Hum.Neu %]</td>
+  <td class="subtotal1">[% p_align.Hum.Cha %]</td>
+  <td class="subtotal1">[% p_align.Elf.Law %]</td>
+  <td class="subtotal1">[% p_align.Elf.Neu %]</td>
+  <td class="subtotal1">[% p_align.Elf.Cha %]</td>
+  <td class="subtotal1">[% p_align.Dwa.Law %]</td>
+  <td class="subtotal1">[% p_align.Dwa.Neu %]</td>
+  <td class="subtotal1">[% p_align.Dwa.Cha %]</td>
+  <td class="subtotal1">[% p_align.Gno.Law %]</td>
+  <td class="subtotal1">[% p_align.Gno.Neu %]</td>
+  <td class="subtotal1">[% p_align.Gno.Cha %]</td>
+  <td class="subtotal1">[% p_align.Orc.Law %]</td>
+  <td class="subtotal1">[% p_align.Orc.Neu %]</td>
+  <td class="subtotal1">[% p_align.Orc.Cha %]</td>
+  <td></td>
+</tr>
+
+<tr>
+  <th></th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th></th>
+</tr>
+
+</tfoot>
+
+</table>
+
+
+<h3>Ascended Combos</h3>
+
+<table class="bordered">
+
+<thead>
+
+<tr>
+  <th></th>
+  <th colspan="3" class="center">Human</th>
+  <th colspan="3" class="center">Elf</th>
+  <th colspan="3" class="center">Dwarf</th>
+  <th colspan="3" class="center">Gnome</th>
+  <th colspan="3" class="center">Orc</th>
+  <th></th>
+</tr>
+
+<tr>
+  <td></td>
+  <td colspan="3" class="subtotal1">[% w_race.Hum %]</td>
+  <td colspan="3" class="subtotal1">[% w_race.Elf %]</td>
+  <td colspan="3" class="subtotal1">[% w_race.Dwa %]</td>
+  <td colspan="3" class="subtotal1">[% w_race.Gno %]</td>
+  <td colspan="3" class="subtotal1">[% w_race.Orc %]</td>
+  <td>&nbsp;</td>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+  <th>Archeologist</th>
+  <td class="numeric">[% wcombo(combo.Arc.Hum.Law) %]</td>
+  <td class="numeric">[% wcombo(combo.Arc.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Arc.Dwa.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Arc.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Arc %]</td>
+</tr>
+
+<tr>
+  <th>Barbarian</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Bar.Hum.Neu) %]</td>
+  <td class="numeric">[% wcombo(combo.Bar.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Bar.Orc.Cha) %]</td>
+  <td class="subtotal2">[% w_role.Bar %]</td>
+</tr>
+
+<tr>
+  <th>Caveman</th>
+  <td class="numeric">[% wcombo(combo.Cav.Hum.Law) %]</td>
+  <td class="numeric">[% wcombo(combo.Cav.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Cav.Dwa.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Cav.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Cav %]</td>
+</tr>
+
+<tr>
+  <th>Healer</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Hea.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Hea.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Hea %]</td>
+</tr>
+
+<tr>
+  <th>Knight</th>
+  <td class="numeric">[% wcombo(combo.Kni.Hum.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Kni %]</td>
+</tr>
+
+<tr>
+  <th>Monk</th>
+  <td class="numeric">[% wcombo(combo.Mon.Hum.Law) %]</td>
+  <td class="numeric">[% wcombo(combo.Mon.Hum.Neu) %]</td>
+  <td class="numeric">[% wcombo(combo.Mon.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Mon %]</td>
+</tr>
+
+<tr>
+  <th>Priest</th>
+  <td class="numeric">[% wcombo(combo.Pri.Hum.Law) %]</td>
+  <td class="numeric">[% wcombo(combo.Pri.Hum.Neu) %]</td>
+  <td class="numeric">[% wcombo(combo.Pri.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Pri.Elf.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Pri %]</td>
+</tr>
+
+<tr>
+  <th>Ranger</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Ran.Hum.Neu) %]</td>
+  <td class="numeric">[% wcombo(combo.Ran.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Ran.Elf.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Ran.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Ran.Orc.Cha) %]</td>
+  <td class="subtotal2">[% w_role.Ran %]</td>
+</tr>
+
+<tr>
+  <th>Rogue</th>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Rog.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Rog.Orc.Cha) %]</td>
+  <td class="subtotal2">[% w_role.Rog %]</td>
+</tr>
+
+<tr>
+  <th>Samurai</th>
+  <td class="numeric">[% wcombo(combo.Sam.Hum.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Sam %]</td>
+</tr>
+
+<tr>
+  <th>Tourist</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Tou.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Tou %]</td>
+</tr>
+
+<tr>
+  <th>Valkyrie</th>
+  <td class="numeric">[% wcombo(combo.Val.Hum.Law) %]</td>
+  <td class="numeric">[% wcombo(combo.Val.Hum.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Val.Dwa.Law) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="subtotal2">[% w_role.Val %]</td>
+</tr>
+
+<tr>
+  <th>Wizard</th>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Wiz.Hum.Neu) %]</td>
+  <td class="numeric">[% wcombo(combo.Wiz.Hum.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Wiz.Elf.Cha) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Wiz.Gno.Neu) %]</td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="fcombo"></td>
+  <td class="numeric">[% wcombo(combo.Wiz.Orc.Cha) %]</td>
+  <td class="subtotal2">[% w_role.Wiz %]</td>
+</tr>
+
+</tbody>
+
+<tfoot>
+
+<tr>
+  <td>&nbsp;</td>
+  <td class="subtotal1">[% w_align.Hum.Law %]</td>
+  <td class="subtotal1">[% w_align.Hum.Neu %]</td>
+  <td class="subtotal1">[% w_align.Hum.Cha %]</td>
+  <td class="subtotal1">[% w_align.Elf.Law %]</td>
+  <td class="subtotal1">[% w_align.Elf.Neu %]</td>
+  <td class="subtotal1">[% w_align.Elf.Cha %]</td>
+  <td class="subtotal1">[% w_align.Dwa.Law %]</td>
+  <td class="subtotal1">[% w_align.Dwa.Neu %]</td>
+  <td class="subtotal1">[% w_align.Dwa.Cha %]</td>
+  <td class="subtotal1">[% w_align.Gno.Law %]</td>
+  <td class="subtotal1">[% w_align.Gno.Neu %]</td>
+  <td class="subtotal1">[% w_align.Gno.Cha %]</td>
+  <td class="subtotal1">[% w_align.Orc.Law %]</td>
+  <td class="subtotal1">[% w_align.Orc.Neu %]</td>
+  <td class="subtotal1">[% w_align.Orc.Cha %]</td>
+  <td></td>
+</tr>
+
+<tr>
+  <th></th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th class="align">Law</th><th class="align">Neu</th><th class="align">Cha</th>
+  <th></th>
+</tr>
+
+</tfoot>
+
+</table>
+
+
+
+[% INCLUDE footer.tt %]
