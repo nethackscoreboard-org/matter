@@ -7,6 +7,9 @@
 <head>
   <link rel="stylesheet" type="text/css" href="/nh/default.css">
   <title>/dev/null/nethack [% devnull %]</title>
+  <script type="text/javascript" src="/nh/js/jquery.js"></script>
+  <script type="text/javascript" src="/nh/js/jquery.countdown.min.js"></script>
+  <script type="text/javascript" src="/nh/js/countdown.js"></script>
 </head>
 
 
@@ -39,6 +42,8 @@ ascension ratio is used. Author of this page can be contacted as Mandevil on
 #nethack on FreeNode IRC network. Page design was "borrowed" from DCSS
 scoreboard site. This page is part of the 
 <a href="https://voyager.lupomesky.cz/nh/">NetHack Scoreboard</a>.</p>
+
+<div id="countdown"><span id="countmsg">The tournament starts in </span><div id="counter" style="display : inline-block">xxx</div></div>
 
 <hr>
 
