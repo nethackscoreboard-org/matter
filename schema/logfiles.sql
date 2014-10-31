@@ -280,12 +280,23 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  2013, '/dev/null 2014',
+  2013, '/dev/null 2013',
   'dev', 'nh', NULL,
   NULL,
   'devnull-2013.log',
   NULL,
   NULL,
   TRUE, TRUE, FALSE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  2014, '/dev/null 2014',
+  'dev', 'nh', NULL,
+  'http://nethack.devnull.net/tournament/scores.xlogfile',
+  'devnull-2014.log',
+  NULL,
+  NULL,
+  TRUE, FALSE, FALSE,
   'UTC', NULL, NULL
 );
