@@ -13,6 +13,7 @@
 <div class="page">
 
 <div class="toplinks">
+<a style="font-weight : bold" href="devnull/2014/">/dev/null/nethack 2014</a> |
 <a href="./">Overview</a> |
 <a href="recent.all.html">Recent Games</a> |
 <a href="ascended.all.html">Ascended Games</a> |
@@ -32,6 +33,11 @@ also have their personal statistics put together into one summary view.
 </p>
 
 <hr>
+
+<p><b>UPDATE 1-10-2014</b>:
+NetHack Scoreboard now also runs alternative statistics website for the /dev/null/nethack 2014 tournament. It's very similar to the one in the last year, but it was rewritten from the ground up to use NHS infrastructure. See it on following URL: 
+<a href="https://voyager.lupomesky.cz/nh/devnull/2014/">https://voyager.lupomesky.cz/nh/devnull/2014/</a>.
+</p>
 
 <p><b>UPDATE 22-09-2014</b>:
 Added historic data from acehack.eu (aeu) public server.
