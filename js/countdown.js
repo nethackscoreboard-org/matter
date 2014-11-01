@@ -21,7 +21,7 @@ $(document).ready(function()
       );
     })
     .on("finish.countdown", function(event) {
-      $('span#countmsg').text("The tournament ends in");
+      $('span#countmsg').text("The tournament ends in ");
       $("div#counter").unbind("finish.countdown");
       $("div#counter").countdown(devend);
       $("div#counter").on("finish.countdown", function(event) {
