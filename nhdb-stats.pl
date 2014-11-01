@@ -861,7 +861,7 @@ sub gen_page_recent
 
   #--- supply additional data
 
-  $data{'devnull'}  = $devnull if $devnull;
+  $data{'devnull'}  = $devnull if $logfiles_i;
   $data{'result'}   = $result;
   $data{'cur_time'} = scalar(localtime());
   $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
