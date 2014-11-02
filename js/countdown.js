@@ -13,7 +13,7 @@ $(document).ready(function()
     .countdown(devstart)
     .on("update.countdown", function(event) {
       var fmt = '%-H:%M:%S';
-      if(event.offset.days > 0) {
+      if(event.offset.totalDays > 0) {
         fmt = '%-D day%!D, ' + fmt;
       }
       $(this).text(
