@@ -543,7 +543,7 @@ sub sql_load_streaks
   while(my $row = $sth->fetchrow_hashref()) {
  
     if(exists($streaks{$row->{'streaks_i'}})) {
-      row_fix($row, $variant);
+      row_fix($row, $variant, $logfiles_i);
       push(
         @{$streaks{$row->{'streaks_i'}}{'games'}},
         $row
@@ -637,6 +637,7 @@ sub row_fix
 {
   my $row = shift;
   my $variant = shift;
+  my $devnull = shift;
 
   #--- convert realtime to human-readable form
 
@@ -676,9 +677,9 @@ sub row_fix
 
   #--- player page
 
-  if($logfiles->{$row->{'logfiles_i'}}{'server'} eq 'dev') {
+  if($devnull) {
     $row->{'plrpage'} = url_substitute(
-      sprintf("players/%%u.html", $variant),
+      sprintf("players/%%x.html", $variant),
       $row
     );
   } else {
@@ -853,7 +854,7 @@ sub gen_page_recent
 
   $result = sql_load(
     $query_lst, $cnt_start, $cnt_incr,
-    sub { row_fix($_[0], $variant); },
+    sub { row_fix($_[0], $variant, $logfiles_i); },
     @arg
   );
   return sprintf('Failed to query database (%s)', $result) if !ref($result);
@@ -1516,14 +1517,14 @@ sub gen_page_dev_player
 
     $result = sql_load(
       $query_asc, 1, 1, 
-      sub { row_fix($_[0], 'nh'); },
+      sub { row_fix($_[0], 'nh', $logfiles_i); },
       $logfiles_i, $p
     );
     return $result if !ref($result);
     $data{'result_asc'} = [ reverse(@$result) ];
     $result = sql_load(
       $query_all, 1, 1,
-      sub { row_fix($_[0], 'nh'); },
+      sub { row_fix($_[0], 'nh', $logfiles_i); },
       $logfiles_i, $p
     );
     return $result if !ref($result);
@@ -1694,7 +1695,7 @@ EOHD
   $result = sql_load(
     $query, 
     $result->[0]{'count'}, -1, 
-    sub { row_fix($_[0], 'nh'); },
+    sub { row_fix($_[0], 'nh', $logfiles_i); },
     $logfiles_i
   );
   return $result if !ref($result);
@@ -1713,7 +1714,11 @@ EOHD
     LIMIT 5
 EOHD
 
-  $result = sql_load($query, 1, 1, sub { row_fix($_[0], 'nh'); }, $logfiles_i);
+  $result = sql_load(
+    $query, 1, 1, 
+    sub { row_fix($_[0], 'nh', $logfiles_i); }, 
+    $logfiles_i
+  );
   return $result if !ref($result);
   $data{'result_top5_turns'} = $result;
   tty_message(', top5 turns (%d)', scalar(@$result));
@@ -1730,7 +1735,11 @@ EOHD
     LIMIT 5
 EOHD
 
-  $result = sql_load($query, 1, 1, sub { row_fix($_[0], 'nh'); }, $logfiles_i);
+  $result = sql_load(
+    $query, 1, 1, 
+    sub { row_fix($_[0], 'nh', $logfiles_i); },
+    $logfiles_i
+  );
   return $result if !ref($result);
   $data{'result_top5_rt'} = $result;
   tty_message(', top5 rt (%d)', scalar(@$result));
@@ -1747,7 +1756,11 @@ EOHD
     LIMIT 5
 EOHD
 
-  $result = sql_load($query, 1, 1, sub { row_fix($_[0], 'nh'); }, $logfiles_i);
+  $result = sql_load(
+    $query, 1, 1,
+    sub { row_fix($_[0], 'nh', $logfiles_i); },
+    $logfiles_i
+  );
   return $result if !ref($result);
   $data{'result_top5_conduct'} = $result;
   tty_message(', top5 cond (%d)', scalar(@$result));
@@ -1764,7 +1777,11 @@ EOHD
     LIMIT 5
 EOHD
 
-  $result = sql_load($query, 1, 1, sub { row_fix($_[0], 'nh'); }, $logfiles_i);
+  $result = sql_load(
+    $query, 1, 1,
+    sub { row_fix($_[0], 'nh', $logfiles_i); },
+    $logfiles_i
+  );
   return $result if !ref($result);
   $data{'result_top5_lowscore'} = $result;
   tty_message(', top5 low (%d)', scalar(@$result));
