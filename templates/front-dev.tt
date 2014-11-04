@@ -33,15 +33,16 @@
 
 <hr>
 
-<p>This page is a supplement to the main <a
-href="http://nethack.devnull.net/tournament/scoreboard.shtml">scoreboard
+<p>This page is a supplement to the main
+<a href="http://nethack.devnull.net/tournament/scoreboard.shtml">scoreboard
 pages</a>. There's no guarantee of accuracy or timeliness. The pages update
-every 10 minutes. All games shorter than 10 turns are excluded from the
-statistics. Players are ranked by their number of ascensions, in case of ties,
-ascension ratio is used. Author of this page can be contacted as Mandevil on
-#nethack on FreeNode IRC network. Page design was "borrowed" from DCSS
-scoreboard site. This page is part of the 
-<a href="https://voyager.lupomesky.cz/nh/">NetHack Scoreboard</a>.</p>
+every 10 minutes. All games that are quit/escaped with less than 1000 points
+are not listed in the tables, but they still break streaks and affect
+win ratios. Players are ranked by their number of ascensions, in case
+of ties, ascension ratio is used. Author of this page can be contacted as
+Mandevil on #nethack on FreeNode IRC network. Page design was "borrowed"
+from DCSS scoreboard site. This page is part of the 
+<a href="/nh/">NetHack Scoreboard</a>.</p>
 
 <div id="countdown"><span id="countmsg">The tournament starts in </span><div id="counter" style="display : inline-block">xxx</div></div>
 
