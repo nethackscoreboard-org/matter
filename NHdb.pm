@@ -200,6 +200,7 @@ sub format_duration
 # %u - username
 # %U - first letter of username
 # %s - start time
+# %x - username before translation (as it appears in xlogfile)
 #===============================================================================
 
 sub url_substitute
@@ -211,11 +212,13 @@ sub url_substitute
   my $r_uinitial = substr($data->{'name'}, 0, 1);
   my $r_starttime = $data->{'starttime_raw'};
   my $r_endtime = $data->{'endtime_raw'};
+  my $r_username_orig = $data->{'name_orig'};
 
   $strg =~ s/%u/$r_username/g;
   $strg =~ s/%U/$r_uinitial/g;
   $strg =~ s/%s/$r_starttime/g;
   $strg =~ s/%e/$r_endtime/g;
+  $strg =~ s/%x/$r_username_orig/g;
 
   return $strg;
 }
