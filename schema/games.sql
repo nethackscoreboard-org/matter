@@ -57,7 +57,8 @@ GRANT USAGE ON games_seq TO nhdbfeeder;
 
 CREATE OR REPLACE VIEW v_games_recent AS
   SELECT 
-    rowid, logfiles_i, name, name_orig, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
@@ -73,7 +74,8 @@ GRANT SELECT ON v_games_recent TO nhdbstats;
 
 CREATE OR REPLACE VIEW v_games AS
   SELECT 
-    rowid, logfiles_i, name, name_orig, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
@@ -89,7 +91,8 @@ GRANT SELECT ON v_games TO nhdbstats;
 
 CREATE OR REPLACE VIEW v_games_all AS
   SELECT 
-    rowid, logfiles_i, name, name_orig, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
@@ -104,7 +107,8 @@ GRANT SELECT ON v_games_all TO nhdbstats;
 
 CREATE OR REPLACE VIEW v_ascended_recent AS
   SELECT
-    rowid, logfiles_i, name, name_orig, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
@@ -140,7 +144,8 @@ GRANT SELECT ON v_ascended_recent TO nhdbstats;
 
 CREATE OR REPLACE VIEW v_ascended AS
   SELECT
-    rowid, logfiles_i, name, name_orig, server, variant, role, race, gender, align,
+    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    gender, gender0, align, align0,
     endtime AT TIME ZONE 'UTC' AS endtime, endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
     games.version, ascended
