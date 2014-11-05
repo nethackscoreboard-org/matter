@@ -22,7 +22,7 @@
 <tr>
   <td>[% row.n %]</td>
   <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
-  <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
+  <td>[% row.role %]-[% row.race %]-[% row.gender0 %]-[% row.align0 %]</td>
   <td class="numeric">[% number(row.points) %]</td>
   <td class="numeric">[% number(row.turns) %]</td>
   <td class="numeric">[% row.realtime %]</td>

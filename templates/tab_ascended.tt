@@ -38,6 +38,7 @@
   [%- IF devnull; THEN; row.name = row.name_orig; END -%]
   <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 [%- END %]
+  [%- IF devnull; THEN; row.gender = row.gender0; row.align = row.align0; END -%]
   <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
 [% IF row.dump -%]
   <td class="numeric" data-sortkey="[% row.points %]"><a href="[% row.dump %]">[% number(row.points) %]</a></td>

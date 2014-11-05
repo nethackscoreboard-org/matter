@@ -115,7 +115,7 @@ from DCSS scoreboard site. This page is part of the
 <tr>
   <td class="numeric">[% row.n %]</td>
   <td><a href="players/[% row.name_orig %].html">[% row.name_orig %]</a></td>
-  <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
+  <td>[% row.role %]-[% row.race %]-[% row.gender0 %]-[% row.align0 %]</td>
   <td class="numeric">[% number(row.points) %]</td>
   <td class="numeric">[% number(row.turns) %]</td>
   <td class="numeric">[% row.realtime %]</td>
@@ -181,7 +181,7 @@ from DCSS scoreboard site. This page is part of the
   <td class="numeric">[% number(row.turns) %]</td>
   <td>
 [%- FOREACH game IN row.glist -%]
-<span class="combono">[% game.n %]</span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
+<span class="combono">[% game.n %]</span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender0 %]-[% game.align0 %]</span>
 [% END %]
 </td>
 </tr>
