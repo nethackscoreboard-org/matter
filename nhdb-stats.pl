@@ -1591,7 +1591,7 @@ sub gen_page_dev_roles
 
   $result = sql_load(
     $query, undef, undef,
-    sub { row_fix($_[0], 'nh'); },
+    sub { row_fix($_[0], 'nh', $logfiles_i); },
     $logfiles_i
   );
   return $result if !ref($result);
