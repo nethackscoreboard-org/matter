@@ -148,7 +148,7 @@ from DCSS scoreboard site. This page is part of the
 
 <h3>Low Scored Games</h3>
 
-[% INCLUDE "tab_front-dev.tt" result=result_top5_lowscore %]
+[% INCLUDE "tab_front-dev.tt" result=result_top5_lowscore type="lowscore" %]
 
 
 <h3>Streaks</h3>

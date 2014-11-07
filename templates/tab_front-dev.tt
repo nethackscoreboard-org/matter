@@ -10,6 +10,7 @@
   <th>turns</th>
   <th>duration</th>
   <th>hp</th>
+  [% IF type == "lowscore" %]<th>maxlvl</th>[% END %]
   <th>time</th>
   <th colspan="2">conducts</th>
 </tr>
@@ -27,6 +28,7 @@
   <td class="numeric">[% number(row.turns) %]</td>
   <td class="numeric">[% row.realtime %]</td>
   <td class="numeric">[% row.hp %]/[% row.maxhp %]</td>
+  [% IF type == "lowscore" %]<td class="numeric">[% row.maxlvl %]</td>[% END %]
   <td>[% row.endtime %]</td>
   <td class="numeric">[% row.ncond %]</td>
   <td>[% row.tcond %]</td>
