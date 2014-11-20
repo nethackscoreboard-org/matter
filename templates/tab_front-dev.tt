@@ -29,7 +29,7 @@
   <td class="numeric">[% row.realtime %]</td>
   <td class="numeric">[% row.hp %]/[% row.maxhp %]</td>
   [% IF type == "lowscore" %]<td class="numeric">[% row.maxlvl %]</td>[% END %]
-  <td>[% row.endtime %]</td>
+  <td>[% row.endtime_fmt %]</td>
   <td class="numeric">[% row.ncond %]</td>
   <td>[% row.tcond %]</td>
 </tr>
