@@ -201,6 +201,17 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
+ 12, 'acehack.de (dNetHack)',
+ 'ade', 'dnh', NULL,
+ 'https://acehack.de/dnethackxlogfile',
+ 'log.dnh.ade',
+ 'https://acehack.de/userdata/%u/dnethack/dumplog/%s',
+ NULL,
+ TRUE, FALSE, TRUE,
+ 'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
   2006, '/dev/null 2006',
   'dev', 'nh', NULL,
   NULL,
