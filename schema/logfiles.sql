@@ -56,6 +56,7 @@
 -- lastchk
 -- Time of last processing of the logfile.
 
+
 DROP TABLE logfiles;
 
 CREATE TABLE logfiles (
@@ -80,90 +81,77 @@ CREATE TABLE logfiles (
 GRANT SELECT, UPDATE ON logfiles TO nhdbfeeder;
 GRANT SELECT ON logfiles TO nhdbstats;
 
+
+-----------------------------------------------------------------------------
+-- nethack.alt org/NAO ------------------------------------------------------
+-----------------------------------------------------------------------------
+
 INSERT INTO logfiles VALUES (
   1, 'nethack.alt.org', 
   'nao', 'nh', '3.4.3',
   'http://alt.org/nethack/xlogfile.full.txt',
-  'log.nao',
+  'nao.nh.log',
   'http://alt.org/nethack/userdata/%U/%u/dumplog/%s.nh343.txt',
   'http://alt.org/nethack/userdata/%u/%u.nh343rc',
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
+-----------------------------------------------------------------------------
+-- acehack.de/ADE (defunct) -------------------------------------------------
+-----------------------------------------------------------------------------
+
 INSERT INTO logfiles VALUES (
-  2, 'acehack.de',
-  'ade', 'nh', '3.4.3',
-  'http://acehack.de/nethackxlogfile',
-  'log.ade-vanilla',
-  'https://acehack.de/userdata/%u/nethack/dumplog/%s',
+  5, 'acehack.de',
+  'ade', 'ace', NULL,
+  'https://nethack.xd.cm/history/ade/acehack/xlogfile',
+  'ade.ace.log', 
+  'https://nethack.xd.cm/history/aeu/%u/dumplog/%s'
   NULL,
-  TRUE, FALSE, TRUE,
-  'Europe/Berlin', NULL, NULL
+  TRUE, TRUE, TRUE,
+  'UTC', NULL, NULL
 );
+
+-----------------------------------------------------------------------------
+-- eu.un.nethack.nu/UNE -----------------------------------------------------
+-----------------------------------------------------------------------------
 
 INSERT INTO logfiles VALUES (
   3, 'eu.un.nethack.nu', 
   'une', 'unh', '5',
   'http://un.nethack.nu/logs/xlogfile-eu',
-  'log.une',
+  'une.unh.log',
   'http://un.nethack.nu/user/%u/dumps/eu/%u.%e.txt.html',
   'http://un.nethack.nu/rcfiles/%u.nethackrc',
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
+-----------------------------------------------------------------------------
+-- us.un.nethack.nu/UNU -----------------------------------------------------
+-----------------------------------------------------------------------------
+
 INSERT INTO logfiles VALUES (
   10, 'us.un.nethack.nu',
   'unu', 'unh', '5',
   'http://un.nethack.nu/logs/xlogfile-us',
-  'log.unu',
+  'unu.unh.log',
   'http://un.nethack.nu/user/%u/dumps/us/%u.%e.txt.html',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
+-----------------------------------------------------------------------------
+-- nethack4.org/N4O ---------------------------------------------------------
+-----------------------------------------------------------------------------
 
 INSERT INTO logfiles VALUES (
   4, 'nethack4.org (4.3)', 
   'n4o', 'nh4', '4.3',
   'http://nethack4.org/xlogfile.txt',
-  'log.n4o',
+  'n4o.nh4-3.log',
   NULL,
-  NULL,
-  TRUE, FALSE, TRUE,
-  'UTC', NULL, NULL
-);
-
-INSERT INTO logfiles VALUES (
-  5, 'acehack.de (AceHack)',
-  'ade', 'ace', NULL,
-  'http://acehack.de/xlogfile',
-  'log.ade-ace', 
-  'https://acehack.de/userdata/%u/dumplog/%s',
-  NULL,
-  TRUE, FALSE, TRUE,
-  'UTC', NULL, NULL
-);
-
-INSERT INTO logfiles VALUES (
-  6, 'sporkhack.com',
-  'shc', 'sh', NULL,
-  'http://sporkhack.com/xlogfile',
-  'log.shc',
-  NULL,
-  NULL,
-  TRUE, FALSE, TRUE,
-  'UTC', NULL, NULL
-);
-
-INSERT INTO logfiles VALUES (
-  7, 'grunthack.org',
-  'gho', 'gh', NULL,
-  'http://grunthack.org/xlogfile',
-  'log.gho', 
-  'http://grunthack.org/userdata/%U/%u/dumplog/%s.gh020.txt',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -173,45 +161,102 @@ INSERT INTO logfiles VALUES (
   8, 'nethack4.org (4.2)',
   'n4o', 'nh4', '4.2',
   'http://nethack4.org/4.2-xlogfile',
-  'log.4.2.n4o',
+  'n4o.nh4-2.log',
   NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
+-----------------------------------------------------------------------------
+-- sporkhack.com/SHC (defunct) ----------------------------------------------
+-----------------------------------------------------------------------------
+
+INSERT INTO logfiles VALUES (
+  6, 'sporkhack.com',
+  'shc', 'sh', NULL,
+  'http://sporkhack.com/xlogfile',
+  'shc.sh.log',
+  NULL,
+  NULL,
+  TRUE, TRUE, TRUE,
+  'UTC', NULL, NULL
+);
+
+-----------------------------------------------------------------------------
+-- grunthack.org/GHO --------------------------------------------------------
+-----------------------------------------------------------------------------
+
+INSERT INTO logfiles VALUES (
+  7, 'grunthack.org',
+  'gho', 'gh', NULL,
+  'http://grunthack.org/xlogfile',
+  'gho.gh.log', 
+  'http://grunthack.org/userdata/%U/%u/dumplog/%s.gh020.txt',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+-----------------------------------------------------------------------------
+-- dnethack.ilbelkyr.de/DID (defunct) ---------------------------------------
+-----------------------------------------------------------------------------
+
 INSERT INTO logfiles VALUES (
   9, 'dnethack.ilbelkyr.de', 
   'did', 'dnh', NULL,
   'http://dnethack.ilbelkyr.de/xlogfile.txt',
-  'log.dnh',
+  'did.dnh.log',
   'http://dnethack.ilbelkyr.de/userdata/%u/dumplog/%s.dnao.txt',
   NULL,
-  FALSE, FALSE, TRUE,
+  FALSE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
+
+-----------------------------------------------------------------------------
+-- acehack.eu/AEU (defunct) -------------------------------------------------
+-----------------------------------------------------------------------------
 
 INSERT INTO logfiles VALUES (
  11, 'acehack.eu',
  'aeu', 'ace', NULL,
- NULL,
- 'log.aeu',
- 'https://acehack.de/aeu/%u/dumplog/%s',
+ 'https://nethack.xd.cm/history/aeu/xlogfile',
+ 'aeu.ace.log',
+ 'https://nethack.xd.cm/history/aeu/%u/dumplog/%s',
  NULL,
  TRUE, TRUE, FALSE,
  'UTC', NULL, NULL
 );
 
+-----------------------------------------------------------------------------
+--- nethack.xd.cm -----------------------------------------------------------
+-----------------------------------------------------------------------------
+
 INSERT INTO logfiles VALUES (
- 12, 'acehack.de (dNetHack)',
- 'ade', 'dnh', NULL,
- 'https://acehack.de/dnethackxlogfile',
- 'log.dnh.ade',
- 'https://acehack.de/userdata/%u/dnethack/dumplog/%s',
- NULL,
- TRUE, FALSE, TRUE,
- 'UTC', NULL, NULL
+  2, 'nethack.xd.cm (NetHack)',
+  'nxc', 'nh', '3.4.3',
+  'https://nethack.xd.cm/xlogfiles/nethack',
+  'nxc.nh.log',
+  'https://nethack.xd.cm/userdata/%u/nethack/dumplog/%s',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
 );
+
+INSERT INTO logfiles VALUES (
+  12, 'nethack.xd.cm (dNetHack)',
+  'nxc', 'dnh', NULL,
+  'https://nethack.xd.cm/xlogfiles/dnethack',
+  'nxc.dnh.log',
+  'https://nethack.xd.cm/userdata/%u/dnethack/dumplog/%s',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+-----------------------------------------------------------------------------
+-- nethack.devnull.com/DEV --------------------------------------------------
+-----------------------------------------------------------------------------
 
 INSERT INTO logfiles VALUES (
   2006, '/dev/null 2006',
