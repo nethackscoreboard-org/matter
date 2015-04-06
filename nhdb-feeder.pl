@@ -14,6 +14,7 @@ use utf8;
 use DBI;
 use Getopt::Long;
 use NHdb;
+use Log::Log4perl qw(get_logger);
 
 $| = 1;
 
@@ -33,28 +34,12 @@ my $lockfile = '/tmp/nhdb-feeder.lock';
 my $dbh;
 my %translations;               # name-to-name translations
 my $translations_cnt = 0;       # number of name translation
+my $logger;                     # log4perl instance
 
 
 #============================================================================
 #=== functions =============================================================
 #============================================================================
-
-#============================================================================
-# Output a message passed as argument if STDOUT is a tty.
-#============================================================================
-
-sub tty_message
-{
-  my $s = shift;
-
-  return if ! -t STDOUT;
-  if(!$s) {
-    print "\n";  
-  } else {
-    printf $s, @_;
-  }
-}
-
 
 #============================================================================
 # Split a line along colons, parse it into hash and return it as hashref.
@@ -408,14 +393,16 @@ sub help
 #============================================================================
 #============================================================================
 
+#--- initialize logging
+
+Log::Log4perl->init('cfg/logging.conf');
+$logger = get_logger('Feeder');
+
 #--- title
 
-tty_message(
-  "\n" .
-  "NetHack Statistics Aggregator -- Feeder\n" .
-  "=======================================\n" .
-  "(c) 2013-14 Mandevil\n\n"
-);
+$logger->info('NetHack Statistics Aggregator / Feeder');
+$logger->info('(c) 2013-15 Borek Lupomesky');
+$logger->info('---');
 
 #--- process commandline options
 
@@ -436,10 +423,10 @@ if(!GetOptions(
 
 if(!$cmd_logfiles) {
   if(-f $lockfile) {
-    print "Another instance running\n";
+    $logger->warn('Another instance running, exiting');
     exit(1);
   }
-  open(F, "> $lockfile") || die "Cannot open lock file $lockfile\n";
+  open(F, "> $lockfile") || $logger->error("Cannot open lock file $lockfile");
   print F $$, "\n";
   close(F);
 }
@@ -466,25 +453,31 @@ while(my $s = $sth->fetchrow_hashref()) {
 if(scalar(@logfiles) == 0) {
   die "No operational logfiles configured\n";
 }
-tty_message(
-  "Loaded %d configured logfile%s\n",
-  scalar(@logfiles),
-  (scalar(@logfiles) != 1 ? 's' : '')
+
+$logger->info(
+  sprintf("Loaded %d configured logfile%s",
+    scalar(@logfiles),
+    (scalar(@logfiles) != 1 ? 's' : '')
+  )
 );
 
 #--- display logfiles, if requested
 
 if($cmd_logfiles) {
-  print "\n";
+  $logger->info('Displaying configured logfiles (--logfiles option)');
+  $logger->info('');
+  $logger->info('srv var descr');
+  $logger->info('--- --- ' . '-' x 48);
   for my $log (@logfiles) {
-    printf(
-      "%-3s  %-3s  %s\n",
-      $log->{'server'},
-      $log->{'variant'},
-      $log->{'logurl'}
+    $logger->info(
+      sprintf(
+        "%-3s %-3s %s\n",
+        $log->{'server'},
+        $log->{'variant'},
+        substr($log->{'descr'}, 0, 48)
+      )
     );
   }
-  print "\n";
   exit(0);
 }
 
@@ -500,10 +493,12 @@ while(my @a = $sth->fetchrow_array()) {
   $translations{$a[0]}{$a[1]} = $a[2];
   $translations_cnt++;
 }
-tty_message(
-  "Loaded %d name translation%s\n",
-  $translations_cnt,
-  ($translations_cnt != 1 ? 's' : '')
+$logger->info(
+  sprintf(
+    "Loaded %d name translation%s\n",
+    $translations_cnt,
+    ($translations_cnt != 1 ? 's' : '')
+  )
 );
 
 #--- check update table
@@ -511,7 +506,7 @@ tty_message(
 # when finds none, it assumes it is uninitialized and
 # initializes it
 
-tty_message("Checking update table");
+$logger->info('Checking update table');
 my $sth = $dbh->prepare('SELECT count(*) FROM update');
 my $r = $sth->execute();
 if(!$r) {
@@ -520,8 +515,8 @@ if(!$r) {
 my ($cnt_update) = $sth->fetchrow_array();
 $sth->finish();
 if($cnt_update == 0) {
-  tty_message(", failed (no entries)\n");
-  tty_message("Initializing update table, step 1");
+  $logger->info('No entries in the update table');
+  $logger->info('Initializing update table, step 1');
   $r = $dbh->do(
     'INSERT INTO update ' .
     'SELECT variant, name ' .
@@ -531,9 +526,9 @@ if($cnt_update == 0) {
   if(!$r) {
     die sprintf("Failed to initialize the update table (%s)", $sth->errstr());
   } else {
-    tty_message(" (%d entries)", $r);
+    $logger->info(sprintf('Update table initialized with %d entries (step 1)', $r));
   }
-  tty_message(", step 2");
+  $logger->info('Initializing update table, step 2');
   $r = $dbh->do(
     q{INSERT INTO update } .
     q{SELECT 'all', name, FALSE } .
@@ -543,10 +538,10 @@ if($cnt_update == 0) {
   if(!$r) {
     die sprintf("Failed to initialize the update table (%s)", $sth->errstr());
     } else {
-      tty_message(" (%d entries)\n", $r)
+      $logger->info(sprintf('Update table initialized with %d entries (step 2)', $r));
     }
 } else {
-  tty_message(", OK (%d entries)\n", $cnt_update);
+  $logger->info(sprintf('Update table has %d entries', $cnt_update));
 }
 
 #--- iterate over logfiles
@@ -555,6 +550,7 @@ for my $log (@logfiles) {
 
   my $transaction_in_progress = 0;
   my $logfiles_i = $log->{'logfiles_i'};
+  my $lbl = sprintf('[%s/%s] ', $log->{'variant'}, $log->{'server'});
 
   #--- user selection processing
 
@@ -573,33 +569,34 @@ for my $log (@logfiles) {
     my @fsize;
     my $fpos = $log->{'fpos'};
     $fsize[0] = -s $localfile;
-    tty_message("Processing %s/%s started\n", $log->{'variant'}, $log->{'server'});
-    tty_message("  Localfile is %s\n", $localfile);
-    tty_message("  Logfile URL is %s\n", $log->{'logurl'}) if $log->{'logurl'};
+    $logger->info('---');
+    $logger->info($lbl, 'Processing started');
+    $logger->info($lbl, 'Local file is ', $localfile);
+    $logger->info($lbl, 'Logfile URL is ', $log->{'logurl'} ? $log->{'logurl'} : 'N/A');
 
     #--- retrieve file
 
     if($log->{'static'}) {
       if($fpos) {
-        tty_message("  Skipping already processed static logfile\n");
+        $logger->info($lbl, 'Skipping already processed static logfile');
         die "OK\n";
       }
-      tty_message("  Static logfile, skipping retrieval\n");
+      $logger->info($lbl, 'Static logfile, skipping retrieval');
       $fsize[1] = $fsize[0];
     } elsif(!$log->{'logurl'}) {
-      tty_message("  Log URL not defined, skipping retrieval\n");
+      $logger->warn($lbl, 'Log URL not defined, skipping retrieval');
     } else {
-      tty_message("  Getting file from the server");
+      $logger->info($lbl, 'Getting logfile from the server');
       $r = system(sprintf('wget -c -q -O %s %s', $localfile, $log->{'logurl'}));
-      if($r) { tty_message(", failed\n"); die; }
+      if($r) { $logger->warn($lbl, 'Failed to get the logfile'); die; }
       $fsize[1] = -s $localfile;
-      tty_message(", done (received %d bytes)\n", $fsize[1] - $fsize[0]);
+      $logger->info($lbl, sprintf('Logfile retrieved successfully, got %d bytes', $fsize[1] - $fsize[0]));
       if(
         $log->{'fpos'}
         && ($fsize[1] - $fsize[0] < 1)
         && ($fsize[0] - $log->{'fpos'} < 1)
       ) {
-        tty_message("  No new data, skipping further processing\n");
+        $logger->info($lbl, 'No new data, skipping further processing');
         $dbh->do(
           'UPDATE logfiles SET lastchk = current_timestamp WHERE logfiles_i = ?',
           undef, $logfiles_i
@@ -611,36 +608,36 @@ for my $log (@logfiles) {
     #--- open the file
 
     if(!open(F, $localfile)) {
-      tty_message("  Failed to open local file $localfile\n");
+      $logger->error($lbl, 'Failed to open local file ', $localfile);
       die;
     }
 
     #--- seek into the file (if position is known)
        
     if($fpos) {
-      tty_message("  Seeking to %d\n", $fpos);
+      $logger->info($lbl, sprintf('Seeking to %d', $fpos));
       $r = seek(F, $fpos, 0);
       if(!$r) {
-        tty_message("Failed to seek to $fpos\n");
+        $logger->error($lbl, sprintf('Failed to seek to $fpos', $fpos));
         die;
       }
     }
     
     #--- set timezone
     
-    tty_message(sprintf("  Setting time zone to %s\n", $log->{'tz'}));
+    $logger->info($lbl, 'Setting time zone to ', $log->{'tz'});
     $r = $dbh->do(sprintf(q{SET TIME ZONE '%s'}, $log->{'tz'})); 
     if(!$r) {
-      tty_message("  Failed to set time zone\n");
+      $logger->error($lbl, 'Failed to set time zone');
       die;
     }
 
     #--- begin transaction
     
-    tty_message("  Starting database transaction\n");
+    $logger->info($lbl, 'Starting database transaction');
     $r = $dbh->begin_work();
     if(!$r) {
-      tty_message("  Failed to start database transaction\n");
+      $logger->info($lbl, 'Failed to start database transaction');
       die;
     }
     $transaction_in_progress = 1;
@@ -654,7 +651,7 @@ for my $log (@logfiles) {
     my %update_variant;   # updated variants
     my %streak_open;      # indicates open streak for
 
-    tty_message("  Processing file %s\n", $localfile);
+    $logger->info($lbl, 'Processing file ', $localfile);
     
     while(my $l = <F>) { #<<< read loop beings here
 
@@ -676,7 +673,7 @@ for my $log (@logfiles) {
         my $sth = $dbh->prepare($qry);
         $r = $sth->execute();
         if(!$r) {
-          tty_message("  Failure during inserting new records\n");
+          $logger->error($lbl, 'Failure during inserting new records');
           die;
         }
         ($rowid) = $sth->fetchrow_array();
@@ -736,8 +733,8 @@ for my $log (@logfiles) {
             die $last_game if !ref($last_game);
             if($last_game->{'endtime_raw'} >= $pl->{'starttime'}) {
               # close current streak
-              tty_message("  Closing overlapping streak %d\n",
-                $streak_open{$logfiles_i}{$pl->{'name'}}
+              $logger->info($lbl,
+                sprintf('Closing overlapping streak %d', $streak_open{$logfiles_i}{$pl->{'name'}})
               );
               $r = sql_streak_close(
                 $streak_open{$logfiles_i}{$pl->{'name'}}
@@ -783,14 +780,18 @@ for my $log (@logfiles) {
 
       if((time() - $tm) > 5) {
         $tm = time();
-        tty_message("  Processing (%d lines, %d l/sec)\n", $lc, ($lc-$ll)/5 );
+        $logger->info($lbl, 
+          sprintf('Processing (%d lines, %d l/sec)', $lc, ($lc-$ll)/5 )
+        );
         $ll = $lc;
       }
       $lc++;
 
     } #<<< read loop ends here
 
-    tty_message("  Finished reading (%d lines)\n", $lc);
+    $logger->info($lbl,
+      sprintf('Finished reading %d lines', $lc)
+    );
     
     #--- write update info
 
@@ -803,7 +804,7 @@ for my $log (@logfiles) {
     $sth = $dbh->prepare($qry);
     $r = $sth->execute($fsize[1], $log->{'logfiles_i'});
     if(!$r) {
-      tty_message("  Failed to update table 'servers'\n");
+      $logger->error($lbl, q{Failed to update table 'servers'});
       die;
     }
     
@@ -812,25 +813,23 @@ for my $log (@logfiles) {
     $r = $dbh->commit();
     $transaction_in_progress = 0;
     if(!$r) {
-      tty_message("  Failed to commit transaction\n");
+      $logger->error($lbl, 'Failed to commit transaction');
       die;
     }
-    tty_message("  Transaction commited\n");
+    $logger->info($lbl, 'Transaction commited');
   
   }; # <--- eval ends here -------------------------------------------------
   
   #--- rollback if needed
   
   if($transaction_in_progress) {
-    tty_message("  Transaction rollback\n");  
+    $logger->warn($lbl, 'Transaction rollback');
     $dbh->rollback();
   }
 
   #--- finish
   
-  tty_message("  Processing %s/%s finished", $log->{'variant'}, $log->{'server'});
-  tty_message(" (with a failure, %s)", $@) if $@ && $@ ne "OK\n";
-  tty_message();
+  $logger->info($lbl, 'Processing finished');
 }
 
 #--- disconnect from database
