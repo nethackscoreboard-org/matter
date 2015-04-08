@@ -400,7 +400,7 @@ $logger = get_logger('Feeder');
 
 #--- title
 
-$logger->info('NetHack Statistics Aggregator / Feeder');
+$logger->info('NetHack Scoreboard / Feeder');
 $logger->info('(c) 2013-15 Borek Lupomesky');
 $logger->info('---');
 
