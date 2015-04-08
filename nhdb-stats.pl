@@ -14,6 +14,7 @@ use NetHack;
 use NHdb;
 use Template;
 use utf8;
+use Log::Log4perl qw(get_logger);
 
 $| = 1;
 
@@ -27,6 +28,7 @@ my $logfiles;
 my $devnull = 0;
 my $devnull_path;
 my $devnull_year;
+my $logger;              # log4perl primary instance
 
 
 #============================================================================
@@ -57,17 +59,17 @@ my $tt = Template->new(
 # Output a message passed as argument if STDOUT is a tty.
 #============================================================================
 
-sub tty_message
-{
-  my $s = shift;
-
-  return if ! -t STDOUT;
-  if(!$s) {
-    print "\n";  
-  } else {
-    printf $s, @_;
-  }
-}
+#sub tty_message
+#{
+#  my $s = shift;
+#
+#  return if ! -t STDOUT;
+#  if(!$s) {
+#    print "\n";  
+#  } else {
+#    printf $s, @_;
+#  }
+#}
 
 
 #============================================================================
@@ -185,12 +187,11 @@ sub update_schedule_players
 
   #--- display information
 
-  tty_message("Getting list of player pages to update\n");
-  tty_message("  Forced processing enabled\n")
-    if $cmd_force;
-  tty_message("  Restricted to variants: %s\n", join(',', @$cmd_variant))
+  $logger->info('Getting list of player pages to update');
+  $logger->info('Forced processing enabled') if $cmd_force;
+  $logger->info('Restricted to variants: ', join(',', @$cmd_variant)) 
     if scalar(@$cmd_variant);
-  tty_message("  Restricted to players: %s\n", join(',', @$cmd_player))
+  $logger->info('Restricted to players: ', join(',', @$cmd_player))
     if scalar(@$cmd_player);
 
   #--- get list of allowed variants
@@ -209,39 +210,51 @@ sub update_schedule_players
   } else {
     @variants_final = @variants_known;
   }
-  tty_message(
-    "  Variants that will be processed: %s\n",
+  $logger->info(
+    'Variants that will be processed: ',
     join(',', @variants_final)
   );
 
   #--- get list of all known player names
 
-  tty_message("  Loading list of all players");
+  $logger->info('Loading list of all players');
   my @player_list;
   $sth = $dbh->prepare(q{SELECT name FROM games GROUP BY name});
   $r = $sth->execute();
-  if(!$r) { die sprintf('Cannot get list of players (%s)', $sth->errstr()); }
+  if(!$r) {
+    my $errmsg = sprintf('Cannot get list of players (%s)', $sth->errstr());
+    $logger->error($errmsg);
+    die $errmsg;
+  }
   while(my ($plr) = $sth->fetchrow_array()) {
     push(@player_list, $plr);
   }
-  tty_message(", loaded %d players\n", scalar(@player_list));
+  $logger->info(sprintf('Loaded %d players', scalar(@player_list)));
 
   #--- get list of existing (player, variant) combinations
   #--- that have non-zero number of games in db
 
-  tty_message('  Loading list of player,variant combinations');
+  $logger->info('Loading list of (player,variant) combinations');
   my %player_combos;
   my $cnt_plrcombo = 0;
   $sth = $dbh->prepare(
     q{SELECT name, variant FROM update WHERE name <> ''}
   );
   $r = $sth->execute();
-  if(!$r) { die sprintf('Cannot get list of player,variant combos (%s)', $sth->errstr()); }
+  if(!$r) { 
+    my $errmsg = sprintf(
+      'Cannot get list of player,variant combos (%s)', $sth->errstr()
+    );
+    $logger->error($errmsg);
+    die $errmsg; 
+  }
   while(my ($plr, $var) = $sth->fetchrow_array()) {
     $player_combos{$plr}{$var} = 1;
     $cnt_plrcombo++;
   }
-  tty_message(", %d combinations exist\n", $cnt_plrcombo);
+  $logger->info(
+    sprintf('Loaded %d (player,variant) combinations', $cnt_plrcombo)
+  );
 
   #--- forced update enabled
 
@@ -266,18 +279,24 @@ sub update_schedule_players
         }
       }
     }
-    tty_message("  Forcing update of %d pages\n", scalar(@pages_forced));
+    $logger->info(sprintf('Forcing update of %d pages', scalar(@pages_forced)));
     return(\@pages_forced, \%player_combos);
   }
 
   #--- get list of updated players
 
-  tty_message("  Loading list of player updates");
+  $logger->info('Loading list of player updates');
   my @pages_updated;
   my $cnt = 0;
   $sth = $dbh->prepare(q{SELECT * FROM update WHERE name <> '' AND upflag IS TRUE});
   $r = $sth->execute();
-  if(!$r) { die sprintf('Cannot get list of player updates (%s)', $sth->errstr()); }
+  if(!$r) { 
+    my $errmsg = sprintf(
+      'Cannot get list of player updates (%s)', $sth->errstr()
+    );
+    $logger->error($errmsg);
+    die $errmsg;
+  }
   while(my ($var, $plr) = $sth->fetchrow_array()) {
     $cnt++;
     # skip entries with variants not in @variants_final
@@ -292,10 +311,12 @@ sub update_schedule_players
     #
     push(@pages_updated, [$plr, $var]);
   }
-  tty_message(
-    ", %d updates, %d rejected\n",
-    scalar(@pages_updated),
-    $cnt - scalar(@pages_updated)
+  $logger->info(
+    sprintf(
+      'Loaded %d player updates, %d rejected',
+      scalar(@pages_updated),
+      $cnt - scalar(@pages_updated)
+    )
   );
   return(\@pages_updated, \%player_combos);
 }
@@ -338,7 +359,11 @@ sub update_schedule_variants
     );
     my $re = $sth->execute();
     if(!$re) { 
-      die sprintf("Failed to read from update table (%s)" . $sth->errstr());
+      my $errmsg = sprintf(
+        "Failed to read from update table (%s)" . $sth->errstr()
+      );
+      $logger->error($errmsg);
+      die $errmsg;
     }
     while(my ($a) = $sth->fetchrow_array()) {
       if(scalar(@$cmd_variant)) {
@@ -749,7 +774,7 @@ sub gen_page_info
   my ($re, $sth);
   my %data;
 
-  tty_message('Generating generic stats');
+  $logger->info('Creating page: Generic Stats');
 
   #--- get database data
 
@@ -768,9 +793,11 @@ sub gen_page_info
   #--- generate page
 
   $data{'cur_time'} = scalar(localtime());
-  $tt->process('general.tt', \%data, 'general.html')
-    or die $tt->error();
-  tty_message(", done\n");
+  if(!$tt->process('general.tt', \%data, 'general.html')) {
+    $logger->error(q{Failed to create page 'Generic Stats', }, $tt->error());
+    die $tt->error();
+  }
+    
 }
 
 
@@ -804,10 +831,12 @@ sub gen_page_recent
 
   #--- init
 
-  tty_message(
-    'Creating %s page (%s): ', 
-    $page, 
-    $logfiles_i ? $logfiles->{$logfiles_i}{'server'} : $variant
+  $logger->info(
+    sprintf(
+      'Creating page: %s Games/%s',
+      ucfirst($page),
+      $logfiles_i ? $logfiles->{$logfiles_i}{'server'} : $variant
+    )
   );
   push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
 
@@ -818,6 +847,7 @@ sub gen_page_recent
   } elsif($page eq 'ascended') {
     $view = 'v_ascended_recent';
   } else {
+    $logger->error("Undefined page '$page' in gen_page_recent()");
     die "Undefined page";
   }
 
@@ -847,7 +877,6 @@ sub gen_page_recent
     return $result if !ref($result);
     $data{'games_count'} = $cnt_start = int($result->[0]{'count'});
     $cnt_incr = -1;
-    tty_message('%d games, ', $data{'games_count'});
   }
 
   #--- pull data from database
@@ -858,7 +887,7 @@ sub gen_page_recent
     @arg
   );
   return sprintf('Failed to query database (%s)', $result) if !ref($result);
-  tty_message('loaded from db (%d lines)', scalar(@$result));
+  $logger->info(sprintf('Loaded %d lines from the database', scalar(@$result)));
 
   #--- supply additional data
 
@@ -873,8 +902,6 @@ sub gen_page_recent
 
   $tt->process($template, \%data, $html)
     or die $tt->error();
-
-  tty_message(", done\n");
 }
 
 
@@ -894,7 +921,7 @@ sub gen_page_player
 
   #--- info
 
-  tty_message("Creating page for $name/$variant");
+  $logger->info(sprintf('Creating page: @%s/%s', $name, $variant));
 
   #=== all ascended games ==================================================
   # load all player's ascension in ordered array of hashrefs; also we create
@@ -1228,12 +1255,13 @@ sub gen_page_player
 
   #--- process template
 
-  $tt->process('player.tt', \%data, $file)
-    or die $tt->error();
+  if(!$tt->process('player.tt', \%data, $file)) {
+    $logger->error(sprintf(q{Creating page '@%s/%s' failed, }, $name, $variant));
+    die $tt->error();
+  }
 
   #--- finish
 
-  tty_message(", done\n");
   return undef;
 }
 
@@ -1270,7 +1298,7 @@ sub gen_page_streaks
 
   #--- init
 
-  tty_message('Creating Streaks page (%s)', $variant);
+  $logger->info('Creating page: Streaks/', $variant);
   push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
 
   #--- load streak list
@@ -1291,12 +1319,13 @@ sub gen_page_streaks
 
   #--- process template
 
-  $tt->process("streaks.tt", \%data, "streaks.$variant.html")
-    or die $tt->error();
+  if(!$tt->process("streaks.tt", \%data, "streaks.$variant.html")) {
+    $logger->error("Failed to create page 'Streaks/$variant'");
+    die $tt->error();
+  }
 
   #--- finish
 
-  tty_message(", done\n");
   return undef;
 }
 
@@ -1310,7 +1339,7 @@ sub gen_page_about
 
   #--- info
 
-  tty_message('Creating About page');
+  $logger->info('Creating page: About');
 
   #--- pull data from db
 
@@ -1322,12 +1351,13 @@ sub gen_page_about
   #--- generate page
 
   $data{'cur_time'} = scalar(localtime());
-  $tt->process('about.tt', \%data, 'about.html')
-    or die $tt->error();
+  if(!$tt->process('about.tt', \%data, 'about.html')) {
+    $logger->error(q{Failed to create page 'About', }, $tt->error());
+    die $tt->error();
+  }
 
   #--- finish
 
-  tty_message(", done\n");
   return undef;
 }
 
@@ -1341,7 +1371,7 @@ sub gen_page_front
   
   #--- info
 
-  tty_message('Creating front page');
+  $logger->info('Creating page: Front');
 
   #--- perform database pull
 
@@ -1353,6 +1383,7 @@ sub gen_page_front
     my $sth = $dbh->prepare($query);
     my $r = $sth->execute($variant);
     if(!$r) {
+      $logger->error(q{Failed to create page 'Front' (1), }, $sth->errstr());
       die $sth->errstr();
     }
     $sth->finish();
@@ -1364,6 +1395,7 @@ sub gen_page_front
     $sth = $dbh->prepare($query);
     $r = $sth->execute($variant);
     if(!$r) {
+      $logger->error(q{Failed to create page 'Front' (2), }, $sth->errstr());
       die $sth->errstr();      
     } elsif($r > 0) {
       my $row = $sth->fetchrow_hashref();
@@ -1392,12 +1424,13 @@ sub gen_page_front
   $data{'variants'} = \@variants_ordered;
   $data{'vardef'} = $NetHack::nh_def->{'nh_variants_def'};
   $data{'cur_time'} = scalar(localtime());
-  $tt->process('front.tt', \%data, 'index.html')
-    or die $tt->error();
+  if(!$tt->process('front.tt', \%data, 'index.html')) {
+    $logger->error(q{Failed to create page 'Front' (3), }, $tt->error());
+    die $tt->error();
+  }
 
   #--- finish
 
-  tty_message(", done\n");
   return undef;
 }
 
@@ -1424,7 +1457,7 @@ sub gen_page_dev_player_list
 
   #--- init
 
-  tty_message('Creating player list page (dev): ');
+  $logger->info('Creating page: Player List (devnull)');
 
   #--- database query
 
@@ -1453,12 +1486,10 @@ EOHD
 
   #--- process template
 
-  $tt->process($template, \%data, $html)
-    or die $tt->error();
-
-  #--- finish
-
-  tty_message("done\n");
+  if(!$tt->process($template, \%data, $html)) {
+    $logger->error(q{Failed to create page 'Player List (devnull)'});
+    die $tt->error();
+  }
 }
 
 
@@ -1485,7 +1516,7 @@ sub gen_page_dev_player
 
   #--- init
 
-  tty_message('  Updating player pages (dev)');
+  $logger->info('Creating player pages (devnull)');
 
   #--- first get list of players
 
@@ -1496,7 +1527,7 @@ sub gen_page_dev_player
   while(my ($p) = $sth->fetchrow_array()) {
     push(@plr, $p)
   }
-  tty_message(", %d players", scalar(@plr));
+  $logger->info(sprintf('%d players', scalar(@plr)));
 
   #--- database queries
 
@@ -1546,16 +1577,14 @@ sub gen_page_dev_player
 
   #--- process template
 
-    $tt->process($template, \%data, "$devnull_path/players/" . $p . '.html')
-      or die $tt->error();
+    if(!$tt->process($template, \%data, "$devnull_path/players/" . $p . '.html')) {
+      $logger->error('Failed to create page ', "$devnull_path/players/" . $p . '.html');
+      die $tt->error();
+    }
 
   #--- end of loop -----------------------------------------------------------
 
   }
-
-  #--- finish
-
-  tty_message(", done\n");
 }
 
 
@@ -1581,7 +1610,7 @@ sub gen_page_dev_roles
 
   #--- init
 
-  tty_message('Creating roles page (dev)');
+  $logger->info('Creating page: Roles (devnull)');
 
   #--- database query
 
@@ -1616,12 +1645,10 @@ sub gen_page_dev_roles
 
   #--- process template
 
-  $tt->process('roles-dev.tt', \%data, $devnull_path . '/roles.html')
-    or die $tt->error();
-
-  #--- finish
-
-  tty_message(", done\n");
+  if(!$tt->process('roles-dev.tt', \%data, $devnull_path . '/roles.html')) {
+    $logger->error(q{Failed to create page 'Roles (devnull)'});
+    die $tt->error();
+  }
 
 }
 
@@ -1646,7 +1673,7 @@ sub gen_page_dev_front
 
   #--- init
 
-  tty_message('Creating front page (dev)');
+  $logger->info('Creating page: Front (devnull)');
 
   #---------------------------------------------------------------------------
   #--- "Best Players" --------------------------------------------------------
@@ -1670,7 +1697,7 @@ EOHD
   $result = sql_load($query, 1, 1, undef, $logfiles_i);
   return $result if !ref($result);
   $data{'result_best_plr'} = $result;
-  tty_message(', best plr (%d)', scalar(@$result));
+  $logger->info(sprintf('Best players: %d', scalar(@$result)));
 
   #---------------------------------------------------------------------------
   #--- "Recent Ascensions" ---------------------------------------------------
@@ -1700,7 +1727,7 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_recent_wins'} = $result;
-  tty_message(', recent wins (%d)', scalar(@$result));
+  $logger->info(sprintf('Recent wins: %d', scalar(@$result)));
 
   #---------------------------------------------------------------------------
   #-- "Fastest Games By Game Time" -------------------------------------------
@@ -1721,7 +1748,7 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_top5_turns'} = $result;
-  tty_message(', top5 turns (%d)', scalar(@$result));
+  $logger->info(sprintf('Top 5 turns: %d', scalar(@$result)));
   
   #---------------------------------------------------------------------------
   #-- "Fastest Games By Real Time" -------------------------------------------
@@ -1742,7 +1769,7 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_top5_rt'} = $result;
-  tty_message(', top5 rt (%d)', scalar(@$result));
+  $logger->info(sprintf('Top 5 real-time: %d', scalar(@$result)));
 
   #---------------------------------------------------------------------------
   #-- "Best Conduct Games" ---------------------------------------------------
@@ -1763,7 +1790,7 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_top5_conduct'} = $result;
-  tty_message(', top5 cond (%d)', scalar(@$result));
+  $logger->info(sprintf('Top 5 conducts: %d', scalar(@$result)));
 
   #---------------------------------------------------------------------------
   #-- "Low Scored Games" -----------------------------------------------------
@@ -1784,7 +1811,7 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_top5_lowscore'} = $result;
-  tty_message(', top5 low (%d)', scalar(@$result));
+  $logger->info(sprintf('Top 5 low score: %d', scalar(@$result)));  
 
   #---------------------------------------------------------------------------
   #-- "Streaks" --------------------------------------------------------------
@@ -1793,7 +1820,7 @@ EOHD
   my ($streaks_ord, $streaks) = sql_load_streaks(undef, $logfiles_i, undef, undef, 2);
   return $streaks_ord if !ref($streaks_ord);
   $data{'result_streaks'} = process_streaks($streaks_ord, $streaks);
-  tty_message(', streaks (%d)', scalar(@$streaks_ord));
+  $logger->info(sprintf('Streaks: %d', scalar(@$streaks_ord)));  
 
   #---------------------------------------------------------------------------
   #-- "General Info" ---------------------------------------------------------
@@ -1808,7 +1835,7 @@ EOHD
   $result = sql_load($query, undef, undef, undef, $logfiles_i);
   die if !ref($result);
   $data{'result_total_valid'} = $result->[0]{'count'};
-  tty_message(', general');
+  $logger->info('General');
 
   #---------------------------------------------------------------------------
   #---------------------------------------------------------------------------
@@ -1821,12 +1848,10 @@ EOHD
 
   #--- process template
 
-  $tt->process('front-dev.tt', \%data, $devnull_path . '/index.html')
-    or die $tt->error();
-
-  #--- finish
-
-  tty_message(", done\n");
+  if(!$tt->process('front-dev.tt', \%data, $devnull_path . '/index.html')) {
+    $logger->error("Failed to create page 'Front (devnull)", $tt->error());
+    die $tt->error();
+  }
 }
 
 
@@ -1849,7 +1874,7 @@ sub gen_page_dev_combos
 
   #--- init
 
-  tty_message('Generating Combos page (dev)');
+  $logger->info('Creating page: Combos (devnull)');
 
   #--- query
 
@@ -1896,12 +1921,10 @@ EOHD
 
   #--- process template
 
-  $tt->process('combos-dev.tt', \%data,  $devnull_path . '/combos.html')
-    or die $tt->error();
-
-  #--- finish
-
-  tty_message(", done\n");
+  if(!$tt->process('combos-dev.tt', \%data,  $devnull_path . '/combos.html')) {
+    $logger->error(q{Failed to create page 'Combos (devnull)'}, $tt->error());
+    die $tt->error();
+  }
 }
 
 
@@ -1971,14 +1994,16 @@ sub help
 #===                           ==============================================
 #============================================================================
 
+#--- initialize loggin
+
+Log::Log4perl->init('cfg/logging.conf');
+$logger = get_logger('Stats');
+
 #--- title
 
-tty_message(
-  "\n" .
-  "NetHack Statistics Aggregator -- Stats Generator\n" .
-  "================================================\n" .
-  "(c) 2013-14 Mandevil\n\n"
-);
+$logger->info('NetHack Scoreboard / Stats');
+$logger->info('(c) 2013-15 Borek Lupomesky');
+$logger->info('---');
 
 #--- process command-line
 
@@ -2004,26 +2029,31 @@ if(!GetOptions(
 #--- lock file check/open
 
 if(-f $lockfile) {
+  $logger->warn('Another instance running');
   die "Another instance running\n";
   exit(1);
 }
-open(F, "> $lockfile") || die "Cannot open lock file $lockfile\n";
+open(F, "> $lockfile") || do {
+  $logger->error("Cannot open lock file $lockfile");
+  die "Cannot open lock file $lockfile\n";
+};
 print F $$, "\n";
 close(F);
-tty_message("Created lockfile\n");
+$logger->info('Created lockfile');
 
 #--- connect to database
 
 $dbh = dbconn('nhdbstats');
 if(!ref($dbh)) {
-  die sprintf('Failed to connect to the database (%s)', $dbh);
+  $logger->error("Failed to connect to the database ($dbh)");
+  die "Failed to connect to the database ($dbh)";
 }
-tty_message("Connected to database\n");
+$logger->info('Connected to database');
 
 #--- load list of logfiles
 
 sql_load_logfiles();
-tty_message("Loaded list of logfiles\n");
+$logger->info('Loaded list of logfiles');
 
 #--- determine devnull processing
 
@@ -2045,9 +2075,11 @@ if(!(defined($cmd_devnull) && !$cmd_devnull)) {
     $devnull_year = $yr;
   };
   if($devnull) {
-    tty_message(
-      "/dev/null/nethack %d processing enabled (path %s)\n", 
-      $yr, $devnull_path
+    $logger->info(
+      sprintf(
+       '/dev/null/nethack %d processing enabled (path %s)',
+       $yr, $devnull_path 
+      )
     );
   }
 }
@@ -2056,8 +2088,8 @@ if(!(defined($cmd_devnull) && !$cmd_devnull)) {
 
 if($cmd_aggr) {
   my $update_variants = update_schedule_variants($cmd_force, \@cmd_variant);
-  tty_message(
-    "Following variants scheduled to update: %s\n",
+  $logger->info(
+    'Following variants scheduled to update: ',
     join(',', @$update_variants)
   );
 
@@ -2160,9 +2192,10 @@ gen_page_about();
 #--- disconnect from database
 
 dbdone('nhdbstats');
-tty_message("Disconnected from database\n");
+$logger->info('Disconnected from database');
 
 #--- release lock file
 
 unlink($lockfile);
-tty_message("Removed lockfile\n");
+$logger->info('Removed lockfile');
+
