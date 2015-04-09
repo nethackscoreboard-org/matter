@@ -230,7 +230,7 @@ sub sql_insert_games
   if($l->{'name'} eq 'wizard') { return undef; }
 
   #--- regular fields
-  for my $k (qw(role race gender gender0 align align0 deathdnum deathlev deaths hp maxhp maxlvl points turns realtime version)) {
+  for my $k (qw(role race gender gender0 align align0 deathdnum deathlev deaths hp maxhp maxlvl points turns realtime version dumplog)) {
     if(exists $l->{$k}) {
       push(@fields, $k);
       push(@values, sprintf(q{'%s'}, $l->{$k}));
@@ -652,7 +652,7 @@ for my $log (@logfiles) {
     my %streak_open;      # indicates open streak for
 
     $logger->info($lbl, 'Processing file ', $localfile);
-    
+
     while(my $l = <F>) { #<<< read loop beings here
 
       chomp($l);
@@ -819,7 +819,13 @@ for my $log (@logfiles) {
     $logger->info($lbl, 'Transaction commited');
   
   }; # <--- eval ends here -------------------------------------------------
-  
+
+  #--- 
+
+  if($@ && $@ ne "OK\n") {
+    $logger->warn($lbl, 'Eval ended with error: ', $@);
+  }
+
   #--- rollback if needed
   
   if($transaction_in_progress) {

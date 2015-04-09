@@ -40,6 +40,7 @@ CREATE TABLE games (
   ascended      boolean NOT NULL,
   quit          boolean NOT NULL,
   scummed       boolean NOT NULL,
+  dumplog       varchar(128),
   PRIMARY KEY ( rowid )
 );
 
@@ -60,7 +61,7 @@ CREATE OR REPLACE VIEW v_games_recent AS
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
-    endtime_raw, starttime_raw, death,
+    endtime_raw, starttime_raw, death, dumplog,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
   FROM 
@@ -77,7 +78,7 @@ CREATE OR REPLACE VIEW v_games AS
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
-    endtime_raw, starttime_raw, death,
+    endtime_raw, starttime_raw, death, dumplog,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
   FROM 
@@ -94,7 +95,7 @@ CREATE OR REPLACE VIEW v_games_all AS
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
-    endtime_raw, starttime_raw, death,
+    endtime_raw, starttime_raw, death, dumplog,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended, scummed
   FROM 
@@ -112,7 +113,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
-    games.version, ascended,
+    games.version, ascended, dumplog,
     extract('year'  from age(
       current_timestamp AT TIME ZONE 'UTC', 
       endtime AT TIME ZONE 'UTC')
@@ -147,7 +148,7 @@ CREATE OR REPLACE VIEW v_ascended AS
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
-    endtime_raw, starttime_raw, death,
+    endtime_raw, starttime_raw, death, dumplog,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
     games.version, ascended
   FROM
@@ -174,3 +175,20 @@ DECLARE amount integer;
     RETURN amount;
   END
 $$ LANGUAGE plpgsql;
+
+
+----------------------------------------------------------------------------
+--- notes / deleting games
+--- """"""""""""""""""""""
+--- before deleting games, foreign constraint "games_set_map_rowid_fkey"
+--- must have its action changed from RESTRICT to CASCADE; don't forget to
+--- return it to RESTRICT after the deletion!
+----------------------------------------------------------------------------
+
+
+ALTER TABLE games_set_map
+  DROP CONSTRAINT games_set_map_rowid_fkey,
+  ADD CONSTRAINT games_set_map_rowid_fkey
+    FOREIGN KEY (games_set_i)
+    REFERENCES games(rowid)
+    ON DELETE CASCADE;

@@ -145,13 +145,15 @@ INSERT INTO logfiles VALUES (
 -----------------------------------------------------------------------------
 -- nethack4.org/N4O ---------------------------------------------------------
 -----------------------------------------------------------------------------
+-- dumplogs work in a non-standard way, so 'dumpurl' field here is only
+-- base URL, not URL template
 
 INSERT INTO logfiles VALUES (
   4, 'nethack4.org (4.3)', 
   'n4o', 'nh4', '4.3',
   'http://nethack4.org/xlogfile.txt',
   'n4o.nh4-3.log',
-  NULL,
+  'http://nethack4.org/dumps/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL

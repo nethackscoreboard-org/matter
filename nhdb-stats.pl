@@ -663,6 +663,7 @@ sub row_fix
   my $row = shift;
   my $variant = shift;
   my $devnull = shift;
+  my $logfiles_i = $row->{'logfiles_i'};
 
   #--- convert realtime to human-readable form
 
@@ -687,11 +688,32 @@ sub row_fix
 
   #--- game dump URL
 
-  if($logfiles->{$row->{'logfiles_i'}}{'dumpurl'}) {
-    $row->{'dump'} = url_substitute(
-      $logfiles->{$row->{'logfiles_i'}}{'dumpurl'},
-      $row
-    );
+  if($logfiles->{$logfiles_i}{'dumpurl'}) {
+    
+    # NetHack4 dumplogs work differently than the rest of the variants,
+    # this is what ais523 has to say about it (note, that "three underscores"
+    # is a mistake, there are only two):
+    #
+    # The dumplog filename is listed in the xlogfile, in the "dumplog"
+    # field. Replace the first three underscores with colons, all spaces
+    # with %20, and prepend http://nethack4.org/dumps/ to produce a filename
+    # you can link to.
+
+    if($logfiles->{$logfiles_i}{'server'} eq 'n4o' && $row->{'dumplog'}) {
+      my $dump_file = $row->{'dumplog'};
+      $dump_file =~ s/(\d{2})_(\d{2})_(\d{2})/$1:$2:$3/;
+      $dump_file =~ s/ /%20/g;
+      $row->{'dump'} = $logfiles->{$logfiles_i}{'dumpurl'} . $dump_file;
+    } 
+
+    # everything else uses URL template
+
+    else {
+      $row->{'dump'} = url_substitute(
+        $logfiles->{$logfiles_i}{'dumpurl'},
+        $row
+      );
+    }
   }
 
   #--- realtime (aka duration)
