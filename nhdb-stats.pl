@@ -335,11 +335,21 @@ sub update_schedule_variants
 {
   my $cmd_force = shift;
   my $cmd_variant = shift;
+  my $logger = get_logger('Stats::update_schedule_variants');
+
+  $logger->debug(
+    sprintf(
+      q{update_schedule_variants('%s',(%s)) started},
+      $cmd_force ? 'on' : 'off',
+      join(',', @$cmd_variant)
+    )
+  );
 
   #--- list of allowed variants targets; anything not in this array
   #--- is invalid
 
   my @variants_known = ('all', @{$NetHack::nh_def->{nh_variants_ord}});
+  $logger->debug('Known variants: (', join(',', @variants_known), ')');
 
   #--- forced processing
 
@@ -386,6 +396,7 @@ sub update_schedule_variants
 
   #--- finish
 
+  $logger->debug('update_schedule_variants() finished');
   return \@final;
 }
 
@@ -2029,6 +2040,8 @@ $logger->info('---');
 
 #--- process command-line
 
+my $logger_cmd = get_logger("Stats::Cmdline");
+
 my @cmd_variant;
 my $cmd_force;
 my @cmd_player;
@@ -2047,6 +2060,13 @@ if(!GetOptions(
   help();
   exit(1);
 }
+
+$logger_cmd->debug('cmd_variant = (', join(',', @cmd_variant), ')');
+$logger_cmd->debug('cmd_force = ', $cmd_force ? 'on' : 'off');
+$logger_cmd->debug('cmd_players = ', $cmd_players ? 'on' : 'off');
+$logger_cmd->debug('cmd_player = (', join(',', @cmd_player), ')');
+$logger_cmd->debug('cmd_aggr = ', $cmd_aggr ? 'on' : 'off');
+$logger_cmd->debug('cmd_devnull = ', $cmd_devnull ? 'on' : 'off');
 
 #--- lock file check/open
 
