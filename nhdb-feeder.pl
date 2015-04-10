@@ -820,7 +820,7 @@ for my $log (@logfiles) {
   
   }; # <--- eval ends here -------------------------------------------------
 
-  #--- 
+  #--- log exception message, if any
 
   if($@ && $@ ne "OK\n") {
     $logger->warn($lbl, 'Eval ended with error: ', $@);
