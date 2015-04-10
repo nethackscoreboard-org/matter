@@ -598,11 +598,9 @@ sub sql_load_streaks
       );
       #--- save streak age (days from last game's endtime)
       if(exists $streaks{$row->{'streaks_i'}}{'age'}) {
-#printf "2 STREAK AGE %d\n",  $row->{'age_day'};
         $streaks{$row->{'streaks_i'}}{'age'} = $row->{'age_day'}
         if $streaks{$row->{'streaks_i'}}{'age'} > $row->{'age_day'};
       } else {
-#printf "1 STREAK AGE %d\n",  $row->{'age_day'};
         $streaks{$row->{'streaks_i'}}{'age'} = $row->{'age_day'};
       }
     }
