@@ -34,10 +34,20 @@
 -- rcfileurl
 -- Determines location of player rc files
 -- 
+-- oper
+-- If true, the feeder will process this entry; if false the logfile
+-- will not be processed, essentially it won't exist for the feeder.
+-- This has no effect on games alread in the database and stats
+-- generator will still load all logfiles and process all games in db.
+-- Note, that if a full db reload is needed, oper must be set to true
+-- for the logfile to be reloaded! 
+--
 -- static
 -- If true, the feeder will not try to download the file from logurl,
 -- even if it is defined. This allows static logfiles to be part of the
 -- dataset (such as devnull logfiles, logfiles from discontinued sites etc.)
+-- In general, if you want to use static file, you probably also want 
+-- to set 'oper' to false.
 --
 -- httpcon
 -- Site supports HTTP continuation, allowing incremental downloads.
@@ -108,7 +118,7 @@ INSERT INTO logfiles VALUES (
   'ade.ace.log', 
   'https://nethack.xd.cm/history/aeu/%u/dumplog/%s'
   NULL,
-  TRUE, TRUE, TRUE,
+  FALSE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
@@ -181,7 +191,7 @@ INSERT INTO logfiles VALUES (
   'shc.sh.log',
   NULL,
   NULL,
-  TRUE, TRUE, TRUE,
+  FALSE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
@@ -226,7 +236,7 @@ INSERT INTO logfiles VALUES (
  'aeu.ace.log',
  'https://nethack.xd.cm/history/aeu/%u/dumplog/%s',
  NULL,
- TRUE, TRUE, FALSE,
+ FALSE, TRUE, FALSE,
  'UTC', NULL, NULL
 );
 
@@ -267,7 +277,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2006.log',
   NULL,
   NULL,
-  TRUE, TRUE, FALSE,
+  FALSE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -278,7 +288,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2007.log',
   NULL,
   NULL,
-  TRUE, TRUE, FALSE,
+  FALSE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -289,7 +299,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2008.log',
   NULL,
   NULL,
-  TRUE, TRUE, FALSE,
+  FALSE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -300,7 +310,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2009.log',
   NULL,
   NULL,
-  TRUE, TRUE, FALSE,
+  FALSE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -311,7 +321,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2010.log',
   NULL,
   NULL,
-  TRUE, TRUE, FALSE,
+  FALSE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -322,7 +332,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2011.log',
   NULL,
   NULL,
-  TRUE, TRUE, FALSE,
+  FALSE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -333,7 +343,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2012.log',
   NULL,
   NULL,
-  TRUE, TRUE, FALSE,
+  FALSE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -344,7 +354,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2013.log',
   NULL,
   NULL,
-  TRUE, TRUE, FALSE,
+  FALSE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -355,6 +365,6 @@ INSERT INTO logfiles VALUES (
   'devnull-2014.log',
   NULL,
   NULL,
-  TRUE, FALSE, FALSE,
+  FALSE, FALSE, FALSE,
   'UTC', NULL, NULL
 );
