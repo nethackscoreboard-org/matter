@@ -5,6 +5,7 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <link rel="stylesheet" type="text/css" href="/nh/about.css">
   <title>About NetHack Scoreboard</title>
 </head>
 
@@ -51,7 +52,10 @@ also have their personal statistics put together into one summary view.
 <th>lastchk</th>
 </tr>
 
-[% FOREACH row IN logfiles %]
+[% FOREACH row IN logfiles -%]
+[%- SET stale = "stale_30d" -%]
+[%- IF row.lastchk_30d; SET stale = "stale_1h"; END -%]
+[%- IF row.lastchk_1h; SET stale = "fresh"; END %]
 <tr>
 <td class="numeric">[% row.logfiles_i %]</td>
 <td>[% row.server %]</td>
@@ -60,7 +64,7 @@ also have their personal statistics put together into one summary view.
 <td>[% row.logurl %]</td>
 <td>[%IF row.static; "YES"; ELSE; "NO"; END %]</td>
 <td class="numeric">[% number(row.fpos) %]</td>
-<td>[% row.lastchk_trunc %]</td>
+<td><span class="[% GET stale %]">[% row.lastchk_trunc %]</span></td>
 </tr>
 [% END %]
 </table>

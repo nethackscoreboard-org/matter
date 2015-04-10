@@ -1374,9 +1374,21 @@ sub gen_page_about
 
   $logger->info('Creating page: About');
 
+  #--- define query fields
+
+  my @fields = (
+    q{*},
+    q{to_char(lastchk, 'YYYY-MM-DD HH24:MI') AS lastchk_trunc},
+    q{age(lastchk) < interval '1 hour' AS lastchk_1h},
+    q{age(lastchk) < interval '30 days' AS lastchk_30d}
+  );
+
   #--- pull data from db
 
-  my $query = q{SELECT *, to_char(lastchk, 'YYYY-MM-DD HH24:MI') AS lastchk_trunc FROM logfiles ORDER BY logfiles_i};
+  my $query = sprintf(
+    q{SELECT %s FROM logfiles ORDER BY logfiles_i},
+    join(', ', @fields)
+  );
   my $result = sql_load($query);
   return $result if !ref($result);
   $data{'logfiles'} = $result;
