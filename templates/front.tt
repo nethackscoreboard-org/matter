@@ -112,7 +112,7 @@
 [% END %]
 
 </table>
-<span class="notice">Only streaks active in last 30 days are shown</span>
+<span class="notice">Only streaks active in last 90 days are shown</span>
 
 
 </div>
