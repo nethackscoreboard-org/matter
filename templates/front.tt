@@ -65,6 +65,56 @@
 </table>
 
 
+<h3>Active Streaks</h3>
+
+<table class="bordered">
+
+<tr>
+<th></th>
+<th>wins</th>
+<th>srv</th>
+<th>var</th>
+<th>name</th>
+<th>turns</th>
+<th>start</th>
+<th>end</th>
+<th>games</th>
+</tr>
+
+[% FOREACH row IN streaks %]
+[% IF row.wins > 1 %]
+<tr>
+<td class="numeric">[% row.n %]</td>
+<td class="numeric">[% row.wins %]</td>
+<td>[% row.server %]</td>
+<td>[% row.variant %]</td>
+<td><a href="[% row.plrpage %]">[% row.name %]</a></td>
+<td class="numeric">[% number(row.turns) %]</td>
+[% IF row.start_dump %]
+<td><a href="[% row.start_dump %]">[% row.start %]</a></td>
+[% ELSE %]
+<td>[% row.start %]</td>
+[% END %]
+
+[% IF row.end_dump %]
+<td><a href="[% row.end_dump %]">[% row.end %]</a></td>
+[% ELSE %]
+<td>[% row.end %]</td>
+[% END %]
+
+<td>
+[% FOREACH game IN row.glist %]
+<span class="combono">[% IF game.dump %]<a href="[% game.dump %]">[% END %][% game.n %][% IF game.dump %]</a>[% END %]</span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
+[% END %]
+</td>
+</tr>
+[% END %]
+[% END %]
+
+</table>
+<span class="notice">Only streaks active in last 30 days are shown</span>
+
+
 </div>
 </div>
 

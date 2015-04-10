@@ -440,12 +440,16 @@ sub sql_load_logfiles
 #   ...
 # )
 #
-# Arguments: 1. variant id, 'all' or undef; 2. logfiles_i value, used for
-# selecting /dev/null games; 3. player name, this is normally the 'name'
-# field, but when logfiles_i is true, then 'name_orig' is used instead (again
-# this is for /dev/null processing); 4. LIMIT value; 5. list streaks with
-# at least this many games (no value or value of 0-1 means listing even
-# potential streaks).
+# Arguments:
+# 1. variant id, 'all' or undef
+# 2. logfiles_i value, used for selecting /dev/null games
+# 3. player name, this is normally the 'name' field, but when logfiles_i is
+#    true, then 'name_orig' is used instead (again this is for /dev/null
+#    processing)
+# 4. LIMIT value
+# 5. list streaks with at least this many games (no value or value of 0-1
+#    means listing even potential streaks)
+# 6. select only open streaks
 #============================================================================
 
 sub sql_load_streaks
@@ -457,7 +461,8 @@ sub sql_load_streaks
     $logfiles_i,      # 2. logfiles id
     $name,            # 3. player name
     $limit,           # 4. limit the query
-    $num_games        # 5. games-in-a-streak cutoff value
+    $num_games,       # 5. games-in-a-streak cutoff value
+    $open_only        # 6. select only open streaks
   ) = @_;
 
   #--- other variables
@@ -508,9 +513,15 @@ sub sql_load_streaks
     push(@args, $name);
   }
 
+  if($open_only) {
+    push(@conds, 'open is true');
+  }
+
+  #--- assemble the query
+
   $query = sprintf($query, join(' AND ', @conds));
 
-  #--- query limit
+  #--- append query limit
 
   if($limit) {
     $query .= sprintf(' LIMIT %d', $limit);
@@ -543,8 +554,9 @@ sub sql_load_streaks
 
   $query = 
   q{SELECT *, } .
-  q{to_char(starttime,'YYYY-MM-DD HH24:MI') as starttime_fmt, } .
-  q{to_char(endtime,'YYYY-MM-DD HH24:MI') as endtime_fmt } .
+  q{to_char(starttime,'YYYY-MM-DD HH24:MI') AS starttime_fmt, } .
+  q{to_char(endtime,'YYYY-MM-DD HH24:MI') AS endtime_fmt, } .
+  q{floor(extract(epoch from age(endtime))/86400) AS age_day } .
   q{FROM streaks } .
   q{JOIN logfiles USING ( logfiles_i ) } .
   q{JOIN games_set_map USING ( games_set_i ) } .
@@ -577,13 +589,22 @@ sub sql_load_streaks
   if(!$r) { return $sth->errstr(); }
 
   while(my $row = $sth->fetchrow_hashref()) {
- 
+
     if(exists($streaks{$row->{'streaks_i'}})) {
       row_fix($row, $variant, $logfiles_i);
       push(
         @{$streaks{$row->{'streaks_i'}}{'games'}},
         $row
       );
+      #--- save streak age (days from last game's endtime)
+      if(exists $streaks{$row->{'streaks_i'}}{'age'}) {
+#printf "2 STREAK AGE %d\n",  $row->{'age_day'};
+        $streaks{$row->{'streaks_i'}}{'age'} = $row->{'age_day'}
+        if $streaks{$row->{'streaks_i'}}{'age'} > $row->{'age_day'};
+      } else {
+#printf "1 STREAK AGE %d\n",  $row->{'age_day'};
+        $streaks{$row->{'streaks_i'}}{'age'} = $row->{'age_day'};
+      }
     }
   }
 
@@ -636,6 +657,7 @@ sub process_streaks
     $row->{'name'}       = $game_first->{'name'};
     $row->{'plrpage'}    = $game_first->{'plrpage'};
     $row->{'name_orig'}  = $game_first->{'name_orig'};
+    $row->{'age'}        = $streak->{'age'};
     $row->{'glist'}      = [];
     my $games_cnt = 1;
     for my $game (@{$streak->{'games'}}) {
@@ -645,8 +667,12 @@ sub process_streaks
 
   #--- close open streaks for finished /dev/null tournaments
   # note, that this relies on logfile_i to be the year of the /dev/null
-  # tournament! This should probably be changed so that there's extra
-  # db field for this.
+  # tournament! this should probably be changed so that there's extra
+  # db field for this; also this means that devnull streaks cannot
+  # span multiple tournaments
+  # another thing to watch out for is that some devnull streaks will
+  # be marked as 'open' in the database, but this processing will
+  # mark them closed
 
     if($row->{'server'} eq 'dev') {
       my $date_game = $game_first->{'logfiles_i'} * 100 + 10;
@@ -1413,14 +1439,16 @@ sub gen_page_about
 sub gen_page_front
 {
   my %data;
-  
+  my @variants = @{$NetHack::nh_def->{nh_variants_ord}};
+  my $logger = get_logger("Stats::gen_page_front");
+
   #--- info
 
   $logger->info('Creating page: Front');
 
   #--- perform database pull
 
-  for my $variant (@{$NetHack::nh_def->{nh_variants_ord}}) {
+  for my $variant (@variants) {
 
     #--- check if any games exist for given variant
     
@@ -1452,10 +1480,56 @@ sub gen_page_front
         $row->{'age_hours'}
       );
       $data{'last_ascensions'}{$variant} = $row;
+
     } else {
       $data{'last_ascensions'}{$variant} = undef;
     }
   }
+
+  #----------------------------------------------------------------------------
+  #--- retrieve currently open streaks ----------------------------------------
+  #----------------------------------------------------------------------------
+
+  my $streaks_proc_1;
+  my $streaks_proc_2;
+  my ($streaks_ord, $streaks) = sql_load_streaks(
+    'all', undef, undef, undef, 2, 1
+  );
+  if(!ref($streaks_ord)) {
+    $logger->error(q{Could not load streaks: }, $streaks_ord);
+    die $streaks_ord;
+  }
+  $logger->debug(
+    sprintf(q{Loaded %d streaks}, scalar(@$streaks_ord))
+  );
+  $streaks_proc_1 = process_streaks($streaks_ord, $streaks);
+
+  #--- streak reprocessing
+  # 1. we remove closed streaks (these can appear here because
+  #    process_streaks() closes devnull streaks itself
+  # 2. streak older than cutoff age (to prevent old streaks littering the page)
+  # 3. renumber the list
+  # 4. shorten the dates
+
+  my $i = 1;
+  for my $entry (@$streaks_proc_1) {
+    if($entry->{'open'} && $entry->{'age'} < 90) {
+      $entry->{'n'} = $i++;
+      $entry->{'start'} =~ s/\s\d{2}:\d{2}$//;
+      $entry->{'end'} =~ s/\s\d{2}:\d{2}$//;
+      push(@$streaks_proc_2, $entry);
+    }
+  }
+
+  #--- save the result
+
+  $data{'streaks'} = $streaks_proc_2;
+  $logger->debug(
+    sprintf(
+      'Removed %d closed/old streaks',
+      scalar(@$streaks_proc_1) - scalar(@$streaks_proc_2)
+    )
+  );
 
   #--- sort the results
   
