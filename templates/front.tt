@@ -65,6 +65,11 @@
 </table>
 
 
+<h3>Recent Ascensions</h3>
+
+[% SET result = ascensions_recent %]
+[% INCLUDE tab_ascended.tt %]
+
 <h3>Active Streaks</h3>
 
 <table class="bordered">
