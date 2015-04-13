@@ -591,7 +591,7 @@ sub sql_load_streaks
   while(my $row = $sth->fetchrow_hashref()) {
 
     if(exists($streaks{$row->{'streaks_i'}})) {
-      row_fix($row, $variant, $logfiles_i);
+      row_fix($row, $logfiles_i);
       push(
         @{$streaks{$row->{'streaks_i'}}{'games'}},
         $row
@@ -696,7 +696,6 @@ sub process_streaks
 sub row_fix
 {
   my $row = shift;
-  my $variant = shift;
   my $devnull = shift;
   my $logfiles_i = $row->{'logfiles_i'};
 
@@ -708,7 +707,7 @@ sub row_fix
   #--- include conducts in the ascended message
 
   if($row->{'ascended'}) {
-    my @c = nh_conduct($row->{'conduct'}, $variant);
+    my @c = nh_conduct($row->{'conduct'}, $row->{'variant'});
     $row->{'ncond'} = scalar(@c);
     $row->{'tcond'} = join(' ', @c);
     if(scalar(@c) == 0) {
@@ -761,12 +760,12 @@ sub row_fix
 
   if($devnull) {
     $row->{'plrpage'} = url_substitute(
-      sprintf("players/%%x.html", $variant),
+      sprintf("players/%%x.html", $row->{'variant'}),
       $row
     );
   } else {
     $row->{'plrpage'} = url_substitute(
-      sprintf("players/%%U/%%u.%s.html", $variant),
+      sprintf("players/%%U/%%u.%s.html", $row->{'variant'}),
       $row
     );
   }
@@ -940,7 +939,7 @@ sub gen_page_recent
 
   $result = sql_load(
     $query_lst, $cnt_start, $cnt_incr,
-    sub { row_fix($_[0], $variant, $logfiles_i); },
+    sub { row_fix($_[0], $logfiles_i); },
     @arg
   );
   return sprintf('Failed to query database (%s)', $result) if !ref($result);
@@ -994,7 +993,7 @@ sub gen_page_player
   $result = sql_load(
     $query, 1, 1,
     sub { 
-      row_fix($_[0], $variant);
+      row_fix($_[0]);
       $ascs_by_rowid{$_[0]{'rowid'}} = $_[0];
     },
     @arg
@@ -1037,7 +1036,7 @@ sub gen_page_player
   }
   $query .= ' LIMIT 1';
   $result = sql_load(
-    $query, undef, undef, sub { row_fix($_[0], $variant); }, @arg
+    $query, undef, undef, sub { row_fix($_[0]); }, @arg
   );
   $data{'games_first'} = $result->[0];
 
@@ -1052,7 +1051,7 @@ sub gen_page_player
   $query .= ' LIMIT 15';
   $result = sql_load(
     $query, $data{'games_count_all'}, -1,
-    sub { row_fix($_[0], $variant); },
+    sub { row_fix($_[0]); },
     @arg
   );
   return $result if !ref($result);
@@ -1470,7 +1469,7 @@ sub gen_page_front
       die $sth->errstr();      
     } elsif($r > 0) {
       my $row = $sth->fetchrow_hashref();
-      row_fix($row, $variant);
+      row_fix($row);
       $row->{'age'} = fmt_age(
         $row->{'age_years'}, 
         $row->{'age_months'}, 
@@ -1665,14 +1664,14 @@ sub gen_page_dev_player
 
     $result = sql_load(
       $query_asc, 1, 1, 
-      sub { row_fix($_[0], 'nh', $logfiles_i); },
+      sub { row_fix($_[0], $logfiles_i); },
       $logfiles_i, $p
     );
     return $result if !ref($result);
     $data{'result_asc'} = [ reverse(@$result) ];
     $result = sql_load(
       $query_all, 1, 1,
-      sub { row_fix($_[0], 'nh', $logfiles_i); },
+      sub { row_fix($_[0], $logfiles_i); },
       $logfiles_i, $p
     );
     return $result if !ref($result);
@@ -1737,7 +1736,7 @@ sub gen_page_dev_roles
 
   $result = sql_load(
     $query, undef, undef,
-    sub { row_fix($_[0], 'nh', $logfiles_i); },
+    sub { row_fix($_[0], $logfiles_i); },
     $logfiles_i
   );
   return $result if !ref($result);
@@ -1839,7 +1838,7 @@ EOHD
   $result = sql_load(
     $query, 
     $result->[0]{'count'}, -1, 
-    sub { row_fix($_[0], 'nh', $logfiles_i); },
+    sub { row_fix($_[0], $logfiles_i); },
     $logfiles_i
   );
   return $result if !ref($result);
@@ -1860,7 +1859,7 @@ EOHD
 
   $result = sql_load(
     $query, 1, 1, 
-    sub { row_fix($_[0], 'nh', $logfiles_i); }, 
+    sub { row_fix($_[0], $logfiles_i); }, 
     $logfiles_i
   );
   return $result if !ref($result);
@@ -1881,7 +1880,7 @@ EOHD
 
   $result = sql_load(
     $query, 1, 1, 
-    sub { row_fix($_[0], 'nh', $logfiles_i); },
+    sub { row_fix($_[0], $logfiles_i); },
     $logfiles_i
   );
   return $result if !ref($result);
@@ -1902,7 +1901,7 @@ EOHD
 
   $result = sql_load(
     $query, 1, 1,
-    sub { row_fix($_[0], 'nh', $logfiles_i); },
+    sub { row_fix($_[0], $logfiles_i); },
     $logfiles_i
   );
   return $result if !ref($result);
@@ -1923,7 +1922,7 @@ EOHD
 
   $result = sql_load(
     $query, 1, 1,
-    sub { row_fix($_[0], 'nh', $logfiles_i); },
+    sub { row_fix($_[0], $logfiles_i); },
     $logfiles_i
   );
   return $result if !ref($result);
