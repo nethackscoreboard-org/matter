@@ -16,6 +16,7 @@
 <a href="./">Overview</a> |
 <a href="recent.[% variant %].html">Recent Games</a> |
 <a href="ascended.[% variant %].html">Ascended Games</a> |
+<a href="zscore.[% variant %].html">Z-scores</a> |
 <a href="about.html">About</a>
 </div>
 
