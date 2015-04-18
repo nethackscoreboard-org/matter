@@ -70,7 +70,7 @@
 <td class="numeric">[% games_count_asc %]</td>
 <td class="numeric">[% IF games_count_asc == 0 %][% percent(0) %][% ELSE %][% percent(games_count_asc / ( games_count_all + games_count_scum ) * 100) %][% END %]
 <td class="numeric">[% games_count_scum %]</td>
-<td class="numeric">[% zsc(zscore.all.all ? zscore.all.all : 0) %]</td>
+<td class="numeric">[% zscore.item('val').item(name).item(variant).item('all') ? zsc(zscore.item('val').item(name).item(variant).item('all')) : 0 %]</td>
 [% IF games_first.dump -%]
 <td class="numeric"><a href="[% games_first.dump %]">[% games_first.endtime %]</a></td>
 [%- ELSE -%]
