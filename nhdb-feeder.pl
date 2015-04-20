@@ -226,8 +226,9 @@ sub sql_insert_games
   # NetHack4 has no "realtime" field
   #if(!exists $l->{'realtime'}) { return undef; }
   
-  #--- reject wizmode games
+  #--- reject wizmode games, paxed test games
   if($l->{'name'} eq 'wizard') { return undef; }
+  if($l->{'name'} eq 'paxedtest' && $server = 'nao') { return undef; }
 
   #--- regular fields
   for my $k (qw(role race gender gender0 align align0 deathdnum deathlev deaths hp maxhp maxlvl points turns realtime version dumplog)) {
