@@ -5,12 +5,7 @@
 
 <head>
   <link rel="stylesheet" type="text/css" href="/nh/default.css">
-[% IF result_ascended.size -%]  
-  <script type="text/javascript" src="/nh/js/jquery.js"></script> 
-  <script type="text/javascript" src="/nh/js/tablesorter.js"></script>
-  <script type="text/javascript" src="/nh/js/tabsort.js"></script>
-[% END -%]
-  <title>Recent Games</title>
+  <title>Best Conduct Games</title>
 </head>
 
 <body class="page_back">
@@ -19,15 +14,14 @@
 
 <div class="toplinks">
 <a href="./">Overview</a> |
-<a href="ascended.[% variant %].html">Ascended Games</a> |
+<a href="recent.[% variant %].html">Recent Games</a> |
 <a href="streaks.[% variant %].html">Streaks</a> |
 <a href="zscore.[% variant %].html">Z-scores</a> |
-<a href="conduct.[% variant %].html">Conducts</a> |
 <a href="about.html">About</a>
 </div>
 
 <div class="page_content">
-<h1>Recent Games</h1>
+<h1>Best Conduct Games</h1>
 
 <p id="varmenu">
 [% FOREACH var IN variants %]
@@ -35,11 +29,11 @@
   [% IF variant == var %]
     <span class="selected">[% label %]</span>
   [% ELSE %]
-    <a href="recent.[% var %].html"><span class="unselected">[% label %]</span></a>
+    <a href="conduct.[% var %].html"><span class="unselected">[% label %]</span></a>
   [% END %]
 [% END %]
 </p>
 
-[% INCLUDE tab_recent.tt %]
+[% INCLUDE tab_ascended.tt %]
 
 [% INCLUDE footer.tt %]

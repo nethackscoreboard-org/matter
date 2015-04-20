@@ -1757,6 +1757,65 @@ sub gen_page_zscores
 
 
 #============================================================================
+# Generate page of best conduct games.
+#============================================================================
+
+sub gen_page_conducts
+{
+  #--- arguments
+
+  my $variant = shift;
+
+  #--- other variables
+
+  my ($query, @args);
+  my $ascs;
+  my %data;
+
+  #--- init
+
+  if(!$variant) { $variant = 'all'; }
+  $logger->info('Creating page: Conducts/', $variant);
+
+  #--- query database
+  
+  $query = q{SELECT *, bitcount(conduct) AS ncond FROM v_ascended };
+  if($variant ne 'all') {
+    $query .= q{WHERE variant = ? };
+    push(@args, $variant);
+  }
+  $query .= q{ORDER BY ncond DESC, turns ASC LIMIT 100};
+  $ascs = sql_load(
+    $query, 1, 1, 
+    sub { row_fix($_[0]) }, 
+    @args
+  );
+  if(!ref($ascs)) {
+    $logger->error(
+      sprintf(
+        'gen_page_conducts(): Failed to query database (%s)',
+        $ascs
+      )
+    );
+    return $ascs;
+  }
+  $data{'result'} = $ascs;
+
+  #--- supply additional data
+
+  $data{'cur_time'} = scalar(localtime());
+  $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
+  $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'variant'}  = $variant;
+
+  #--- process template
+
+  $tt->process('conduct.tt', \%data, 'conduct.' . $variant . '.html')
+    or die $tt->error();
+}
+
+
+#============================================================================
 # Generate ordered list of players for /dev/null.
 #============================================================================
 
@@ -2432,6 +2491,7 @@ if($cmd_aggr) {
     gen_page_recent('ascended', $var, 'ascended.tt', "ascended.$var.html");
     gen_page_streaks($var);
     gen_page_zscores($var);
+    gen_page_conducts($var);
 
     #--- clear update flag
     $dbh->do(
