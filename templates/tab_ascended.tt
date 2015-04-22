@@ -21,6 +21,9 @@
   <th>HP</th>
   <th>time</th>
   <th colspan="2">conducts</th>
+[% IF datetick %]
+  <th class="date"></th>
+[% END %]
 </tr>
 
 </thead>
@@ -52,6 +55,13 @@
   <td>[% row.endtime %]</td>
   <td class="numeric">[% row.ncond %]</td>
   <td>[% row.tcond %]</td>
+[% IF datetick %]
+[% IF row.short_date != dt%]
+  <td class="date topdiv">[% row.short_date; SET dt = row.short_date %]</td>
+[% ELSE %]
+  <td class="date"></td>
+[% END %]
+[% END %]
 </tr>
 [%- END %]
 

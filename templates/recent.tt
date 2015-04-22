@@ -40,6 +40,7 @@
 [% END %]
 </p>
 
-[% INCLUDE tab_recent.tt %]
+[% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
+[% INCLUDE tab_recent.tt datetick=dt_ena %]
 
 [% INCLUDE footer.tt %]

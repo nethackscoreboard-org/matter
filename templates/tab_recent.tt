@@ -17,6 +17,9 @@
   <th>HP</th>
   <th>time</th>
   <th>death reason</th>
+[%- IF datetick -%]
+  <th class="date"></th>
+[%- END -%]
 </tr>
 
 [% FOREACH row IN result %]
@@ -43,6 +46,13 @@
   <td class="numeric">[% row.hp %]/[% row.maxhp %]</td>
   <td>[% row.endtime %]</td>
   <td>[% row.death %]</td>
+[% IF datetick %]
+[% IF row.short_date != dt%]
+  <td class="date topdiv">[% row.short_date; SET dt = row.short_date %]</td>
+[% ELSE %]
+  <td class="date"></td>
+[% END %]
+[% END %]
 </tr>
 [% END %]
 

@@ -61,6 +61,7 @@ CREATE OR REPLACE VIEW v_games_recent AS
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+    to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, death, dumplog,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
     games.version, ascended
@@ -111,6 +112,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+    to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, death,
     deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
     games.version, ascended, dumplog,
