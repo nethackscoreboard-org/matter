@@ -1,7 +1,10 @@
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+
 <!doctype html>
 
 <html>
+  <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> -->
+  <!-- <link rel="stylesheet" type="text/css" href="/nh/main.css"> -->
   <link rel="stylesheet" type="text/css" href="/nh/default.css">
   <title>NetHack Scoreboard</title>
 </html>
@@ -44,6 +47,7 @@
 </tr>
 
 [% FOREACH var IN variants %]
+[% NEXT IF !last_ascensions.item(var) %]
 [% row = last_ascensions.item(var) %]
 <tr>
 <th><a href="ascended.[% var %].html">[% vardef.item(var) %]</a></th>

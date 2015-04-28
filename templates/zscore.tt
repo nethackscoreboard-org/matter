@@ -37,7 +37,7 @@
 [%- END %]
 </p>
 
-
+[% IF zscore.item('ord').item(variant).size %]
 <table class="bordered">
 
 <thead>
@@ -92,5 +92,8 @@
 </tbody>
 
 </table>
+[% ELSE %]
+<p>No z-scores for this variant</p>
+[% END %]
 
 [% INCLUDE footer.tt %]

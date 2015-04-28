@@ -1043,6 +1043,7 @@ sub gen_page_recent
 
   #--- init
 
+  $logger = get_logger('Stats::gen_page_recent');
   $logger->info(
     sprintf(
       'Creating page: %s Games/%s',
@@ -1093,6 +1094,7 @@ sub gen_page_recent
 
   #--- pull data from database
 
+  $logger->debug($query_lst);
   $result = sql_load(
     $query_lst, $cnt_start, $cnt_incr,
     sub { row_fix($_[0], $logfiles_i); },
@@ -1626,7 +1628,7 @@ sub gen_page_front
     $r = $sth->execute($variant);
     if(!$r) {
       $logger->error(q{Failed to create page 'Front' (2), }, $sth->errstr());
-      die $sth->errstr();      
+      die $sth->errstr();
     } elsif($r > 0) {
       my $row = $sth->fetchrow_hashref();
       row_fix($row);
@@ -1637,9 +1639,6 @@ sub gen_page_front
         $row->{'age_hours'}
       );
       $data{'last_ascensions'}{$variant} = $row;
-
-    } else {
-      $data{'last_ascensions'}{$variant} = undef;
     }
   }
 

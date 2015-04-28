@@ -36,6 +36,13 @@
 </p>
 
 
+[% SET st_cnt = 0 %]
+[% FOREACH row IN result %]
+[% IF row.wins > 1; SET st_cnt = st_cnt + 1; END %]
+[% END %]
+
+[% IF st_cnt %]
+
 <table class="bordered">
 
 <tr>
@@ -86,5 +93,8 @@
 
 </table>
 
+[% ELSE %]
+<p>No streaks for this variant.</p>
+[% END %]
 
 [% INCLUDE footer.tt %]

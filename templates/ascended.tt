@@ -35,7 +35,11 @@
 [% END %]
 </p>
 
+[% IF result.size %]
 [% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
 [% INCLUDE tab_ascended.tt datetick=dt_ena %]
+[% ELSE %]
+<p>No ascensions for this variant.</p>
+[% END %]
 
 [% INCLUDE footer.tt %]
