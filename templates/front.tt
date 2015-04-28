@@ -3,8 +3,6 @@
 <!doctype html>
 
 <html>
-  <!-- <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'> -->
-  <!-- <link rel="stylesheet" type="text/css" href="/nh/main.css"> -->
   <link rel="stylesheet" type="text/css" href="/nh/default.css">
   <title>NetHack Scoreboard</title>
 </html>
