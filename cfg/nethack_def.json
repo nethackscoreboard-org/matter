@@ -90,11 +90,12 @@
     "sh"  : "SporkHack",
     "gh"  : "GruntHack",
     "unh" : "UnNetHack",
-    "dnh" : "dNetHack"
+    "dnh" : "dNetHack",
+    "nhf" : "Fourk"
   },
 
   "nh_variants_ord" : [
-    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh"
+    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf"
   ],
 
   
@@ -208,6 +209,15 @@
         "clk", "dro", "dwa", "elf", "gno", "hum", "inc", "orc", "vam" 
       ],
       "aligns" : [ "law", "neu", "cha", "non" ]
+    },
+
+    "nhf" : {
+      "roles" : [ 
+        "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
+        "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "aligns" : [ "law", "neu", "cha" ]
     }
 
   }

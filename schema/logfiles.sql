@@ -266,6 +266,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  13, 'nethack.xd.cm (Fourk)',
+  'nxc', 'nhf', NULL,
+  'https://nethack.xd.cm/xlogfiles/nh4k',
+  'nxc.nhf.log',
+  NULL,
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------

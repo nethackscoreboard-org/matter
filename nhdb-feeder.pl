@@ -230,6 +230,9 @@ sub sql_insert_games
   if($l->{'name'} eq 'wizard') { return undef; }
   if($l->{'name'} eq 'paxedtest' && $server eq 'nao') { return undef; }
 
+  #--- reject entries with empty name
+  if(!exists $l->{'name'} || !$l->{'name'}) { return undef; }
+
   #--- regular fields
   for my $k (qw(role race gender gender0 align align0 deathdnum deathlev deaths hp maxhp maxlvl points turns realtime version dumplog)) {
     if(exists $l->{$k}) {
