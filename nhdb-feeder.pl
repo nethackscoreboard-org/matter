@@ -230,6 +230,9 @@ sub sql_insert_games
   if($l->{'name'} eq 'wizard') { return undef; }
   if($l->{'name'} eq 'paxedtest' && $server eq 'nao') { return undef; }
 
+  #--- reject "special" modes of NH4 and its kin
+  if(exists $l->{'mode'} && $l->{'mode'} ne 'normal') { return undef; }
+
   #--- reject entries with empty name
   if(!exists $l->{'name'} || !$l->{'name'}) { return undef; }
 
