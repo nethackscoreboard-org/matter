@@ -767,11 +767,15 @@ sub row_fix
     # with %20, and prepend http://nethack4.org/dumps/ to produce a filename
     # you can link to.
 
-    if($logfiles->{$logfiles_i}{'server'} eq 'n4o' && $row->{'dumplog'}) {
+    if(
+      $logfiles->{$logfiles_i}{'variant'} =~ /^(nh4|nhf)$/
+      && $row->{'dumplog'}
+    ) {
+      my $dump_path = url_substitute($logfiles->{$logfiles_i}{'dumpurl'}, $row);
       my $dump_file = $row->{'dumplog'};
       $dump_file =~ s/(\d{2})_(\d{2})_(\d{2})/$1:$2:$3/;
       $dump_file =~ s/ /%20/g;
-      $row->{'dump'} = $logfiles->{$logfiles_i}{'dumpurl'} . $dump_file;
+      $row->{'dump'} = $dump_path . $dump_file;
     } 
 
     # everything else uses URL template
