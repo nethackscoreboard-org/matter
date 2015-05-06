@@ -88,6 +88,38 @@ sub get_month_year
 
 
 #============================================================================
+# Return duration in seconds formatted as years, months, days, hours, minutes
+# and seconds. Used for total time spent playing in player statistic pages.
+#============================================================================
+
+sub format_duration_plr
+{
+  use integer;
+  my $t = shift;
+  my @a;
+
+  my $years = $t / 31536000;
+  $t %= 31536000;
+  my $months = $t / 2592000;
+  $t %= 2592000;
+  my $days = $t / 86400;
+  $t %= 86400;
+  my $hours = $t / 3600;
+  $t %= 3600;
+  my $minutes = $t / 60;
+  $t %= 60;
+  my $seconds = $t;
+
+  push(@a, sprintf('%d years', $years)) if $years;
+  push(@a, sprintf('%d months', $months)) if $months;
+  push(@a, sprintf('%d days', $days)) if $days;
+  push(@a, sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds));
+
+  return join(', ', @a);
+}
+
+
+#============================================================================
 # Order an array by using reference array
 #============================================================================
 
@@ -1222,6 +1254,20 @@ sub gen_page_player
   return $result if !ref($result);
   $data{'result_recent'} = $result;
   $data{'games_last'} = $result->[0];
+
+  #=== total play-time =====================================================
+
+  if($variant !~ /^(nh4|ace|nhf)$/) {
+    $query = q{SELECT sum(realtime) FROM v_games_all WHERE name = ?};
+    @arg = ($name);
+    if($variant ne 'all') {
+      $query .= ' AND variant = ?';
+      push(@arg, $variant);
+    }
+    $result = sql_load($query, undef, undef, undef, @arg);
+    return $result if !ref($result);
+    $data{'total_duration'} = format_duration_plr($result->[0]{'sum'});
+  }
 
   #=== games by roles/all ==================================================
 
