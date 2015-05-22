@@ -271,7 +271,7 @@ INSERT INTO logfiles VALUES (
   'nxc', 'nhf', NULL,
   'https://nethack.xd.cm/xlogfiles/nh4k',
   'nxc.nhf.log',
-  'https://nethack.xd.cm/userdata/%u/nh4k/4.%v/dumps/',
+  'https://nethack.xd.cm/userdata/%u/nh4k/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
