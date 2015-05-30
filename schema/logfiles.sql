@@ -277,6 +277,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  14, 'nethack.xd.cm (SporkHack)',
+  'nxc', 'sh', NULL,
+  'https://nethack.xd.cm/xlogfiles/sporkhack',
+  'nxc.sh.log',
+  'https://nethack.xd.cm/userdata/%u/sporkhack/dumplog/%s',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------
