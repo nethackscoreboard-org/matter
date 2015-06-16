@@ -288,6 +288,30 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  15, 'nethack.xd.cm (GruntHack)',
+  'nxc', 'gh', NULL,
+  'https://nethack.xd.cm/xlogfiles/grunthack',
+  'nxc.gh.log',
+  'https://nethack.xd.cm/userdata/%u/grunthack/dumplog/%s',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  16, 'nethack.xd.cm (UnNetHack)',
+  'nxc', 'unh', NULL,
+  'https://nethack.xd.cm/xlogfiles/unnethack',
+  'nxc.unh.log',
+  'https://nethack.xd.cm/userdata/%u/unnethack/dumplog/%s',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+
+
 -----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------
