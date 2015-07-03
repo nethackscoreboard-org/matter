@@ -114,9 +114,9 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
   5, 'acehack.de',
   'ade', 'ace', NULL,
-  'https://nethack.xd.cm/history/ade/acehack/xlogfile',
+  'https://nethack.xd.cm/history/ade/xlogfiles/acehack',
   'ade.ace.log', 
-  'https://nethack.xd.cm/history/aeu/%u/dumplog/%s'
+  'https://nethack.xd.cm/history/ade/userdata/%u/acehack/dumplog/%s'
   NULL,
   FALSE, TRUE, TRUE,
   'UTC', NULL, NULL
@@ -232,9 +232,9 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
  11, 'acehack.eu',
  'aeu', 'ace', NULL,
- 'https://nethack.xd.cm/history/aeu/xlogfile',
+ 'https://nethack.xd.cm/history/aeu/xlogfiles/acehack',
  'aeu.ace.log',
- 'https://nethack.xd.cm/history/aeu/%u/dumplog/%s',
+ 'https://nethack.xd.cm/history/aeu/userdata/%u/acehack/dumplog/%s',
  NULL,
  FALSE, TRUE, FALSE,
  'UTC', NULL, NULL
@@ -278,22 +278,22 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  14, 'nethack.xd.cm (SporkHack)',
+  14, 'nethack.xd.cm (SporkHack 2015)',
   'nxc', 'sh', NULL,
-  'https://nethack.xd.cm/xlogfiles/sporkhack',
-  'nxc.sh.log',
-  'https://nethack.xd.cm/userdata/%u/sporkhack/dumplog/%s',
+  'https://nethack.xd.cm/history/junethack2015/xlogfiles/sporkhack',
+  'nxc.sh.2015.log',
+  'https://nethack.xd.cm/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  15, 'nethack.xd.cm (GruntHack)',
+  15, 'nethack.xd.cm (GruntHack 2015)',
   'nxc', 'gh', NULL,
-  'https://nethack.xd.cm/xlogfiles/grunthack',
-  'nxc.gh.log',
-  'https://nethack.xd.cm/userdata/%u/grunthack/dumplog/%s',
+  'https://nethack.xd.cm/history/junethack2015/xlogfiles/grunthack',
+  'nxc.gh.2015.log',
+  'https://nethack.xd.cm/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
