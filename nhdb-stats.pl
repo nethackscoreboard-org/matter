@@ -98,6 +98,8 @@ sub format_duration_plr
   my $t = shift;
   my @a;
 
+  return undef if !$t;
+  
   my $years = $t / 31536000;
   $t %= 31536000;
   my $months = $t / 2592000;
