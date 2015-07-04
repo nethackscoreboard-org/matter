@@ -16,5 +16,6 @@ INSERT INTO translations VALUES ( 'nao', 'stennop', 'stenno');
 INSERT INTO translations VALUES ( 'nao', 'tufoop', 'stenno');
 INSERT INTO translations VALUES ( 'nao', 'mrsoak', 'stenno');
 INSERT INTO translations VALUES ( 'nao', '23', 'stenno');
+INSERT INTO translations VALUES ( 'nao', 'PogChamp', 'stenno');
 INSERT INTO translations VALUES ( 'dev', 'yeti', 'Yeti218');
 INSERT INTO translations VALUES ( 'dev', 'tariru', 'Tariru' );
