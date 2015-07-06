@@ -1161,6 +1161,8 @@ sub gen_page_recent
 
 
 #============================================================================
+# Generate individual player page for a single variant (including pseudo-
+# variant 'all')
 #============================================================================
 
 sub gen_page_player
@@ -1505,9 +1507,16 @@ sub gen_page_player
   # vardef    -- contains variant full-names
   # result_*  -- various result tables/datasets
 
-  $data{'nh_roles'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'roles'};
-  $data{'nh_races'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'races'};
-  $data{'nh_aligns'} = $NetHack::nh_def->{'nh_variants'}{$variant}{'aligns'};
+  #--- if variant is 'all', list only the canonical roles/races/alignments
+
+  my $variant2 = $variant;
+  if($variant2 eq 'all') { $variant2 = 'nh'; }
+
+  #--- the rest
+
+  $data{'nh_roles'} = $NetHack::nh_def->{'nh_variants'}{$variant2}{'roles'};
+  $data{'nh_races'} = $NetHack::nh_def->{'nh_variants'}{$variant2}{'races'};
+  $data{'nh_aligns'} = $NetHack::nh_def->{'nh_variants'}{$variant2}{'aligns'};
   $data{'cur_time'} = scalar(localtime());
   $data{'name'} = $name;
   $data{'variant'} = $variant;
