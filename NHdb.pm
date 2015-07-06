@@ -22,6 +22,7 @@ our @EXPORT = qw(
   dbdone
   format_duration
   url_substitute
+  logfile_require_fields
 );
 
 
@@ -226,6 +227,21 @@ sub url_substitute
   return $strg;
 }
 
+
+#===============================================================================
+# Returns true if the log row, passed as hashref as the argument contains
+# all required fields
+#===============================================================================
+
+sub logfile_require_fields
+{
+  my $row = shift;
+
+  for my $required_field (@{$nhdb_def->{'feeder'}{'require_field'}}) {
+    if(!exists $row->{$required_field}) { return undef; }
+  }
+  return 1;
+}
 
 1;
 

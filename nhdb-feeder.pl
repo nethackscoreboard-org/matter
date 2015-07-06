@@ -220,15 +220,16 @@ sub sql_insert_games
   my @values;
 
   #--- reject too old log entries without necessary info
-  if(!exists $l->{'conduct'}) { return undef; }
-  if(!exists $l->{'starttime'}) { return undef; }
-  if(!exists $l->{'endtime'}) { return undef; }
-  # NetHack4 has no "realtime" field
-  #if(!exists $l->{'realtime'}) { return undef; }
-  
+  return undef unless logfile_require_fields($l);
+
   #--- reject wizmode games, paxed test games
-  if($l->{'name'} eq 'wizard') { return undef; }
-  if($l->{'name'} eq 'paxedtest' && $server eq 'nao') { return undef; }
+  #if($l->{'name'} eq 'wizard') { return undef; }
+  #if($l->{'name'} eq 'paxedtest' && $server eq 'nao') { return undef; }
+  return undef
+    if grep 
+      { $l->{'name'} eq $_ } 
+      @{$NHdb::nhdb_def->{'feeder'}{'reject_name'}};
+  
 
   #--- reject "special" modes of NH4 and its kin
   if(exists $l->{'mode'} && $l->{'mode'} ne 'normal') { return undef; }
@@ -237,7 +238,7 @@ sub sql_insert_games
   if(!exists $l->{'name'} || !$l->{'name'}) { return undef; }
 
   #--- regular fields
-  for my $k (qw(role race gender gender0 align align0 deathdnum deathlev deaths hp maxhp maxlvl points turns realtime version dumplog)) {
+  for my $k (@{$NHdb::nhdb_def->{'feeder'}{'regular_fields'}}) {
     if(exists $l->{$k}) {
       push(@fields, $k);
       push(@values, sprintf(q{'%s'}, $l->{$k}));
