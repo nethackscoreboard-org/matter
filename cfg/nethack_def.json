@@ -2,10 +2,12 @@
   "nh_roles_def" : {
     "arc" : "archeologist",
     "bar" : "barbarian",
+    "brd" : "brd",
     "bin" : "binder",
     "cav" : "caveman",
     "con" : "convict",
     "hea" : "healer",
+    "hlf" : "half-dragon",
     "kni" : "knight",
     "mon" : "monk",
     "nob" : "noble",
@@ -28,6 +30,7 @@
     "gno" : "gnome",
     "inc" : "incantifier",
     "orc" : "orc",
+    "syl" : "sylph",
     "vam" : "vampire"
   },
 
@@ -36,6 +39,12 @@
     "neu" : "neutral",
     "cha" : "chaotic",
     "non" : "non-aligned"
+  },
+
+  "nh_genders_def" : {
+    "mal" : "male",
+    "fem" : "female",
+    "ntr" : "neuter"
   },
 
   "nh_combo_rules_def" : {
@@ -216,7 +225,7 @@
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc", "syl" ],
       "aligns" : [ "law", "neu", "cha" ]
     }
 
