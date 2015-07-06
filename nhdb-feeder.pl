@@ -666,6 +666,9 @@ for my $log (@logfiles) {
       chomp($l);
 
     #--- devnull logs are special-cased here
+    # devnull logs have server id prepended to each log entry (since their
+    # xlogfile is synthesized from individual server xlogfiles); the id is
+    # removed from the entry here
 
       $l =~ s/^.*?\s// if $log->{'server'} eq 'dev';
 
