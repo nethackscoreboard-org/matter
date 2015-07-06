@@ -237,7 +237,7 @@ sub logfile_require_fields
 {
   my $row = shift;
 
-  for my $required_field (@{$nhdb_def->{'feeder'}{'require_field'}}) {
+  for my $required_field (@{$nhdb_def->{'feeder'}{'require_fields'}}) {
     if(!exists $row->{$required_field}) { return undef; }
   }
   return 1;

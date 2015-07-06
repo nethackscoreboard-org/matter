@@ -23,7 +23,7 @@
   },
 
   "feeder" : {
-    "require_field" : [ "conduct", "starttime", "endttime" ],
+    "require_fields" : [ "conduct", "starttime", "endtime" ],
     "regular_fields" : [
       "role", "race", "gender", "gender0", "align", "align0", "deathdnum", "deathlev", "deaths", "hp", "maxhp",
       "maxlvl", "points", "turns", "realtime", "version", "dumplog"
