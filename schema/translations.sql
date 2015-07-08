@@ -2,6 +2,8 @@
 --- tables 
 ----------------------------------------------------------------------------
 
+DROP TABLE IF EXISTS translations;
+
 CREATE TABLE translations (
   server    varchar(3) NOT NULL,
   name_from varchar(48) NOT NULL,
