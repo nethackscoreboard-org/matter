@@ -67,7 +67,7 @@
 -- Time of last processing of the logfile.
 
 
-DROP TABLE logfiles;
+DROP TABLE IF EXISTS logfiles;
 
 CREATE TABLE logfiles (
   logfiles_i  int,
@@ -116,9 +116,9 @@ INSERT INTO logfiles VALUES (
   'ade', 'ace', NULL,
   'https://nethack.xd.cm/history/ade/xlogfiles/acehack',
   'ade.ace.log', 
-  'https://nethack.xd.cm/history/ade/userdata/%u/acehack/dumplog/%s'
+  'https://nethack.xd.cm/history/ade/userdata/%u/acehack/dumplog/%s',
   NULL,
-  FALSE, TRUE, TRUE,
+  TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
@@ -191,7 +191,7 @@ INSERT INTO logfiles VALUES (
   'shc.sh.log',
   NULL,
   NULL,
-  FALSE, TRUE, TRUE,
+  TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
@@ -284,7 +284,7 @@ INSERT INTO logfiles VALUES (
   'nxc.sh.2015.log',
   'https://nethack.xd.cm/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
   NULL,
-  TRUE, FALSE, TRUE,
+  TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
@@ -295,7 +295,7 @@ INSERT INTO logfiles VALUES (
   'nxc.gh.2015.log',
   'https://nethack.xd.cm/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
   NULL,
-  TRUE, FALSE, TRUE,
+  TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
@@ -345,7 +345,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2008.log',
   NULL,
   NULL,
-  FALSE, TRUE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -356,7 +356,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2009.log',
   NULL,
   NULL,
-  FALSE, TRUE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -367,7 +367,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2010.log',
   NULL,
   NULL,
-  FALSE, TRUE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -378,7 +378,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2011.log',
   NULL,
   NULL,
-  FALSE, TRUE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -389,7 +389,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2012.log',
   NULL,
   NULL,
-  FALSE, TRUE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -400,7 +400,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2013.log',
   NULL,
   NULL,
-  FALSE, TRUE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -411,6 +411,6 @@ INSERT INTO logfiles VALUES (
   'devnull-2014.log',
   NULL,
   NULL,
-  FALSE, FALSE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
