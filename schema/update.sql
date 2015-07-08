@@ -43,7 +43,7 @@
 -- (from logfiles table); if that happens, this table should be completely
 -- emptied by administrator;
 
-DROP TABLE update;
+DROP TABLE IF EXISTS update;
 
 CREATE TABLE update (
   variant varchar(3),
