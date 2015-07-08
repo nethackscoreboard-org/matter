@@ -2,12 +2,16 @@
 --- sequences
 ----------------------------------------------------------------------------
 
+DROP SEQUENCE IF EXISTS games_seq;
+
 CREATE SEQUENCE games_seq;
 
 
 ----------------------------------------------------------------------------
 --- tables 
 ----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS games;
 
 CREATE TABLE games (
   rowid         bigint DEFAULT nextval('games_seq') NOT NULL,
@@ -177,20 +181,3 @@ DECLARE amount integer;
     RETURN amount;
   END
 $$ LANGUAGE plpgsql;
-
-
-----------------------------------------------------------------------------
---- notes / deleting games
---- """"""""""""""""""""""
---- before deleting games, foreign constraint "games_set_map_rowid_fkey"
---- must have its action changed from RESTRICT to CASCADE; don't forget to
---- return it to RESTRICT after the deletion!
-----------------------------------------------------------------------------
-
-
-ALTER TABLE games_set_map
-  DROP CONSTRAINT games_set_map_rowid_fkey,
-  ADD CONSTRAINT games_set_map_rowid_fkey
-    FOREIGN KEY (games_set_i)
-    REFERENCES games(rowid)
-    ON DELETE CASCADE;
