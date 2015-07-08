@@ -517,10 +517,10 @@ sub sql_load_streaks
   q{SELECT streaks_i, sum(turns) AS turns_sum, num_games, open } .
   q{FROM streaks } .
   q{JOIN logfiles USING ( logfiles_i ) } .
-  q{JOIN games_set_map USING ( games_set_i ) } .
+  q{JOIN map_games_streaks USING ( streaks_i ) } .
   q{JOIN games USING ( rowid ) } .
   q{WHERE %s } .
-  q{GROUP BY games_set_i, num_games, streaks_i } .
+  q{GROUP BY num_games, streaks_i } .
   q{ORDER BY num_games DESC, turns_sum ASC};
 
   #--- conditions
@@ -595,7 +595,7 @@ sub sql_load_streaks
   q{floor(extract(epoch from age(endtime))/86400) AS age_day } .
   q{FROM streaks } .
   q{JOIN logfiles USING ( logfiles_i ) } .
-  q{JOIN games_set_map USING ( games_set_i ) } .
+  q{JOIN map_games_streaks USING ( streaks_i ) } .
   q{JOIN games USING ( rowid ) } .
   q{WHERE %s };
 
@@ -1424,7 +1424,7 @@ sub gen_page_player
     'SELECT rowid, streaks_i, open ' .
     'FROM streaks ' .
     'JOIN logfiles USING ( logfiles_i ) ' .
-    'JOIN games_set_map USING ( games_set_i ) ' .
+    'JOIN map_games_streaks USING ( streaks_i ) ' .
     'JOIN games USING ( rowid ) ' .
     'WHERE %s ' .
     'ORDER BY num_games DESC, streaks_i, endtime ASC';

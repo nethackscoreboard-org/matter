@@ -60,7 +60,8 @@ sub parse_log
 
 
 #============================================================================
-# Create new streak entry and return [ streaks_i ] on success or error msg.
+# Create new streak entry, add one game to it and return [ streaks_i ] on
+# success or error msg.
 #============================================================================
 
 sub sql_streak_create_new
@@ -69,32 +70,20 @@ sub sql_streak_create_new
   my $name = shift;
   my $rowid = shift;
 
-  #--- create new game_set
+  #--- create new streak entry
 
-  my $qry = q{INSERT INTO games_set VALUES (DEFAULT) RETURNING games_set_i};
-  my $sth = $dbh->prepare($qry);
-  my $r = $sth->execute();
-  if(!$r) { return $sth->errstr(); }
-  my ($games_set_i) = $sth->fetchrow_array();
-  $sth->finish();
-
-  #--- create mapping entry
-
-  $qry = q{INSERT INTO games_set_map VALUES (?, ?)};
-  $r = $dbh->do($qry, undef, $rowid, $games_set_i);
-  if(!$r) { return $dbh->errstr(); }
-
-  #--- create streak entry
-
-  $qry = q{INSERT INTO streaks };
-  $qry .= q{(games_set_i, logfiles_i, name, open, num_games) };
-  $qry .= q{VALUES (?, ?, ?, TRUE, 1) };
+  my $qry = q{INSERT INTO streaks (logfiles_i, name) VALUES (?, ?) };
   $qry .= q{RETURNING streaks_i};
-  $sth = $dbh->prepare($qry);
-  $r = $sth->execute($games_set_i, $logfiles_i, $name);
+  my $sth = $dbh->prepare($qry);
+  my $r = $sth->execute($logfiles_i, $name);
   if(!$r) { return $sth->errstr(); }
   my ($streaks_i) = $sth->fetchrow_array();
   $sth->finish();
+
+  #--- add the game to the new streak
+
+  $r = sql_streak_append_game($streaks_i, $rowid);
+  return $r if !ref($r);
 
   #--- return
 
@@ -103,27 +92,18 @@ sub sql_streak_create_new
 
 
 #============================================================================
+# Add a game to a streak.
 #============================================================================
 
 sub sql_streak_append_game
 {
-  my $streaks_i = shift;
-  my $rowid = shift;
-
-  #--- update streak entry
-
-  my $qry = q{UPDATE streaks SET num_games = num_games + 1 };
-  $qry .= q{WHERE streaks_i = ? RETURNING games_set_i};
-  my $sth = $dbh->prepare($qry);
-  my $r = $sth->execute($streaks_i);
-  if(!$r) { return $sth->errstr(); }
-  my ($games_set_i) = $sth->fetchrow_array();
-  if(!$games_set_i) { return "sql_streak_append_game() assert failure"; }
+  my $streaks_i = shift;     # 1. streak to be appended to
+  my $rowid = shift;         # 2. the game to be appended
 
   #--- create mapping entry
 
-  $qry = q{INSERT INTO games_set_map VALUES (?, ?)};
-  $r = $dbh->do($qry, undef, $rowid, $games_set_i);
+  my $qry = q{INSERT INTO map_games_streaks VALUES (?, ?)};
+  my $r = $dbh->do($qry, undef, $rowid, $streaks_i);
   if(!$r) { return $dbh->errstr(); }
 
   #--- finish
@@ -133,8 +113,8 @@ sub sql_streak_append_game
 
 
 #============================================================================
-# This will close streak; if the streak is one game long, it will be
-# completely deleted (since it is not really a streak).
+# This will close streak, ie. set streaks.open to FALSE. If the streak has
+# num_games = 1; it will be deleted by database trigger.
 #============================================================================
 
 sub sql_streak_close
@@ -144,36 +124,10 @@ sub sql_streak_close
   #--- close streak entity and get its current state
 
   my $qry = q{UPDATE streaks SET open = FALSE };
-  $qry .= q{WHERE streaks_i = ? RETURNING games_set_i, num_games};
+  $qry .= q{WHERE streaks_i = ?};
   my $sth = $dbh->prepare($qry);
   my $r = $sth->execute($streaks_i);
   if(!$r) { return $sth->errstr(); }
-  my ($games_set_i, $num_games) = $sth->fetchrow_array();
-  if(!$games_set_i) { return "sql_streak_close() assert failure #1"; }
-
-  #--- delete the streak if it only has one game
-
-  if($num_games == 1) {
-  
-    # remove mapping entry
-    $qry = q{DELETE FROM games_set_map WHERE games_set_i = ?};
-    $r = $dbh->do($qry, undef, $games_set_i);
-    if(!$r) { return $dbh->errstr(); }
-    if($r != 1) { return "sql_streak_close() assert failure #2"; }
-
-    # remove the streak entity
-    $qry = q{DELETE FROM streaks WHERE streaks_i = ?};
-    $r = $dbh->do($qry, undef, $streaks_i);
-    if(!$r) { return $dbh->errstr(); }
-    if($r != 1) { return "sql_streak_close() assert failure #4"; }
-
-    # remove the game set
-    $qry = q{DELETE FROM games_set WHERE games_set_i = ?};
-    $r = $dbh->do($qry, undef, $games_set_i);
-    if(!$r) { return $dbh->errstr(); }
-    if($r != 1) { return "sql_streak_close() assert failure #3"; }
-  
-  }
 
   #--- finish
 
@@ -190,7 +144,7 @@ sub sql_streak_get_tail
   my $streaks_i = shift;
 
   my $qry = q{SELECT * FROM streaks };
-  $qry .= q{JOIN games_set_map USING (games_set_i) };
+  $qry .= q{JOIN map_games_streaks USING (streaks_i) };
   $qry .= q{JOIN games USING (rowid) };
   $qry .= q{WHERE streaks_i = ? ORDER BY endtime DESC LIMIT 1};
   my $sth = $dbh->prepare($qry);
@@ -685,6 +639,7 @@ for my $log (@logfiles) {
         $r = $sth->execute();
         if(!$r) {
           $logger->error($lbl, 'Failure during inserting new records');
+          $logger->error($lbl, $qry);
           die;
         }
         ($rowid) = $sth->fetchrow_array();
@@ -703,12 +658,13 @@ for my $log (@logfiles) {
     #-------------------------------------------------------------------------
 
     #--- initialize streak status for name
-    # this actually reads games_set_i (reference to game_set representing
-    # the streaked games) into %streak_open; if no row is returned the
-    # value returned by fetchrow_array() is undef.
+
+    # if the streak status is not yet stored in memory, which happens when
+    # we first encounter (logfiles_i, name) pair, it is loaded from database
+    # (table "streaks")
 
         if(!exists($streak_open{$logfiles_i}{$pl->{'name'}})) {
-          $qry = q{SELECT games_set_i FROM streaks };
+          $qry = q{SELECT streaks_i FROM streaks };
           $qry .= q{WHERE logfiles_i = ? AND name = ? AND open IS TRUE};
           $sth = $dbh->prepare($qry);
           $r = $sth->execute($logfiles_i, $pl->{'name'});
@@ -741,7 +697,12 @@ for my $log (@logfiles) {
             my $last_game = sql_streak_get_tail(
               $streak_open{$logfiles_i}{$pl->{'name'}}
             );
-            die $last_game if !ref($last_game);
+            if(!ref($last_game)) {
+              die sprintf(
+                'sql_streak_get_tail(%s) failed with msg "%s"',
+                $streak_open{$logfiles_i}{$pl->{'name'}}, $last_game
+              );
+            }
             if($last_game->{'endtime_raw'} >= $pl->{'starttime'}) {
               # close current streak
               $logger->info($lbl,
