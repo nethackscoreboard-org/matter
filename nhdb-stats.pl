@@ -956,8 +956,8 @@ sub zscore
   # PLAYER->VARIANT->'all' is player's z-score in given variant
 
   for my $plr (keys %counts) {
-    for my $var (keys $counts{$plr}) {
-      for my $role (keys $counts{$plr}{$var}) {
+    for my $var (keys %{$counts{$plr}}) {
+      for my $role (keys %{$counts{$plr}{$var}}) {
         my $v = harmonic_number($counts{$plr}{$var}{$role});
         $zval->{$plr}{'all'}{'all'} += $v;
         $zval->{$plr}{$var}{$role}  += $v;
@@ -971,9 +971,9 @@ sub zscore
   # these are stored into $zscore{'max'} subtree
 
   for my $plr (keys %$zval) {
-    for my $var (keys $zval->{$plr}) {
+    for my $var (keys %{$zval->{$plr}}) {
       next if $var eq 'all';
-      for my $role (keys $zval->{$plr}{$var}) {
+      for my $role (keys %{$zval->{$plr}{$var}}) {
         next if $role eq 'all';
         # per-variant per-role max values
         $zmax->{$var}{$role} = $zval->{$plr}{$var}{$role}
