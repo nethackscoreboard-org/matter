@@ -221,7 +221,7 @@ INSERT INTO logfiles VALUES (
   'did.dnh.log',
   'http://dnethack.ilbelkyr.de/userdata/%u/dumplog/%s.dnao.txt',
   NULL,
-  FALSE, TRUE, TRUE,
+  TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
@@ -236,7 +236,7 @@ INSERT INTO logfiles VALUES (
  'aeu.ace.log',
  'https://nethack.xd.cm/history/aeu/userdata/%u/acehack/dumplog/%s',
  NULL,
- FALSE, TRUE, FALSE,
+ TRUE, TRUE, FALSE,
  'UTC', NULL, NULL
 );
 
@@ -323,7 +323,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2006.log',
   NULL,
   NULL,
-  FALSE, TRUE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
@@ -334,7 +334,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2007.log',
   NULL,
   NULL,
-  FALSE, TRUE, FALSE,
+  TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
 
