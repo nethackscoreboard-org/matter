@@ -1642,6 +1642,12 @@ sub gen_page_about
   return $result if !ref($result);
   $data{'logfiles'} = $result;
 
+  #--- URL to local logfiles
+  # if this is not undef, it will cause the template to link to local
+  # logfiles from the 'size' column
+
+  $data{'urlpath'} = $NHdb::nhdb_def->{'logs'}{'urlpath'};
+
   #--- generate page
 
   $data{'cur_time'} = scalar(localtime());

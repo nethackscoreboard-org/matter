@@ -65,7 +65,11 @@ also have their personal statistics put together into one summary view.
 <td>[% row.descr %]</td>
 <td>[% row.logurl %]</td>
 <td>[%IF row.static; "YES"; ELSE; "NO"; END %]</td>
+[% IF urlpath %]
+<td class="numeric"><a href="[% urlpath %]/[% row.localfile %]">[% number(row.fpos) %]</a></td>
+[% ELSE %]
 <td class="numeric">[% number(row.fpos) %]</td>
+[% END %]
 <td><span class="[% GET stale %]">[% row.lastchk_trunc %]</span></td>
 </tr>
 [% END %]
