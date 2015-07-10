@@ -23,7 +23,6 @@ $| = 1;
 #=== definitions ============================================================
 #============================================================================
 
-my $logs = 'logs';
 my $lockfile = '/tmp/nhdb-feeder.lock';
 
 
@@ -527,7 +526,11 @@ for my $log (@logfiles) {
   
     #--- prepare, print info
       
-    my $localfile = 'logs/' . $log->{'localfile'};
+    my $localfile = sprintf(
+      '%s/%s',
+      $NHdb::nhdb_def->{'logs'}{'localpath'},
+      $log->{'localfile'}
+    );
     my @fsize;
     my $fpos = $log->{'fpos'};
     $fsize[0] = -s $localfile;
