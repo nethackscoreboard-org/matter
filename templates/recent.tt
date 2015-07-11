@@ -4,11 +4,12 @@
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="/nh/default.css">
-[% IF result_ascended.size -%]  
-  <script type="text/javascript" src="/nh/js/jquery.js"></script> 
-  <script type="text/javascript" src="/nh/js/tablesorter.js"></script>
-  <script type="text/javascript" src="/nh/js/tabsort.js"></script>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="default.css" />
+[% IF result_ascended.size -%]
+  <script type="text/javascript" src="js/jquery.js" />
+  <script type="text/javascript" src="js/tablesorter.js" />
+  <script type="text/javascript" src="js/tabsort.js" />
 [% END -%]
   <title>Recent Games</title>
 </head>

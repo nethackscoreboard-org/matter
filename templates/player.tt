@@ -6,11 +6,12 @@
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="../../default.css">
 [% IF result_ascended.size -%]  
-  <script type="text/javascript" src="/nh/js/jquery.js"></script> 
-  <script type="text/javascript" src="/nh/js/tablesorter.js"></script>
-  <script type="text/javascript" src="/nh/js/tabsort.js"></script>
+  <script type="text/javascript" src="../../jquery.js" />
+  <script type="text/javascript" src="../../tablesorter.js" />
+  <script type="text/javascript" src="../../tabsort.js" />
 [% END -%]
   <title>[% name %]</title>
 </head>

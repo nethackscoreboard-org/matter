@@ -4,8 +4,9 @@
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="/nh/default.css">
-  <link rel="stylesheet" type="text/css" href="/nh/about.css">
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="default.css" />
+  <link rel="stylesheet" type="text/css" href="about.css" />
   <title>About NetHack Scoreboard</title>
 </head>
 
