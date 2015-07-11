@@ -57,7 +57,8 @@ also have their personal statistics put together into one summary view.
 [% FOREACH row IN logfiles -%]
 [%- SET stale = "stale_30d" -%]
 [%- IF row.lastchk_30d; SET stale = "stale_1h"; END -%]
-[%- IF row.lastchk_1h; SET stale = "fresh"; END %]
+[%- IF row.lastchk_1h; SET stale = "fresh"; END -%]
+[%- IF row.static; SET stale = "static"; END -%]
 <tr>
 <td class="numeric">[% row.logfiles_i %]</td>
 <td>[% row.server %]</td>
