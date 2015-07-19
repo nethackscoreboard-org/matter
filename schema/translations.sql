@@ -21,3 +21,5 @@ INSERT INTO translations VALUES ( 'nao', '23', 'stenno');
 INSERT INTO translations VALUES ( 'nao', 'PogChamp', 'stenno');
 INSERT INTO translations VALUES ( 'dev', 'yeti', 'Yeti218');
 INSERT INTO translations VALUES ( 'dev', 'tariru', 'Tariru' );
+INSERT INTO translations VALUES ( 'dev', 'Offi', 'Corwinoid' );
+INSERT INTO translations VALUES ( 'dev', 'Alaithia', 'Corwinoid' );
