@@ -242,6 +242,9 @@
       ],
       "aligns" : [
         "law", "neu", "cha", "non"
+      ],
+      "genders" : [
+        "hum", "fem"
       ]
     },
     
@@ -251,7 +254,8 @@
         "sam", "tou", "val", "wiz"
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
-      "aligns" : [ "law", "neu", "cha" ]
+      "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "hum", "fem" ]
     },
     
     "ace" : {
@@ -261,6 +265,7 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
       "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "hum", "fem" ],
       "conduct" : {
         "1"     : "food",
         "2"     : "vegn",
@@ -310,7 +315,8 @@
         "rog", "sam", "tou", "val", "wiz"
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ],
-      "aligns" : [ "law", "neu", "cha" ]
+      "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "hum", "fem" ]
     },
     
     "sh" : {
@@ -319,7 +325,8 @@
         "sam", "tou", "val", "wiz"
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
-      "aligns" : [ "law", "neu", "cha" ]
+      "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "hum", "fem" ]
     },
     
     "gh" : {
@@ -328,7 +335,8 @@
         "sam", "tou", "val", "wiz"
       ],
       "races" : [ "hum", "elf", "dwa", "gia", "gno", "kob", "ogr", "orc" ],
-      "aligns" : [ "law", "neu", "cha" ]    
+      "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "hum", "fem" ]
     },
 
     "dnh" : {
@@ -339,7 +347,8 @@
       "races" : [
         "clk", "dro", "dwa", "elf", "gno", "hlf", "hum", "inc", "orc", "vam" 
       ],
-      "aligns" : [ "law", "neu", "cha", "non" ]
+      "aligns" : [ "law", "neu", "cha", "non" ],
+      "genders" : [ "hum", "fem" ]
     },
 
     "nhf" : {
@@ -348,7 +357,8 @@
         "sam", "tou", "val", "wiz"
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc", "syl" ],
-      "aligns" : [ "law", "neu", "cha" ]
+      "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "hum", "fem" ]
     }
 
   }
