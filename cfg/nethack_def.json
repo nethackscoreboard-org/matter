@@ -183,7 +183,7 @@
        [ "$rog", "%hum", "%orc", "%elf", "%syl", "#cha"                 ],
        [ "$sam", "%hum",                         "#law"                 ],
        [ "$tou", "%hum", "%gno",                 "#neu"                 ],
-       [ "$val", "%hum",                         "#neu"                 ],
+       [ "$val", "%hum",                         "#neu",         "!fem" ],
        [ "$wiz", "%hum", "%elf", "%gno", "%orc", "%syl", "#neu", "#cha" ],
 
        [ "%elf", "#cha" ],
@@ -244,7 +244,7 @@
         "law", "neu", "cha", "non"
       ],
       "genders" : [
-        "hum", "fem"
+        "mal", "fem"
       ]
     },
     
@@ -255,7 +255,7 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
       "aligns" : [ "law", "neu", "cha" ],
-      "genders" : [ "hum", "fem" ]
+      "genders" : [ "mal", "fem" ]
     },
     
     "ace" : {
@@ -265,7 +265,7 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
       "aligns" : [ "law", "neu", "cha" ],
-      "genders" : [ "hum", "fem" ],
+      "genders" : [ "mal", "fem" ],
       "conduct" : {
         "1"     : "food",
         "2"     : "vegn",
@@ -290,6 +290,7 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
       "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "mal", "fem" ],
       "conduct" : {
         "1"     : "food",
         "2"     : "vegn",
@@ -316,7 +317,7 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ],
       "aligns" : [ "law", "neu", "cha" ],
-      "genders" : [ "hum", "fem" ]
+      "genders" : [ "mal", "fem" ]
     },
     
     "sh" : {
@@ -326,7 +327,7 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
       "aligns" : [ "law", "neu", "cha" ],
-      "genders" : [ "hum", "fem" ]
+      "genders" : [ "mal", "fem" ]
     },
     
     "gh" : {
@@ -336,7 +337,7 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gia", "gno", "kob", "ogr", "orc" ],
       "aligns" : [ "law", "neu", "cha" ],
-      "genders" : [ "hum", "fem" ]
+      "genders" : [ "mal", "fem" ]
     },
 
     "dnh" : {
@@ -348,7 +349,7 @@
         "clk", "dro", "dwa", "elf", "gno", "hlf", "hum", "inc", "orc", "vam" 
       ],
       "aligns" : [ "law", "neu", "cha", "non" ],
-      "genders" : [ "hum", "fem" ]
+      "genders" : [ "mal", "fem" ]
     },
 
     "nhf" : {
@@ -358,7 +359,7 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc", "syl" ],
       "aligns" : [ "law", "neu", "cha" ],
-      "genders" : [ "hum", "fem" ]
+      "genders" : [ "mal", "fem" ]
     }
 
   }
