@@ -221,3 +221,42 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
     }
 
 "nh\_variants" defines roles/races/aligns that given variant has. Genders are oddly missing since we are not using them for anything so far. Optionally, there can also be variant's own list of conducts.
+
+    "nh_combo_rules_def" : {
+
+       "nh" : [
+         [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
+         [ "$bar", "%hum", "%orc",                 "#neu", "#cha"         ],
+         [ "$cav", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
+         [ "$hea", "%hum", "%gno",                 "#neu"                 ],
+         [ "$kni", "%hum",                         "#law"                 ],
+         [ "$mon", "%hum"                                                 ],
+         [ "$pri", "%hum", "%elf"                                         ],
+         [ "$ran", "%hum", "%elf", "%gno",         "#neu", "#cha"         ],
+         [ "$rog", "%hum", "%orc",                 "#cha"                 ],
+         [ "$sam", "%hum",                         "#law"                 ],
+         [ "$tou", "%hum",                         "#neu"                 ],
+         [ "$val", "%hum", "%dwa",                 "#law", "#neu", "!fem" ],
+         [ "$wiz", "%hum", "%elf", "%gno", "%orc", "#neu", "#cha"         ],
+
+         [ "%elf", "#cha" ],
+         [ "%dwa", "#law" ],
+         [ "%gno", "#neu" ],
+         [ "%orc", "#cha" ]
+      ]
+    }
+
+"nh\_combo\_rules\_def" is used to determine if given combination of role/race/gender/alignment is valid. It's defined for each variant; if definition for a variant is ommited, "nh" is used as default (to avoid duplicate definitions for variants who keep the same rules as vanilla, such as NetHack4). Definition for "nh" (vanilla NetHack) is given as an example above. The definition is a list of rules. Each rule is in turn a list of rule matches. The first match in a rule is special: if it matches, then the rest of the matches must be satisfied, if it is not, the matching will immediately fail and no more rules are matched. The first special match can be single match (as in example above), or it can be list of matches, if triggering by more than one condition is required.
+
+The matches themselves consist of standard three-letter short codes for role/race/gender/alignment with a special character prepended. The prepended character determines whether role ($), race (%), alignment (#) or gender (!) is matched. So "$arc" matches archeologist, "!fem" matches female etc.
+
+Consider this example:
+
+    [ "$arc", "%hum", "%dwa", "%gno", "#law", "#neu" ],
+
+This rule will only apply to archeologists, since the first rule (trigger) is "$arc". Three races and two alignments are in the "require" rules. The character therefore must be one of them. Gender is not present in the matches at all, therefore it can be both male and female.
+
+    [ [ "%dro", "!mal" ], "#neu" ],
+    [ [ "%dro", "!fem" ], "#cha" ]
+
+Above example shows the use of multiple trigger matches; it enforces Drows to be either neutral males or chaotic females (as is the rule in dNetHack).

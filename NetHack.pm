@@ -14,6 +14,7 @@ use JSON;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
 	nh_conduct
+  nh_combo_valid
 );
 
 
@@ -80,6 +81,107 @@ sub nh_conduct
   #--- return depending on context
 
   return wantarray ? @conducts : scalar(@conducts);
+}
+
+
+
+#===========================================================================
+# Function returns whether given player character combination is a valid
+# one. Validation is performed according to a ruleset from nethack_def.json
+# configuration file.
+#
+# If for given variant there is no ruleset, the one from 'nh' (vanilla
+# Nethack) is used as default.
+#
+# The ruleset is array of rules; each rule is in turn an array in one of
+# following forms:
+#
+#    |<--- trigger rule(s) ------------>|<--- enforce rules ----->|
+#
+#    1. [ match,                           rule1, rule2, ..., ruleN ]
+#    2. [ [ match1, match2, ..., matchN ], rule1, rule2, ..., ruleN ]
+#
+# When "trigger rule(s)" match the function arguments, the enforce
+# rules must be satisfied, otherwise the whole validation will
+# immediately fail, returning NOT VALID result. To validate a combo,
+# all rules must be processed without failing.
+#
+# Both trigger and enforce rules are four letter strings. The first letter is
+# special and determines player character category
+#
+#    $ role, % race, # alignment, ! gender
+#
+# These categories correspond to the function arguments.
+#
+# Role, race, alignment, gender is then a standard three letter code as
+# defined in role.c, such as $arc, %hum, #law, !fem. 
+#===========================================================================
+
+sub nh_combo_valid
+{
+  #--- arguments (in lowercase)
+
+  my (
+    $variant,
+    $role,
+    $race,
+    $gender,
+    $alignment
+  ) = map { lc } @_;
+
+  #--- default variant is 'nh', no need to define rules
+  #--- for variants that have the exact same combinations
+  #--- allowed as vanilla
+
+  if(!exists($nh_def->{'nh_combo_rules_def'}{$variant})) {
+    $variant = 'nh';
+  }
+
+  #--- iterate over all rules (start)
+
+  for my $rule (@{$nh_def->{'nh_combo_rules_def'}{$variant}}) {
+
+  #--- trigger rules
+
+    my $trigger_state = 0;
+    my $trigger_set = ref($rule->[0]) ? $rule->[0] : [ $rule->[0] ];
+    for my $trigger_rule (@$trigger_set) {
+      $trigger_rule =~ /(.)(...)/;
+      my ($category, $value) = ($1, $2);
+      if(
+        $category eq '$' && $value eq $role 
+        || $category eq '%' && $value eq $race 
+        || $category eq '#' && $value eq $alignment 
+        || $category eq '!' && $value eq $gender
+      ) { 
+        $trigger_state++;
+      }
+    }
+    next if $trigger_state < scalar(@$trigger_set);
+
+  #--- enforce rules
+
+    my %cat_val = ('$', $role, '%', $race, '#', $alignment, '!', $gender);
+    my @enforce_rules = @{$rule}[1 .. (scalar(@$rule)-1) ];  
+    for my $cat (keys %cat_val) {
+      my $catq = quotemeta($cat);
+      my $val = $cat_val{$cat};
+      if(
+        grep(/^$catq/, @enforce_rules)
+        && !grep(/^$catq($val)$/, @enforce_rules)
+      ) {
+        return 0;
+      }
+    }
+
+  #--- iterate over all rules (end)
+  
+  }
+
+  #--- finish successfully
+
+  return 1;
+
 }
 
 

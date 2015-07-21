@@ -2,7 +2,7 @@
   "nh_roles_def" : {
     "arc" : "archeologist",
     "bar" : "barbarian",
-    "brd" : "brd",
+    "brd" : "bard",
     "bin" : "binder",
     "cav" : "caveman",
     "con" : "convict",
@@ -24,11 +24,14 @@
   "nh_races_def" : {
     "clk" : "clockwork automaton",
     "hum" : "human",
-    "elf" : "elf",
     "dro" : "drow",
     "dwa" : "dwarf",
+    "elf" : "elf",
+    "gia" : "giant",
     "gno" : "gnome",
     "inc" : "incantifier",
+    "kob" : "kobold",
+    "ogr" : "ogre",
     "orc" : "orc",
     "syl" : "sylph",
     "vam" : "vampire"
@@ -50,25 +53,144 @@
   "nh_combo_rules_def" : {
 
      "nh" : [
-       [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu", "!any" ],
-       [ "$bar", "%hum", "%orc",                 "#neu", "#cha", "!any" ],
-       [ "$cav", "%hum", "%dwa", "%gno",         "#law", "#neu", "!any" ],
-       [ "$hea", "%hum", "%gno",                 "#neu",         "!any" ],
-       [ "$kni", "%hum", "%law",                                 "!any" ],
-       [ "$mon", "%hum",                         "#any",         "!any" ],
-       [ "$pri", "%hum", "%elf",                                 "!any" ],
-       [ "$ran", "%hum", "%elf", "%gno",         "#neu", "#cha", "!any" ],
-       [ "$rog", "%hum", "%orc",                 "#cha",         "!any" ],
-       [ "$sam", "%hum",                         "#law",         "!any" ],
-       [ "$tou", "%hum",                         "#neu",         "!any" ],
+       [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
+       [ "$bar", "%hum", "%orc",                 "#neu", "#cha"         ],
+       [ "$cav", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
+       [ "$hea", "%hum", "%gno",                 "#neu"                 ],
+       [ "$kni", "%hum",                         "#law"                 ],
+       [ "$mon", "%hum"                                                 ],
+       [ "$pri", "%hum", "%elf"                                         ],
+       [ "$ran", "%hum", "%elf", "%gno",         "#neu", "#cha"         ],
+       [ "$rog", "%hum", "%orc",                 "#cha"                 ],
+       [ "$sam", "%hum",                         "#law"                 ],
+       [ "$tou", "%hum",                         "#neu"                 ],
        [ "$val", "%hum", "%dwa",                 "#law", "#neu", "!fem" ],
-       [ "$wiz", "%hum", "%elf", "%gno", "%orc", "#neu", "#cha", "!any" ],
+       [ "$wiz", "%hum", "%elf", "%gno", "%orc", "#neu", "#cha"         ],
 
-       [ "%hum", "#any", "!any" ],
-       [ "%elf", "#cha", "!any" ],
-       [ "%dwa", "#law", "!any" ],
-       [ "%gno", "#neu", "!any" ],
-       [ "%orc", "#cha", "!any" ]
+       [ "%elf", "#cha" ],
+       [ "%dwa", "#law" ],
+       [ "%gno", "#neu" ],
+       [ "%orc", "#cha" ]
+     ],
+
+     "sh" : [
+       [ "$arc", "#law", "#neu"         ],
+       [ "$bar", "#neu", "#cha"         ],
+       [ "$cav", "#law", "#neu"         ],
+       [ "$hea", "#law", "#neu"         ],
+       [ "$kni", "#law", "#cha"         ],
+       [ "$mon"                         ],
+       [ "$pri"                         ],
+       [ "$ran", "#neu", "#cha"         ],
+       [ "$rog", "#neu", "#cha"         ],
+       [ "$sam", "#law", "#neu"         ],
+       [ "$tou", "#neu", "#cha"         ],
+       [ "$val", "#law", "#neu", "!fem" ],
+       [ "$wiz", "#neu", "#cha"         ],
+
+       [ "%elf", "#neu", "#cha" ],
+       [ "%dwa", "#neu", "#law" ],
+       [ "%gno", "#neu", "#cha" ],
+       [ "%orc", "#neu", "#cha" ]
+     ],
+
+     "unh" : [
+       [ "$arc", "%hum", "%dwa", "%gno", "%vam",         "#law", "#neu"         ],
+       [ "$bar", "%hum", "%orc", "%vam",                 "#neu", "#cha"         ],
+       [ "$cav", "%hum", "%dwa", "%gno", "%vam",         "#law", "#neu"         ],
+       [ "$con", "%hum", "%dwa", "%gno", "%orc",         "%vam", "#cha"         ],
+       [ "$hea", "%hum", "%gno",                         "#neu"                 ],
+       [ "$kni", "%hum",                                 "#law"                 ],
+       [ "$mon", "%hum"                                                         ],
+       [ "$pri", "%hum", "%elf"                                                 ],
+       [ "$ran", "%hum", "%elf", "%gno", "%orc",         "#neu", "#cha"         ],
+       [ "$rog", "%hum", "%orc", "%vam",                 "#cha"                 ],
+       [ "$sam", "%hum",                                 "#law"                 ],
+       [ "$tou", "%hum",                                 "#neu"                 ],
+       [ "$val", "%hum", "%dwa",                         "#law", "#neu", "!fem" ],
+       [ "$wiz", "%hum", "%elf", "%gno", "%orc", "%vam", "#neu", "#cha"         ],
+
+       [ "%elf", "#cha" ],
+       [ "%dwa", "#law" ],
+       [ "%gno", "#neu" ],
+       [ "%orc", "#cha" ],
+       [ "%vam", "#cha" ]
+     ],
+
+     "gh" : [
+       [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
+       [ "$bar", "%hum", "%orc", "%ogr", "%gia", "#neu", "#cha"         ],
+       [ "$cav", "%hum", "%dwa", "%gno", "%ogr", "%gia"                 ],
+       [ "$hea", "%hum", "%elf", "%gno", "%gia",         "#neu"         ],
+       [ "$kni", "%hum", "%elf",                         "#law"         ],
+       [ "$mon", "%hum", "%elf"                                         ],
+       [ "$pri", "%hum", "%elf", "%gia"                                 ],
+       [ "$ran", "%hum", "%elf", "%gno", "%orc", "%kob", "#neu", "#cha" ],
+       [ "$rog", "%hum", "%orc", "%kob", "%ogr",         "#cha"         ],
+       [ "$sam", "%hum",                                 "#law"         ],
+       [ "$tou", "%hum",                                 "#neu"         ],
+       [ "$val", "%hum", "%dwa", "%elf", "%gia",         "#law", "#neu", "!fem" ],
+       [ "$wiz", "%hum", "%elf", "%gno", "%orc", "%kob", "%gia", "%ogr", "#neu", "#cha" ],
+
+       [ "%dwa", "#law" ],
+       [ "%gno", "#neu" ],
+       [ "%orc", "#cha" ],
+       [ "%kob", "#cha" ],
+       [ "%ogr", "#cha" ]
+     ],
+
+     "dnh" : [
+       [ "$arc", "%hum", "%dwa", "%gno", "%vam", "%clk", "#law", "#neu" ],
+       [ "$bar", "%hum", "%orc", "%vam", "#neu", "#cha" ],
+       [ "$bin", "%hum", "%dwa", "%gno", "%elf", "%orc", "%dro", "%clk", "%vam", "#non" ],
+       [ "$cav", "%hum", "%dwa", "%gno", "#law", "#neu" ],
+       [ "$con", "%hum", "%dwa", "%gno", "%orc", "%elf", "%dro", "%vam", "#cha" ],
+       [ "$hea", "%hum", "%gno", "#neu" ],
+       [ "$kni", "%hum", "%dwa", "%clk", "#law" ],
+       [ "$mon", "%hum", "%clk" ],
+       [ "$nob", "%hum", "%dwa", "%elf", "%dro", "%vam" ],
+       [ "$pri", "%hum", "%elf", "%dro", "%clk" ],
+       [ "$pir", "%hum", "%elf", "%dro", "#neu", "#cha" ],
+       [ "$ran", "%hum", "%elf", "%dro", "%gno", "%orc", "#neu", "#cha" ],
+       [ "$rog", "%hum", "%orc", "%elf", "%dro", "%vam", "#cha" ],
+       [ "$sam", "%hum", "%clk", "#law" ],
+       [ "$tou", "%hum", "#neu" ],
+       [ "$brd", "%hum", "%elf", "%dro", "%gno", "#neu", "#cha" ],
+       [ "$val", "%hum", "%dwa", "#law", "#neu", "!fem" ],
+       [ "$wiz", "%hum", "%elf", "%dro", "%gno", "%orc", "%vam", "#neu", "#cha" ],
+
+       [ "%elf", "#cha"         ],
+       [ "%dwa", "#law"         ],
+       [ "%gno", "#neu"         ],
+       [ "%orc", "#cha"         ],
+       [ "%vam", "#neu", "#cha" ],
+       [ "%clk", "#law"         ],
+
+       [ [ "%dro", "!mal" ], "#neu" ],
+       [ [ "%dro", "!fem" ], "#cha" ]
+
+     ],
+
+     "nhf" : [
+       [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
+       [ "$bar", "%hum", "%orc", "%dwa"                                 ],
+       [ "$cav", "%hum", "%orc",                 "#neu", "#cha"         ],
+       [ "$hea", "%hum", "%gno", "%syl",         "#neu"                 ],
+       [ "$kni", "%hum",                         "#law"                 ],
+       [ "$mon", "%hum"                                                 ],
+       [ "$pri", "%hum", "%elf", "%dwa", "%syl"                         ],
+       [ "$ran", "%hum", "%elf", "%gno", "%orc", "%syl", "#neu", "#cha" ],
+       [ "$rog", "%hum", "%orc", "%elf", "%syl", "#cha"                 ],
+       [ "$sam", "%hum",                         "#law"                 ],
+       [ "$tou", "%hum", "%gno",                 "#neu"                 ],
+       [ "$val", "%hum",                         "#neu"                 ],
+       [ "$wiz", "%hum", "%elf", "%gno", "%orc", "%syl", "#neu", "#cha" ],
+
+       [ "%elf", "#cha" ],
+       [ "%dwa", "#law" ],
+       [ "%gno", "#neu" ],
+       [ "%orc", "#cha" ],
+       [ "%syl", "#neu", "#cha" ]
      ]
   },
 
@@ -205,17 +327,17 @@
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "races" : [ "hum", "elf", "dwa", "gia", "gno", "kob", "ogr", "orc" ],
       "aligns" : [ "law", "neu", "cha" ]    
     },
 
     "dnh" : {
       "roles" : [
-        "arc", "bar", "bin", "cav", "con", "hea", "kni", "mon", "nob",
+        "arc", "bar", "bin", "brd", "cav", "con", "hea", "kni", "mon", "nob",
         "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
       ],
       "races" : [
-        "clk", "dro", "dwa", "elf", "gno", "hum", "inc", "orc", "vam" 
+        "clk", "dro", "dwa", "elf", "gno", "hlf", "hum", "inc", "orc", "vam" 
       ],
       "aligns" : [ "law", "neu", "cha", "non" ]
     },
