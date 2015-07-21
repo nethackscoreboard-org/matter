@@ -236,7 +236,7 @@ sub update_schedule_players
   # against the statically-defined list).
 
   my @variants_final;
-  my @variants_known = ('all', @{$NetHack::nh_def->{nh_variants_ord}});
+  my @variants_known = ('all', nh_variants());
   if(scalar(@$cmd_variant)) {
     for my $var (@$cmd_variant) {
       if(grep { $var eq $_} @variants_known) {
@@ -384,7 +384,7 @@ sub update_schedule_variants
   #--- list of allowed variants targets; anything not in this array
   #--- is invalid
 
-  my @variants_known = ('all', @{$NetHack::nh_def->{nh_variants_ord}});
+  my @variants_known = ('all', nh_variants());
   $logger->debug('Known variants: (', join(',', @variants_known), ')');
 
   #--- forced processing
@@ -1092,7 +1092,7 @@ sub gen_page_recent
       $logfiles_i ? $logfiles->{$logfiles_i}{'server'} : $variant
     )
   );
-  push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
+  push(@variants, nh_variants());
 
   #--- select source view
 
@@ -1149,8 +1149,8 @@ sub gen_page_recent
   $data{'devnull'}  = $devnull if $logfiles_i;
   $data{'result'}   = $result;
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
-  $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'variants'} = [ 'all', nh_variants() ];
+  $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
 
   #--- process template
@@ -1514,17 +1514,17 @@ sub gen_page_player
 
   #--- the rest
 
-  $data{'nh_roles'} = $NetHack::nh_def->{'nh_variants'}{$variant2}{'roles'};
-  $data{'nh_races'} = $NetHack::nh_def->{'nh_variants'}{$variant2}{'races'};
-  $data{'nh_aligns'} = $NetHack::nh_def->{'nh_variants'}{$variant2}{'aligns'};
+  $data{'nh_roles'} = nh_char($variant2, 'roles');
+  $data{'nh_races'} = nh_char($variant2, 'races');
+  $data{'nh_aligns'} = nh_char($variant2, 'aligns');
   $data{'cur_time'} = scalar(localtime());
   $data{'name'} = $name;
   $data{'variant'} = $variant;
   $data{'variants'} = array_sort_by_reference(
-    [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ],
+    [ 'all', nh_variants() ],
     [ keys %{$player_combos->{$name}} ]
   );
-  $data{'vardef'} = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'vardef'} = nh_variants(1);
   $data{'result_calendar'} = ascensions_calendar_view($data{'result_ascended'})
     if $data{'games_count_asc'};
 
@@ -1581,7 +1581,7 @@ sub gen_page_streaks
   #--- init
 
   $logger->info('Creating page: Streaks/', $variant);
-  push(@variants, @{$NetHack::nh_def->{nh_variants_ord}});
+  push(@variants, nh_variants());
 
   #--- load streak list
 
@@ -1594,8 +1594,8 @@ sub gen_page_streaks
 
   #--- supply additional data
 
-  $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
-  $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'variants'} = [ 'all', nh_variants() ];
+  $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
   $data{'cur_time'} = scalar(localtime());
 
@@ -1668,7 +1668,7 @@ sub gen_page_about
 sub gen_page_front
 {
   my %data;
-  my @variants = @{$NetHack::nh_def->{nh_variants_ord}};
+  my @variants = nh_variants();
   my $logger = get_logger("Stats::gen_page_front");
 
   #--- info
@@ -1778,7 +1778,7 @@ sub gen_page_front
   #--- generate page
 
   $data{'variants'} = \@variants_ordered;
-  $data{'vardef'} = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'vardef'} = nh_variants(1);
   $data{'cur_time'} = scalar(localtime());
   if(!$tt->process('front.tt', \%data, 'index.html')) {
     $logger->error(q{Failed to create page 'Front' (3), }, $tt->error());
@@ -1813,10 +1813,10 @@ sub gen_page_zscores
   #--- supply additional data
 
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
-  $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'variants'} = [ 'all', nh_variants() ];
+  $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
-  $data{'nh_roles'} = [ 'all', @{$NetHack::nh_def->{nh_variants}{$variant}{roles}} ];
+  $data{'nh_roles'} = [ 'all', nh_char($variant, 'roles') ];
 
   #--- process template
 
@@ -1873,8 +1873,8 @@ sub gen_page_conducts
   #--- supply additional data
 
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', @{$NetHack::nh_def->{nh_variants_ord}} ];
-  $data{'vardef'}   = $NetHack::nh_def->{'nh_variants_def'};
+  $data{'variants'} = [ 'all', nh_variants() ];
+  $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
 
   #--- process template

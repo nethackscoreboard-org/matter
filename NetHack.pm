@@ -15,6 +15,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(
 	nh_conduct
   nh_combo_valid
+  nh_variants
+  nh_char
 );
 
 
@@ -83,6 +85,48 @@ sub nh_conduct
   return wantarray ? @conducts : scalar(@conducts);
 }
 
+
+#===========================================================================
+# Return ordered list of variant shortcodes (on argument not true); or
+# hashref of shortcode->displayname (on argument true)
+#===========================================================================
+
+sub nh_variants
+{
+  my $flag = shift;
+
+  if($flag) {
+    return $nh_def->{'nh_variants_def'};
+  } else {
+    return @{$nh_def->{'nh_variants_ord'}};
+  }
+}
+
+
+#===========================================================================
+# Return list/arrayref of roles/races/genders/alignments for given variant.
+#===========================================================================
+
+sub nh_char
+{
+  #--- arguments
+
+  my $variant = shift;
+  my $cat = shift;
+
+  return undef if $cat !~ /^(roles|races|genders|aligns)$/;
+
+  #--- check if known variant
+
+  return undef if !exists $nh_def->{'nh_variants'}{$variant};
+
+  #--- return the list
+
+  return 
+    wantarray ? 
+    @{$nh_def->{'nh_variants'}{$variant}{$cat}} :
+    $nh_def->{'nh_variants'}{$variant}{$cat};
+}
 
 
 #===========================================================================
