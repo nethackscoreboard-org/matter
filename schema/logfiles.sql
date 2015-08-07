@@ -310,6 +310,16 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  17, 'nethack.xd.cm (DynaHack)',
+  'nxc', 'dyn', NULL,
+  'https://nethack.xd.cm/xlogfiles/dynahack',
+  'nxc.dyn.log',
+  'https://nethack.xd.cm/userdata/%u/dynahack/dumplog/%s',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
 
 
 -----------------------------------------------------------------------------

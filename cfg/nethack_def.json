@@ -29,6 +29,7 @@
     "elf" : "elf",
     "gia" : "giant",
     "gno" : "gnome",
+    "hlf" : "half-dragon",
     "inc" : "incantifier",
     "kob" : "kobold",
     "ogr" : "ogre",
@@ -222,11 +223,12 @@
     "gh"  : "GruntHack",
     "unh" : "UnNetHack",
     "dnh" : "dNetHack",
-    "nhf" : "Fourk"
+    "nhf" : "Fourk",
+    "dyn" : "DynaHack"
   },
 
   "nh_variants_ord" : [
-    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf"
+    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn"
   ],
 
   
@@ -360,6 +362,38 @@
       "races" : [ "hum", "elf", "dwa", "gno", "orc", "syl" ],
       "aligns" : [ "law", "neu", "cha" ],
       "genders" : [ "mal", "fem" ]
+    },
+
+    "dyn" : {
+      "roles" : [ 
+        "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran",
+        "rog", "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc", "vam" ],
+      "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "mal", "fem" ],
+      "conduct" : {
+        "1"      : "food",
+        "2"      : "vegn",
+        "4"      : "vegt",
+        "8"      : "athe",
+        "16"     : "weap",
+        "32"     : "paci",
+        "64"     : "illi",
+        "128"    : "pile",
+        "256"    : "self",
+        "512"    : "wish",
+        "1024"   : "arti",
+        "2048"   : "geno",
+        "4096"   : "elbe",
+        "8192"   : "magi",
+        "16386"  : "armo",
+        "32768"  : "zen",
+        "65536"  : "thie",
+        "131072" : "bone",
+        "262144" : "raci",
+        "524288" : "soko"
+      }
     }
 
   }
