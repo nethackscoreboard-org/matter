@@ -753,7 +753,7 @@ sub row_fix
     # you can link to.
 
     if(
-      $logfiles->{$logfiles_i}{'variant'} =~ /^(nh4|nhf)$/
+      $logfiles->{$logfiles_i}{'variant'} =~ /^(nh4|nhf|dyn)$/
       && $row->{'dumplog'}
     ) {
       my $dump_path = url_substitute($logfiles->{$logfiles_i}{'dumpurl'}, $row);
@@ -777,7 +777,8 @@ sub row_fix
 
   if($row->{'variant'} eq 'ace' || 
      $row->{'variant'} eq 'nh4' ||
-     $row->{'variant'} eq 'nhf'
+     $row->{'variant'} eq 'nhf' ||
+     $row->{'variant'} eq 'dyn'
   ) {
     $row->{'realtime'} = '';
   }
@@ -1248,7 +1249,7 @@ sub gen_page_player
 
   #=== total play-time =====================================================
 
-  if($variant !~ /^(nh4|ace|nhf)$/) {
+  if($variant !~ /^(nh4|ace|nhf|dyn)$/) {
     $query = q{SELECT sum(realtime) FROM v_games_all WHERE name = ?};
     @arg = ($name);
     if($variant ne 'all') {
