@@ -26,16 +26,7 @@
 <div class="page_content">
 <h1>Ascended Games</h1>
 
-<p id="varmenu">
-[% FOREACH var IN variants %]
-  [% IF var == 'all'; label = 'All'; ELSE; label = vardef.item(var); END %]
-  [% IF variant == var %]
-    <span class="selected">[% label %]</span>
-  [% ELSE %]
-    <a href="ascended.[% var %].html"><span class="unselected">[% label %]</span></a>
-  [% END %]
-[% END %]
-</p>
+[% INCLUDE varmenu.tt page="ascended" %]
 
 [% IF result.size %]
 [% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
