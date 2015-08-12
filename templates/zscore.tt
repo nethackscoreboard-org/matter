@@ -20,6 +20,7 @@
   <a href="recent.[% variant %].html">Recent Games</a> |
   <a href="ascended.[% variant %].html">Ascended Games</a> |
   <a href="streaks.[% variant %].html">Streaks</a> |
+  <a href="lowscore.[% variant %].html">Low Score</a> |
   <a href="about.html">About</a>
 </div>
 

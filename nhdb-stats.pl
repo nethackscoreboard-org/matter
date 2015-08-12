@@ -1869,6 +1869,60 @@ sub gen_page_conducts
 
 
 #============================================================================
+#============================================================================
+
+sub gen_page_lowscore
+{
+  #--- arguments
+
+  my $variant = shift;
+
+  #--- other variables
+
+  my (%data, $query, @args);
+
+  #--- init
+
+  if(!$variant) { $variant = 'all'; }
+  $logger->info('Creating page: Lowscore/', $variant);
+
+  #--- prepare query
+
+  $query = 'SELECT * FROM v_ascended WHERE points > 0';
+  if($variant ne 'all') {
+    $query .= ' AND variant = ?';
+    push(@args, $variant);
+  }
+  $query .= ' ORDER BY points ASC, turns ASC LIMIT 100';
+
+  #--- perform query
+
+  $data{'result'} = sql_load($query, 1, 1, sub { row_fix($_[0]) }, @args);
+  if(!ref($data{'result'})) {
+    $logger->error(
+      sprintf(
+        'gen_page_lowscore(): Failed to query database (%s)',
+        $data{'result'}
+      )
+    );
+    return $data{'result'};
+  }
+
+  #--- supply additional data
+
+  $data{'cur_time'} = scalar(localtime());
+  $data{'variants'} = [ 'all', nh_variants() ];
+  $data{'vardef'}   = nh_variants(1);
+  $data{'variant'}  = $variant;
+
+  #--- process template
+
+  $tt->process('lowscore.tt', \%data, 'lowscore.' . $variant . '.html')
+    or die $tt->error();
+}
+
+
+#============================================================================
 # Generate ordered list of players for /dev/null.
 #============================================================================
 
@@ -2545,6 +2599,7 @@ if($cmd_aggr) {
     gen_page_streaks($var);
     gen_page_zscores($var);
     gen_page_conducts($var);
+    gen_page_lowscore($var);
 
     #--- clear update flag
     $dbh->do(

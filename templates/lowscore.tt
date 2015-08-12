@@ -4,9 +4,9 @@
 <html>
 
 <head>
-  <meta charset="utf-8" />
-  <link rel="stylesheet" type="text/css" href="default.css" />
-  <title>Ascended Games</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <title>Lowest Scoring Games</title>
 </head>
 
 <body class="page_back">
@@ -19,12 +19,11 @@
 <a href="streaks.[% variant %].html">Streaks</a> |
 <a href="zscore.[% variant %].html">Z-scores</a> |
 <a href="conduct.[% variant %].html">Conducts</a> |
-<a href="lowscore.[% variant %].html">Low Score</a> |
 <a href="about.html">About</a>
 </div>
 
 <div class="page_content">
-<h1>Ascended Games</h1>
+<h1>Lowest Scoring Games</h1>
 
 <p id="varmenu">
 [% FOREACH var IN variants %]
@@ -32,14 +31,13 @@
   [% IF variant == var %]
     <span class="selected">[% label %]</span>
   [% ELSE %]
-    <a href="ascended.[% var %].html"><span class="unselected">[% label %]</span></a>
+    <a href="lowscore.[% var %].html"><span class="unselected">[% label %]</span></a>
   [% END %]
 [% END %]
 </p>
 
 [% IF result.size %]
-[% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
-[% INCLUDE tab_ascended.tt datetick=dt_ena %]
+[% INCLUDE tab_ascended.tt %]
 [% ELSE %]
 <p>No ascensions for this variant.</p>
 [% END %]
