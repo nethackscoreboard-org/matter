@@ -315,7 +315,7 @@ INSERT INTO logfiles VALUES (
   'nxc', 'dyn', NULL,
   'https://nethack.xd.cm/xlogfiles/dynahack',
   'nxc.dyn.log',
-  NULL,
+  'https://nethack.xd.cm/userdata/%u/dynahack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
