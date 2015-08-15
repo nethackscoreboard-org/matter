@@ -552,7 +552,7 @@ for my $log (@logfiles) {
       $logger->warn($lbl, 'Log URL not defined, skipping retrieval');
     } else {
       $logger->info($lbl, 'Getting logfile from the server');
-      $r = system(sprintf('wget -c -q -O %s %s', $localfile, $log->{'logurl'}));
+      $r = system(sprintf($NHdb::nhdb_def->{'wget'}, $localfile, $log->{'logurl'}));
       if($r) { $logger->warn($lbl, 'Failed to get the logfile'); die; }
       $fsize[1] = -s $localfile;
       $logger->info($lbl, sprintf('Logfile retrieved successfully, got %d bytes', $fsize[1] - $fsize[0]));
