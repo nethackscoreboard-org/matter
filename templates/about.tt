@@ -14,15 +14,7 @@
 
 <div class="page">
 
-<div class="toplinks">
-<a href="./">Overview</a> |
-<a href="recent.all.html">Recent Games</a> |
-<a href="ascended.all.html">Ascended Games</a> |
-<a href="streaks.all.html">Streaks</a> |
-<a href="zscore.all.html">Z-scores</a> |
-<a href="conduct.all.html">Conducts</a> |
-<a href="lowscore.all.html">Low Score</a>
-</div>
+[% INCLUDE topmenu.tt mnu="about" lvl=0 var="all" %]
 
 <div class="page_content">
 <h1>About NetHack Scoreboard</h1>

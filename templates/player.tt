@@ -21,21 +21,13 @@
 
 <div class="page">
 
-<div class="toplinks">
-  <a href="../../">Overview</a> |
-  <a href="../../recent.[% variant %].html">Recent Games</a> |
-  <a href="../../ascended.[% variant %].html">Ascended Games</a> |
-  <a href="../../streaks.[% variant %].html">Streaks</a> |
-  <a href="../../zscore.[% variant %].html">Z-scores</a> |
-  <a href="../../conduct.[% variant %].html">Conducts</a> |
-  <a href="../../about.html">About</a>
-</div>
+[% INCLUDE topmenu.tt mnu="player" lvl=2 var=variant %]
 
 <div class="page_content">
 
 <h1>[% name %]</h1>
 
-[% INCLUDE varmenu.tt page=name %]
+[% INCLUDE varmenu.tt %]
 
 <hr>
 

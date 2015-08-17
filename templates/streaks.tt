@@ -13,15 +13,7 @@
 
 <div class="page">
 
-<div class="toplinks">
-<a href="./">Overview</a> |
-<a href="recent.[% variant %].html">Recent Games</a> |
-<a href="ascended.[% variant %].html">Ascended Games</a> |
-<a href="zscore.[% variant %].html">Z-scores</a> |
-<a href="conduct.[% variant %].html">Conducts</a> |
-<a href="lowscore.[% variant %].html">Low Score</a> |
-<a href="about.html">About</a>
-</div>
+[% INCLUDE topmenu.tt mnu="streaks" lvl=0 var=variant %]
 
 <div class="page_content">
 <h1>Streaks of Ascensions</h1>

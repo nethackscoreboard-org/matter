@@ -1143,8 +1143,11 @@ sub gen_page_recent
 
   #--- process template
 
-  $tt->process($template, \%data, $html)
-    or die $tt->error();
+  $tt->process(
+    'recent.tt', 
+    \%data,
+    $html ? $html : sprintf('recent.%s.html', $variant)
+  ) or die $tt->error();
 }
 
 
@@ -1589,7 +1592,11 @@ sub gen_page_streaks
 
   #--- process template
 
-  if(!$tt->process("streaks.tt", \%data, "streaks.$variant.html")) {
+  if(!$tt->process(
+    'streaks.tt',
+    \%data, 
+    "streaks.$variant.html"
+  )) {
     $logger->error("Failed to create page 'Streaks/$variant'");
     die $tt->error();
   }
@@ -1801,15 +1808,18 @@ sub gen_page_zscores
   #--- supply additional data
 
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', nh_variants() ];
   $data{'vardef'}   = nh_variants(1);
+  $data{'variants'} = [ 'all', nh_variants() ];
   $data{'variant'}  = $variant;
   $data{'nh_roles'} = [ 'all', nh_char($variant, 'roles') ];
 
   #--- process template
 
-  $tt->process('zscore.tt', \%data, "zscore.$variant.html")
-    or die $tt->error();
+  $tt->process(
+    'zscore.tt',
+    \%data,
+    "zscore.$variant.html"
+  ) or die $tt->error();
 }
 
 
@@ -1867,8 +1877,11 @@ sub gen_page_conducts
 
   #--- process template
 
-  $tt->process('conduct.tt', \%data, 'conduct.' . $variant . '.html')
-    or die $tt->error();
+  $tt->process(
+    'conduct.tt',
+    \%data,
+    "conduct.$variant.html"
+  ) or die $tt->error();
 }
 
 
@@ -1922,8 +1935,11 @@ sub gen_page_lowscore
 
   #--- process template
 
-  $tt->process('lowscore.tt', \%data, 'lowscore.' . $variant . '.html')
-    or die $tt->error();
+  $tt->process(
+    'lowscore.tt',
+    \%data,
+    "lowscore.$variant.html",
+  ) or die $tt->error();
 }
 
 
@@ -2599,12 +2615,17 @@ if($cmd_aggr) {
   for my $var (@$update_variants) {
     
     #--- regular stats
-    gen_page_recent('recent', $var, 'recent.tt', "recent.$var.html");
-    gen_page_recent('ascended', $var, 'ascended.tt', "ascended.$var.html");
+    gen_page_recent('recent', $var);
+    gen_page_recent('ascended', $var);
     gen_page_streaks($var);
     gen_page_zscores($var);
     gen_page_conducts($var);
     gen_page_lowscore($var);
+
+    #--- first to ascend page
+    if(grep(/^$var$/, @{$NHdb::nhdb_def->{'firsttoascend'}})) {
+      gen_page_first_to_ascend($var);
+    }
 
     #--- clear update flag
     $dbh->do(
