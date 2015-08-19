@@ -11,6 +11,41 @@ The NetHack Scoreboard is written using:
 
 -----
 
+## To Do
+
+This list is an implementation plan for the near future. Feel free to submit your own suggestions.
+
+* **Searching By Player Name** //
+Interactive searching for player name (req. *stenno*).
+
+* **Add Average Realtime And Average Gametime To Per-Variant Stats** // Can't be done for aggregates since realtime is measured differently or completely unavailable in some variants and gametime depends on variant (some variants have too different gameplay to be comparable)
+
+* **Pseudovariant 'var'** // This would be pseudo-variant that would aggregate all variants but vanilla NetHack.
+
+* **Switch everything to use starting alignment/gender** // Currently we use ending alignment/gender.
+
+* **Use UTC Everywhere** // Currently we use local time which is plain wrong.
+
+* **Per-Player Conduct Achievements** //
+Simple table with all relevant conducts and info whether the player
+has achieved them; optionally, make the table list number of times the
+conducts were achieved (in a winning game)
+
+* **Combos page** //
+Combos page like the one we have in /dev/null, but generalized.  Use this
+for per-player combo page, maybe some more later (but the code should be 
+general); after this is done, convert devnull Combos page to this new base.
+
+* **Experimental flag** //
+Variant can be marked as experimental, which will exclude it from the 'all'
+pseudovariant
+
+* **Browsing All Player Games** //
+For a given player, all games can be browsed in a paginated display (like on
+NAO).
+
+-----
+
 ## Command-line parameters
 
 ### nhdb-feeder.pl
