@@ -44,6 +44,8 @@ pseudovariant
 For a given player, all games can be browsed in a paginated display (like on
 NAO).
 
+* **--reload option for the feeder** // Reload the database according to --variant and --server.
+
 -----
 
 ## Command-line parameters
