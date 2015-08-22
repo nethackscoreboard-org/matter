@@ -61,7 +61,7 @@ switch their 'oper' field. Please note, that one server can host multiple varian
 multiple logs associated with it), use --variant to further limit processing to single source.
 
 **--variant**=*variant*  
-Limit processing only to variant specified by its short-code (such as "nh", "unn" etc.)
+Limit processing only to variant specified by its short-code (such as "nh", "unh" etc.)
 
 ### nhdb-stats.pl
 
