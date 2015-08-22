@@ -17,6 +17,7 @@ our @EXPORT = qw(
   nh_combo_valid
   nh_variants
   nh_char
+  nh_dynahack_map
 );
 
 
@@ -226,6 +227,32 @@ sub nh_combo_valid
 
   return 1;
 
+}
+
+
+
+#===========================================================================
+# This is a workaround for dNetHack peculiar combo descriptor mangling.
+# This mangling was later fixed (combo now shows what one would expect),
+# so this is only done for the two extant winning games with mangled combo.
+# WARNING: The 'Elf' in role field can actually mean many other roles apart
+# from Noble and there is no way to know which one it really is. The non-
+# winning game will remain messed up.
+#===========================================================================
+
+sub nh_dynahack_map
+{
+  my ($role, $race) = @_;
+
+  if($role eq 'Dna') {
+    return ('Dwa', 'Kni');
+  }
+
+  if($role eq 'Elf' && $race eq 'Elf') {
+    return ('Nob', 'Elf');
+  }
+
+  return ($role, $race);
 }
 
 

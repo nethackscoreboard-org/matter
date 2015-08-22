@@ -14,6 +14,7 @@ use utf8;
 use DBI;
 use Getopt::Long;
 use NHdb;
+use NetHack;
 use Log::Log4perl qw(get_logger);
 
 $| = 1;
@@ -168,6 +169,7 @@ sub sql_insert_games
 {
   my $logfiles_i = shift;
   my $server = shift;
+  my $variant = shift;
   my $l = shift;
   my @fields;
   my @values;
@@ -183,12 +185,30 @@ sub sql_insert_games
       { $l->{'name'} eq $_ } 
       @{$NHdb::nhdb_def->{'feeder'}{'reject_name'}};
   
-
   #--- reject "special" modes of NH4 and its kin
   if(exists $l->{'mode'} && $l->{'mode'} ne 'normal') { return undef; }
 
   #--- reject entries with empty name
   if(!exists $l->{'name'} || !$l->{'name'}) { return undef; }
+
+  #--- death (reason)
+  my $death = $l->{'death'};
+  $death =~ tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;
+  push(@fields, 'death');
+  push(@values, sprintf('$nhdb$%s$nhdb$',$death));
+
+  #--- ascended flag
+  $l->{'ascended'} = sprintf("%d", ($death =~ /^ascended\b/));
+  my $flag_ascended = ($death =~ /^ascended\b/ ? 'TRUE' : 'FALSE');
+  push(@fields, 'ascended');
+  push(@values, $flag_ascended);
+
+  #--- dNetHack combo mangling workaround
+  # please refer to comment in NetHack.pm; this is only done to two specific
+  # winning games!
+  if($variant eq 'dnh' && $l->{'ascended'}) {
+    ($l->{'role'}, $l->{'race'}) = nh_dynahack_map($l->{'role'}, $l->{'race'});
+  }
 
   #--- regular fields
   for my $k (@{$NHdb::nhdb_def->{'feeder'}{'regular_fields'}}) {
@@ -232,18 +252,6 @@ sub sql_insert_games
   push(@values, sprintf(q{timestamp with time zone 'epoch' + %d * interval '1 second'}, $l->{'endtime'}));
   push(@fields, 'endtime_raw');
   push(@values, $l->{'endtime'});
-
-  #--- death (reason)
-  my $death = $l->{'death'};
-  $death =~ tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;
-  push(@fields, 'death');
-  push(@values, sprintf('$nhdb$%s$nhdb$',$death));
-  
-  #--- ascended flag
-  $l->{'ascended'} = sprintf("%d", ($death =~ /^ascended\b/));
-  my $flag_ascended = ($death =~ /^ascended\b/ ? 'TRUE' : 'FALSE');
-  push(@fields, 'ascended');
-  push(@values, $flag_ascended);
 
   #--- quit flag (escaped also counts)
   my $flag_quit = 'FALSE';
@@ -636,7 +644,12 @@ for my $log (@logfiles) {
     #--- insert row into database
 
       my $rowid;
-      $qry = sql_insert_games($logfiles_i, $log->{'server'}, $pl), "\n";
+      $qry = sql_insert_games(
+        $logfiles_i,
+        $log->{'server'},
+        $log->{'variant'},
+        $pl
+      );
       if($qry) {
         my $sth = $dbh->prepare($qry);
         $r = $sth->execute();
