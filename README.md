@@ -54,7 +54,11 @@ NAO).
 This will list all configured data sources and exit without doing anything else.
 
 **--server**=*server*  
-Only sources on specified server will be processed. "srv" is three letter server acronym such as "nao", "nxc" etc.
+Only sources on specified server will be processed. "srv" is three letter server acronym such as "nao", "nxc" etc. Using this option will override the source server being defined as unoperational in the
+database (table 'logfiles'), but it will not override the server being defined as static. This
+behaviour enables reloading inoperational servers without needing to go to the database to temporarily
+switch their 'oper' field. Please note, that one server can host multiple variants (and therefore have
+multiple logs associated with it), use --variant to further limit processing to single source.
 
 **--variant**=*variant*  
 Limit processing only to variant specified by its short-code (such as "nh", "unn" etc.)

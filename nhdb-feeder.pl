@@ -410,7 +410,12 @@ if(!ref($dbh)) {
 #--- get list of logfiles to process
 
 my @logfiles;
-my $qry = q{SELECT * FROM logfiles WHERE oper = 't' ORDER BY logfiles_i ASC};
+my @qry;
+
+push(@qry, q{SELECT * FROM logfiles});
+push(@qry, q{WHERE oper = 't'}) if !scalar(@cmd_server);
+push(@qry, q{ORDER BY logfiles_i ASC});
+my $qry = join(' ', @qry);
 my $sth = $dbh->prepare($qry);
 my $r = $sth->execute();
 if(!$r) {
