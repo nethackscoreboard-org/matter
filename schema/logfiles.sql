@@ -219,7 +219,7 @@ INSERT INTO logfiles VALUES (
   'did', 'dnh', NULL,
   'http://dnethack.ilbelkyr.de/xlogfile.txt',
   'did.dnh.log',
-  'http://dnethack.ilbelkyr.de/userdata/%u/dumplog/%s.dnao.txt',
+  NULL,
   NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
