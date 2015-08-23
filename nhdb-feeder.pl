@@ -207,7 +207,7 @@ sub sql_insert_games
   # please refer to comment in NetHack.pm; this is only done to two specific
   # winning games!
   if($variant eq 'dnh' && $l->{'ascended'}) {
-    ($l->{'role'}, $l->{'race'}) = nh_dynahack_map($l->{'role'}, $l->{'race'});
+    ($l->{'role'}, $l->{'race'}) = nh_dnethack_map($l->{'role'}, $l->{'race'});
   }
 
   #--- regular fields

@@ -17,7 +17,7 @@ our @EXPORT = qw(
   nh_combo_valid
   nh_variants
   nh_char
-  nh_dynahack_map
+  nh_dnethack_map
 );
 
 
@@ -240,16 +240,20 @@ sub nh_combo_valid
 # winning game will remain messed up.
 #===========================================================================
 
-sub nh_dynahack_map
+sub nh_dnethack_map
 {
   my ($role, $race) = @_;
 
   if($role eq 'Dna') {
-    return ('Dwa', 'Kni');
+    return ('Kni', 'Dwa');
   }
 
   if($role eq 'Elf' && $race eq 'Elf') {
     return ('Nob', 'Elf');
+  }
+
+  if($role eq 'Hdr' && $race eq 'Dro') {
+    return ('Rog', 'Dro');
   }
 
   return ($role, $race);
