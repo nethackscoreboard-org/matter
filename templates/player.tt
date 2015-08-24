@@ -27,7 +27,7 @@
 
 <h1>[% name %]</h1>
 
-[% INCLUDE varmenu.tt %]
+[% INCLUDE varmenu.tt page=name %]
 
 <hr>
 
