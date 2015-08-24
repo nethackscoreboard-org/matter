@@ -2437,6 +2437,142 @@ EOHD
 
 
 #============================================================================
+# This page lists first ascensions for all combos and related information
+# like unascended combos etc.
+#============================================================================
+
+sub gen_page_first_to_ascend
+{
+  #--- arguments
+
+  my (
+    $variant
+  ) = @_;
+
+  #--- other variables
+
+  my (
+    $ct,
+    %data,
+    $process,
+    $query,
+    $re
+  );
+
+  #--- processing of the database rows
+
+  # remove 'r_' from hash keys (field names), row_fix();
+  # the r_ prefix is added because otherwise there are problem with collsion
+  # insde stored procedure in backend db; probably this could be done better
+
+  $process = sub {
+    my $row = shift;
+    for my $k (keys %$row) {
+      $k =~ /^r_(.*)$/ && do {
+        $row->{$1} = $row->{$k};
+        delete $row->{$k};
+      };
+    }
+    row_fix($row);
+  };
+
+  #--- init
+
+  $logger->info('Creating page: First-to-ascend/', $variant);
+
+  #--- initialize combo table
+
+  $ct = nh_combo_table_init($variant);
+  $data{'table'} = $ct->{'table'};
+
+  $data{'roles'} = nh_char($variant, 'roles');
+  $data{'races'} = nh_char($variant, 'races');
+  $data{'genders'} = nh_char($variant, 'genders');
+  $data{'aligns'} = nh_char($variant, 'aligns');
+
+  $data{'roles_def'} = $NetHack::nh_def->{'nh_roles_def'};
+  $data{'races_def'} = $NetHack::nh_def->{'nh_races_def'};
+
+  #--- query database
+
+  $query = 'SELECT * FROM first_to_ascend(?)';
+  $re = sql_load($query, 1, 1, $process, $variant);
+  $data{'result'} = $re;
+
+  #--- process the data
+
+  for(my $i = 0; $i < scalar(@$re); $i++) {
+    my $row = $re->[$i];
+
+    #--- add the entries to combo table
+
+    nh_combo_table_cell(
+      $ct, $row->{'role'}, $row->{'race'}, $row->{'align'}, $row->{'name'}
+    );
+  }
+
+  #--- unascended combos, combos by player
+
+  $data{'unascend'} = [];
+  $data{'byplayer'} = {};
+  nh_combo_table_iterate($ct, sub {
+    my ($val, $role, $race, $align) = @_;
+
+    # unascended combos
+    if(!defined($val)) {
+      push(
+        @{$data{'unascend'}},
+        sprintf('%s-%s-%s', ucfirst($role), ucfirst($race), ucfirst($align))
+      );
+    }
+
+    # combos by users
+    if($val && $val ne '-1') {
+      if(!exists $data{'byplayer'}{$val}) {
+        $data{'byplayer'}{$val}{'cnt'} = 0;
+        $data{'byplayer'}{$val}{'games'} = [];
+      }
+      $data{'byplayer'}{$val}{'cnt'}++;
+      push(
+        @{$data{'byplayer'}{$val}{'games'}},
+        sprintf('%s-%s-%s', ucfirst($role), ucfirst($race), ucfirst($align))
+      );
+    }
+  });
+
+  #--- create sorted index for 'byplayer'
+
+  # ordering by number of games (in 'cnt' key), in case of ties
+  # we want to use the original order from database query
+
+  $data{'byplayer_ord'} = [ sort {
+    if($data{'byplayer'}{$b}{'cnt'} != $data{'byplayer'}{$a}{'cnt'}) {
+      $data{'byplayer'}{$b}{'cnt'} <=> $data{'byplayer'}{$a}{'cnt'}
+    } else {
+      my ($plr_a) = grep { $_->{'name'} eq $a } @$re;
+      my ($plr_b) = grep { $_->{'name'} eq $b } @$re;
+      $plr_a->{'n'} <=> $plr_b->{'n'};
+    }
+  } keys %{$data{'byplayer'}} ];
+
+  #--- auxiliary data
+
+  $data{'variant'}  = $variant;
+  $data{'cur_time'} = scalar(localtime());
+  $data{'variants'} = $NHdb::nhdb_def->{'firsttoascend'};
+  $data{'vardef'}   = nh_variants(1);
+  $data{'variant'}  = $variant;
+
+  #--- render template
+
+  if(!$tt->process('firstasc.tt', \%data, "firstasc.$variant.html")) {
+    $logger->error(q{Failed to render page firstasc.tt'}, $tt->error());
+    die $tt->error();
+  }
+}
+
+
+#============================================================================
 # Display usage help.
 #
 # Semantics description, this should be moved into some other text, but for

@@ -181,3 +181,57 @@ DECLARE amount integer;
     RETURN amount;
   END
 $$ LANGUAGE plpgsql;
+
+-- This function returns list of combos with info about player who
+-- was the first to achieve a win for given combo. This function
+-- is a wrapper for a query that can't be made into a view (because
+-- we need to be able to supply a parameter to it)
+
+CREATE OR REPLACE FUNCTION first_to_ascend(_variant varchar)
+RETURNS TABLE (
+  r_server         varchar(3),
+  r_variant        varchar(3),
+  r_name           varchar(48),
+  r_role           char(3),
+  r_race           char(3),
+  r_align          char(3),
+  r_gender         char(3),
+  r_starttime      text,
+  r_starttime_raw  bigint,
+  r_endtime        text,
+  r_endtime_raw    bigint,
+  r_deathlev       int,
+  r_hp             int,
+  r_maxhp          int,
+  r_maxlvl         int,
+  r_points         bigint,
+  r_conduct        int,
+  r_turns          bigint,
+  r_logfiles_i     int,
+  r_dumplog        varchar(128),
+  r_ascended       boolean,
+  r_realtime       bigint
+) AS $$
+
+SELECT
+  server, variant, g.name, g.role, g.race, g.align0, g.gender0,
+  to_char(g.starttime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS starttime,
+  starttime_raw,
+  to_char(g.endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+  endtime_raw,
+  g.deathlev, g.hp, g.maxhp, g.maxlvl, g.points, g.conduct::int, g.turns,
+  l.logfiles_i, g.dumplog, g.ascended, g.realtime
+FROM (
+  SELECT
+    min(h.endtime) AS endtime, h.role, h.race, h.align0
+  FROM
+    games h
+    JOIN logfiles USING (logfiles_i)
+  WHERE variant = _variant AND ascended IS TRUE
+  GROUP BY role, race, align0
+) i
+INNER JOIN games g USING ( endtime )
+JOIN logfiles l USING ( logfiles_i )
+ORDER BY g.endtime ASC;
+
+$$ LANGUAGE sql;

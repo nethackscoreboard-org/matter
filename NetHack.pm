@@ -17,6 +17,9 @@ our @EXPORT = qw(
   nh_combo_valid
   nh_variants
   nh_char
+  nh_combo_table_init
+  nh_combo_table_cell
+  nh_combo_table_iterate
   nh_dnethack_map
 );
 
@@ -227,6 +230,118 @@ sub nh_combo_valid
 
   return 1;
 
+}
+
+
+
+#===========================================================================
+# Function to initialize table of role-race-alignment combos (gender is left
+# out). It returns hashref with two keys:
+# - table -- contains three dimensional array reference
+# - idx -- contains hash ref with {role}{race}{align} index to above table;
+#          the index is understood as triplet of indexes into the 3-d array
+#===========================================================================
+
+sub nh_combo_table_init
+{
+  #--- arguments
+
+  my (
+    $variant,
+    $func
+  ) = @_;
+
+  #--- init the structure
+
+  my @table;
+  my %idx;
+  my %ct = ( 'table' => \@table, 'idx' => \%idx, 'variant' => $variant );
+
+  #--- init the table
+  # value of -1 marks unavailable combo
+
+  my $i = 0;
+  for my $role (nh_char($variant, 'roles')) {
+    my @ary_races;
+    my $j = 0;
+    for my $race (nh_char($variant, 'races')) {
+      my @ary_aligns;
+      my $k = 0;
+      for my $align (nh_char($variant, 'aligns')) {
+        my $val = 0;
+        for my $gender (nh_char($variant, 'genders')) {
+          $val ||= nh_combo_valid($variant, $role, $race, $gender, $align);
+        }
+        if($func) {
+          $val = &$func($role, $race, $align, $val);
+        } else {
+          $val = $val ? undef : -1;
+        }
+        push(@ary_aligns, $val);
+        $idx{$role}{$race}{$align} = [ $i, $j, $k ];
+        $k++;
+      }
+      push(@ary_races, \@ary_aligns);
+      $j++
+    }
+    push(@table, \@ary_races);
+    $i++;
+  }
+
+  return \%ct;
+}
+
+
+
+#===========================================================================
+# Update value in a combotable cell specified by (role, race, alignment).
+#===========================================================================
+
+sub nh_combo_table_cell
+{
+  my ($ct, $role, $race, $align, $val) = @_;
+  my ($i, $j, $k);
+
+  ($role, $race, $align) = map { lc } ($role, $race, $align);
+
+  if(!exists $ct->{'idx'}{$role}{$race}{$align}) {
+    die sprintf('Invalid character combination %s-%s-%s', $role, $race, $align);
+  }
+  ($i, $j, $k) = @{$ct->{'idx'}{$role}{$race}{$align}};
+  
+  if($val) {
+    $ct->{'table'}[$i][$j][$k] = $val;
+  }
+  return $ct->{'table'}[$i][$j][$k];
+}
+
+
+
+#===========================================================================
+# Combotable iterator. The iterator function is calle for every cell of the
+# table and gets value/role/race/alignment as its four arguments.
+#===========================================================================
+
+sub nh_combo_table_iterate
+{
+  my ($ct, $iterator) = @_;
+  my $variant = $ct->{'variant'};
+  my $cnt = 0;
+
+  my $i = 0;
+  for my $role (nh_char($variant, 'roles')) {
+    my $j = 0;
+    for my $race (nh_char($variant, 'races')) {
+      my $k = 0;
+      for my $align (nh_char($variant, 'aligns')) {
+        my $val = nh_combo_table_cell($ct, $role, $race, $align);
+        $cnt++ if &$iterator($val, $role, $race, $align);
+      }
+      $j++
+    }
+    $i++;
+  }
+  return $cnt;
 }
 
 

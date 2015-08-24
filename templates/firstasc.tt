@@ -1,0 +1,166 @@
+<!doctype html>
+
+<!--
+[% Dumper.dump(byplayer) %]
+-->
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="default.css">
+  <title>EXPERIMENTAL / Combotable</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.tt mnu="firstasc" lvl=0 var=variant %]
+
+<div class="page_content">
+
+
+
+[% BLOCK table # =========================================================== %]
+
+<tr>
+
+<th>&nbsp;</th>
+
+[% SET cnt_offset = tab_offset; SET cnt_cols = tab_cols %]
+[% FOREACH var IN races # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+  [% IF cnt_offset; SET cnt_offset = cnt_offset - 1; NEXT; END %]
+  [% IF !cnt_cols; LAST; ELSE; SET cnt_cols = cnt_cols - 1; END %]
+  <th colspan="[% aligns.size %]" class="center">
+  [% races_def.item(var) FILTER ucfirst %]
+</th>
+[% END # <<< races loop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+
+</tr>
+
+
+[% SET i = 0 %]
+[% FOREACH var IN roles # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+
+  <tr>
+  <th>
+  [% roles_def.item(var) FILTER ucfirst %]
+  </th>
+  [% SET cnt_offset = tab_offset; SET cnt_cols = tab_cols; SET j = tab_offset %]
+  [% FOREACH var IN races # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+    [% IF cnt_offset; SET cnt_offset = cnt_offset - 1; NEXT; END %]
+    [% IF !cnt_cols; LAST; ELSE; SET cnt_cols = cnt_cols - 1; END %]
+    [% SET k = 0 %]
+    [% FOREACH var2 IN aligns # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+
+      [% IF table.item(i).item(j).item(k) == -1 %]
+      <td class="fcombo">
+      &nbsp;
+      </td>
+      [% ELSE %]
+      <td>
+      [% GET table.item(i).item(j).item(k) %]
+      </td>
+      [% END %]
+
+      [% SET k = k + 1 %]
+    [% END # <<< aligns loop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+    [% SET j = j + 1 %]
+  [% END # <<< races loop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+  </tr>
+
+  [% SET i = i + 1 %]
+[% END # <<< roles loop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+
+<tr>
+<th>&nbsp;</th>
+[% SET cnt_offset = tab_offset; SET cnt_cols = tab_cols %]
+[% FOREACH var IN races # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+[% IF cnt_offset; SET cnt_offset = cnt_offset - 1; NEXT; END %]
+[% IF !cnt_cols; LAST; ELSE; SET cnt_cols = cnt_cols - 1; END %]
+[% FOREACH var2 IN aligns # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+<th>
+[% var2 FILTER ucfirst %]
+</th>
+[% END # <<< aligns loop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+[% END # <<< races loop <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< %]
+</tr>
+
+[% END # BLOCK table ======================================================= %]
+
+
+<h1>First Combo Ascensions Table</h1>
+[% INCLUDE varmenu.tt page="firstasc" %]
+
+<hr>
+
+<h3>Overview Table</h3>
+
+[% 
+SET break_cols = races.size;
+IF variant == 'nh';
+ELSIF variant == 'dnh'; 
+SET break_cols = 5;
+END
+%]
+
+<table class="bordered">
+
+[% 
+SET tab_offset = 0;
+SET tab_cols = break_cols;
+WHILE tab_offset < races.size;
+PROCESS table;
+SET tab_offset = tab_offset + break_cols;
+END 
+%]
+
+</table>
+
+
+<h3>First Combo Ascensions List</h3>
+
+[% INCLUDE tab_ascended.tt %]
+
+
+<h3>Combos By Players</h3>
+
+[% SET rank = 0; %]
+<table class="bordered">
+
+<tr>
+  <th>rank</th>
+  <th>name</th>
+  <th>num</th>
+  <th>combos</th>
+</tr>
+
+[% FOREACH plr IN byplayer_ord %]
+[% IF prev_cnt != byplayer.item(plr).item('cnt'); SET rank = rank + 1; END %]
+[% SET prev_cnt = byplayer.item(plr).item('cnt') %]
+
+<tr>
+<td class="numerc">[% rank %]</td>
+<td>[% plr %]</td>
+<td class="numeric">[% byplayer.item(plr).item('cnt') %]</td>
+<td>
+[% FOREACH combo IN byplayer.item(plr).item('games') %]
+<span class="combo">[% combo %]</span>
+[% END %]
+</td>
+[% END %]
+</tr>
+</table>
+
+<h3>Unascended Combos</h3>
+
+<p style="line-height : 180%">
+[% FOREACH combo IN unascend %]
+<span class="combo">[% combo %]</span>
+[% END %]
+</p>
+
+<p>[% unascend.size %] unascended combo[% IF unascended.size != 0 %]s[% END %]</p>
+
+[% INCLUDE footer.tt %]
