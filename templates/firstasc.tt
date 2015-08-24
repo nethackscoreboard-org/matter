@@ -9,7 +9,7 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="default.css">
-  <title>EXPERIMENTAL / Combotable</title>
+  <title>First Combo Ascensions</title>
 </head>
 
 <body class="page_back">
@@ -90,7 +90,7 @@
 [% END # BLOCK table ======================================================= %]
 
 
-<h1>First Combo Ascensions Table</h1>
+<h1>First Combo Ascensions</h1>
 [% INCLUDE varmenu.tt page="firstasc" %]
 
 <hr>
