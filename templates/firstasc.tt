@@ -1,8 +1,5 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
 <!doctype html>
-
-<!--
-[% Dumper.dump(byplayer) %]
--->
 
 <html>
 
