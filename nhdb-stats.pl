@@ -1144,9 +1144,9 @@ sub gen_page_recent
   #--- process template
 
   $tt->process(
-    'recent.tt', 
+    "$page.tt", 
     \%data,
-    $html ? $html : sprintf('recent.%s.html', $variant)
+    $html ? $html : sprintf('%s.%s.html', $page, $variant)
   ) or die $tt->error();
 }
 
