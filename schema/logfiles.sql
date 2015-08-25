@@ -269,9 +269,9 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
   13, 'nethack.xd.cm (Fourk)',
   'nxc', 'nhf', NULL,
-  'https://nethack.xd.cm/xlogfiles/nh4k',
+  'https://nethack.xd.cm/xlogfiles/nhfourk',
   'nxc.nhf.log',
-  'https://nethack.xd.cm/userdata/%u/nh4k/dumplog/',
+  'https://nethack.xd.cm/userdata/%u/nhfourk/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
