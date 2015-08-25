@@ -2574,44 +2574,6 @@ sub gen_page_first_to_ascend
 
 #============================================================================
 # Display usage help.
-#
-# Semantics description, this should be moved into some other text, but for
-# now:
-#
-# Note: in this description "variant" means either one of the known
-# NetHack variants or 'all' pseudo-variant, that aggregates data from all
-# variants.
-#
-# --force makes the program ignore what is in the update table; in other
-# words, it will process even pages that are unaffected by new information;
-# when forcing processing of everything, the program takes the list of
-# known, statically defined variants (in file nethack_def.json, key
-# nh_variants_ord).
-#
-# --variant can be used multiple times and it limits processing to
-# specified variant(s) (specified by their short-code); this does not make
-# the program ignore the update table, though! if one wants to enforce
-# updating only certain variants, combine this option with --force
-#
-# --player will only generate pages for given player name; aggregate pages
-# (such as "Recent Games", "Ascended Games" etc.) will not be processed;
-# again, combine with --force to update player page even in the absence of
-# new information; combine this with --variant to limit processing to only
-# certain variant.
-#
-# --players, --noplayers enable/disable generating player pages; processing
-# players is enabled by default; explicitly disabling is very useful when
-# using --force, as this otherwise makes the program refresh all user pages
-# which is very time consuming
-#
-# --aggr, --noaggr enable/disable generating aggregate pages
-#
-# --dev, --nodev enable/disable processing for /dev/null/nethack tournament;
-# "--dev" means forced processing of current year even if it's not November
-# (this is meant for post-tournament reprocessing); "--nodev" will disable
-# devnull processing no matter what; omitting the "--[no]dev" entirely will
-# make for processing devnull if definition exists for current year and it
-# is November.
 #============================================================================
 
 sub help
