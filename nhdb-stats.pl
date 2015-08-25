@@ -2806,11 +2806,11 @@ if($devnull && $cmd_aggr) {
 
 #--- front page
 
-gen_page_front();
+gen_page_front() if $cmd_aggr;
 
 #--- about page
 
-gen_page_about();
+gen_page_about() if $cmd_aggr;
 
 #--- disconnect from database
 
