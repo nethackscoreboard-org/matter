@@ -170,6 +170,9 @@ GRANT SELECT ON v_ascended TO nhdbstats;
 --- functions
 ----------------------------------------------------------------------------
 
+-- Function that counts bit in an integer. Used to get number of conducts
+-- as these are represented by bitfield.
+
 CREATE OR REPLACE FUNCTION bitcount(i integer) RETURNS integer AS $$
 DECLARE n integer;
 DECLARE amount integer;
