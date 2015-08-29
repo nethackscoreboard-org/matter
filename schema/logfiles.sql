@@ -220,7 +220,7 @@ INSERT INTO logfiles VALUES (
   'http://dnethack.ilbelkyr.de/xlogfile.txt',
   'did.dnh.log',
   NULL,
-  NULL,
+  'https://nethack.xd.cm/history/ilbelkyr/userdata/%u/dnethack/dumplog/%s',
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
