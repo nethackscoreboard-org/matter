@@ -176,7 +176,7 @@ INSERT INTO logfiles VALUES (
   'n4o.nh4-2.log',
   NULL,
   NULL,
-  TRUE, FALSE, TRUE,
+  TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
