@@ -2573,6 +2573,96 @@ sub gen_page_first_to_ascend
 
 
 #============================================================================
+# Generate Fastest Game-time page.
+#============================================================================
+
+sub gen_page_gametime
+{
+  #--- arguments
+
+  my $variant = shift;
+  if(!$variant) { $variant = 'all'; }
+
+  #--- other variables
+
+  my %data;
+
+  #--- init
+
+  $logger->info('Creating page: Game-time/', $variant);
+
+  #----------------------------------------------------------------------------
+  #--- top 100 lowest turncount games -----------------------------------------
+  #----------------------------------------------------------------------------
+
+  {
+    my $qry;
+    my @cond = ('turns > 0');
+    my @arg;
+
+    if($variant ne 'all') {
+      push(@cond, 'variant = ?');
+      push(@arg, $variant);
+    }
+    $qry = sprintf(
+      'SELECT * FROM v_ascended WHERE %s ORDER BY turns ASC LIMIT 100',
+      join(' AND ', @cond)
+    );
+
+    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+  }
+
+  #----------------------------------------------------------------------------
+  #--- per-player counts for sub-N turns games --------------------------------
+  #----------------------------------------------------------------------------
+
+  my $sub_games = sub {
+
+    my $turns = shift;
+    my $qry;
+    my @cond = ('turns > 0');
+    my @arg;
+    my $re;
+
+    push(@cond, 'turns < ?');
+    push(@arg, $turns);
+
+    if($variant ne 'all') {
+      push(@cond, 'variant = ?');
+      push(@arg, $variant);
+    }
+
+    $qry = sprintf(
+      'SELECT name, count(*) FROM v_ascended ' .
+      'WHERE %s GROUP BY name ORDER BY count DESC',
+      join(' AND ', @cond)
+    );
+
+    return sql_load($qry, 1, 1, undef, @arg);
+  };
+
+  $data{'sub20'} = &$sub_games(20000);
+  $data{'sub10'} = &$sub_games(10000);
+  $data{'sub5'} = &$sub_games(5000);
+
+  #--- auxiliary data
+
+  $data{'variant'}  = $variant;
+  $data{'cur_time'} = scalar(localtime());
+  $data{'variants'} = [ 'all', nh_variants() ];
+  $data{'vardef'}   = nh_variants(1);
+  $data{'variant'}  = $variant;
+
+  #--- render template
+
+  if(!$tt->process('gametime.tt', \%data, "gametime.$variant.html")) {
+    $logger->error(q{Failed to render page gametime.tt'}, $tt->error());
+    die $tt->error();
+  }
+}
+
+
+#============================================================================
 # Display usage help.
 #============================================================================
 
@@ -2719,6 +2809,7 @@ if($cmd_aggr) {
     gen_page_zscores($var);
     gen_page_conducts($var);
     gen_page_lowscore($var);
+    gen_page_gametime($var);
 
     #--- first to ascend page
     if(grep(/^$var$/, @{$NHdb::nhdb_def->{'firsttoascend'}})) {
