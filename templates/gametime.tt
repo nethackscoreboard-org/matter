@@ -36,10 +36,18 @@
 <h3>Sub-20K Wins</h3>
 
 <table class="bordered">
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>cnt</th>
+  <th>avg turns</th>
+</tr>
 [% FOR row IN sub20 %]
 <tr>
+<td class="numeric">[% row.n %]</td>
 <td>[% row.name %]</td>
 <td class="numeric">[% row.count %]</td>
+<td class="numeric">[% row.avg %]</td>
 </tr>
 [% END %]
 </table>
@@ -51,10 +59,18 @@
 <h3>Sub-10K Wins</h3>
 
 <table class="bordered">
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>cnt</th>
+  <th>avg turns</th>
+</tr>
 [% FOR row IN sub10 %]
 <tr>
+<td class="numeric">[% row.n %]</td>
 <td>[% row.name %]</td>
 <td class="numeric">[% row.count %]</td>
+<td class="numeric">[% row.avg %]</td>
 </tr>
 [% END %]
 </table>
@@ -66,10 +82,18 @@
 <h3>Sub-5K Wins</h3>
 
 <table class="bordered">
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>cnt</th>
+  <th>avg turns</th>
+</tr>
 [% FOR row IN sub5 %]
 <tr>
+<td class="numeric">[% row.n %]</td>
 <td>[% row.name %]</td>
 <td class="numeric">[% row.count %]</td>
+<td class="numeric">[% row.avg %]</td>
 </tr>
 [% END %]
 </table>

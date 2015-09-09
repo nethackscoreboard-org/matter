@@ -2633,8 +2633,9 @@ sub gen_page_gametime
     }
 
     $qry = sprintf(
-      'SELECT name, count(*) FROM v_ascended ' .
-      'WHERE %s GROUP BY name ORDER BY count DESC',
+      'SELECT name, count(*), sum(turns), round(avg(turns)) as avg ' .
+      'FROM v_ascended ' .
+      'WHERE %s GROUP BY name ORDER BY count DESC, sum ASC',
       join(' AND ', @cond)
     );
 
