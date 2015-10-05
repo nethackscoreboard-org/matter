@@ -241,11 +241,11 @@ sub sql_insert_games
   
   #--- conduct
   push(@fields, 'conduct');
-  push(@values, sprintf('%d::bit(16)', eval($l->{'conduct'})));
+  push(@values, sprintf('%d', eval($l->{'conduct'})));
 
   #--- achieve
   push(@fields, 'achieve');
-  push(@values, sprintf('%d::bit(16)', eval($l->{'achieve'})));
+  push(@values, sprintf('%d', eval($l->{'achieve'})));
   
   #--- start time
   push(@fields, 'starttime');

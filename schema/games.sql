@@ -36,9 +36,9 @@ CREATE TABLE games (
   maxhp         int NOT NULL,
   maxlvl        int NOT NULL,
   points        bigint NOT NULL,
-  conduct       bit(32) NOT NULL,
+  conduct       integer NOT NULL,
   turns         bigint NOT NULL,
-  achieve       bit(16),
+  achieve       integer,
   realtime      bigint,
   version       varchar(16) NOT NULL,
   ascended      boolean NOT NULL,
@@ -67,7 +67,7 @@ CREATE OR REPLACE VIEW v_games_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
+    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime, 
     games.version, ascended
   FROM 
     games
@@ -84,7 +84,7 @@ CREATE OR REPLACE VIEW v_games AS
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     endtime_raw, starttime_raw, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
+    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime, 
     games.version, ascended
   FROM 
     games
@@ -101,7 +101,7 @@ CREATE OR REPLACE VIEW v_games_all AS
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     endtime_raw, starttime_raw, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime, 
+    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime, 
     games.version, ascended, scummed
   FROM 
     games
@@ -118,7 +118,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, death,
-    deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
+    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime,
     games.version, ascended, dumplog,
     extract('year'  from age(
       current_timestamp AT TIME ZONE 'UTC', 
@@ -155,7 +155,7 @@ CREATE OR REPLACE VIEW v_ascended AS
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     endtime_raw, starttime_raw, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct::int, turns, realtime,
+    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime,
     games.version, ascended
   FROM
     games
@@ -222,7 +222,7 @@ SELECT
   starttime_raw,
   to_char(g.endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
   endtime_raw,
-  g.deathlev, g.hp, g.maxhp, g.maxlvl, g.points, g.conduct::int, g.turns,
+  g.deathlev, g.hp, g.maxhp, g.maxlvl, g.points, g.conduct, g.turns,
   l.logfiles_i, g.dumplog, g.ascended, g.realtime
 FROM (
   SELECT
