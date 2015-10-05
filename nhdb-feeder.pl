@@ -186,7 +186,13 @@ sub sql_insert_games
       @{$NHdb::nhdb_def->{'feeder'}{'reject_name'}};
   
   #--- reject "special" modes of NH4 and its kin
-  if(exists $l->{'mode'} && $l->{'mode'} ne 'normal') { return undef; }
+  #--- Fourk challenge mode is okay, though
+  if(
+    exists $l->{'mode'} &&
+    !($l->{'mode'} eq 'normal' || $l->{'mode'} eq 'challenge')
+  ) {
+    return undef;
+  }
 
   #--- reject entries with empty name
   if(!exists $l->{'name'} || !$l->{'name'}) { return undef; }
