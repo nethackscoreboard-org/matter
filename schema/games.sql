@@ -36,7 +36,7 @@ CREATE TABLE games (
   maxhp         int NOT NULL,
   maxlvl        int NOT NULL,
   points        bigint NOT NULL,
-  conduct       bit(16) NOT NULL,
+  conduct       bit(32) NOT NULL,
   turns         bigint NOT NULL,
   achieve       bit(16),
   realtime      bigint,
