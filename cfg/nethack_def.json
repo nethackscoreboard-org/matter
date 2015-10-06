@@ -364,7 +364,30 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc", "syl" ],
       "aligns" : [ "law", "neu", "cha" ],
-      "genders" : [ "mal", "fem" ]
+      "genders" : [ "mal", "fem" ],
+      "conduct" : {
+        "1"       : "food",
+        "2"       : "vegn",
+        "4"       : "vegt",
+        "8"       : "athe",
+        "16"      : "weap",
+        "32"      : "paci",
+        "64"      : "illi",
+        "128"     : "pile",
+        "256"     : "self",
+        "512"     : "wish",
+        "1024"    : "arti",
+        "2048"    : "geno",
+        "4096"    : "elbe",
+        "8192"    : "pudd",
+        "16384"   : "algn",
+        "65536"   : "soko",
+        "131072"  : "nude",
+        "262144"  : "acce",
+        "524288"  : "unih",
+        "1048576" : "cont",
+        "2097152" : "tool"
+      }
     },
 
     "dyn" : {
