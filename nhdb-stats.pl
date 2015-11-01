@@ -2124,7 +2124,7 @@ sub gen_page_dev_roles
 
   $query = 
     q{SELECT * FROM v_ascended WHERE logfiles_i = ? } .
-    q{ORDER BY role, endtime AT TIME ZONE 'UTC' ASC};
+    q{ORDER BY role, endtime_raw ASC};
 
   $result = sql_load(
     $query, undef, undef,
