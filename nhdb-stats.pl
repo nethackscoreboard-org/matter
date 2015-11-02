@@ -1775,6 +1775,7 @@ sub gen_page_front
   $data{'variants'} = \@variants_ordered;
   $data{'vardef'} = nh_variants(1);
   $data{'cur_time'} = scalar(localtime());
+  $data{'devlink'} = $devnull if $devnull;
   if(!$tt->process('front.tt', \%data, 'index.html')) {
     $logger->error(q{Failed to create page 'Front' (3), }, $tt->error());
     die $tt->error();

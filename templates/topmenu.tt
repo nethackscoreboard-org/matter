@@ -1,14 +1,19 @@
 [%#===========================================================================
   Argument to this template:
 
-  mnu - name of the current menu
-  lvl - nesting depth (0 or 2 currently)
-  var - variant
+  mnu     - name of the current menu
+  lvl     - nesting depth (0 or 2 currently)
+  var     - variant
+  devlink - add link to devnull pages
 ============================================================================%]
 
 [%- IF lvl == 2; SET path = "../../"; END -%]
 
 <div class="toplinks">
+
+[%- IF devlink -%]
+  <b><a href="devnull/[% devlink %]/">/dev/null/nethack [% devlink %]</a></b> |
+[%- END -%]
 
 [%- IF mnu != "front" -%]
   [%- IF lvl == 2 -%]
