@@ -332,6 +332,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  19, 'nethack.xd.cm (FiqHack)',
+  'nxc', 'fh', NULL,
+  'https://nethack.xd.cm/xlogfiles/fiqhack',
+  'nxc.fh.log',
+  'https://nethack.xd.cm/userdata/%u/fiqhack/dumplog/',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------
