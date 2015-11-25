@@ -71,7 +71,7 @@ DROP TABLE IF EXISTS logfiles;
 
 CREATE TABLE logfiles (
   logfiles_i  int,
-  descr       varchar(32),
+  descr       varchar(64),
   server      varchar(3) NOT NULL,
   variant     varchar(3) NOT NULL,
   version     varchar(16),
@@ -114,9 +114,9 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
   5, 'acehack.de',
   'ade', 'ace', NULL,
-  'https://nethack.xd.cm/history/ade/xlogfiles/acehack',
+  'https://nethack.dank.ninja/history/ade/xlogfiles/acehack',
   'ade.ace.log', 
-  'https://nethack.xd.cm/history/ade/userdata/%u/acehack/dumplog/%s',
+  'https://nethack.dank.ninja/history/ade/userdata/%u/acehack/dumplog/%s',
   NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
@@ -220,7 +220,7 @@ INSERT INTO logfiles VALUES (
   'http://dnethack.ilbelkyr.de/xlogfile.txt',
   'did.dnh.log',
   NULL,
-  'https://nethack.xd.cm/history/ilbelkyr/userdata/%u/dnethack/dumplog/%s',
+  'https://nethack.dank.ninja/history/ilbelkyr/userdata/%u/dnethack/dumplog/%s',
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
@@ -232,112 +232,112 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
  11, 'acehack.eu',
  'aeu', 'ace', NULL,
- 'https://nethack.xd.cm/history/aeu/xlogfiles/acehack',
+ 'https://nethack.dank.ninja/history/aeu/xlogfiles/acehack',
  'aeu.ace.log',
- 'https://nethack.xd.cm/history/aeu/userdata/%u/acehack/dumplog/%s',
+ 'https://nethack.dank.ninja/history/aeu/userdata/%u/acehack/dumplog/%s',
  NULL,
  TRUE, TRUE, FALSE,
  'UTC', NULL, NULL
 );
 
 -----------------------------------------------------------------------------
---- nethack.xd.cm -----------------------------------------------------------
+--- nethack.dank.ninja ------------------------------------------------------
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles VALUES (
-  2, 'nethack.xd.cm (NetHack)',
-  'nxc', 'nh', '3.4.3',
-  'https://nethack.xd.cm/xlogfiles/nethack',
-  'nxc.nh.log',
-  'https://nethack.xd.cm/userdata/%u/nethack/dumplog/%s',
+  2, 'nethack.dank.ninja (NetHack)',
+  'ndn', 'nh', '3.4.3',
+  'https://nethack.dank.ninja/xlogfiles/nethack',
+  'ndn.nh.log',
+  'https://nethack.dank.ninja/userdata/%u/nethack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  12, 'nethack.xd.cm (dNetHack)',
-  'nxc', 'dnh', NULL,
-  'https://nethack.xd.cm/xlogfiles/dnethack',
-  'nxc.dnh.log',
-  'https://nethack.xd.cm/userdata/%u/dnethack/dumplog/%s',
+  12, 'nethack.dank.ninja (dNetHack)',
+  'ndn', 'dnh', NULL,
+  'https://nethack.dank.ninja/xlogfiles/dnethack',
+  'ndn.dnh.log',
+  'https://nethack.dank.ninja/userdata/%u/dnethack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  13, 'nethack.xd.cm (Fourk)',
-  'nxc', 'nhf', NULL,
-  'https://nethack.xd.cm/xlogfiles/nhfourk',
-  'nxc.nhf.log',
-  'https://nethack.xd.cm/userdata/%u/nhfourk/dumplog/',
+  13, 'nethack.dank.ninja (Fourk)',
+  'ndn', 'nhf', NULL,
+  'https://nethack.dank.ninja/xlogfiles/nhfourk',
+  'ndn.nhf.log',
+  'https://nethack.dank.ninja/userdata/%u/nhfourk/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  14, 'nethack.xd.cm (SporkHack 2015)',
-  'nxc', 'sh', NULL,
-  'https://nethack.xd.cm/history/junethack2015/xlogfiles/sporkhack',
-  'nxc.sh.2015.log',
-  'https://nethack.xd.cm/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
+  14, 'nethack.dank.ninja (SporkHack 2015)',
+  'ndn', 'sh', NULL,
+  'https://nethack.dank.ninja/history/junethack2015/xlogfiles/sporkhack',
+  'ndn.sh.2015.log',
+  'https://nethack.dank.ninja/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
   NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  15, 'nethack.xd.cm (GruntHack 2015)',
-  'nxc', 'gh', NULL,
-  'https://nethack.xd.cm/history/junethack2015/xlogfiles/grunthack',
-  'nxc.gh.2015.log',
-  'https://nethack.xd.cm/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
+  15, 'nethack.dank.ninja (GruntHack 2015)',
+  'ndn', 'gh', NULL,
+  'https://nethack.dank.ninja/history/junethack2015/xlogfiles/grunthack',
+  'ndn.gh.2015.log',
+  'https://nethack.dank.ninja/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
   NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  16, 'nethack.xd.cm (UnNetHack)',
-  'nxc', 'unh', NULL,
-  'https://nethack.xd.cm/xlogfiles/unnethack',
-  'nxc.unh.log',
-  'https://nethack.xd.cm/userdata/%u/unnethack/dumplog/%s',
+  16, 'nethack.dank.ninja (UnNetHack)',
+  'ndn', 'unh', NULL,
+  'https://nethack.dank.ninja/xlogfiles/unnethack',
+  'ndn.unh.log',
+  'https://nethack.dank.ninja/userdata/%u/unnethack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  17, 'nethack.xd.cm (DynaHack)',
-  'nxc', 'dyn', NULL,
-  'https://nethack.xd.cm/xlogfiles/dynahack',
-  'nxc.dyn.log',
-  'https://nethack.xd.cm/userdata/%u/dynahack/dumplog/',
+  17, 'nethack.dank.ninja (DynaHack)',
+  'ndn', 'dyn', NULL,
+  'https://nethack.dank.ninja/xlogfiles/dynahack',
+  'ndn.dyn.log',
+  'https://nethack.dank.ninja/userdata/%u/dynahack/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  18, 'nethack.xd.cm (NetHack4)',
-  'nxc', 'nh4', '4.3',
-  'https://nethack.xd.cm/xlogfiles/nethack4',
-  'nxc.nh4.log',
-  'https://nethack.xd.cm/userdata/%u/nethack4/dumplog/',
+  18, 'nethack.dank.ninja (NetHack4)',
+  'ndn', 'nh4', '4.3',
+  'https://nethack.dank.ninja/xlogfiles/nethack4',
+  'ndn.nh4.log',
+  'https://nethack.dank.ninja/userdata/%u/nethack4/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  19, 'nethack.xd.cm (FiqHack)',
-  'nxc', 'fh', NULL,
-  'https://nethack.xd.cm/xlogfiles/fiqhack',
-  'nxc.fh.log',
-  'https://nethack.xd.cm/userdata/%u/fiqhack/dumplog/',
+  19, 'nethack.dank.ninja (FiqHack)',
+  'ndn', 'fh', NULL,
+  'https://nethack.dank.ninja/xlogfiles/fiqhack',
+  'ndn.fh.log',
+  'https://nethack.dank.ninja/userdata/%u/fiqhack/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
