@@ -42,19 +42,35 @@ my $logger;                     # log4perl instance
 #============================================================================
 
 #============================================================================
-# Split a line along colons, parse it into hash and return it as hashref.
+# Split a line along field separator, parse it into hash and return it as
+# a hashref.
 #============================================================================
 
 sub parse_log
 {
+  my $log = shift;
   my $l = shift;
   my %l;
-  
-  my @a = split(/:/, $l);
+  my @a;
+
+  #--- NetHack 3.6.0 uses tabs as field separator; all other variants/versions
+  #--- use colon
+
+  if($log->{'variant'} eq 'nh' && $log->{'version'} eq '3.6.0') {
+    @a = split(/\t/, $l);
+  } else {
+    @a = split(/:/, $l);
+  }
+
+  #--- split keys and values
+
   for my $field (@a) {
     my ($key, $val) = split(/=/, $field);
     $l{$key} = $val;
   }
+
+  #--- finish returning hashref
+
   return \%l
 }
 
@@ -312,6 +328,16 @@ sub sql_insert_games
   # winning games!
   if($variant eq 'dnh' && $l->{'ascended'}) {
     ($l->{'role'}, $l->{'race'}) = nh_dnethack_map($l->{'role'}, $l->{'race'});
+  }
+
+  #--- NetHack 3.6.0 bogus realtime workaround
+  # According to paxed, NH 3.6.0 sometimes saves bogus realtime; he recommended
+  # to discard any realtime that is larger than endttime - starttime.
+  if(
+    $l->{'variant'} eq 'nh' && $l->{'version'} eq '3.6.0' &&
+    $l->{'endttime'} - $l->{'starttime'} < $l->{'realtime'}
+  ) {
+    $l->{'realtime'} = undef;
   }
 
   #--- regular fields
@@ -748,7 +774,7 @@ for my $log (@logfiles) {
 
     #--- parse log
     
-      my $pl = parse_log($l);
+      my $pl = parse_log($log, $l);
 
     #--- insert row into database
 

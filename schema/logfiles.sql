@@ -19,8 +19,8 @@
 -- "ace" for AceHack, "nh4" for NetHack4 etc.)
 --
 -- version
--- Currently not used for anything of consequence, might simply hold
--- description or additional distinguisher string.
+-- This is used as an additional distinguisher that can be acted upon
+-- (primarily by the feeder to modify its parsing behaviour).
 --
 -- logurl
 -- Fully qualified URL of xlogfile.
@@ -97,12 +97,23 @@ GRANT SELECT ON logfiles TO nhdbstats;
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles VALUES (
-  1, 'nethack.alt.org', 
+  1, 'nethack.alt.org (3.4.3)', 
   'nao', 'nh', '3.4.3',
   'http://alt.org/nethack/xlogfile.full.txt',
-  'nao.nh.log',
+  'nao.nh.343.log',
   'http://alt.org/nethack/userdata/%U/%u/dumplog/%s.nh343.txt',
   'http://alt.org/nethack/userdata/%u/%u.nh343rc',
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  20, 'nethack.alt.org (3.6.0)',
+  'nao', 'nh', '3.6.0',
+  'https://alt.org/nethack/xlogfile.nh360',
+  'nao.nh.360.log',
+  NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
