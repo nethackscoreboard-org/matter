@@ -69,6 +69,7 @@ sub sql_streak_create_new
   my $logfiles_i = shift;
   my $name = shift;
   my $rowid = shift;
+  my $logger = get_logger('Streaks');
 
   #--- create new streak entry
 
@@ -76,9 +77,26 @@ sub sql_streak_create_new
   $qry .= q{RETURNING streaks_i};
   my $sth = $dbh->prepare($qry);
   my $r = $sth->execute($logfiles_i, $name);
-  if(!$r) { return $sth->errstr(); }
+  if(!$r) {
+    $logger->fatal(
+      sprintf(
+        'sql_streak_create_new() failed to create new streak, dberr=%s',
+        $sth->errstr()
+      )
+    );
+    return $sth->errstr();
+  }
+
+  #--- retrieve streak id
+
   my ($streaks_i) = $sth->fetchrow_array();
   $sth->finish();
+  $logger->debug(
+    sprintf(
+      'Started new streak %d (logfiles_i=%d, name=%s, rowid=%d)',
+      $streaks_i, $logfiles_i, $name, $rowid
+    )
+  );
 
   #--- add the game to the new streak
 
@@ -99,12 +117,27 @@ sub sql_streak_append_game
 {
   my $streaks_i = shift;     # 1. streak to be appended to
   my $rowid = shift;         # 2. the game to be appended
+  my $logger = get_logger('Streaks');
 
   #--- create mapping entry
 
   my $qry = q{INSERT INTO map_games_streaks VALUES (?, ?)};
   my $r = $dbh->do($qry, undef, $rowid, $streaks_i);
-  if(!$r) { return $dbh->errstr(); }
+  if(!$r) {
+    $logger->fatal(
+      sprintf(
+        'sql_streak_append_game(%d, %d) failed to append game, errdb=%s',
+        $streaks_i, $rowid, $dbh->errstr()
+      )
+    );
+    return $dbh->errstr();
+  }
+  $logger->debug(
+    sprintf(
+      'Appended game %d to streak %d',
+      $rowid, $streaks_i
+    )
+  );
 
   #--- finish
 
@@ -120,6 +153,7 @@ sub sql_streak_append_game
 sub sql_streak_close
 {
   my $streaks_i = shift;
+  my $logger = get_logger('Streaks');
 
   #--- close streak entity and get its current state
 
@@ -127,7 +161,16 @@ sub sql_streak_close
   $qry .= q{WHERE streaks_i = ?};
   my $sth = $dbh->prepare($qry);
   my $r = $sth->execute($streaks_i);
-  if(!$r) { return $sth->errstr(); }
+  if(!$r) {
+    $logger->fatal(
+      sprintf(
+        'sql_streak_close(%d) failed to close streak, errdb=%s',
+        $streaks_i, $dbh->errstr()
+      )
+    );
+    return $sth->errstr();
+  }
+  $logger->debug(sprintf('Closed streak %d', $streaks_i));
 
   #--- finish
 
@@ -136,12 +179,13 @@ sub sql_streak_close
 
 
 #============================================================================
-# This function get last game's in a streak entry.
+# This function gets last game in a streak entry.
 #============================================================================
 
 sub sql_streak_get_tail
 {
   my $streaks_i = shift;
+  my $logger = get_logger('Streaks');
 
   my $qry = q{SELECT * FROM streaks };
   $qry .= q{JOIN map_games_streaks USING (streaks_i) };
@@ -149,13 +193,67 @@ sub sql_streak_get_tail
   $qry .= q{WHERE streaks_i = ? ORDER BY endtime DESC LIMIT 1};
   my $sth = $dbh->prepare($qry);
   my $r = $sth->execute($streaks_i);
-  if(!$r) { return $sth->errstr(); }
+  if(!$r) {
+    $logger->fatal(
+      sprintf(
+        'sql_streak_get_tail(%d) failed, errdb=%s',
+        $streaks_i, $dbh->errstr()
+      )
+    );
+    return $sth->errstr();
+  }
   my $result = $sth->fetchrow_hashref();
   $sth->finish();
 
   #--- finish 
   
   return $result;
+}
+
+
+#============================================================================
+# Get streaks_i for given logfiles_i and name.
+#============================================================================
+
+sub sql_streak_find
+{
+  #--- arguments
+
+  my $logfiles_i = shift;
+  my $name = shift;
+
+  #--- other init
+
+  my $logger = get_logger('Streaks');
+
+  #--- db query
+
+  my $qry =
+    q{SELECT streaks_i FROM streaks } .
+    q{WHERE logfiles_i = ? AND name = ? AND open IS TRUE};
+  my $sth = $dbh->prepare($qry);
+  my $r = $sth->execute($logfiles_i, $name);
+  if(!$r) {
+    $logger->fatal(
+      sprintf(
+        'sql_streak_find(%d, %s) failed, errdb=%s',
+        $logfiles_i, $name, $dbh->errstr()
+      )
+    );
+    return $sth->errstr();
+  }
+  my $streaks_i = $sth->fetchrow_array();
+  $sth->finish();
+  $logger->debug(
+    sprintf(
+      'Pre-existing streak %d for (%d,%s) found',
+      $streaks_i, $logfiles_i, $name
+    )
+  ) if $streaks_i;
+
+  #--- finish
+
+  return [ $streaks_i ];
 }
 
 
@@ -691,13 +789,9 @@ for my $log (@logfiles) {
     # (table "streaks")
 
         if(!exists($streak_open{$logfiles_i}{$pl->{'name'}})) {
-          $qry = q{SELECT streaks_i FROM streaks };
-          $qry .= q{WHERE logfiles_i = ? AND name = ? AND open IS TRUE};
-          $sth = $dbh->prepare($qry);
-          $r = $sth->execute($logfiles_i, $pl->{'name'});
-          if(!$r) { die $sth->errstr(); }
-          ($streak_open{$logfiles_i}{$pl->{'name'}}) = $sth->fetchrow_array();
-          $sth->finish();
+          $r = sql_streak_find($logfiles_i, $pl->{'name'});
+          die $r if !ref($r);
+          $streak_open{$logfiles_i}{$pl->{'name'}} = $r->[0];
         }
 
     #--- game is ASCENDED
