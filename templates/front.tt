@@ -68,7 +68,7 @@
 <h3>Recent Ascensions</h3>
 
 [% SET result = ascensions_recent %]
-[% INCLUDE tab_ascended.tt %]
+[% INCLUDE tab_ascended.tt variant='all' %]
 
 <h3>Active Streaks</h3>
 
@@ -79,6 +79,7 @@
 <th>wins</th>
 <th>srv</th>
 <th>var</th>
+<th>ver</th>
 <th>name</th>
 <th>turns</th>
 <th>start</th>
@@ -93,6 +94,7 @@
 <td class="numeric">[% row.wins %]</td>
 <td>[% row.server %]</td>
 <td>[% row.variant %]</td>
+<td>[% IF row.variant == 'nh' %][% row.version %][% END %]</td>
 <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 <td class="numeric">[% number(row.turns) %]</td>
 [% IF row.start_dump %]

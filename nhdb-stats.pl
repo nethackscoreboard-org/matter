@@ -666,6 +666,7 @@ sub process_streaks
     $row->{'server'}     = $game_first->{'server'};
     $row->{'open'}       = $streak->{'open'};
     $row->{'variant'}    = $game_first->{'variant'};
+    $row->{'version'}    = $game_first->{'version'};
     $row->{'start'}      = $game_first->{'endtime_fmt'};
     $row->{'start_dump'} = $game_first->{'dump'};
     $row->{'end'}        = $game_last->{'endtime_fmt'};
