@@ -780,11 +780,13 @@ sub row_fix
 
   #--- realtime (aka duration)
 
-  if($row->{'variant'} eq 'ace' || 
-     $row->{'variant'} eq 'nh4' ||
-     $row->{'variant'} eq 'nhf' ||
-     $row->{'variant'} eq 'dyn' ||
-     $row->{'variant'} eq 'fh'
+  if(
+    $row->{'variant'} eq 'ace' ||
+    $row->{'variant'} eq 'nh4' ||
+    $row->{'variant'} eq 'nhf' ||
+    $row->{'variant'} eq 'dyn' ||
+    $row->{'variant'} eq 'fh'  ||
+    ($row->{'variant'} eq 'nh' && $row->{'version'} eq '3.6.0')
   ) {
     $row->{'realtime'} = '';
   }
