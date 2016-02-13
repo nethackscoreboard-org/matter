@@ -281,10 +281,22 @@ sub sql_streak_find
 
 sub sql_insert_games
 {
-  my $logfiles_i = shift;
-  my $server = shift;
-  my $variant = shift;
-  my $l = shift;
+  #--- arguments
+
+  my (
+    $logfiles_i,       # 1. logfile id
+    $server,           # 2. server id
+    $variant,          # 3. variant id
+    $l                 # 4. line to be parsed, transformed into SQL
+  ) = @_;
+
+  #--- other variables
+  # @fields is just a list of database fields in table 'games'; values
+  # is an array whose elements can appear in two forms: a) simple scalar
+  # value; b) sub-array of 1. SQL expression that contains single placeholder
+  # 2. simple scalar value. -- this is needed to be able to use placeholders
+  # together with SQL expressions as values.
+
   my @fields;
   my @values;
 
@@ -315,7 +327,7 @@ sub sql_insert_games
   my $death = $l->{'death'};
   $death =~ tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;
   push(@fields, 'death');
-  push(@values, sprintf('$nhdb$%s$nhdb$',$death));
+  push(@values, '$nhdb$' . $death . '$nhdb$');
 
   #--- ascended flag
   $l->{'ascended'} = sprintf("%d", ($death =~ /^ascended\b/));
@@ -344,42 +356,44 @@ sub sql_insert_games
   for my $k (@{$NHdb::nhdb_def->{'feeder'}{'regular_fields'}}) {
     if(exists $l->{$k}) {
       push(@fields, $k);
-      push(@values, sprintf(q{'%s'}, $l->{$k}));
+      push(@values, $l->{$k});
     }
   }
 
   #--- name (before translation)
   push(@fields, 'name_orig');
-  push(@values, sprintf(q{'%s'}, $l->{'name'}));
+  push(@values, $l->{'name'});
   
   #--- name
   push(@fields, 'name');
   if(exists($translations{$server}{$l->{'name'}})) {
     $l->{'name'} = $translations{$server}{$l->{'name'}};
   }
-  push(@values, sprintf(q{'%s'}, $l->{'name'}));
+  push(@values, $l->{'name'});
 
   #--- logfiles_i
   push(@fields, 'logfiles_i');
-  push(@values, sprintf(q{'%s'},$logfiles_i));
+  push(@values, $logfiles_i);
   
   #--- conduct
   push(@fields, 'conduct');
-  push(@values, sprintf('%d', eval($l->{'conduct'})));
+  push(@values, eval($l->{'conduct'}));
 
   #--- achieve
-  push(@fields, 'achieve');
-  push(@values, sprintf('%d', eval($l->{'achieve'})));
+  if(exists $l->{'achieve'}) {
+    push(@fields, 'achieve');
+    push(@values, eval($l->{'achieve'}));
+  }
   
   #--- start time
   push(@fields, 'starttime');
-  push(@values, sprintf(q{timestamp with time zone 'epoch' + %d * interval '1 second'}, $l->{'starttime'}));
+  push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $l->{'starttime'} ]) ;
   push(@fields, 'starttime_raw');
   push(@values, $l->{'starttime'});
 
   #--- end time
   push(@fields, 'endtime');
-  push(@values, sprintf(q{timestamp with time zone 'epoch' + %d * interval '1 second'}, $l->{'endtime'}));
+  push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $l->{'endtime'} ]);
   push(@fields, 'endtime_raw');
   push(@values, $l->{'endtime'});
 
@@ -399,10 +413,14 @@ sub sql_insert_games
   push(@values, $flag_scummed);
 
   #--- finish
-  return sprintf(
-    'INSERT INTO games ( %s ) VALUES ( %s ) RETURNING rowid', 
-    join(', ', @fields), 
-    join(', ', @values)
+
+  return (
+    sprintf(
+      'INSERT INTO games ( %s ) VALUES ( %s ) RETURNING rowid',
+      join(', ', @fields),
+      join(',', map { ref() ? $_->[0] : '?' } @values)
+    ),
+    [ map { ref() ? $_->[1] : $_ } @values ]
   );
 }
 
@@ -778,8 +796,8 @@ for my $log (@logfiles) {
 
     #--- insert row into database
 
-      my $rowid;
-      $qry = sql_insert_games(
+      my ($rowid, $values);
+      ($qry, $values) = sql_insert_games(
         $logfiles_i,
         $log->{'server'},
         $log->{'variant'},
@@ -787,10 +805,10 @@ for my $log (@logfiles) {
       );
       if($qry) {
         my $sth = $dbh->prepare($qry);
-        $r = $sth->execute();
+        $r = $sth->execute(@$values);
         if(!$r) {
           $logger->error($lbl, 'Failure during inserting new records');
-          $logger->error($lbl, $qry);
+          $logger->error($lbl, sql_show_query($qry, $values));
           die;
         }
         ($rowid) = $sth->fetchrow_array();
