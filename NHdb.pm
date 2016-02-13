@@ -23,6 +23,7 @@ our @EXPORT = qw(
   format_duration
   url_substitute
   logfile_require_fields
+  sql_show_query
 );
 
 
@@ -243,5 +244,25 @@ sub logfile_require_fields
   return 1;
 }
 
-1;
 
+#===============================================================================
+# Receives SQL query with ? placeholders and an array values and replaces
+# the placeholders with the values and returns the result. This is used to
+# pretty display the queries for debug purposes.
+#===============================================================================
+
+sub sql_show_query
+{
+  my ($qry, $vals) = @_;
+
+  for(my $i = 0; $i < scalar(@$vals); $i++) {
+    my $val = $vals->[$i];
+    $val = "'$val'" if $val !~ /^\d+$/;
+    $qry =~ s/\?/$val/;
+  }
+
+  return $qry;
+}
+
+
+1;
