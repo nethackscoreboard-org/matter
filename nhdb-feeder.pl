@@ -327,7 +327,7 @@ sub sql_insert_games
   my $death = $l->{'death'};
   $death =~ tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;
   push(@fields, 'death');
-  push(@values, '$nhdb$' . $death . '$nhdb$');
+  push(@values, $death);
 
   #--- ascended flag
   $l->{'ascended'} = sprintf("%d", ($death =~ /^ascended\b/));
