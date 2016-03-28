@@ -165,7 +165,7 @@ sub nh_char
 # defined in role.c, such as $arc, %hum, #law, !fem. 
 #===========================================================================
 
-sub nh_combo_valid
+sub nh_combo_valid_by_rules
 {
   #--- arguments (in lowercase)
 
@@ -230,6 +230,59 @@ sub nh_combo_valid
 
   return 1;
 
+}
+
+
+
+#===========================================================================
+# This is alternative to nh_combo_valid_by_rules() that decides combo's
+# validity by searching list of all possible combos. Unlike the rules
+# based validation, this doesn't fallback to 'nh' as default variant.
+#===========================================================================
+
+sub nh_combo_valid_by_enum
+{
+  #--- arguments (in lowercase)
+
+  my (
+    $variant,
+    $role,
+    $race,
+    $gender,
+    $alignment
+  ) = map { lc } @_;
+
+  #--- return false if no list def exists for given variant
+
+  if(!exists($nh_def->{'nh_combo_list_def'}{$variant})) {
+    return 0;
+  }
+
+  #--- search the list
+
+  if(
+    grep {
+      lc($_->[0]) eq $role
+      && lc($_->[1]) eq $race
+      && lc($_->[2]) eq $gender
+      && lc($_->[3]) eq $alignment
+    } @{$nh_def->{'nh_combo_list_def'}{$variant}}
+  ) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+
+
+#===========================================================================
+# Combine the two combo validation functions into one.
+#===========================================================================
+
+sub nh_combo_valid
+{
+  return nh_combo_valid_by_enum(@_) || nh_combo_valid_by_rules(@_);
 }
 
 
@@ -373,6 +426,7 @@ sub nh_dnethack_map
 
   return ($role, $race);
 }
+
 
 
 1;
