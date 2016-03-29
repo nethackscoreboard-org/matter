@@ -50,7 +50,7 @@ NAO).
 
 ## Command-line parameters
 
-All the options that suplly variants, servers or player names can be either used multiple times on the command-line, or they can have aggregate multiple strings by joining them with commas. Example:
+All the options that suply variants, servers or player names can be either used multiple times on the command-line, or they can have aggregate multiple strings by joining them with commas. Example:
 
      nhdb-feeder --variant=all --variant=nh --variant=nh4
      nhdb-feeder --variant=all,nh,nh4
@@ -79,7 +79,7 @@ Disable generation of aggregate pages (such as list of recent ascensions, streak
 Force processing of all variants and players, even if they do not need updating. Note, that regenerating all players' pages takes very long time. If you just want force regenerating aggregate pages, use the --noplayers option along with --force.
 
 **--variant**=*variant*  
-Limit processin only to specified variant. This can be used multiple times. Variant can also be "all".
+Limit processing only to specified variant. This can be used multiple times. Variant can also be "all".
 
 **--noplayers**  
 Disable generating player pages.
