@@ -24,6 +24,7 @@ our @EXPORT = qw(
   url_substitute
   logfile_require_fields
   sql_show_query
+  cmd_option_array_expand
 );
 
 
@@ -262,6 +263,23 @@ sub sql_show_query
   }
 
   return $qry;
+}
+
+
+#===============================================================================
+# Function to help parse multiple-value command-line arguments. The arrayref
+# passed in contains strings, that can have form "aaa,bbb,ccc". These strings
+# are expanded to a list ("aaa","bbb","ccc") that replaces the source array
+# element.
+#===============================================================================
+
+sub cmd_option_array_expand
+{
+  my $ary = shift;
+
+  for(my $i = 0; $i < scalar(@$ary); $i++) {
+    splice(@$ary, $i, 1, grep { $_ } split(/,/, $ary->[$i]));
+  }
 }
 
 

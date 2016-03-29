@@ -536,6 +536,9 @@ if(!GetOptions(
   exit(1);
 }
 
+cmd_option_array_expand(\@cmd_variant);
+cmd_option_array_expand(\@cmd_server);
+
 #--- lock file check/open
 
 if(!$cmd_logfiles) {

@@ -50,6 +50,11 @@ NAO).
 
 ## Command-line parameters
 
+All the options that suplly variants, servers or player names can be either used multiple times on the command-line, or they can have aggregate multiple strings by joining them with commas. Example:
+
+     nhdb-feeder --variant=all --variant=nh --variant=nh4
+     nhdb-feeder --variant=all,nh,nh4
+
 ### nhdb-feeder.pl
 
 **--logfiles**  

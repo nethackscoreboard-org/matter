@@ -2730,6 +2730,9 @@ if(!GetOptions(
   exit(1);
 }
 
+cmd_option_array_expand(\@cmd_variant);
+cmd_option_array_expand(\@cmd_player);
+
 $logger_cmd->debug('cmd_variant = (', join(',', @cmd_variant), ')');
 $logger_cmd->debug('cmd_force = ', $cmd_force ? 'on' : 'off');
 $logger_cmd->debug('cmd_players = ', $cmd_players ? 'on' : 'off');
