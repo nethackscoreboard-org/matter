@@ -496,6 +496,7 @@ sub help
   print "  --logfiles     display configured logfiles, then exit\n";
   print "  --variant=VAR  limit processing to specified variant(s)\n";
   print "  --server=SRV   limit processing to specified server(s)\n";
+  print "  --logid=ID     limit processing to specified logid\n";
   print "\n";
 }
 
@@ -526,11 +527,13 @@ $logger->info('---');
 my $cmd_logfiles;
 my @cmd_variant;
 my @cmd_server;
+my $cmd_logid;
 
 if(!GetOptions(
   'logfiles'  => \$cmd_logfiles,
   'variant=s' => \@cmd_variant,
-  'server=s'  => \@cmd_server
+  'server=s'  => \@cmd_server,
+  'logid=s'   => \$cmd_logid,
 )) {
   help();
   exit(1);
@@ -686,6 +689,9 @@ for my $log (@logfiles) {
   next if
     scalar(@cmd_server) &&
     !grep { $log->{'server'} eq lc($_) } @cmd_server;
+  next if
+    $cmd_logid &&
+    $log->{'logfiles_i'} != $cmd_logid;
   
   eval { # <--- eval starts here -------------------------------------------
   
