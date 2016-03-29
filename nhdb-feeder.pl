@@ -591,12 +591,13 @@ $logger->info(
 if($cmd_logfiles) {
   $logger->info('Displaying configured logfiles (--logfiles option)');
   $logger->info('');
-  $logger->info('srv var descr');
-  $logger->info('--- --- ' . '-' x 48);
+  $logger->info('rowid srv var descr');
+  $logger->info('----- --- --- ' . '-' x 42);
   for my $log (@logfiles) {
     $logger->info(
       sprintf(
-        "%-3s %-3s %s\n",
+        "%5d %-3s %-3s %s\n",
+        $log->{'logfiles_i'},
         $log->{'server'},
         $log->{'variant'},
         substr($log->{'descr'}, 0, 48)
