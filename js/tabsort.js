@@ -1,4 +1,7 @@
 $(document).ready(function () {
+
+  var headers = {};
+
   $.tablesorter.addParser({
     id : 'custkey',
     is: function(s, table, cell) {
@@ -10,15 +13,23 @@ $(document).ready(function () {
     parsed : false,
     type : 'numeric'
   });
-  $('TABLE#ascended').addClass('tablesorter').tablesorter(
-  {
-    headers : {
-      1 : { sorter : false },
-      2 : { sorter : false },
-      4 : { sorter : 'custkey' },
-      6 : { sorter : 'custkey' },
-      7 : { sorter : 'custkey' },
-      8 : { sorter : 'custkey' }
+
+  // create "headers" object for tabsorter from TH elements
+  // elements that are to be sorted have custom attribute
+  // "data-sorter" equal to "true" or "custkey"
+
+  $('table#ascended thead tr th').each(function(i) {
+    var sorter = $(this).data('sorter');
+    if(sorter == 'custkey') {
+      headers[i] = { sorter: 'custkey' };
+    } else if(sorter == true) {
+      return;
+    } else {
+      headers[i] = { sorter: false };
     }
   });
+
+  $('TABLE#ascended').addClass('tablesorter').tablesorter(
+    { headers : headers }
+  );
 });
