@@ -70,7 +70,7 @@ multiple logs associated with it), use --variant to further limit processing to 
 **--variant**=*variant*  
 Limit processing only to variant specified by its short-code (such as "nh", "unh" etc.)
 
-**--logid=ID
+**--logid=ID**
 Limit processing only to logfiles specified by their log ids. Log id is NHS's internal identification of a configured logfile. The `--logfiles` option will display these id's.
 
 ### nhdb-stats.pl
