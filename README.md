@@ -44,8 +44,6 @@ pseudovariant
 For a given player, all games can be browsed in a paginated display (like on
 NAO).
 
-* **--reload option for the feeder** // Reload the database according to --variant and --server.
-
 -----
 
 ## Command-line parameters
@@ -70,11 +68,11 @@ multiple logs associated with it), use --variant to further limit processing to 
 **--variant**=*variant*  
 Limit processing only to variant specified by its short-code (such as "nh", "unh" etc.)
 
-**--logid**=*id*
+**--logid**=*id*  
 Limit processing only to logfiles specified by their log ids. Log id is NHS's internal identification of a configured logfile. The `--logfiles` option will display these id's.
 
-**--purge**
-Erase all database entries that match above specifications. If used alone without any specification, all the entries are deleted.
+**--purge**  
+Erase all database entries that match `--logid`, `--server` and `--variant` options. If used alone without any specification, all the entries are deleted.
 
 ### nhdb-stats.pl
 
