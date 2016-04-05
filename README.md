@@ -59,11 +59,15 @@ All the options that suply variants, servers or player names can be either used 
 This will list all configured data sources and exit without doing anything else.
 
 **--server**=*server*  
-Only sources on specified server will be processed. "srv" is three letter server acronym such as "nao", "nxc" etc. Using this option will override the source server being defined as unoperational in the
-database (table 'logfiles'), but it will not override the server being defined as static. This
-behaviour enables reloading inoperational servers without needing to go to the database to temporarily
-switch their 'oper' field. Please note, that one server can host multiple variants (and therefore have
-multiple logs associated with it), use --variant to further limit processing to single source.
+
+Only sources on specified server will be processed. "srv" is three letter
+server acronym such as "nao", "nxc" etc. Using this option will override the
+source server being defined as unoperational in the database (table
+'logfiles'), but it will not override the server being defined as static. This
+behaviour enables reloading inoperational servers without needing to go to the
+database to temporarily switch their 'oper' field. Please note, that one
+server can host multiple variants (and therefore have multiple logs associated
+with it), use `--variant` to further limit processing to single source.
 
 **--variant**=*variant*  
 Limit processing only to variant specified by its short-code (such as "nh", "unh" etc.)
@@ -80,7 +84,7 @@ Erase all database entries that match `--logid`, `--server` and `--variant` opti
 Disable generation of aggregate pages (such as list of recent ascensions, streak list and so on).
 
 **--force**  
-Force processing of all variants and players, even if they do not need updating. Note, that regenerating all players' pages takes very long time. If you just want force regenerating aggregate pages, use the --noplayers option along with --force.
+Force processing of all variants and players, even if they do not need updating. Note, that regenerating all players' pages takes very long time. If you just want force regenerating aggregate pages only, use the `--noplayers` option along with `--force`.
 
 **--variant**=*variant*  
 Limit processing only to specified variant. This can be used multiple times. Variant can also be "all".
@@ -130,7 +134,7 @@ Define path, relative to "http_root" above, where devnull stats will be stored; 
       "require_fields" : [ "conduct", "starttime", "endtime" ]
     },
 
-Fields list in "require_fields" must be present in a xlogfile line; if one or more of them are missing, the line will be rejected from processing.
+Fields list in `require_fields` must be present in a xlogfile line; if one or more of them are missing, the line will be rejected from processing.
 
     "feeder" : {
       "regular_fields" : [
@@ -146,7 +150,7 @@ List of fields inserted into database without any particular processing. Do not 
       "reject_name" : [ "wizard", "paxedtest" ]
     }
 
-Player names listed in "reject_name" will be excluded from processing.
+Player names listed in `reject_name` will be excluded from processing.
 
     "logs" : {
       "localpath" : "logs",
@@ -160,7 +164,7 @@ Player names listed in "reject_name" will be excluded from processing.
 
 This configuration file defines facts about NetHack (role/race/alignment/gender names, allowed combinations etc.)
 
-    "nh_roles_def" : {
+    `nh_roles_def` : {
       "arc" : "archeologist",
       "bar" : "barbarian",
       "brd" : "brd",
@@ -182,7 +186,7 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
       "wiz" : "wizard"
     }
 
-"nh\_roles\_def" assigns role's full name to three-letter shortcode. All roles that can appear in any of the processed variants must be listed here.
+`nh\_roles\_def` assigns role's full name to three-letter shortcode. All roles that can appear in any of the processed variants must be listed here.
 
     "nh_races_def" : {
       "clk" : "clockwork automaton",
@@ -197,7 +201,7 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
       "vam" : "vampire"
     }
 
-"nh\_races\_def" assigns races' full name to three-letter shortcode. All races that can appear in any of the processed variants must be listed here.
+`nh\_races\_def` assigns races' full name to three-letter shortcode. All races that can appear in any of the processed variants must be listed here.
 
     "nh_aligns_def" : {
       "law" : "lawful",
@@ -206,7 +210,7 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
       "non" : "non-aligned"
     }
 
-"nh\_aligns\_def" assigns alignment's full name to three-letter shortcode. All alignments that can appear in any of the processed variants must be listed here.
+`nh\_aligns\_def` assigns alignment's full name to three-letter shortcode. All alignments that can appear in any of the processed variants must be listed here.
 
     "nh_genders_def" : {
       "mal" : "male",
@@ -214,7 +218,7 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
       "ntr" : "neuter"
     }
 
-"nh\_genders\_def" assigns genders' full name to three-letter shortcode. All genders that can appear in any of the processed variants must be listed here.
+`nh\_genders\_def` assigns genders' full name to three-letter shortcode. All genders that can appear in any of the processed variants must be listed here.
 
     "nh_conduct_bitmap_def" : {
       "1"    : "food",
@@ -231,14 +235,14 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
       "2048" : "geno"
     }
 
-"nh\_conduct\_bitmap_def" defines semantics of the conduct xlogfile field. This is the default semantics, it's possible for a variant to have different one defined later in the config file.
+`nh\_conduct\_bitmap_def` defines semantics of the conduct xlogfile field. This is the default semantics, it's possible for a variant to have different one defined later in the config file.
 
     "nh_conduct_ord" : [
       "arti", "pile", "self", "pudd", "algn", "geno", "wish", "athe",
       "vegt", "vegn", "weap", "elbe", "illi", "paci", "food"
     ]
 
-"nh\_conduct\_ord" defines ordering of conducts used for display; it's roughly easiest to hardest order.
+`nh\_conduct\_ord` defines ordering of conducts used for display; it's roughly easiest to hardest order.
 
     "nh_variants_def" : {
       "nh"  : "NetHack",
@@ -251,13 +255,13 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
       "nhf" : "Fourk"
     }
 
-"nh\_variants\_def" defines NetHack variants names and shortcodes.
+`nh\_variants\_def` defines NetHack variants names and shortcodes.
 
     "nh_variants_ord" : [
       "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf"
     ]
 
-"nh\_variants\_ord" defines ordering of variants for display purposes
+`nh\_variants\_ord` defines ordering of variants for display purposes
 
     "nh\_variants" : {
       "nh" : {
@@ -270,7 +274,7 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
       }
     }
 
-"nh\_variants" defines roles/races/aligns that given variant has. Genders are oddly missing since we are not using them for anything so far. Optionally, there can also be variant's own list of conducts.
+`nh\_variants` defines roles/races/aligns that given variant has. Genders are oddly missing since we are not using them for anything so far. Optionally, there can also be variant's own list of conducts.
 
     "nh_combo_rules_def" : {
 
@@ -296,7 +300,7 @@ This configuration file defines facts about NetHack (role/race/alignment/gender 
       ]
     }
 
-"nh\_combo\_rules\_def" is used to determine if given combination of role/race/gender/alignment is valid. It's defined for each variant; if definition for a variant is ommited, "nh" is used as default (to avoid duplicate definitions for variants who keep the same rules as vanilla, such as NetHack4). Definition for "nh" (vanilla NetHack) is given as an example above. The definition is a list of rules. Each rule is in turn a list of rule matches. The first match in a rule is special: if it matches, then the rest of the matches must be satisfied, if it is not, the matching will immediately fail and no more rules are matched. The first special match can be single match (as in example above), or it can be list of matches, if triggering by more than one condition is required.
+`nh\_combo\_rules\_def` is used to determine if given combination of role/race/gender/alignment is valid. It's defined for each variant; if definition for a variant is ommited, "nh" is used as default (to avoid duplicate definitions for variants who keep the same rules as vanilla, such as NetHack4). Definition for "nh" (vanilla NetHack) is given as an example above. The definition is a list of rules. Each rule is in turn a list of rule matches. The first match in a rule is special: if it matches, then the rest of the matches must be satisfied, if it is not, the matching will immediately fail and no more rules are matched. The first special match can be single match (as in example above), or it can be list of matches, if triggering by more than one condition is required.
 
 The matches themselves consist of standard three-letter short codes for role/race/gender/alignment with a special character prepended. The prepended character determines whether role ($), race (%), alignment (#) or gender (!) is matched. So "$arc" matches archeologist, "!fem" matches female etc.
 
@@ -310,3 +314,16 @@ This rule will only apply to archeologists, since the first rule (trigger) is "$
     [ [ "%dro", "!fem" ], "#cha" ]
 
 Above example shows the use of multiple trigger matches; it enforces Drows to be either neutral males or chaotic females (as is the rule in dNetHack).
+
+    "nh_combo_list_def" : {
+      "dnh" : [
+        [ "Ana", "Hum", "Fem", "Law" ],
+        [ "Ana", "Hum", "Fem", "Neu" ],
+        [ "Ana", "Hum", "Fem", "Cha" ],
+        [ "Ana", "Hum", "Mal", "Law" ],
+        [ "Ana", "Hum", "Mal", "Neu" ],
+        ...
+      ]
+    }
+
+`nh\_combo\_list\_def` is an alternative way to define allowed character combinations. Compared with rules-based `nh\_combo\_rules\_def` it defines the combos by exhaustive enumeration -- in other words, every allowed combo must be in the list. If a variant is defined by means of both methods, the outcomes are ORed together.
