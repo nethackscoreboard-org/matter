@@ -486,6 +486,173 @@ sub sql_update_info
 
 
 #============================================================================
+# This function performs database purge for given servers/variants (or all
+# of them if none are specified).
+#============================================================================
+
+sub sql_purge_database
+{
+  #--- arguments
+
+  my ($variants, $servers, $logid) = @_;
+
+  #--- init logging
+
+  my $logger = get_logger('Feeder::Purge_db');
+  $logger->info('Requested database purge');
+  if(@$variants) {
+    $logger->info('Variants: ' . join(',', @$variants));
+  }
+
+  if(@$servers) {
+    $logger->info('Servers: ' . join(',', @$servers));
+  }
+
+  #--- get list of logfiles we will be operating on
+
+  my $qry = 'SELECT * FROM logfiles';
+  my (@cond, @cond_var, @cond_srv, @arg, @logfiles);
+
+  if(@$variants) {
+    push(@cond_var, ('variant = ?') x scalar(@$variants));
+    push(@arg, @$variants);
+  }
+
+  if(@$servers) {
+    push(@cond_srv, ('server = ?') x scalar(@$servers));
+    push(@arg, @$servers);
+  }
+
+  if(@cond_var) {
+    push(@cond, '(' . join(' OR ', @cond_var) . ')');
+  }
+  if(@cond_srv) {
+    push(@cond, '(' . join(' OR ', @cond_srv) . ')');
+  }
+
+  if($logid) {
+    push(@cond, 'logfiles_i = ?');
+    push(@arg, $logid);
+  }
+
+  my $where = join(' AND ', @cond);
+  if(@cond) {
+    $qry .= ' WHERE ' . $where;
+  }
+
+  my $sth = $dbh->prepare($qry);
+  my $r = $sth->execute(@arg);
+
+  if(!$r) {
+    $logger->fatal(
+      sprintf('Failed to get list of logfiles (%s)', $sth->errstr())
+    );
+  }
+  while(my $s = $sth->fetchrow_hashref()) {
+    push(@logfiles, $s);
+  }
+  if(scalar(@logfiles) == 0) {
+    $logger->fatal("No matching logfiles");
+    return;
+  } else {
+    $logger->info(sprintf('%d logfiles to be pruged', scalar(@logfiles)));
+  }
+
+  #--- iterate over logfiles
+
+  for my $log (@logfiles) {
+    my ($srv, $var) = ($log->{'server'}, $log->{'variant'});
+    my $logfiles_i = $log->{'logfiles_i'};
+    $logger->info("[$srv/$var] ", $log->{'descr'});
+
+  #--- eval begin
+
+    eval {
+
+  #--- start transaction
+
+      $r = $dbh->begin_work();
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            "[%s/%s] Transaction begin failed (%s), aborting batch",
+            $srv, $var, $dbh->errstr()
+          )
+        );
+        die "TRFAIL\n";
+      }
+
+  #--- delete the games
+
+      $logger->info("[$srv/$var] Deleting from games");
+      $r = $dbh->do('DELETE FROM games WHERE logfiles_i = ?', undef, $logfiles_i);
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            '[%s/%s] Deleting from games failed (%s)',
+            $srv, $var, $dbh->errstr()
+          )
+        );
+        die "ABORT\n";
+      } else {
+        $logger->info(
+          sprintf('[%s/%s] Deleted %d entries', $srv, $var, $r)
+        );
+      }
+
+  #--- reset 'fpos' field in 'logfiles' table
+
+      $r = $dbh->do(
+        'UPDATE logfiles SET fpos = NULL WHERE logfiles_i = ?', undef, $logfiles_i
+      );
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            '[%s/%s] Failed to reset the fpos field',
+            $srv, $var
+          )
+        );
+        die "ABORT\n";
+      }
+
+  #--- eval end
+
+    };
+    chomp $@;
+    if(!$@) {
+      $r = $dbh->commit();
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            "[%s/%s] Failed to commit transaction (%s)",
+            $srv, $var, $dbh->errstr()
+          )
+        );
+      } else {
+        $logger->info("[$srv/$var] Transaction commited");
+      }
+    } elsif($@ eq 'ABORT') {
+      $r = $dbh->rollback();
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            "[%s/%s] Failed to abort transaction (%s)",
+            $srv, $var, $dbh->errstr()
+          )
+        );
+      } else {
+        $logger->info("[$srv/$var] Transaction aborted");
+      }
+    }
+
+  #--- end of iteration over logfiles
+
+  }
+
+}
+
+
+#============================================================================
 # Display usage help.
 #============================================================================
 
@@ -497,6 +664,7 @@ sub help
   print "  --variant=VAR  limit processing to specified variant(s)\n";
   print "  --server=SRV   limit processing to specified server(s)\n";
   print "  --logid=ID     limit processing to specified logid\n";
+  print "  --purge        delete database content\n";
   print "\n";
 }
 
@@ -527,6 +695,7 @@ $logger->info('---');
 my $cmd_logfiles;
 my @cmd_variant;
 my @cmd_server;
+my $cmd_purge;
 my $cmd_logid;
 
 if(!GetOptions(
@@ -534,6 +703,7 @@ if(!GetOptions(
   'variant=s' => \@cmd_variant,
   'server=s'  => \@cmd_server,
   'logid=s'   => \$cmd_logid,
+  'purge'    => \$cmd_purge
 )) {
   help();
   exit(1);
@@ -544,7 +714,7 @@ cmd_option_array_expand(\@cmd_server);
 
 #--- lock file check/open
 
-if(!$cmd_logfiles) {
+if(!$cmd_logfiles && !$cmd_purge) {
   if(-f $lockfile) {
     $logger->warn('Another instance running, exiting');
     exit(1);
@@ -607,6 +777,13 @@ if($cmd_logfiles) {
       )
     );
   }
+  exit(0);
+}
+
+#--- database purge
+
+if($cmd_purge) {
+  sql_purge_database(\@cmd_variant, \@cmd_server, $cmd_logid);
   exit(0);
 }
 

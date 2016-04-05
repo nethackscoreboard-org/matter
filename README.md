@@ -73,6 +73,9 @@ Limit processing only to variant specified by its short-code (such as "nh", "unh
 **--logid**=*id*
 Limit processing only to logfiles specified by their log ids. Log id is NHS's internal identification of a configured logfile. The `--logfiles` option will display these id's.
 
+**--purge**
+Erase all database entries that match above specifications. If used alone without any specification, all the entries are deleted.
+
 ### nhdb-stats.pl
 
 **--noaggr**  
