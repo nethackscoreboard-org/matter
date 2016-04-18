@@ -36,10 +36,10 @@ our $nh_def;
 BEGIN
 {
   local $/;
-  my $fh;
-  open($fh, '<', 'cfg/nethack_def.json');
+  my $js = new JSON->relaxed(1);
+  open(my $fh, '<', 'cfg/nethack_def.json');
   my $def_json = <$fh>;
-  $nh_def = decode_json($def_json);
+  $nh_def = $js->decode($def_json);
 }
 
 

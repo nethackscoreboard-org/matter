@@ -41,14 +41,14 @@ my %dbconn;        # database connection paramters and handle(s)
 BEGIN
 {
   local $/;
-  my $fh;
+  my $js = new JSON->relaxed(1);
 
   #--- read the main config file
 
-  open($fh, '<', 'cfg/nhdb_def.json') or die;
+  open(my $fh, '<', 'cfg/nhdb_def.json') or die;
   my $def_json = <$fh>;
   close($fh);
-  $nhdb_def = decode_json($def_json);
+  $nhdb_def = $js->decode($def_json);
 
   #--- read the file with db passwords (if defined)
 
@@ -56,7 +56,7 @@ BEGIN
     open($fh, '<', 'cfg/' . $nhdb_def->{'auth'}) or die;
     $def_json = <$fh>;
     close($fh);
-    $nhdb_def->{'auth'} = decode_json($def_json);
+    $nhdb_def->{'auth'} = $js->decode($def_json);
   }
 }
 

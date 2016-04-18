@@ -1,4 +1,14 @@
+#==============================================================================
+# nethack_def.json
+# """"""""""""""""
+# This file configures the NetHack.pm module. Its purpose is to describe all
+# required facts about NetHack and its variants supported by the NetHack Score-
+# board.
+#==============================================================================
+
 {
+  #--- define all roles
+
   "nh_roles_def" : {
     "ana" : "anachronaut",
     "arc" : "archeologist",
@@ -22,6 +32,8 @@
     "wiz" : "wizard"
    },
 
+  #--- define all races
+
   "nh_races_def" : {
     "clk" : "clockwork automaton",
     "hum" : "human",
@@ -39,6 +51,8 @@
     "vam" : "vampire"
   },
 
+  #--- define all alignments
+
   "nh_aligns_def" : {
     "law" : "lawful",
     "neu" : "neutral",
@@ -46,11 +60,18 @@
     "non" : "non-aligned"
   },
 
+  #--- define all genders
+
   "nh_genders_def" : {
     "mal" : "male",
     "fem" : "female",
     "ntr" : "neuter"
   },
+
+  #--- this defines available player character combinations by exhaustive
+  #--- enumeration of all possibilities; note, that this is one of the two
+  #--- ways to define the information, the other being rules-based
+  #--- "nh_combo_rules_def"
 
   "nh_combo_list_def" : {
     "dnh" : [
@@ -380,6 +401,26 @@
     ]
   },
 
+  #--- this defines available player character combinations by using
+  #--- rulesets; note, that this is one of the two ways to define the
+  #--- information, the other being "nh_combo_list_def"
+  #---
+  #--- the general format of each rule-line is following:
+  #---    [ trigger, require1, require2, ..., requireN ]
+  #---
+  #--- "trigger" can be a single value or multiple values as an array
+  #---
+  #--- both triggers and requires are three-letter string prepended with
+  #--- special character: $ role, % race, # alignment and ! gender
+  #---
+  #--- once the trigger(s) match(es), the requirements must be satisfied;
+  #--- if the requirements are not satisfied, the combo is rejected and
+  #--- no further matching is attempted; if the requirements are met, 
+  #--- matching continues with next rule;
+  #---
+  #--- the requirements match so that for given race/gender/alignment the
+  #--- results are ORed, but between them, the matches are ANDed.
+
   "nh_combo_rules_def" : {
 
      "nh" : [
@@ -492,6 +533,9 @@
      ]
   },
 
+  #--- this defines default semantics for 'conduct' xlogfiles field; this can
+  #--- be overriden by variant-specific conduct lists
+
   "nh_conduct_bitmap_def" : {
     "1"    : "food",
     "2"    : "vegn",
@@ -507,12 +551,16 @@
     "2048" : "geno"
   },
 
+  #--- ordered list of all conducts
+
   "nh_conduct_ord" : [
     "bone", "arti", "pile", "self", "pudd", "algn", "soko", "geno",
     "wish", "unih", "athe", "vegt", "vegn", "weap", "elbe", "illi",
     "paci", "food", "acce", "cont", "tool", "magi", "armo", "raci",
     "thie", "zen", "nude"
   ],
+
+  #--- definition of all variants
 
   "nh_variants_def" : {
     "nh"  : "NetHack",
@@ -527,11 +575,14 @@
     "fh"  : "FiqHack"
   },
 
+  #--- ordered list of variants
+
   "nh_variants_ord" : [
     "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh"
   ],
 
-  
+  #--- define roles/races/alingments/genders and conducts for a variant
+
   "nh_variants" : {
 
     "all" : {
