@@ -125,9 +125,9 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
   5, 'acehack.de',
   'ade', 'ace', NULL,
-  'https://nethack.dank.ninja/history/ade/xlogfiles/acehack',
+  'https://ascension.run/history/ade/xlogfiles/acehack',
   'ade.ace.log', 
-  'https://nethack.dank.ninja/history/ade/userdata/%u/acehack/dumplog/%s',
+  'https://ascension.run/history/ade/userdata/%u/acehack/dumplog/%s',
   NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
@@ -231,7 +231,7 @@ INSERT INTO logfiles VALUES (
   'http://dnethack.ilbelkyr.de/xlogfile.txt',
   'did.dnh.log',
   NULL,
-  'https://nethack.dank.ninja/history/ilbelkyr/userdata/%u/dnethack/dumplog/%s',
+  'https://ascension.run/history/ilbelkyr/userdata/%u/dnethack/dumplog/%s',
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
@@ -243,112 +243,112 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
  11, 'acehack.eu',
  'aeu', 'ace', NULL,
- 'https://nethack.dank.ninja/history/aeu/xlogfiles/acehack',
+ 'https://ascension.run/history/aeu/xlogfiles/acehack',
  'aeu.ace.log',
- 'https://nethack.dank.ninja/history/aeu/userdata/%u/acehack/dumplog/%s',
+ 'https://ascension.run/history/aeu/userdata/%u/acehack/dumplog/%s',
  NULL,
  TRUE, TRUE, FALSE,
  'UTC', NULL, NULL
 );
 
 -----------------------------------------------------------------------------
---- nethack.dank.ninja ------------------------------------------------------
+--- ascension.run -----------------------------------------------------------
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles VALUES (
-  2, 'nethack.dank.ninja (NetHack)',
-  'ndn', 'nh', '3.4.3',
-  'https://nethack.dank.ninja/xlogfiles/nethack',
-  'ndn.nh.log',
-  'https://nethack.dank.ninja/userdata/%u/nethack/dumplog/%s',
+  2, 'ascension.run (NetHack)',
+  'asc', 'nh', '3.4.3',
+  'https://ascension.run/xlogfiles/nethack',
+  'asc.nh.log',
+  'https://ascension.run/userdata/%u/nethack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  12, 'nethack.dank.ninja (dNetHack)',
-  'ndn', 'dnh', NULL,
-  'https://nethack.dank.ninja/xlogfiles/dnethack',
-  'ndn.dnh.log',
-  'https://nethack.dank.ninja/userdata/%u/dnethack/dumplog/%s',
+  12, 'ascension.run (dNetHack)',
+  'asc', 'dnh', NULL,
+  'https://ascension.run/xlogfiles/dnethack',
+  'asc.dnh.log',
+  'https://ascension.run/userdata/%u/dnethack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  13, 'nethack.dank.ninja (Fourk)',
-  'ndn', 'nhf', NULL,
-  'https://nethack.dank.ninja/xlogfiles/nhfourk',
-  'ndn.nhf.log',
-  'https://nethack.dank.ninja/userdata/%u/nhfourk/dumplog/',
+  13, 'ascension.run (Fourk)',
+  'asc', 'nhf', NULL,
+  'https://ascension.run/xlogfiles/nhfourk',
+  'asc.nhf.log',
+  'https://ascension.run/userdata/%u/nhfourk/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  14, 'nethack.dank.ninja (SporkHack 2015)',
-  'ndn', 'sh', NULL,
-  'https://nethack.dank.ninja/history/junethack2015/xlogfiles/sporkhack',
-  'ndn.sh.2015.log',
-  'https://nethack.dank.ninja/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
+  14, 'ascension.run (SporkHack 2015)',
+  'asc', 'sh', NULL,
+  'https://ascension.run/history/junethack2015/xlogfiles/sporkhack',
+  'asc.sh.2015.log',
+  'https://ascension.run/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
   NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  15, 'nethack.dank.ninja (GruntHack 2015)',
-  'ndn', 'gh', NULL,
-  'https://nethack.dank.ninja/history/junethack2015/xlogfiles/grunthack',
-  'ndn.gh.2015.log',
-  'https://nethack.dank.ninja/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
+  15, 'ascension.run (GruntHack 2015)',
+  'asc', 'gh', NULL,
+  'https://ascension.run/history/junethack2015/xlogfiles/grunthack',
+  'asc.gh.2015.log',
+  'https://ascension.run/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
   NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  16, 'nethack.dank.ninja (UnNetHack)',
-  'ndn', 'unh', NULL,
-  'https://nethack.dank.ninja/xlogfiles/unnethack',
-  'ndn.unh.log',
-  'https://nethack.dank.ninja/userdata/%u/unnethack/dumplog/%s',
+  16, 'ascension.run (UnNetHack)',
+  'asc', 'unh', NULL,
+  'https://ascension.run/xlogfiles/unnethack',
+  'asc.unh.log',
+  'https://ascension.run/userdata/%u/unnethack/dumplog/%s',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  17, 'nethack.dank.ninja (DynaHack)',
-  'ndn', 'dyn', NULL,
-  'https://nethack.dank.ninja/xlogfiles/dynahack',
-  'ndn.dyn.log',
-  'https://nethack.dank.ninja/userdata/%u/dynahack/dumplog/',
+  17, 'ascension.run (DynaHack)',
+  'asc', 'dyn', NULL,
+  'https://ascension.run/xlogfiles/dynahack',
+  'asc.dyn.log',
+  'https://ascension.run/userdata/%u/dynahack/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  18, 'nethack.dank.ninja (NetHack4)',
-  'ndn', 'nh4', '4.3',
-  'https://nethack.dank.ninja/xlogfiles/nethack4',
-  'ndn.nh4.log',
-  'https://nethack.dank.ninja/userdata/%u/nethack4/dumplog/',
+  18, 'ascension.run (NetHack4)',
+  'asc', 'nh4', '4.3',
+  'https://ascension.run/xlogfiles/nethack4',
+  'asc.nh4.log',
+  'https://ascension.run/userdata/%u/nethack4/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
 
 INSERT INTO logfiles VALUES (
-  19, 'nethack.dank.ninja (FiqHack)',
-  'ndn', 'fh', NULL,
-  'https://nethack.dank.ninja/xlogfiles/fiqhack',
-  'ndn.fh.log',
-  'https://nethack.dank.ninja/userdata/%u/fiqhack/dumplog/',
+  19, 'ascension.run (FiqHack)',
+  'asc', 'fh', NULL,
+  'https://ascension.run/xlogfiles/fiqhack',
+  'asc.fh.log',
+  'https://ascension.run/userdata/%u/fiqhack/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
