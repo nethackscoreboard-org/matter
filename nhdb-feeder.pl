@@ -555,7 +555,7 @@ sub sql_purge_database
     $logger->fatal("No matching logfiles");
     return;
   } else {
-    $logger->info(sprintf('%d logfiles to be pruged', scalar(@logfiles)));
+    $logger->info(sprintf('%d logfiles to be purged', scalar(@logfiles)));
   }
 
   #--- iterate over logfiles
