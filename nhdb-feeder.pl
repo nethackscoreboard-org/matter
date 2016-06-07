@@ -52,11 +52,19 @@ sub parse_log
   my $l = shift;
   my %l;
   my @a;
+  my $version = 0;
+
+  #--- make NetHack's version numeric
+
+  if($log->{'variant'} eq 'nh' && $log->{'version'}) {
+    $log->{'version'} =~ /^(\d+)\.(\d+)\.(\d+)$/;
+    $version = int(sprintf('%02d%02d%02d', $1, $2, $3));
+  }
 
   #--- NetHack 3.6.0 uses tabs as field separator; all other variants/versions
   #--- use colon
 
-  if($log->{'variant'} eq 'nh' && $log->{'version'} eq '3.6.0') {
+  if($log->{'variant'} eq 'nh' && $version >= 30600) {
     @a = split(/\t/, $l);
   } else {
     @a = split(/:/, $l);

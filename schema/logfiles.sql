@@ -118,6 +118,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  21, 'nethack.alt.org (3.6.1dev)',
+  'nao', 'nh', '3.6.1',
+  'https://alt.org/nethack/xlogfile.nh361dev',
+  'nao.nh.361dev.log',
+  NULL,
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- acehack.de/ADE (defunct) -------------------------------------------------
 -----------------------------------------------------------------------------
