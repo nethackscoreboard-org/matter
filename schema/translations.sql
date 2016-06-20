@@ -26,3 +26,4 @@ INSERT INTO translations VALUES ( 'dev', 'Alaithia', 'Corwinoid' );
 INSERT INTO translations VALUES ( 'dev', 'wooble', 'Wooble' );
 INSERT INTO translations VALUES ( 'n4o', 'wooble', 'Wooble' );
 INSERT INTO translations VALUES ( 'dev', 'elenmirie2', 'elenmirie' );
+INSERT INTO translations VALUES ( 'asc', 'elenmirie1', 'elenmirie' );
