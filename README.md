@@ -94,5 +94,5 @@ Disable generating player pages.
 **--player**=*player*  
 Use this to limit processing player pages to specific player or players.
 
-**--nodev**
+**--nodev**  
 Disables devnull-specific processing even if other conditions are met (ie. it's November and devnull for that year is properly configured).
