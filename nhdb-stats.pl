@@ -2696,7 +2696,7 @@ sub help
 #===                           ==============================================
 #============================================================================
 
-#--- initialize loggin
+#--- initialize logging
 
 Log::Log4perl->init('cfg/logging.conf');
 $logger = get_logger('Stats');
