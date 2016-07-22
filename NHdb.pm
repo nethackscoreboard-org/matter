@@ -25,6 +25,7 @@ our @EXPORT = qw(
   logfile_require_fields
   sql_show_query
   cmd_option_array_expand
+  cmd_option_state
 );
 
 
@@ -277,8 +278,29 @@ sub cmd_option_array_expand
 {
   my $ary = shift;
 
-  for(my $i = 0; $i < scalar(@$ary); $i++) {
-    splice(@$ary, $i, 1, grep { $_ } split(/,/, $ary->[$i]));
+  for my $ary (@_) {
+    for(my $i = 0; $i < scalar(@$ary); $i++) {
+      splice(@$ary, $i, 1, grep { $_ } split(/,/, $ary->[$i]));
+    }
+  }
+}
+
+
+#===============================================================================
+# Get argument and return 'on', 'off' or 'undefined' depending on the state of
+# the argument.
+#===============================================================================
+
+sub cmd_option_state
+{
+  my $option = shift;
+
+  if($option) {
+    return 'on';
+  } elsif(defined $option) {
+    return 'off';
+  } else {
+    return 'undefined';
   }
 }
 
