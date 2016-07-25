@@ -27,9 +27,6 @@ $| = 1;
 
 my $dbh;
 my $logfiles;
-my $devnull = 0;
-my $devnull_path;
-my $devnull_year;
 my $logger;              # log4perl primary instance
 
 
@@ -1042,15 +1039,13 @@ sub gen_page_info
     $logger->error(q{Failed to create page 'Generic Stats', }, $tt->error());
     die $tt->error();
   }
-    
+
 }
 
 
 #============================================================================
 # Generate "Recent Games" and "Ascended Games" pages. This function is used
-# for both regular and devnull pages. The arg #5 (filtering queries by
-# logfiles_i field) is currently used as indication of devnull page
-# generation; it's bit unsystematic and probably should be changed.
+# for both regular and devnull pages.
 #============================================================================
 
 sub gen_page_recent
@@ -1062,27 +1057,31 @@ sub gen_page_recent
     $variant,      # 2. variant filter
     $template,     # 3. TT template file
     $html,         # 4. target html file
-    $logfiles_i    # 5. logfile source filter (optional)
+    $devnull_year  # 5. devnull year (optional)
   ) = @_;
 
   #--- other variables
 
   my @variants = ('all');
-  my ($view, $sth, $r);
+  my ($view, $sth, $r, $logfiles_i);
   my (@arg, @cond, $query_lst, $query_cnt, $result);
   my $cnt_start = 1;
   my $cnt_incr = 1;
   my %data;
+  my $loghdr;
 
   #--- init
 
   $logger = get_logger('Stats::gen_page_recent');
+  if($devnull_year) {
+    $logfiles_i = devnull_get_logfiles_i($devnull_year);
+    $loghdr = "[nh/dev/$devnull_year]";
+  } else {
+    $loghdr = sprintf('[%s]', $variant);
+  }
+
   $logger->info(
-    sprintf(
-      'Creating page: %s Games/%s',
-      ucfirst($page),
-      $logfiles_i ? $logfiles->{$logfiles_i}{'server'} : $variant
-    )
+    sprintf("%s Creating list of %s games", $loghdr, $page)
   );
   push(@variants, nh_variants());
 
@@ -1134,11 +1133,10 @@ sub gen_page_recent
     @arg
   );
   return sprintf('Failed to query database (%s)', $result) if !ref($result);
-  $logger->info(sprintf('Loaded %d lines from the database', scalar(@$result)));
 
   #--- supply additional data
 
-  $data{'devnull'}  = $devnull if $logfiles_i;
+  $data{'devnull'}  = $devnull_year if $devnull_year;
   $data{'result'}   = $result;
   $data{'cur_time'} = scalar(localtime());
   $data{'variants'} = [ 'all', nh_variants() ];
@@ -1666,6 +1664,12 @@ sub gen_page_about
 
 sub gen_page_front
 {
+  #--- arguments
+
+  my $devlink = shift;
+
+  #--- other variables
+
   my %data;
   my @variants = nh_variants();
   my $logger = get_logger("Stats::gen_page_front");
@@ -1779,7 +1783,7 @@ sub gen_page_front
   $data{'variants'} = \@variants_ordered;
   $data{'vardef'} = nh_variants(1);
   $data{'cur_time'} = scalar(localtime());
-  $data{'devlink'} = $devnull if $devnull;
+  $data{'devlink'} = 1 if $devlink;
   if(!$tt->process('front.tt', \%data, 'index.html')) {
     $logger->error(q{Failed to create page 'Front' (3), }, $tt->error());
     die $tt->error();
@@ -1957,7 +1961,7 @@ sub gen_page_dev_player_list
   #--- arguments
 
   my (
-    $logfiles_i,    # 1. logfile id
+    $devnull_year,  # 1. devnull year
     $template,      # 2. TT template file
     $html           # 3. target html file
   ) = @_;
@@ -1967,10 +1971,11 @@ sub gen_page_dev_player_list
   my $query;
   my %data;
   my $result;
+  my $logfiles_i = devnull_get_logfiles_i($devnull_year);
 
   #--- init
 
-  $logger->info('Creating page: Player List (devnull)');
+  $logger->info("[nh/dev/$devnull_year] Generating player list");
 
   #--- database query
 
@@ -2000,7 +2005,7 @@ EOHD
   #--- process template
 
   if(!$tt->process($template, \%data, $html)) {
-    $logger->error(q{Failed to create page 'Player List (devnull)'});
+    $logger->error(qq{[nh/dev/$devnull_year] Failed to create page 'Player List (devnull)'});
     die $tt->error();
   }
 }
@@ -2015,7 +2020,7 @@ sub gen_page_dev_player
   #--- arguments
 
   my (
-    $logfiles_i,     # 1. logfile id
+    $devnull_year,   # 1. devnull year
     $template,       # 2. TT template file
   ) = @_;
 
@@ -2026,10 +2031,12 @@ sub gen_page_dev_player
   my $query_asc;
   my $query_all;
   my @plr;
+  my $logfiles_i = devnull_get_logfiles_i($devnull_year);
+  my $devnull_path = devnull_get_url_path($devnull_year);
 
   #--- init
 
-  $logger->info('Creating player pages (devnull)');
+  $logger->info("[nh/dev/$devnull_year] Generating player pages");
 
   #--- first get list of players
 
@@ -2040,7 +2047,6 @@ sub gen_page_dev_player
   while(my ($p) = $sth->fetchrow_array()) {
     push(@plr, $p)
   }
-  $logger->info(sprintf('%d players', scalar(@plr)));
 
   #--- database queries
 
@@ -2084,14 +2090,17 @@ sub gen_page_dev_player
 
   #--- supply additional data
 
-    $data{'devnull'} = $devnull;
+    $data{'devnull'} = $devnull_year;
     $data{'name'} = $p;
     $data{'cur_time'} = scalar(localtime());
 
   #--- process template
 
     if(!$tt->process($template, \%data, "$devnull_path/players/" . $p . '.html')) {
-      $logger->error('Failed to create page ', "$devnull_path/players/" . $p . '.html');
+      $logger->error(
+        "[nh/dev/$devnull_year] Failed to create page ",
+        "$devnull_path/players/$p.html"
+      );
       die $tt->error();
     }
 
@@ -2112,7 +2121,7 @@ sub gen_page_dev_roles
   #--- arguments
 
   my (
-    $logfiles_i      # 1. logfile id
+    $devnull_year
   ) = @_;
 
   #--- other variables
@@ -2120,10 +2129,12 @@ sub gen_page_dev_roles
   my $query;
   my $result;
   my %data;
+  my $logfiles_i = devnull_get_logfiles_i($devnull_year);
+  my $devnull_path = devnull_get_url_path($devnull_year);
 
   #--- init
 
-  $logger->info('Creating page: Roles (devnull)');
+  $logger->info("[nh/dev/$devnull_year] Generating roles page");
 
   #--- database query
 
@@ -2153,13 +2164,13 @@ sub gen_page_dev_roles
 
   #--- supply additional data
 
-  $data{'devnull'} = $devnull;
+  $data{'devnull'} = $devnull_year;
   $data{'cur_time'} = scalar(localtime());
 
   #--- process template
 
   if(!$tt->process('roles-dev.tt', \%data, $devnull_path . '/roles.html')) {
-    $logger->error(q{Failed to create page 'Roles (devnull)'});
+    $logger->error("[nh/dev/$devnull_year] Failed to create page 'Roles'");
     die $tt->error();
   }
 
@@ -2175,7 +2186,7 @@ sub gen_page_dev_front
   #--- arguments
 
   my (
-    $logfiles_i     # 1. logfile id
+    $devnull_year
   ) = @_;
 
   #--- other variables
@@ -2183,10 +2194,12 @@ sub gen_page_dev_front
   my %data;
   my $query;
   my $result;
+  my $logfiles_i = devnull_get_logfiles_i($devnull_year);
+  my $devnull_path = devnull_get_url_path($devnull_year);
 
   #--- init
 
-  $logger->info('Creating page: Front (devnull)');
+  $logger->info("[nh/dev/$devnull_year] Generating front page");
 
   #---------------------------------------------------------------------------
   #--- "Best Players" --------------------------------------------------------
@@ -2210,7 +2223,6 @@ EOHD
   $result = sql_load($query, 1, 1, undef, $logfiles_i);
   return $result if !ref($result);
   $data{'result_best_plr'} = $result;
-  $logger->info(sprintf('Best players: %d', scalar(@$result)));
 
   #---------------------------------------------------------------------------
   #--- "Recent Ascensions" ---------------------------------------------------
@@ -2240,7 +2252,6 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_recent_wins'} = $result;
-  $logger->info(sprintf('Recent wins: %d', scalar(@$result)));
 
   #---------------------------------------------------------------------------
   #-- "Fastest Games By Game Time" -------------------------------------------
@@ -2261,7 +2272,6 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_top5_turns'} = $result;
-  $logger->info(sprintf('Top 5 turns: %d', scalar(@$result)));
   
   #---------------------------------------------------------------------------
   #-- "Fastest Games By Real Time" -------------------------------------------
@@ -2282,7 +2292,6 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_top5_rt'} = $result;
-  $logger->info(sprintf('Top 5 real-time: %d', scalar(@$result)));
 
   #---------------------------------------------------------------------------
   #-- "Best Conduct Games" ---------------------------------------------------
@@ -2303,7 +2312,6 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_top5_conduct'} = $result;
-  $logger->info(sprintf('Top 5 conducts: %d', scalar(@$result)));
 
   #---------------------------------------------------------------------------
   #-- "Low Scored Games" -----------------------------------------------------
@@ -2324,7 +2332,6 @@ EOHD
   );
   return $result if !ref($result);
   $data{'result_top5_lowscore'} = $result;
-  $logger->info(sprintf('Top 5 low score: %d', scalar(@$result)));  
 
   #---------------------------------------------------------------------------
   #-- "Streaks" --------------------------------------------------------------
@@ -2333,7 +2340,6 @@ EOHD
   my ($streaks_ord, $streaks) = sql_load_streaks(undef, $logfiles_i, undef, undef, 2);
   return $streaks_ord if !ref($streaks_ord);
   $data{'result_streaks'} = process_streaks($streaks_ord, $streaks);
-  $logger->info(sprintf('Streaks: %d', scalar(@$streaks_ord)));  
 
   #---------------------------------------------------------------------------
   #-- "General Info" ---------------------------------------------------------
@@ -2348,7 +2354,6 @@ EOHD
   $result = sql_load($query, undef, undef, undef, $logfiles_i);
   die if !ref($result);
   $data{'result_total_valid'} = $result->[0]{'count'};
-  $logger->info('General');
 
   #---------------------------------------------------------------------------
   #---------------------------------------------------------------------------
@@ -2377,17 +2382,19 @@ sub gen_page_dev_combos
   #--- arguments
 
   my (
-    $logfiles_i     # 1. logfile id
+    $devnull_year
   ) = @_;
 
   #--- other variables
 
   my $query;
   my %data;
+  my $logfiles_i = devnull_get_logfiles_i($devnull_year);
+  my $devnull_path = devnull_get_url_path($devnull_year);
 
   #--- init
 
-  $logger->info('Creating page: Combos (devnull)');
+  $logger->info("[nh/dev/$devnull_year] Generating combos page");
 
   #--- query
 
@@ -2429,7 +2436,7 @@ EOHD
 
   #--- supply additional data
 
-  $data{'devnull'} = $devnull_year if $devnull;
+  $data{'devnull'} = $devnull_year if $devnull_year;
   $data{'cur_time'} = scalar(localtime());
 
   #--- process template
@@ -2682,6 +2689,7 @@ sub help
   print "  --noplayers    disable generating player pages\n";
   print "  --noaggr       disable generating aggregate pages\n";
   print "  --nodev        disable devnull processing\n";
+  print "  --year=YEAR    generate stats for devnull year\n";
   print "\n";
 }
 
@@ -2712,11 +2720,12 @@ $logger->info('---');
 my $logger_cmd = get_logger("Stats::Cmdline");
 
 my @cmd_variant;
-my $cmd_force;
+my $cmd_force = 0;
 my @cmd_player;
 my $cmd_players = 1;
 my $cmd_aggr = 1;
 my $cmd_devnull;
+my @cmd_dev_year;
 
 if(!GetOptions(
   'variant=s' => \@cmd_variant,
@@ -2724,21 +2733,32 @@ if(!GetOptions(
   'player=s'  => \@cmd_player,
   'players!'  => \$cmd_players,
   'aggr!'     => \$cmd_aggr,
-  'dev!'      => \$cmd_devnull
+  'dev!'      => \$cmd_devnull,     # three-state option (undefined/0/1)
+  'year=s'    => \@cmd_dev_year
 )) {
   help();
   exit(1);
 }
 
-cmd_option_array_expand(\@cmd_variant);
-cmd_option_array_expand(\@cmd_player);
+# expand textual lists into actual perl arrays; this allows to specify lists
+# on commandline in the form --option=EL1,EL2,EL3,..,ELn which is more
+# convenient than --option EL1 --option EL2 --option EL3 etc.
+
+cmd_option_array_expand(
+  \@cmd_variant,
+  \@cmd_player,
+  \@cmd_dev_year
+);
+
+# debugging log of command-lines options as we parsed them
 
 $logger_cmd->debug('cmd_variant = (', join(',', @cmd_variant), ')');
-$logger_cmd->debug('cmd_force = ', $cmd_force ? 'on' : 'off');
-$logger_cmd->debug('cmd_players = ', $cmd_players ? 'on' : 'off');
+$logger_cmd->debug('cmd_force = ', cmd_option_state($cmd_force));
+$logger_cmd->debug('cmd_players = ', cmd_option_state($cmd_players));
 $logger_cmd->debug('cmd_player = (', join(',', @cmd_player), ')');
 $logger_cmd->debug('cmd_aggr = ', $cmd_aggr ? 'on' : 'off');
-$logger_cmd->debug('cmd_devnull = ', $cmd_devnull ? 'on' : 'off');
+$logger_cmd->debug('cmd_devnull = ', cmd_option_state($cmd_devnull));
+$logger_cmd->debug('---');
 
 #--- lock file check/open
 
@@ -2769,148 +2789,207 @@ $logger->info('Connected to database');
 sql_load_logfiles();
 $logger->info('Loaded list of logfiles');
 
-#--- determine devnull processing
+#-------------------------------------------------------------------------------
+#--- determine devnull processing ----------------------------------------------
+#-------------------------------------------------------------------------------
 
-# do following block if not forced disable (--nodev)
-if(!(defined($cmd_devnull) && !$cmd_devnull)) {
-  # collect required information
+# /dev/null/nethack is a tournament run on dedicated servers every November;
+# NHS has special code to generate devnull statistics to augment official web
+# scoreboard. Devnull processing (that is generating devnull-specific pages)
+# will be initiated automatically if it is November; this can be overriden using
+# --nodev option; additionally, there's an option to regenerate stats for
+# particular devnull year using --dev --year=YYYY Note, that devnull years must
+# be defined in config file for this to work. Another requirement that devnull's
+# logfile_i in logfiles table must be equal to the year number.
+
+#--- this will contain list of years to process
+
+my @dev_years;
+
+#--- only do something if not blocked by --nodev
+
+if(!defined($cmd_devnull) || $cmd_devnull) {
+
+#--- some basic preparation
+
   my ($mo, $yr) = get_month_year();
-  my $def_ok =
-    exists $NHdb::nhdb_def->{'devnull'}
-    && exists $NHdb::nhdb_def->{'devnull'}{"$yr"};
-  # enable devnull if the conditions are met
-  if(
-    ($mo == 10 && $def_ok && !defined($cmd_devnull))
-    || ($def_ok && $cmd_devnull)
-  ) {
-    $devnull = $NHdb::nhdb_def->{'devnull'}{"$yr"} ;
-    $devnull_path = $NHdb::nhdb_def->{'devnull'}{'http_path'};
-    $devnull_path =~ s/%Y/$yr/;
-    $devnull_year = $yr;
-  };
-  if($devnull) {
+  my $logger = get_logger("Stats::Devnull");
+  $logger->debug('[nh/dev] Determining devnull processing');
+  $logger->debug(sprintf('[nh/dev] Current date is %d/%d', $mo+1, $yr));
+
+#--- year to process is specified on the command-line
+
+  if($cmd_devnull && @cmd_dev_year) {
+    if($cmd_dev_year[0] eq 'all') {
+      @dev_years = sort keys $NHdb::nhdb_def->{'devnull'}{'years'};
+    } else {
+      @dev_years = sort @cmd_dev_year;
+    }
+  }
+
+#--- year to process not specified, so is it November yet?
+
+  else {
+    @dev_years = ($yr) if $mo == 10;
+  }
+
+#--- remove undefined years
+
+  {
+    my @temp;
+    for my $y (@dev_years) {
+      if(
+        exists $NHdb::nhdb_def->{'devnull'}
+        && exists $NHdb::nhdb_def->{'devnull'}{'years'}{$y}
+      ) {
+        push(@temp, $y);
+      }
+    }
+    @dev_years = @temp;
+  }
+
+#--- log some info
+
+  if(@dev_years) {
     $logger->info(
       sprintf(
-       '/dev/null/nethack %d processing enabled (path %s)',
-       $yr, $devnull_path 
+       '[nh/dev] Devnull processing enabled for %s',
+       join(',', @dev_years)
       )
     );
+  } else {
+    $logger->debug('[nh/dev] Devnull processing inactive');
   }
 }
+
+#-------------------------------------------------------------------------------
+#--- non-devnull processing ----------------------------------------------------
+#-------------------------------------------------------------------------------
+
+#--- The --years argument completely disables regular processing
+
+if(!@dev_years) {
 
 #--- read what is to be updated
 
-if($cmd_aggr) {
-  my $update_variants = update_schedule_variants($cmd_force, \@cmd_variant);
-  $logger->info(
-    'Following variants scheduled to update: ',
-    join(',', @$update_variants)
-  );
+  if($cmd_aggr) {
+    my $update_variants = update_schedule_variants($cmd_force, \@cmd_variant);
+    $logger->info(
+      'Following variants scheduled to update: ',
+      join(',', @$update_variants)
+    );
 
 #--- generate aggregate pages
 
-  for my $var (@$update_variants) {
-    
-    #--- regular stats
-    gen_page_recent('recent', $var);
-    gen_page_recent('ascended', $var);
-    gen_page_streaks($var);
-    gen_page_zscores($var);
-    gen_page_conducts($var);
-    gen_page_lowscore($var);
-    gen_page_gametime($var);
+    for my $var (@$update_variants) {
 
-    #--- first to ascend page
-    if(grep(/^$var$/, @{$NHdb::nhdb_def->{'firsttoascend'}})) {
-      gen_page_first_to_ascend($var);
+      #--- regular stats
+      gen_page_recent('recent', $var);
+      gen_page_recent('ascended', $var);
+      gen_page_streaks($var);
+      gen_page_zscores($var);
+      gen_page_conducts($var);
+      gen_page_lowscore($var);
+      gen_page_gametime($var);
+
+      #--- first to ascend page
+      if(grep(/^$var$/, @{$NHdb::nhdb_def->{'firsttoascend'}})) {
+        gen_page_first_to_ascend($var);
+      }
+
+      #--- clear update flag
+      $dbh->do(
+        q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ''},
+        undef, $var
+      );
     }
-
-    #--- clear update flag
-    $dbh->do(
-      q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ''},
-      undef, $var
-    );
   }
-}
-
-#--- generate /dev/null ascended and recent pages
-
-#--- /dev/null stats
-if($devnull && $cmd_aggr) {
-  gen_page_recent(
-    'recent', 'nh', 'recent-dev.tt', 
-    $devnull_path . '/recent.html', 
-    $devnull
-  );
-  gen_page_recent(
-    'ascended', 'nh', 'ascended-dev.tt', 
-    $devnull_path . '/ascended.html', 
-    $devnull
-  );
-}
-
-#--- generate /dev/null player list
-
-if($devnull) {
-  gen_page_dev_player_list(
-    $devnull, 'playerlist-dev.tt', 
-    $devnull_path . '/players.html'
-  );
-}
 
 #--- generate per-player pages
 
-if($cmd_players) {
-  my ($pages_update, $player_combos) = update_schedule_players(
-    $cmd_force, \@cmd_variant, \@cmd_player
-  );
-  for my $pg (@$pages_update) {
-    gen_page_player(@$pg, $player_combos);
-    $dbh->do(
-      q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ?},
-      undef, $pg->[1], $pg->[0]
+  if($cmd_players) {
+    my ($pages_update, $player_combos) = update_schedule_players(
+      $cmd_force, \@cmd_variant, \@cmd_player
     );
+    for my $pg (@$pages_update) {
+      gen_page_player(@$pg, $player_combos);
+      $dbh->do(
+        q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ?},
+        undef, $pg->[1], $pg->[0]
+      );
+    }
   }
-}
-
-#--- generate /dev/null per-player pages
-# at this moment, all player pages are updated every time
-
-if($devnull && $cmd_players) {
-  gen_page_dev_player($devnull, 'player-dev.tt');
-}
-
-#--- generate /dev/null roles page
-
-if($devnull && $cmd_aggr) {
-  gen_page_dev_roles($devnull);
-}
-
-#--- generate /dev/null front page
-
-if($devnull && $cmd_aggr) {
-  gen_page_dev_front($devnull);
-}
-
-#--- generate /dev/null front page
-
-if($devnull && $cmd_aggr) {
-  gen_page_dev_combos($devnull);
-}
-
-#--- generic info page
-
-#if(grep('all', @$update_variants)) {
-#  gen_page_info();
-#}
-
 #--- front page
 
-gen_page_front() if $cmd_aggr;
+  gen_page_front() if $cmd_aggr;
 
 #--- about page
 
-gen_page_about() if $cmd_aggr;
+  gen_page_about() if $cmd_aggr;
+
+}
+
+#-------------------------------------------------------------------------------
+#--- generate devnull pages ----------------------------------------------------
+#-------------------------------------------------------------------------------
+
+for my $devnull_year (sort @dev_years) {
+
+  #--- initialize
+
+  my $devnull_path = devnull_get_url_path($devnull_year);
+  if(!$devnull_path) {
+    $logger->fatal(
+      "[nh/dev] devnull/http_path not defined in nhdb_def.cfg for year "
+      . "$devnull_year, aborting"
+    );
+    die 'Configuration error';
+  }
+  $logger->info("[nh/dev/$devnull_year] Processing devnull year $devnull_year");
+  $logger->debug("[nh/dev/$devnull_year] Devnull http path is $devnull_path");
+
+  #--- generate /dev/null ascended/recent pages
+
+  if($cmd_aggr) {
+    gen_page_recent(
+      'recent', 'nh', 'recent-dev.tt',
+      $devnull_path . '/recent.html',
+      $devnull_year
+    );
+    gen_page_recent(
+      'ascended', 'nh', 'ascended-dev.tt',
+      $devnull_path . '/ascended.html',
+      $devnull_year
+    );
+  }
+
+  #--- generate /dev/null player list
+
+  gen_page_dev_player_list(
+    $devnull_year, 'playerlist-dev.tt',
+    $devnull_path . '/players.html'
+  );
+
+  #--- generate /dev/null per-player pages
+  # at this moment, all player pages are updated every time
+
+  gen_page_dev_player($devnull_year, 'player-dev.tt') if $cmd_players;
+
+  #--- generate /dev/null roles page
+
+  gen_page_dev_roles($devnull_year) if $cmd_aggr;
+
+  #--- generate /dev/null combos page
+
+  gen_page_dev_combos($devnull_year) if $cmd_aggr;
+
+  #--- generate /dev/null front page
+
+  if($cmd_aggr) {
+    gen_page_dev_front($devnull_year);
+  }
+
+}
 
 #--- disconnect from database
 
@@ -2921,4 +3000,3 @@ $logger->info('Disconnected from database');
 
 unlink($lockfile);
 $logger->info('Removed lockfile');
-
