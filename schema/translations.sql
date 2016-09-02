@@ -27,3 +27,8 @@ INSERT INTO translations VALUES ( 'dev', 'wooble', 'Wooble' );
 INSERT INTO translations VALUES ( 'n4o', 'wooble', 'Wooble' );
 INSERT INTO translations VALUES ( 'dev', 'elenmirie2', 'elenmirie' );
 INSERT INTO translations VALUES ( 'asc', 'elenmirie1', 'elenmirie' );
+INSERT INTO translations VALUES ( 'dev', 'tangles', 'Tangles' );
+INSERT INTO translations VALUES ( 'dev', 'raisse', 'Raisse' );
+INSERT INTO translations VALUES ( 'nao', 'Umeko', 'Raisse' );
+INSERT INTO translations VALUES ( 'nao', 'Hildegard', 'Raisse' );
+INSERT INTO translations VALUES ( 'nao', 'MissLucy', 'Raisse' );
