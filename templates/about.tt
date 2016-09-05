@@ -43,14 +43,14 @@ also have their personal statistics put together into one summary view.
 <th>var</th>
 <th>description</th>
 <th>logfile</th>
-<th>static</th>
 <th>size</th>
 <th>lastchk</th>
 </tr>
 
 [% FOREACH row IN logfiles -%]
 [%- SET stale = "stale_30d" -%]
-[%- IF row.lastchk_30d; SET stale = "stale_1h"; END -%]
+[%- IF row.lastchk_30d; SET stale = "stale_1d"; END -%]
+[%- IF row.lastchk_1d; SET stale = "stale_1h"; END -%]
 [%- IF row.lastchk_1h; SET stale = "fresh"; END -%]
 [%- IF row.static; SET stale = "static"; END -%]
 <tr>
@@ -59,13 +59,12 @@ also have their personal statistics put together into one summary view.
 <td>[% row.variant %]</td>
 <td>[% row.descr %]</td>
 <td>[% row.logurl %]</td>
-<td>[%IF row.static; "YES"; ELSE; "NO"; END %]</td>
 [% IF urlpath %]
 <td class="numeric"><a href="[% urlpath %]/[% row.localfile %]">[% number(row.fpos) %]</a></td>
 [% ELSE %]
 <td class="numeric">[% number(row.fpos) %]</td>
 [% END %]
-<td><span class="[% GET stale %]">[% row.lastchk_trunc %]</span></td>
+<td><span class="[% GET stale %]">&nbsp;</span>&nbsp;[% row.lastchk_trunc %]</td>
 </tr>
 [% END %]
 </table>

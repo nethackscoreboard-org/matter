@@ -1,0 +1,25 @@
+SPAN.fresh {
+  background : green;
+  padding : 0 0.2em;
+}
+
+SPAN.stale_1h {
+  background : red;
+  opacity : 0.5;
+  padding : 0 0.2em;
+}
+
+SPAN.stale_1d {
+  background : red;
+  padding : 0 0.2em;
+}
+
+SPAN.stale_30d {
+  background : magenta;
+  padding : 0 0.2em;
+}
+
+SPAN.static {
+  background : rgba(100,100,100,.5);
+  padding : 0 0.2em;
+}

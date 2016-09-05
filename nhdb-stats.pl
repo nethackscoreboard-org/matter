@@ -1626,6 +1626,7 @@ sub gen_page_about
     q{*},
     q{to_char(lastchk, 'YYYY-MM-DD HH24:MI') AS lastchk_trunc},
     q{current_timestamp - lastchk < interval '1 hour' AS lastchk_1h},
+    q{current_timestamp - lastchk < interval '1 day' AS lastchk_1d},
     q{current_timestamp - lastchk < interval '30 days' AS lastchk_30d}
   );
 
