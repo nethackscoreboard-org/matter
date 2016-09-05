@@ -1625,8 +1625,8 @@ sub gen_page_about
   my @fields = (
     q{*},
     q{to_char(lastchk, 'YYYY-MM-DD HH24:MI') AS lastchk_trunc},
-    q{age(lastchk) < interval '1 hour' AS lastchk_1h},
-    q{age(lastchk) < interval '30 days' AS lastchk_30d}
+    q{current_timestamp - lastchk < interval '1 hour' AS lastchk_1h},
+    q{current_timestamp - lastchk < interval '30 days' AS lastchk_30d}
   );
 
   #--- pull data from db
