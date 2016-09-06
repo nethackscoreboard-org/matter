@@ -10,6 +10,8 @@ CREATE TABLE translations (
   name_to   varchar(48) NOT NULL
 );
 
+CREATE UNIQUE INDEX ON translations ( server, name_from );
+
 GRANT SELECT ON translations TO nhdbfeeder;
 GRANT SELECT ON translations TO nhdbstats;
 
