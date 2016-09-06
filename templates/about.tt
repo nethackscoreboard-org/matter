@@ -69,4 +69,12 @@ also have their personal statistics put together into one summary view.
 [% END %]
 </table>
 
+<span class="notice">
+<span class="fresh">&nbsp;</span>&nbsp;updated in last hour &nbsp;
+<span class="stale_1h">&nbsp;</span>&nbsp;no updates in last hour &nbsp;
+<span class="stale_1d">&nbsp;</span>&nbsp;no updates in last day &nbsp;
+<span class="stale_30d">&nbsp;</span>&nbsp;no updates in last 30 days &nbsp;
+<span class="static">&nbsp;</span>&nbsp;historic data, no longer updated &nbsp; 
+</span>
+
 [% INCLUDE footer.tt %]
