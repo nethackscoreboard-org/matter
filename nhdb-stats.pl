@@ -2934,13 +2934,18 @@ if(!@dev_years) {
       );
     }
   }
-#--- front page
 
-  gen_page_front() if $cmd_aggr;
+#--- front and about page
 
-#--- about page
+# These are always updated, even if no new data have been received (but can
+# still be disabled by --noaggr). Both these pages contain age information that
+# needs to be updated. Also this is indication to users that NHS is working
+# even as new data isn't arriving.
 
-  gen_page_about() if $cmd_aggr;
+  if($cmd_aggr) {
+    gen_page_front();
+    gen_page_about();
+  }
 
 }
 
