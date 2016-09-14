@@ -196,9 +196,16 @@ sub sql_load
 
 sub update_schedule_players
 {
-  my $cmd_force = shift;
-  my $cmd_variant = shift;
-  my $cmd_player = shift;
+  #--- arguments
+
+  my (
+    $cmd_force,    # 1. --force specified
+    $cmd_variant,  # 2. list of variants from --variant
+    $cmd_player    # 3. list of players from --player
+  ) = @_;
+
+  #--- other variables
+
   my ($sth, $r);
 
   #--- display information
@@ -1160,9 +1167,16 @@ sub gen_page_recent
 
 sub gen_page_player
 {
-  my $name          = shift;
-  my $variant       = shift;
-  my $player_combos = shift;
+  #--- arguments
+
+  my (
+    $name,            # 1. player name
+    $variant,         # 2. variant shortcode
+    $player_combos    # 3. WHAT IS THIS?
+  ) = @_;
+
+  #--- other variables
+
   my @variants = ('all');
   my ($query, @arg, $sth, $r);
   my %data;                         # data fed to TT2
