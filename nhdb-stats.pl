@@ -2889,10 +2889,14 @@ if(!@dev_years) {
 
   if($cmd_aggr) {
     my $update_variants = update_schedule_variants($cmd_force, \@cmd_variant);
-    $logger->info(
-      'Following variants scheduled to update: ',
-      join(',', @$update_variants)
-    );
+    if(@$update_variants) {
+      $logger->info(
+        'Following variants have new data: ',
+        join(',', @$update_variants)
+      );
+    } else {
+      $logger->info('No new data received');
+    }
 
 #--- generate aggregate pages
 
