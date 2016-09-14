@@ -208,35 +208,30 @@ sub update_schedule_players
 
   my ($sth, $r);
 
+  #--- get list of allowed variants
+
+  # this is either all configured variants (in nhdb_def.json) or a list
+  # of variants supplied through --variant cmdline option (cross-checked
+  # against the configured variants, so that user cannot supply unconfigured
+  # variant). @variants_final will contain the result of this step.
+
+  my @variants_known = ('all', nh_variants());
+  my @variants_final = @variants_known;
+  if(@$cmd_variant) {
+    @variants_final = map {
+      my $s = $_;
+      (grep { $_ eq $s } @variants_known) ? $s : ();
+    } @$cmd_variant;
+  }
+
   #--- display information
 
   $logger->info('Getting list of player pages to update');
   $logger->info('Forced processing enabled') if $cmd_force;
-  $logger->info('Restricted to variants: ', join(',', @$cmd_variant)) 
-    if scalar(@$cmd_variant);
+  $logger->info('Restricted to variants: ', join(',', @variants_final))
+    if @variants_known > @variants_final;
   $logger->info('Restricted to players: ', join(',', @$cmd_player))
     if scalar(@$cmd_player);
-
-  #--- get list of allowed variants
-  # this is either all statically-defined variants or a list
-  # of variants supplied through --variant cmdline option (checked
-  # against the statically-defined list).
-
-  my @variants_final;
-  my @variants_known = ('all', nh_variants());
-  if(scalar(@$cmd_variant)) {
-    for my $var (@$cmd_variant) {
-      if(grep { $var eq $_} @variants_known) {
-        push(@variants_final, $var);
-      }
-    }
-  } else {
-    @variants_final = @variants_known;
-  }
-  $logger->info(
-    'Variants that will be processed: ',
-    join(',', @variants_final)
-  );
 
   #--- get list of all known player names
 
