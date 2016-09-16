@@ -31,8 +31,6 @@
 
 <hr>
 
-
-
 <h3>Overall Stats</h3>
 
 <table class="bordered">
@@ -73,6 +71,18 @@
   <td>[% total_duration %]</td>
 [% END %]
 </tr>
+[% IF lnk_accounts %]
+<tr>
+<th colspan="8">linked accounts</th>
+</tr>
+<tr>
+<td colspan="8">
+[%- FOREACH acct IN lnk_accounts -%]
+<span class="combo">[% acct.name_from %]/[% acct.server %]</span>
+[% END %]
+</td>
+</tr>
+[% END %]
 </tbody>
 
 </table>

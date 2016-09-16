@@ -1182,6 +1182,15 @@ sub gen_page_player
 
   $logger->info(sprintf('Creating page: @%s/%s', $name, $variant));
 
+  #=== linked accounts =====================================================
+
+  $result = sql_load(
+    'SELECT * FROM translations WHERE name_to = ?',
+    1, 1, undef, $name
+  );
+  return $result if !ref($result);
+  $data{'lnk_accounts'} = $result if @$result;
+
   #=== all ascended games ==================================================
   # load all player's ascension in ordered array of hashrefs; also we create
   # extra hashref %ascs_by_rowid that allows us to later reference the games
