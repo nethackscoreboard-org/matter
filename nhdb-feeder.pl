@@ -338,10 +338,9 @@ sub sql_insert_games
   push(@values, $death);
 
   #--- ascended flag
-  $l->{'ascended'} = sprintf("%d", ($death =~ /^ascended\b/));
-  my $flag_ascended = ($death =~ /^ascended\b/ ? 'TRUE' : 'FALSE');
+  $l->{'ascended'} = sprintf("%d", ($death =~ /^(ascended|defied the gods)\b/));
   push(@fields, 'ascended');
-  push(@values, $flag_ascended);
+  push(@values, $l->{'ascended'} ? 'TRUE' : 'FALSE');
 
   #--- dNetHack combo mangling workaround
   # please refer to comment in NetHack.pm; this is only done to two specific
