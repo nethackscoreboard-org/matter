@@ -98,4 +98,4 @@ Use this to limit processing player pages to specific player or players.
 Disables devnull-specific processing even if other conditions are met (ie. it's November and devnull for that year is properly configured).
 
 **--year=YYYY**  
-Together with `--dev` generates devnull pages for given year. Year can be either single one like `--year=2015` or colon-delimited list like `--year=2008,2009,2010`. Also, all years that are configured can be generated with `--year=all`.
+Together with `--dev` generates devnull pages for given year. Year can be either single one like `--year=2015` or comma-delimited list like `--year=2008,2009,2010`. Also, all years that are configured can be generated with `--year=all`.
