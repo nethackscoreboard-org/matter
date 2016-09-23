@@ -338,7 +338,7 @@ sub sql_insert_games
   push(@values, $death);
 
   #--- ascended flag
-  $l->{'ascended'} = sprintf("%d", ($death =~ /^(ascended|defied the gods)\b/));
+  $l->{'ascended'} = $death =~ /^(ascended|defied the gods)\b/ ? 1 : 0;
   push(@fields, 'ascended');
   push(@values, $l->{'ascended'} ? 'TRUE' : 'FALSE');
 
