@@ -2493,8 +2493,8 @@ sub gen_page_first_to_ascend
   #--- processing of the database rows
 
   # remove 'r_' from hash keys (field names), row_fix();
-  # the r_ prefix is added because otherwise there are problem with collsion
-  # insde stored procedure in backend db; probably this could be done better
+  # the r_ prefix is added because otherwise there are problem with collision
+  # inside stored procedure in backend db; probably this could be done better
 
   $process = sub {
     my $row = shift;
