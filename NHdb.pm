@@ -278,8 +278,6 @@ sub sql_show_query
 
 sub cmd_option_array_expand
 {
-  my $ary = shift;
-
   for my $ary (@_) {
     for(my $i = 0; $i < scalar(@$ary); $i++) {
       splice(@$ary, $i, 1, grep { $_ } split(/,/, $ary->[$i]));
