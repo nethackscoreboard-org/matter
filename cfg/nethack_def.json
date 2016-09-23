@@ -47,6 +47,7 @@
     "kob" : "kobold",
     "ogr" : "ogre",
     "orc" : "orc",
+    "scu" : "scurrier",
     "syl" : "sylph",
     "vam" : "vampire"
   },
@@ -511,24 +512,26 @@
      ],
 
      "nhf" : [
-       [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
-       [ "$bar", "%hum", "%orc", "%dwa"                                 ],
-       [ "$cav", "%hum", "%orc",                 "#neu", "#cha"         ],
+       [ "$arc", "%hum", "%dwa", "%gno", "%scu", "#law", "#neu"         ],
+       [ "$bar", "%hum", "%orc", "%dwa", "%gia"                         ],
+       [ "$cav", "%hum", "%orc", "%gia",         "#neu", "#cha"         ],
        [ "$hea", "%hum", "%gno", "%syl",         "#neu"                 ],
        [ "$kni", "%hum",                         "#law"                 ],
        [ "$mon", "%hum"                                                 ],
        [ "$pri", "%hum", "%elf", "%dwa", "%syl"                         ],
-       [ "$ran", "%hum", "%elf", "%gno", "%orc", "%syl", "#neu", "#cha" ],
+       [ "$ran", "%hum", "%elf", "%gno", "%orc", "%syl", "%scu", "%gia", "#neu", "#cha" ],
        [ "$rog", "%hum", "%orc", "%elf", "%syl", "#cha"                 ],
        [ "$sam", "%hum",                         "#law"                 ],
-       [ "$tou", "%hum", "%gno",                 "#neu"                 ],
+       [ "$tou", "%hum", "%gno", "%scu",         "#neu"                 ],
        [ "$val", "%hum",                         "#neu",         "!fem" ],
        [ "$wiz", "%hum", "%elf", "%gno", "%orc", "%syl", "#neu", "#cha" ],
 
        [ "%elf", "#cha" ],
        [ "%dwa", "#law" ],
+       [ "%gia", "#law", "#cha"],
        [ "%gno", "#neu" ],
        [ "%orc", "#cha" ],
+       [ "%scu", "#neu" ],
        [ "%syl", "#neu", "#cha" ]
      ]
   },
@@ -710,7 +713,7 @@
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc", "syl" ],
+      "races" : [ "hum", "elf", "dwa", "gia", "gno", "orc", "scu", "syl" ],
       "aligns" : [ "law", "neu", "cha" ],
       "genders" : [ "mal", "fem" ],
       "conduct" : {
