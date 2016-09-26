@@ -13,7 +13,7 @@ use JSON;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
-	nh_conduct
+  nh_conduct
   nh_combo_valid
   nh_variants
   nh_char
