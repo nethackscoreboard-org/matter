@@ -8,6 +8,7 @@ package NetHack;
 require Exporter;
 use integer;
 use strict;
+use Dir::Self;
 use JSON;
 
 
@@ -37,7 +38,7 @@ BEGIN
 {
   local $/;
   my $js = new JSON->relaxed(1);
-  open(my $fh, '<', 'cfg/nethack_def.json');
+  open(my $fh, '<', __DIR__ . '/cfg/nethack_def.json');
   my $def_json = <$fh>;
   $nh_def = $js->decode($def_json);
 }
