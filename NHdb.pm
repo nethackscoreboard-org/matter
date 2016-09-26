@@ -6,7 +6,6 @@
 
 package NHdb;
 require Exporter;
-use NetHack;
 use JSON;
 use DBI;
 use POSIX qw(strftime);
