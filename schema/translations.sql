@@ -34,3 +34,5 @@ INSERT INTO translations VALUES ( 'dev', 'raisse', 'Raisse' );
 INSERT INTO translations VALUES ( 'nao', 'Umeko', 'Raisse' );
 INSERT INTO translations VALUES ( 'nao', 'Hildegard', 'Raisse' );
 INSERT INTO translations VALUES ( 'nao', 'MissLucy', 'Raisse' );
+INSERT INTO translations VALUES ( 'dev', 'blankman', '27B6' );
+INSERT INTO translations VALUES ( 'dev', 'lrr', 'nyarlatoteph' );
