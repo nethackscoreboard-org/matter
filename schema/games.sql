@@ -189,6 +189,10 @@ $$ LANGUAGE plpgsql;
 -- was the first to achieve a win for given combo. This function
 -- is a wrapper for a query that can't be made into a view (because
 -- we need to be able to supply a parameter to it)
+--
+-- IMPORTANT: The single-query solution given below is flawed;
+-- it is possible that the wrong game is returned that has
+-- the same (endtime, role, race, align0) as the correct one.
 
 CREATE OR REPLACE FUNCTION first_to_ascend(_variant varchar)
 RETURNS TABLE (
@@ -233,7 +237,7 @@ FROM (
   WHERE variant = _variant AND ascended IS TRUE
   GROUP BY role, race, align0
 ) i
-INNER JOIN games g USING ( endtime )
+INNER JOIN games g USING ( endtime, role, race, align0 )
 JOIN logfiles l USING ( logfiles_i )
 ORDER BY g.endtime ASC;
 
