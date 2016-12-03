@@ -4,7 +4,7 @@
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <link rel="stylesheet" type="text/css" href="../default.css">
 [% IF result_ascended.size -%]  
   <script type="text/javascript" src="/nh/js/jquery.js"></script> 
   <script type="text/javascript" src="/nh/js/tablesorter.js"></script>

@@ -4,7 +4,7 @@
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="/nh/default.css">
+  <link rel="stylesheet" type="text/css" href="../default.css">
   <title>Ascended Games</title>
 [% IF result.size -%]  
   <script type="text/javascript" src="/nh/js/jquery.js"></script> 

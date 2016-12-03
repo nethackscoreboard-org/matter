@@ -2887,7 +2887,7 @@ if(!defined($cmd_devnull) || $cmd_devnull) {
 
 #--- The --years argument completely disables regular processing
 
-if(!@dev_years) {
+if(!@cmd_dev_year) {
 
 #--- read what is to be updated
 
