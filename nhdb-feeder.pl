@@ -84,6 +84,63 @@ sub parse_log
 
 
 #============================================================================
+# This function returns the WHERE part of SQL query for given
+# variants/servers/logid. The arguments are supposed to come from the
+# --variant, --server and --logid command-line parameters.
+#============================================================================
+
+sub sql_log_select_cond
+{
+  #--- arguments
+
+  my ($variants, $servers, $logids) = map {
+    ref($_) ? $_ : ($_ ? [ $_ ] : []);
+  } @_;
+
+  #--- other variables
+
+  my (@cond_var, @cond_srv, @cond_log, @cond, @arg);
+
+  #--- variants
+
+  if(@$variants) {
+    push(@cond_var, ('variant = ?') x scalar(@$variants));
+    push(@arg, @$variants);
+  }
+
+  #--- servers
+
+  if(@$servers) {
+    push(@cond_srv, ('server = ?') x scalar(@$servers));
+    push(@arg, @$servers);
+  }
+
+  #--- logfile ids
+
+  if(@$logids) {
+    push(@cond_log, ('logfiles_i = ?') x scalar(@$logids));
+    push(@arg, @$logids);
+  }
+
+  #--- assemble the final query
+
+  if(@cond_var) {
+    push(@cond, '(' . join(' OR ', @cond_var) . ')');
+  }
+  if(@cond_srv) {
+    push(@cond, '(' . join(' OR ', @cond_srv) . ')');
+  }
+  if(@cond_log) {
+    push(@cond, '(' . join(' OR ', @cond_log) . ')');
+  }
+
+  return
+    join(' AND ', @cond),
+    @arg;
+}
+
+
+#============================================================================
 # Create new streak entry, add one game to it and return [ streaks_i ] on
 # success or error msg.
 #============================================================================
@@ -501,7 +558,9 @@ sub sql_purge_database
 {
   #--- arguments
 
-  my ($variants, $servers, $logid) = @_;
+  my ($variants, $servers, $logids) = map {
+    ref($_) ? $_ : ($_ ? [ $_ ] : []);
+  } @_;
 
   #--- init logging
 
@@ -515,38 +574,15 @@ sub sql_purge_database
     $logger->info('Servers: ' . join(',', @$servers));
   }
 
+  if(@$logids) {
+    $logger->info('Log ids: ' . join(',', @$logids));
+  }
+
   #--- get list of logfiles we will be operating on
 
-  my $qry = 'SELECT * FROM logfiles';
-  my (@cond, @cond_var, @cond_srv, @arg, @logfiles);
-
-  if(@$variants) {
-    push(@cond_var, ('variant = ?') x scalar(@$variants));
-    push(@arg, @$variants);
-  }
-
-  if(@$servers) {
-    push(@cond_srv, ('server = ?') x scalar(@$servers));
-    push(@arg, @$servers);
-  }
-
-  if(@cond_var) {
-    push(@cond, '(' . join(' OR ', @cond_var) . ')');
-  }
-  if(@cond_srv) {
-    push(@cond, '(' . join(' OR ', @cond_srv) . ')');
-  }
-
-  if($logid) {
-    push(@cond, 'logfiles_i = ?');
-    push(@arg, $logid);
-  }
-
-  my $where = join(' AND ', @cond);
-  if(@cond) {
-    $qry .= ' WHERE ' . $where;
-  }
-
+  my @logfiles;
+  my ($cond, @arg) = sql_log_select_cond(@_);
+  my $qry = 'SELECT * FROM logfiles' . $cond ? ' WHERE ' . $cond : '';
   my $sth = $dbh->prepare($qry);
   my $r = $sth->execute(@arg);
 
