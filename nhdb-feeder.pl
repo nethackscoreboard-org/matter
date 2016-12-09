@@ -558,9 +558,7 @@ sub sql_purge_database
 {
   #--- arguments
 
-  my ($variants, $servers, $logids) = map {
-    ref($_) ? $_ : ($_ ? [ $_ ] : []);
-  } @_;
+  my ($variants, $servers, $logids) = referentize(@_);
 
   #--- init logging
 

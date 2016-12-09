@@ -28,6 +28,7 @@ our @EXPORT = qw(
   cmd_option_state
   devnull_get_logfiles_i
   devnull_get_url_path
+  referentize
 );
 
 
@@ -335,6 +336,20 @@ sub devnull_get_url_path
   } else {
     return undef;
   }
+}
+
+
+#===============================================================================
+# Get an array of values and turn them into arrayrefs if they already aren't.
+# undefs will turn into arrayrefs to empty arrays, scalars will turn into
+# arrayrefs to one-element arrays.
+#===============================================================================
+
+sub referentize
+{
+  return map {
+    ref($_) ? $_ : ($_ ? [ $_ ] : []);
+  } @_;
 }
 
 
