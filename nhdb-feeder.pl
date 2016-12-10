@@ -134,9 +134,10 @@ sub sql_log_select_cond
     push(@cond, '(' . join(' OR ', @cond_log) . ')');
   }
 
-  return
+  return (
     join(' AND ', @cond),
-    @arg;
+    @arg
+  );
 }
 
 
