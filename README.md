@@ -77,12 +77,12 @@ Limit processing only to logfiles specified by their log ids. Log id is NHS's in
 **--purge**  
 Erase all database entries that match `--logid`, `--server` and `--variant` options. If used alone without any specification, all the entries are deleted.
 
-**--oper**  
-Disable all processing of selected sources.
+**--oper**, **--nooper**  
+Enable/disable all processing of selected sources.
 
-**--static**  
-Make selected sources static, ie. never try to download the source's configured xlogfile, but still process it if it
-grows or its database entries are purged.
+**--static**, **--nostatic**  
+Make selected sources static (or non-static), ie. never try to download the source's configured xlogfile, but still
+process it if it grows or its database entries are purged.
 
 ### nhdb-stats.pl
 
