@@ -142,6 +142,83 @@ sub sql_log_select_cond
 
 
 #============================================================================
+# Function to set logfiles.oper and .static fields from command line using
+# the --oper and --static options. This function assumes that at least one
+# of the $cmd_oper or $cmd_static is defined.
+#============================================================================
+
+sub sql_logfile_set_state
+{
+  #--- arguments
+
+  my (
+    $cmd_variant,
+    $cmd_server,
+    $cmd_logid,
+    $cmd_oper,
+    $cmd_static
+  ) = @_;
+
+  #--- other init
+
+  ($cmd_variant, $cmd_server, $cmd_logid)
+  = referentize($cmd_variant, $cmd_server, $cmd_logid);
+
+  my $logger = get_logger('Feeder::Admin');
+  $logger->info('Requested oper/static flag change');
+  if(@$cmd_variant) {
+    $logger->info('Variants: ' . join(',', @$cmd_variant));
+  }
+
+  if(@$cmd_server) {
+    $logger->info('Servers: ' . join(',', @$cmd_server));
+  }
+
+  if(@$cmd_logid) {
+    $logger->info('Log ids: ' . join(',', @$cmd_logid));
+  }
+
+  #--- on what entries we are going to operate
+
+  my ($cond, @arg) = sql_log_select_cond(
+    $cmd_variant, $cmd_server, $cmd_logid
+  );
+
+  #--- what are we going to do
+
+  my @set;
+  if(defined($cmd_oper)) {
+    push(@set, 'oper = ' . ($cmd_oper ? 'TRUE' : 'FALSE'));
+  }
+  if(defined($cmd_static)) {
+    push(@set, 'static = ' . ($cmd_static ? 'TRUE' : 'FALSE'));
+  }
+  $logger->info('Operation: ', join(', ', @set));
+
+  #--- assemble the query
+
+  my $qry = 'UPDATE logfiles SET ' . join(', ', @set);
+  if($cond) {
+    $qry .= ' WHERE ' . $cond;
+  }
+
+  #--- perform the query
+
+  my $dbh = dbconn('nhdbfeeder');
+  if(!ref($dbh)) {
+    die sprintf('Failed to connect to the database (%s)', $dbh);
+  }
+  my $r = $dbh->do($qry, undef, @arg);
+  if(!$r) {
+    $logger->fatal('Database error occured');
+    $logger->fatal($dbh->errstr());
+    return;
+  }
+  $logger->info(sprintf('%d rows affected', $r));
+}
+
+
+#============================================================================
 # Create new streak entry, add one game to it and return [ streaks_i ] on
 # success or error msg.
 #============================================================================
@@ -707,6 +784,8 @@ sub help
   print "  --server=SRV   limit processing to specified server(s)\n";
   print "  --logid=ID     limit processing to specified logid\n";
   print "  --purge        delete database content\n";
+  print "  --oper         enable/disable source(s)\n";
+  print "  --static       enable/disable static flag on source(s)";
   print "\n";
 }
 
@@ -739,13 +818,17 @@ my @cmd_variant;
 my @cmd_server;
 my $cmd_purge;
 my $cmd_logid;
+my $cmd_oper;
+my $cmd_static;
 
 if(!GetOptions(
   'logfiles'  => \$cmd_logfiles,
   'variant=s' => \@cmd_variant,
   'server=s'  => \@cmd_server,
   'logid=s'   => \$cmd_logid,
-  'purge'    => \$cmd_purge
+  'purge'     => \$cmd_purge,
+  'oper!'     => \$cmd_oper,
+  'static!'   => \$cmd_static
 )) {
   help();
   exit(1);
@@ -756,7 +839,12 @@ cmd_option_array_expand(\@cmd_server);
 
 #--- lock file check/open
 
-if(!$cmd_logfiles && !$cmd_purge) {
+if(
+  !$cmd_logfiles &&
+  !$cmd_purge &&
+  !defined($cmd_oper) &&
+  !defined($cmd_static)
+) {
   if(-f $lockfile) {
     $logger->warn('Another instance running, exiting');
     exit(1);
@@ -771,6 +859,15 @@ if(!$cmd_logfiles && !$cmd_purge) {
 $dbh = dbconn('nhdbfeeder');
 if(!ref($dbh)) {
   die sprintf('Failed to connect to the database (%s)', $dbh);
+}
+
+#--- process --oper and --static options
+
+if(defined($cmd_oper) || defined($cmd_static)) {
+  sql_logfile_set_state(
+    \@cmd_variant, \@cmd_server, $cmd_logid, $cmd_oper, $cmd_static
+  );
+  exit(0);
 }
 
 #--- get list of logfiles to process
