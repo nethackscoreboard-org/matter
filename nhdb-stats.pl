@@ -579,7 +579,8 @@ sub sql_load_streaks
   q{JOIN logfiles USING ( logfiles_i ) } .
   q{JOIN map_games_streaks USING ( streaks_i ) } .
   q{JOIN games USING ( rowid ) } .
-  q{WHERE %s };
+  q{WHERE %s } .
+  q{ORDER BY endtime};
 
   #--- conditions
   @conds = (); 
