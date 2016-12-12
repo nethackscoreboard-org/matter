@@ -658,7 +658,7 @@ sub sql_purge_database
 
   my @logfiles;
   my ($cond, @arg) = sql_log_select_cond(@_);
-  my $qry = 'SELECT * FROM logfiles' . $cond ? ' WHERE ' . $cond : '';
+  my $qry = 'SELECT * FROM logfiles' . ($cond ? (' WHERE ' . $cond) : '');
   my $sth = $dbh->prepare($qry);
   my $r = $sth->execute(@arg);
 
