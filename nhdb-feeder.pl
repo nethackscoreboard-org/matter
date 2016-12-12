@@ -51,7 +51,7 @@ sub parse_log
   my $log = shift;
   my $l = shift;
   my %l;
-  my @a;
+  my (@a1, @a2, $a0);
   my $version = 0;
 
   #--- make NetHack's version numeric
@@ -61,18 +61,17 @@ sub parse_log
     $version = int(sprintf('%02d%02d%02d', $1, $2, $3));
   }
 
-  #--- NetHack 3.6.0 uses tabs as field separator; all other variants/versions
-  #--- use colon
+  #--- there are two field separators in use: comma and horizontal tab;
+  #--- we use simple heuristics to find out the one that is used for given
+  #--- xlogfile row
 
-  if($log->{'variant'} eq 'nh' && $version >= 30600) {
-    @a = split(/\t/, $l);
-  } else {
-    @a = split(/:/, $l);
-  }
+  @a1 = split(/:/, $l);
+  @a2 = split(/\t/, $l);
+  $a0 = scalar(@a1) > scalar(@a2) ? \@a1 : \@a2;
 
   #--- split keys and values
 
-  for my $field (@a) {
+  for my $field (@$a0) {
     my ($key, $val) = split(/=/, $field);
     $l{$key} = $val;
   }
