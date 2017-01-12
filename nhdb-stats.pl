@@ -2841,7 +2841,7 @@ if(!defined($cmd_devnull) || $cmd_devnull) {
 
   if($cmd_devnull && @cmd_dev_year) {
     if($cmd_dev_year[0] eq 'all') {
-      @dev_years = sort keys $NHdb::nhdb_def->{'devnull'}{'years'};
+      @dev_years = sort keys %{ $NHdb::nhdb_def->{'devnull'}{'years'} };
     } else {
       @dev_years = sort @cmd_dev_year;
     }
