@@ -366,6 +366,32 @@ INSERT INTO logfiles VALUES (
 );
 
 -----------------------------------------------------------------------------
+--- hardfought.org ----------------------------------------------------------
+-----------------------------------------------------------------------------
+
+INSERT INTO logfiles VALUES (
+  22, 'hardfought.org (NetHack 3.4.3)',
+  'hdf', 'nh', NULL,
+  'http://www.hardfought.org/xlogfiles/nh343/xlogfile',
+  'hdf.nh.343.log',
+  'http://www.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  23, 'hardfought.org (GruntHack)',
+  'hdf', 'gh', NULL,
+  'http://www.hardfought.org/xlogfiles/gh020/xlogfile',
+  'hdf.gh.log',
+  'http://www.hardfought.org/userdata/%U/%u/gh020/dumplog/%s.gh020.txt',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+-----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------
 
