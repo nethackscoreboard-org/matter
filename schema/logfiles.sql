@@ -391,6 +391,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  24, 'hardfought.org (UnNetHack)',
+  'hdf', 'unh', NULL,
+  'http://www.hardfought.org/xlogfiles/un531/xlogfile',
+  'hdf.unh.log',
+  'http://www.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------
