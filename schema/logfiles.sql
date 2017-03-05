@@ -372,9 +372,9 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
   22, 'hardfought.org (NetHack 3.4.3)',
   'hdf', 'nh', NULL,
-  'http://www.hardfought.org/xlogfiles/nh343/xlogfile',
+  'https://www.hardfought.org/xlogfiles/nh343/xlogfile',
   'hdf.nh.343.log',
-  'http://www.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt',
+  'https://www.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -383,9 +383,9 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
   23, 'hardfought.org (GruntHack)',
   'hdf', 'gh', NULL,
-  'http://www.hardfought.org/xlogfiles/gh020/xlogfile',
+  'https://www.hardfought.org/xlogfiles/gh020/xlogfile',
   'hdf.gh.log',
-  'http://www.hardfought.org/userdata/%U/%u/gh020/dumplog/%s.gh020.txt',
+  'https://www.hardfought.org/userdata/%U/%u/gh020/dumplog/%s.gh020.txt',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -394,9 +394,20 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
   24, 'hardfought.org (UnNetHack)',
   'hdf', 'unh', NULL,
-  'http://www.hardfought.org/xlogfiles/un531/xlogfile',
+  'https://www.hardfought.org/xlogfiles/un531/xlogfile',
   'hdf.unh.log',
-  'http://www.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html',
+  'https://www.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  25, 'hardfought.org (NetHack 3.6.1dev)',
+  'hdf', 'nh', NULL,
+  'https://www.hardfought.org/xlogfiles/nhdev/xlogfile',
+  'hdf.nhdev.log',
+  'https://www.hardfought.org/userdata/%U/%u/nhdev/dumplog/%s.nhdev.txt',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
