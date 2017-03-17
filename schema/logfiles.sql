@@ -422,7 +422,7 @@ INSERT INTO logfiles VALUES (
   'esm', 'nh', NULL,
   'https://em.slashem.me/xlogfiles/nethack',
   'esm.nh.360.log',
-  'https://em.slashem.me/userdata/%u/nethack/dumplog/%E',
+  'https://em.slashem.me/userdata/%u/nethack/dumplog/%E.txt',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
