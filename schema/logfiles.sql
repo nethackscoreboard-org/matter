@@ -414,6 +414,43 @@ INSERT INTO logfiles VALUES (
 );
 
 -----------------------------------------------------------------------------
+-- em.slashem.me ------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+INSERT INTO logfiles VALUES (
+  26, 'em.slashem.me (NetHack 3.6.0)',
+  'esm', 'nh', NULL,
+  'https://em.slashem.me/xlogfiles/nethack',
+  'esm.nh.360.log',
+  NULL,
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  27, 'em.slashem.me (GruntHack)',
+  'esm', 'gh', NULL,
+  'https://em.slashem.me/xlogfiles/grunthack',
+  'esm.gh.log',
+  'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  28, 'em.slashem.me (SporkHack)',
+  'esm', 'sh', NULL,
+  'https://em.slashem.me/xlogfiles/sporkhack',
+  'esm.sh.log',
+  'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+-----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------
 
