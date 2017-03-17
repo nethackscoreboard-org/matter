@@ -206,7 +206,9 @@ sub format_duration
 #
 # %u - username
 # %U - first letter of username
-# %s - start time
+# %s - start time (unix epoch)
+# %e - end time (unix epoch)
+# %E - end time (as YYYYMMDDHHMMSS)
 # %x - username before translation (as it appears in xlogfile)
 # %v - version number
 #===============================================================================
@@ -223,10 +225,17 @@ sub url_substitute
   my $r_username_orig = $data->{'name_orig'};
   my $r_version = $data->{'version'};
 
+  my @et = gmtime($data->{'endtime_raw'});
+  my $r_endtime2 = sprintf(
+    '%04d%02d%02d%02d%02d%02d',
+    $et[5]+1900, $et[4]+1, $et[3], $et[2], $et[1], $et[0]
+  );
+
   $strg =~ s/%u/$r_username/g;
   $strg =~ s/%U/$r_uinitial/g;
   $strg =~ s/%s/$r_starttime/g;
   $strg =~ s/%e/$r_endtime/g;
+  $strg =~ s/%E/$r_endtime2/g;
   $strg =~ s/%x/$r_username_orig/g;
   $strg =~ s/%v/$r_version/g;
   
