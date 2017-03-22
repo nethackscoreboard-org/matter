@@ -383,9 +383,9 @@ INSERT INTO logfiles VALUES (
 INSERT INTO logfiles VALUES (
   23, 'hardfought.org (GruntHack)',
   'hdf', 'gh', NULL,
-  'https://www.hardfought.org/xlogfiles/gh020/xlogfile',
+  'https://www.hardfought.org/xlogfiles/gh/xlogfile',
   'hdf.gh.log',
-  'https://www.hardfought.org/userdata/%U/%u/gh020/dumplog/%s.gh020.txt',
+  'https://www.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
