@@ -29,6 +29,7 @@ our @EXPORT = qw(
   devnull_get_logfiles_i
   devnull_get_url_path
   referentize
+  nhdb_show_version
 );
 
 
@@ -359,6 +360,19 @@ sub referentize
   return map {
     ref($_) ? $_ : ($_ ? [ $_ ] : []);
   } @_;
+}
+
+
+#===============================================================================
+# Function returns true when supplied variant should be presenting version
+# number to the user.
+#===============================================================================
+
+sub nhdb_show_version
+{
+  my $var = shift;
+
+  return (grep { $_ eq $var; } @{$nhdb_def->{'showversion'}}) ? 1 : 0;
 }
 
 

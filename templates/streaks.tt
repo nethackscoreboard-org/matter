@@ -34,7 +34,7 @@
 <th>wins</th>
 <th>srv</th>
 <th>var</th>
-[%- IF variant == 'nh' || variant == 'all' -%]
+[%- IF showversion -%]
 <th>ver</th>
 [%- END -%]
 <th>name</th>
@@ -55,8 +55,8 @@
 [% END %]
 <td>[% row.server %]</td>
 <td>[% row.variant %]</td>
-[%- IF variant == 'nh' || variant == 'all' -%]
-  <td>[% IF row.glist.0.variant == 'nh' %][% row.glist.0.version %][% END %]</td>
+[%- IF showversion -%]
+  <td>[% IF row.showversion %][% row.version %][% END %]</td>
 [%- END -%]
 <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 <td class="numeric">[% number(row.turns) %]</td>

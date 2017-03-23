@@ -676,11 +676,21 @@ sub process_streaks
     $row->{'plrpage'}    = $game_first->{'plrpage'};
     $row->{'name_orig'}  = $game_first->{'name_orig'};
     $row->{'age'}        = $streak->{'age'};
+    $row->{'showversion'} = nhdb_show_version($row->{'variant'});
     $row->{'glist'}      = [];
     my $games_cnt = 1;
     for my $game (@{$streak->{'games'}}) {
       $game->{'n'} = $games_cnt++;
       push(@{$row->{'glist'}}, $game);
+    }
+
+    # version / if the version of the first and last game are not the same
+    # we display version range
+    $row->{'version'}    = $game_first->{'version'};
+    if($game_first->{'version'} ne $game_last->{'version'}) {
+      $row->{'version'} = sprintf(
+        '%s-%s', $game_first->{'version'}, $game_last->{'version'}
+      );
     }
 
   #--- close open streaks for finished /dev/null tournaments
@@ -723,6 +733,10 @@ sub row_fix
 
   $row->{'realtime_raw'} = defined $row->{'realtime'} ? $row->{'realtime'} : 0;
   $row->{'realtime'} = format_duration($row->{'realtime'});
+
+  #--- does this variant should show version
+
+  $row->{'showversion'} = nhdb_show_version($row->{'variant'});
 
   #--- include conducts in the ascended message
 
@@ -1145,6 +1159,8 @@ sub gen_page_recent
   $data{'variants'} = [ 'all', nh_variants() ];
   $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
+  $data{'showversion'} =
+    (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
 
   #--- process template
 
@@ -1539,6 +1555,8 @@ sub gen_page_player
   $data{'vardef'} = nh_variants(1);
   $data{'result_calendar'} = ascensions_calendar_view($data{'result_ascended'})
     if $data{'games_count_asc'};
+  $data{'showversion'} =
+    (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
 
   #=========================================================================
 
@@ -1610,6 +1628,8 @@ sub gen_page_streaks
   $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
   $data{'cur_time'} = scalar(localtime());
+  $data{'showversion'} =
+    (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
 
   #--- process template
 
@@ -1804,6 +1824,7 @@ sub gen_page_front
   $data{'vardef'} = nh_variants(1);
   $data{'cur_time'} = scalar(localtime());
   $data{'devlink'} = 1 if $devlink;
+  $data{'showversion'} = 1;
   if(!$tt->process('front.tt', \%data, 'index.html')) {
     $logger->error(q{Failed to create page 'Front' (3), }, $tt->error());
     die $tt->error();
@@ -1883,7 +1904,7 @@ sub gen_page_conducts
   $query .= q{ORDER BY ncond DESC, turns ASC LIMIT 100};
   $ascs = sql_load(
     $query, 1, 1, 
-    sub { row_fix($_[0]) }, 
+    sub { row_fix($_[0]) },
     @args
   );
   if(!ref($ascs)) {
@@ -1903,6 +1924,8 @@ sub gen_page_conducts
   $data{'variants'} = [ 'all', nh_variants() ];
   $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
+  $data{'showversion'} =
+    (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
 
   #--- process template
 
@@ -1961,6 +1984,8 @@ sub gen_page_lowscore
   $data{'variants'} = [ 'all', nh_variants() ];
   $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
+  $data{'showversion'} =
+    (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
 
   #--- process template
 
@@ -2685,6 +2710,8 @@ sub gen_page_gametime
   $data{'variants'} = [ 'all', nh_variants() ];
   $data{'vardef'}   = nh_variants(1);
   $data{'variant'}  = $variant;
+  $data{'showversion'} =
+    (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
 
   #--- render template
 

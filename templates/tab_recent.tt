@@ -5,7 +5,7 @@
 [%- IF NOT devnull -%]
   <th>srv</th>
   <th>var</th>
-[%- IF variant == 'nh' || variant == 'all' -%]
+[%- IF showversion -%]
   <th>ver</th>
 [%- END -%]
 [%- END -%]
@@ -31,8 +31,8 @@
 [%- IF NOT devnull -%]
   <td>[% row.server %]</td>
   <td>[% row.variant %]</td>
-[%- IF variant == 'nh' || variant == 'all' -%]
-  <td>[% IF row.variant == 'nh' %][% row.version %][% END %]</td>
+[%- IF showversion -%]
+  <td>[% IF row.showversion %][% row.version %][% END %]</td>
 [%- END -%]
 [%- END -%]
 [%- IF not name -%]
