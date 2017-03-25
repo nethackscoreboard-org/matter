@@ -3,7 +3,7 @@
 #============================================================================
 # NHDB Feeder
 # """""""""""
-# (c) 2013 Borek Lupomesky
+# (c) 2013-2017 Borek Lupomesky
 #
 # This program scrapes logs from pre-defined NetHack servers and inserts
 # game entries into database.
