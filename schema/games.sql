@@ -51,7 +51,7 @@ CREATE TABLE games (
 CREATE INDEX idx_games_endtime ON games ( (endtime AT TIME ZONE 'UTC') DESC );
 CREATE INDEX idx_games_name1 ON games ( name );
 CREATE INDEX idx_games_name2 ON games ( name_orig );
-GRANT SELECT, INSERT, DELETE ON games TO nhdbfeeder;
+GRANT SELECT, INSERT, UPDATE, DELETE ON games TO nhdbfeeder;
 GRANT SELECT ON games TO nhdbstats;
 GRANT USAGE ON games_seq TO nhdbfeeder;
 

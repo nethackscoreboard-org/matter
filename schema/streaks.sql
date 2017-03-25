@@ -72,6 +72,7 @@ CREATE TABLE streaks (
   streaks_i     bigint DEFAULT nextval('streaks_seq') NOT NULL,
   logfiles_i    int REFERENCES logfiles ON DELETE RESTRICT,
   name          varchar(48) NOT NULL,
+  name_orig     varchar(48) NOT NULL,
   open          boolean DEFAULT TRUE,
   num_games     int DEFAULT 0,
   PRIMARY KEY (streaks_i)

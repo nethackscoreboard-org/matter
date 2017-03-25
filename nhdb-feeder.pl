@@ -226,15 +226,17 @@ sub sql_streak_create_new
 {
   my $logfiles_i = shift;
   my $name = shift;
+  my $name_orig = shift;
   my $rowid = shift;
   my $logger = get_logger('Streaks');
 
   #--- create new streak entry
 
-  my $qry = q{INSERT INTO streaks (logfiles_i, name) VALUES (?, ?) };
+  my $qry =
+    q{INSERT INTO streaks (logfiles_i, name, name_orig) VALUES (?, ?, ?) };
   $qry .= q{RETURNING streaks_i};
   my $sth = $dbh->prepare($qry);
-  my $r = $sth->execute($logfiles_i, $name);
+  my $r = $sth->execute($logfiles_i, $name, $name_orig);
   if(!$r) {
     $logger->fatal(
       sprintf(
@@ -504,7 +506,8 @@ sub sql_insert_games
   #--- name (before translation)
   push(@fields, 'name_orig');
   push(@values, $l->{'name'});
-  
+  $l->{'name_orig'} = $l->{'name'};
+
   #--- name
   push(@fields, 'name');
   if(exists($translations{$server}{$l->{'name'}})) {
@@ -771,20 +774,223 @@ sub sql_purge_database
 
 
 #============================================================================
+# Function for listing/adding/removing player name mappings using the --pmap
+# options (--pmap-list, --pmap-add, --pmap-remove).
+#
+# If no argument is given, existing mappings are listed.
+# Otherwise, the arguments have the form: SRCNAME/SRV=DSTNAME. When DSTNAME
+# is present, a mapping is added. If DSTNAME is missing, a mapping is
+# removed. The removes are performed before the additions.
+#
+# Returns undef on success of error message.
+#============================================================================
+
+sub sql_player_name_map
+{
+  #--- init
+
+  my $logger = get_logger('Feeder::Admin');
+  my $dbh = dbconn('nhdbfeeder');
+  my $in_transaction = 0;
+  my $r;
+
+  #--- eval loop
+
+  eval {
+
+  #--- ensure database connection
+
+    die "Database connection failed\n" if !ref($dbh);
+
+  #--- listing all configured mappings
+
+    if(!@_) {
+      $logger->info('Listing configured player name mappings');
+      my $cnt = 0;
+      my $sth = $dbh->prepare('SELECT * FROM translations ORDER BY name_to');
+      $r = $sth->execute();
+      if(!$r) {
+        die 'Failed to query database (' . $sth->errstr() . ") \n";
+      } else {
+        $logger->info('source               | destination');
+        $logger->info('-' x (20+16+3));
+        while(my $row = $sth->fetchrow_hashref()) {
+          $logger->info(
+            sprintf(
+              "%-20s | %-16s\n",
+              $row->{'server'} . '/' . $row->{'name_from'},
+              $row->{'name_to'}
+            )
+          );
+          $cnt++;
+        }
+        $logger->info('-' x (20+16+3));
+        $logger->info(
+          sprintf('%d mappings configured', $cnt)
+        );
+      }
+      return undef;
+    }
+
+  #--- start transaction
+
+    $r = $dbh->begin_work();
+    if(!$r) {
+      die sprintf("Cannot begin database transaction (%s)\n", $dbh->errstr());
+    }
+    $in_transaction = 1;
+
+  #--- loop over arguments and create update plan
+
+  # We are creating separate plans for adding and removing so that removing
+  # can go before adding.
+
+    my (@plan_add, @plan_remove);
+    for my $arg (@_) {
+      if($arg =~ /
+        ^
+        (?<src>[a-zA-Z0-9]+)         # 1. source (server-specific) name
+        \/                           #    slash (separator)
+        (?<srv>[a-zA-Z0-9]{3})       # 2. server id
+        (?:
+          =                          #    = sign (separator)
+          (?<dst>[a-zA-Z0-9]+)       # 3. destination (aggregate) name
+        )?
+        $
+      /x) {
+        if($+{'dst'}) {
+          push(@plan_add, {
+            src => $+{'src'}, srv => $+{'srv'}, dst => $+{'dst'}
+          });
+        } else {
+          push(@plan_remove, {
+            src => $+{'src'}, srv => $+{'srv'}
+          });
+        }
+      }
+    }
+
+  #--- perform removals
+
+    for my $row (@plan_remove) {
+      my $s;
+      $r = $dbh->do(
+        'DELETE FROM translations WHERE server = ? AND name_from = ?',
+        undef, $row->{'srv'}, $row->{'src'}
+      );
+      if($r) {
+        $r = $dbh->do(
+          'UPDATE games g SET name = name_orig FROM logfiles l ' .
+          'WHERE g.logfiles_i = l.logfiles_i AND name_orig = ? AND server = ?',
+          undef, $row->{'src'}, $row->{'srv'}
+        );
+        if($r) {
+          $s = $dbh->do(
+            'UPDATE streaks s SET name = name_orig FROM logfiles l ' .
+            'WHERE s.logfiles_i = l.logfiles_i AND name_orig = ? AND server = ?',
+            undef, $row->{'src'}, $row->{'srv'}
+          );
+        }
+      }
+      if(!$r || !$s) {
+        die sprintf "Failed to update database (%s)\n", $dbh->errstr();
+      }
+      $logger->info(sprintf(
+        'Removed mapping %s/%s, updated %d games, %d streaks',
+        $row->{'srv'}, $row->{'src'}, $r, $s
+      ));
+    }
+
+  #--- perform additions
+
+    for my $row (@plan_add) {
+      my $s;
+      $r = $dbh->do(
+        'INSERT INTO translations ( server,name_from,name_to ) ' .
+        'VALUES ( ?,?,? )',
+        undef, $row->{'srv'}, $row->{'src'}, $row->{'dst'}
+      );
+      if($r) {
+        $r = $dbh->do(
+          'UPDATE games g SET name = ? FROM logfiles l ' .
+          'WHERE g.logfiles_i = l.logfiles_i AND name_orig = ? AND server = ?',
+          undef, $row->{'dst'}, $row->{'src'}, $row->{'srv'}
+        );
+        if($r) {
+          $s = $dbh->do(
+            'UPDATE streaks s SET name = ? FROM logfiles l ' .
+            'WHERE s.logfiles_i = l.logfiles_i AND name_orig = ? AND server = ?',
+            undef, $row->{'dst'}, $row->{'src'}, $row->{'srv'}
+          );
+        }
+      }
+      if(!$r || !$s) {
+        die sprintf "Failed to update database (%s)\n", $dbh->errstr();
+      }
+      $logger->info(sprintf(
+        'Added mapping %s/%s to %s, updated %d games, %d streaks',
+        $row->{'srv'}, $row->{'src'}, $row->{'dst'}, $r, $s
+      ));
+    }
+
+  #--- eval end
+
+  };
+  if($@) {
+    my $err = $@;
+    chomp($err);
+    $logger->error($err);
+    if($in_transaction) {
+      $r = $dbh->rollback();
+      if(!$r) {
+        $logger->error(
+          sprintf('Failed to abort transaction (%s)', $dbh->errstr())
+        );
+        $err = $err . sprintf(', transaction not aborted (%s)', $dbh->errstr());
+      } else {
+        $logger->error('Transaction aborted, no changes made');
+        $err = $err . ', transaction aborted';
+      }
+    }
+    return $err;
+  }
+
+  #--- commit transaction
+
+  if($in_transaction) {
+    $r = $dbh->commit();
+    if(!$r) {
+      return sprintf(
+        'Failed to commit database transaction (%s)', $dbh->errstr()
+      );
+    }
+    $logger->info('Changes commited');
+  }
+
+  #--- finish successfully
+
+  return undef;
+}
+
+
+#============================================================================
 # Display usage help.
 #============================================================================
 
 sub help
 {
   print "Usage: nhdb-feeder.pl [options]\n\n";
-  print "  --help         get this information text\n";
-  print "  --logfiles     display configured logfiles, then exit\n";
-  print "  --variant=VAR  limit processing to specified variant(s)\n";
-  print "  --server=SRV   limit processing to specified server(s)\n";
-  print "  --logid=ID     limit processing to specified logid\n";
-  print "  --purge        delete database content\n";
-  print "  --oper         enable/disable source(s)\n";
-  print "  --static       enable/disable static flag on source(s)";
+  print "  --help            get this information text\n";
+  print "  --logfiles        display configured logfiles, then exit\n";
+  print "  --variant=VAR     limit processing to specified variant(s)\n";
+  print "  --server=SRV      limit processing to specified server(s)\n";
+  print "  --logid=ID        limit processing to specified logid\n";
+  print "  --purge           delete database content\n";
+  print "  --oper            enable/disable source(s)\n";
+  print "  --static          enable/disable static flag on source(s)\n";
+  print "  --pmap-list       list existing player name mappings\n";
+  print "  --pmap-add=MAP    add player name mapping(s)\n";
+  print "  --pmap-remove=MAP remove player name mapping(s)\n";
   print "\n";
 }
 
@@ -807,34 +1013,46 @@ $logger = get_logger('Feeder');
 #--- title
 
 $logger->info('NetHack Scoreboard / Feeder');
-$logger->info('(c) 2013-15 Borek Lupomesky');
+$logger->info('(c) 2013-17 Borek Lupomesky');
 $logger->info('---');
 
 #--- process commandline options
 
-my $cmd_logfiles;
-my @cmd_variant;
-my @cmd_server;
-my $cmd_purge;
-my $cmd_logid;
-my $cmd_oper;
-my $cmd_static;
+my (
+ $cmd_logfiles,
+ @cmd_variant,
+ @cmd_server,
+ $cmd_purge,
+ $cmd_logid,
+ $cmd_oper,
+ $cmd_static,
+ @cmd_pmap_add,
+ @cmd_pmap_remove,
+ $cmd_pmap_list
+);
 
 if(!GetOptions(
-  'logfiles'  => \$cmd_logfiles,
-  'variant=s' => \@cmd_variant,
-  'server=s'  => \@cmd_server,
-  'logid=s'   => \$cmd_logid,
-  'purge'     => \$cmd_purge,
-  'oper!'     => \$cmd_oper,
-  'static!'   => \$cmd_static
+  'logfiles'      => \$cmd_logfiles,
+  'variant=s'     => \@cmd_variant,
+  'server=s'      => \@cmd_server,
+  'logid=s'       => \$cmd_logid,
+  'purge'         => \$cmd_purge,
+  'oper!'         => \$cmd_oper,
+  'static!'       => \$cmd_static,
+  'pmap-add=s'    => \@cmd_pmap_add,
+  'pmap-remove=s' => \@cmd_pmap_remove,
+  'pmap-list'     => \$cmd_pmap_list
 )) {
   help();
   exit(1);
 }
 
-cmd_option_array_expand(\@cmd_variant);
-cmd_option_array_expand(\@cmd_server);
+cmd_option_array_expand(
+  \@cmd_variant,
+  \@cmd_server,
+  \@cmd_pmap_add,
+  \@cmd_pmap_remove
+);
 
 #--- lock file check/open
 
@@ -842,7 +1060,10 @@ if(
   !$cmd_logfiles &&
   !$cmd_purge &&
   !defined($cmd_oper) &&
-  !defined($cmd_static)
+  !defined($cmd_static) &&
+  !@cmd_pmap_add &&
+  !@cmd_pmap_remove &&
+  !$cmd_pmap_list
 ) {
   if(-f $lockfile) {
     $logger->warn('Another instance running, exiting');
@@ -867,6 +1088,27 @@ if(defined($cmd_oper) || defined($cmd_static)) {
     \@cmd_variant, \@cmd_server, $cmd_logid, $cmd_oper, $cmd_static
   );
   exit(0);
+}
+
+#--- process --pmap options
+
+if($cmd_pmap_list) {
+  my $r = sql_player_name_map();
+  exit($r ? 1 : 0);
+}
+
+if(@cmd_pmap_add || @cmd_pmap_remove) {
+  @cmd_pmap_add =
+    grep { /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+=[a-zA-Z0-9]+$/ } @cmd_pmap_add;
+  @cmd_pmap_remove =
+    grep { /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/ } @cmd_pmap_remove;
+  my $r = 1;
+  if(scalar(@cmd_pmap_add) + scalar(@cmd_pmap_remove)) {
+    $r = sql_player_name_map(@cmd_pmap_add, @cmd_pmap_remove);
+  } else {
+    $logger->fatal('No valid maps');
+  }
+  exit($r ? 1 : 0);
 }
 
 #--- get list of logfiles to process
@@ -1172,7 +1414,8 @@ for my $log (@logfiles) {
           if(!$streak_open{$logfiles_i}{$pl->{'name'}}) {
             my $streaks_i = sql_streak_create_new(
               $logfiles_i, 
-              $pl->{'name'}, 
+              $pl->{'name'},
+              $pl->{'name_orig'},
               $rowid
             );
             die $streaks_i if !ref($streaks_i);
@@ -1206,6 +1449,7 @@ for my $log (@logfiles) {
               $r = sql_streak_create_new(
                 $logfiles_i, 
                 $pl->{'name'},
+                $pl->{'name_orig'},
                 $rowid
               );
               die $r if !ref($r);
