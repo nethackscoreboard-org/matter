@@ -1270,10 +1270,6 @@ for my $log (@logfiles) {
     #--- retrieve file
 
     if($log->{'static'}) {
-      if($fpos) {
-        $logger->info($lbl, 'Skipping already processed static logfile');
-        die "OK\n";
-      }
       $logger->info($lbl, 'Static logfile, skipping retrieval');
       $fsize[1] = $fsize[0];
     } elsif(!$log->{'logurl'}) {
@@ -1506,14 +1502,18 @@ for my $log (@logfiles) {
 
     #--- update database with new position in the file
     
-    $qry = 'UPDATE logfiles SET fpos = ?, lastchk = current_timestamp WHERE logfiles_i = ?';
+    my @logupdate = ( 'fpos = ?', 'lastchk = current_timestamp' );
+    if($log->{'static'}) { push(@logupdate, 'oper = false'); }
+    $qry = sprintf(
+      'UPDATE logfiles SET %s WHERE logfiles_i = ?', join(', ', @logupdate)
+    );
     $sth = $dbh->prepare($qry);
     $r = $sth->execute($fsize[1], $log->{'logfiles_i'});
     if(!$r) {
       $logger->error($lbl, q{Failed to update table 'servers'});
       die;
     }
-    
+
     #--- commit transaction
     
     $r = $dbh->commit();
