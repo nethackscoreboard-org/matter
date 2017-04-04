@@ -324,6 +324,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  29, 'hardfought.org (FIQhack)',
+  'hdf', 'fh', NULL,
+  'https://www.hardfought.org/xlogfiles/fh/xlogfile',
+  'hdf.fh.log',
+  'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%s.nhdev.txt',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
