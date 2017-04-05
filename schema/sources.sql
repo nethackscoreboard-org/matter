@@ -329,7 +329,7 @@ INSERT INTO logfiles VALUES (
   'hdf', 'fh', NULL,
   'https://www.hardfought.org/xlogfiles/fh/xlogfile',
   'hdf.fh.log',
-  'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%s.nhdev.txt',
+  'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
