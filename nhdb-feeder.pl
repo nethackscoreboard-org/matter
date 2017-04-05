@@ -1372,6 +1372,7 @@ for my $log (@logfiles) {
         if(!$r) {
           $logger->error($lbl, 'Failure during inserting new records');
           $logger->error($lbl, sql_show_query($qry, $values));
+          $logger->error($lbl, $sth->errstr());
           die;
         }
         ($rowid) = $sth->fetchrow_array();
