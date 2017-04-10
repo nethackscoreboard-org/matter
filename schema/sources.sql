@@ -333,6 +333,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  30, 'hardfought.org (Fourk)',
+  'hdf', 'nhf', NULL,
+  'https://www.hardfought.org/xlogfiles/4k/xlogfile',
+  'hdf.nhf.log',
+  'https://www.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
