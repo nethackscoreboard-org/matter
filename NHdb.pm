@@ -212,6 +212,8 @@ sub format_duration
 # %E - end time (as YYYYMMDDHHMMSS)
 # %x - username before translation (as it appears in xlogfile)
 # %v - version number
+# %d - dumpfile (content of the 'dumpfile' xlogfile field)
+# %D - dumpfile processed for NH4 (_ replaced with :)
 #===============================================================================
 
 sub url_substitute
@@ -225,12 +227,28 @@ sub url_substitute
   my $r_endtime = $data->{'endtime_raw'};
   my $r_username_orig = $data->{'name_orig'};
   my $r_version = $data->{'version'};
+  my $r_dumpfile = $data->{'dumplog'};
 
   my @et = gmtime($data->{'endtime_raw'});
   my $r_endtime2 = sprintf(
     '%04d%02d%02d%02d%02d%02d',
     $et[5]+1900, $et[4]+1, $et[3], $et[2], $et[1], $et[0]
   );
+
+  # NetHack4 dumplogs work differently than the rest of the variants,
+  # this is what ais523 has to say about it (note, that "three underscores"
+  # is a mistake, there are only two):
+  #
+  # The dumplog filename is listed in the xlogfile, in the "dumplog"
+  # field. Replace the first three underscores with colons, all spaces
+  # with %20, and prepend http://nethack4.org/dumps/ to produce a filename
+  # you can link to.
+
+  my $r_dumpfile_nh4 = $data->{'dumplog'};
+  $r_dumpfile_nh4 =~ s/(\d{2})_(\d{2})_(\d{2})/$1:$2:$3/;
+  $r_dumpfile_nh4 =~ s/ /%20/g;
+
+  # perform the token replacement
 
   $strg =~ s/%u/$r_username/g;
   $strg =~ s/%U/$r_uinitial/g;
@@ -239,7 +257,9 @@ sub url_substitute
   $strg =~ s/%E/$r_endtime2/g;
   $strg =~ s/%x/$r_username_orig/g;
   $strg =~ s/%v/$r_version/g;
-  
+  $strg =~ s/%d/$r_dumpfile/g;
+  $strg =~ s/%D/$r_dumpfile_nh4/g;
+
   return $strg;
 }
 

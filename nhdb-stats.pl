@@ -757,39 +757,10 @@ sub row_fix
   #--- game dump URL
 
   if($logfiles->{$logfiles_i}{'dumpurl'}) {
-    
-    # NetHack4 dumplogs work differently than the rest of the variants,
-    # this is what ais523 has to say about it (note, that "three underscores"
-    # is a mistake, there are only two):
-    #
-    # The dumplog filename is listed in the xlogfile, in the "dumplog"
-    # field. Replace the first three underscores with colons, all spaces
-    # with %20, and prepend http://nethack4.org/dumps/ to produce a filename
-    # you can link to.
-
-    if(
-      $logfiles->{$logfiles_i}{'variant'} =~ /^(nh4|nhf|dyn|fh)$/
-    ) {
-      if($row->{'dumplog'}) {
-        my $dump_path = url_substitute($logfiles->{$logfiles_i}{'dumpurl'}, $row);
-        my $dump_file = $row->{'dumplog'};
-        # DynaHack saves time without the colons, doesn't avoid use of spaces
-        if($logfiles->{$logfiles_i}{'variant'} ne 'dyn') {
-          $dump_file =~ s/(\d{2})_(\d{2})_(\d{2})/$1:$2:$3/;
-          $dump_file =~ s/ /%20/g;
-        }
-        $row->{'dump'} = $dump_path . $dump_file;
-      }
-    } 
-
-    # everything else uses URL template
-
-    else {
-      $row->{'dump'} = url_substitute(
-        $logfiles->{$logfiles_i}{'dumpurl'},
-        $row
-      );
-    }
+    $row->{'dump'} = url_substitute(
+      $logfiles->{$logfiles_i}{'dumpurl'},
+      $row
+    );
   }
 
   #--- realtime (aka duration)

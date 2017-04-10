@@ -88,15 +88,13 @@ INSERT INTO logfiles VALUES (
 -----------------------------------------------------------------------------
 -- nethack4.org/N4O ---------------------------------------------------------
 -----------------------------------------------------------------------------
--- dumplogs work in a non-standard way, so 'dumpurl' field here is only
--- base URL, not URL template
 
 INSERT INTO logfiles VALUES (
   4, 'nethack4.org (4.3)',
   'n4o', 'nh4', '4.3',
   'http://nethack4.org/xlogfile.txt',
   'n4o.nh4-3.log',
-  'http://nethack4.org/dumps/',
+  'http://nethack4.org/dumps/%D',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -204,7 +202,7 @@ INSERT INTO logfiles VALUES (
   'asc', 'nhf', NULL,
   'https://ascension.run/xlogfiles/nhfourk',
   'asc.nhf.log',
-  'https://ascension.run/userdata/%u/nhfourk/dumplog/',
+  'https://ascension.run/userdata/%u/nhfourk/dumplog/%D',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -248,7 +246,7 @@ INSERT INTO logfiles VALUES (
   'asc', 'dyn', NULL,
   'https://ascension.run/xlogfiles/dynahack',
   'asc.dyn.log',
-  'https://ascension.run/userdata/%u/dynahack/dumplog/',
+  'https://ascension.run/userdata/%u/dynahack/dumplog/%d',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -259,7 +257,7 @@ INSERT INTO logfiles VALUES (
   'asc', 'nh4', '4.3',
   'https://ascension.run/xlogfiles/nethack4',
   'asc.nh4.log',
-  'https://ascension.run/userdata/%u/nethack4/dumplog/',
+  'https://ascension.run/userdata/%u/nethack4/dumplog/%D',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -270,7 +268,7 @@ INSERT INTO logfiles VALUES (
   'asc', 'fh', NULL,
   'https://ascension.run/xlogfiles/fiqhack',
   'asc.fh.log',
-  'https://ascension.run/userdata/%u/fiqhack/dumplog/',
+  'https://ascension.run/userdata/%u/fiqhack/dumplog/%D',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -329,7 +327,7 @@ INSERT INTO logfiles VALUES (
   'hdf', 'fh', NULL,
   'https://www.hardfought.org/xlogfiles/fh/xlogfile',
   'hdf.fh.log',
-  'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/',
+  'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
