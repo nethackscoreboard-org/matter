@@ -344,6 +344,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  31, 'hardfought.org (dNetHack)',
+  'hdf', 'dnh', NULL,
+  'https://www.hardfought.org/xlogfiles/dnethack/xlogfile',
+  'hdf.dnh.log',
+  'https://www.hardfought.org/userdata/%U/%u/dnethack/dumplog/%s.dnh.txt',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
