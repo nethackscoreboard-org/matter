@@ -87,11 +87,11 @@ process it if it grows or its database entries are purged.
 **--pmap-list**  
 Display list of current player name translations.
 
-**--pmap-add=*SRCNAME*/*SERVER*=*DSTNAME*  
+**--pmap-add**=*SRCNAME*/*SERVER*=*DSTNAME*  
 Add new translation, playername *srcname* on server *server* will be considered
 *dstname*. Multiple translations can be added at the same time and this can be combined with `--pmap-remove`.
 
-**--pmap-remove=*SRCNAME*/*SERVER*  
+**--pmap-remove**=*SRCNAME*/*SERVER*  
 Remove existing translation. Multiple translations can be removed at the same time and this can be combined with `--pmap-add`.
 
 ### nhdb-stats.pl
