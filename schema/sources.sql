@@ -355,6 +355,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  32, 'hardfought.org (NetHack 4)',
+  'hdf', 'nh4', NULL,
+  'https://www.hardfought.org/xlogfiles/nethack4/xlogfile',
+  'hdf.nh4.log',
+  'https://www.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
