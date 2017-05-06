@@ -366,6 +366,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  33, 'hardfought.org (DynaHack)',
+  'hdf', 'dyn', NULL,
+  'https://www.hardfought.org/xlogfiles/dynahack/xlogfile',
+  'hdf.dyn.log',
+  'https://www.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
