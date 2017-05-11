@@ -218,7 +218,8 @@ RETURNS TABLE (
   r_logfiles_i     int,
   r_dumplog        varchar(128),
   r_ascended       boolean,
-  r_realtime       bigint
+  r_realtime       bigint,
+  r_elbereths      int
 ) AS $$
 
 SELECT
@@ -228,7 +229,7 @@ SELECT
   to_char(g.endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
   endtime_raw,
   g.deathlev, g.hp, g.maxhp, g.maxlvl, g.points, g.conduct, g.turns,
-  l.logfiles_i, g.dumplog, g.ascended, g.realtime
+  l.logfiles_i, g.dumplog, g.ascended, g.realtime, g.elbereths
 FROM (
   SELECT
     min(h.endtime) AS endtime, h.role, h.race, h.align0
