@@ -54,12 +54,21 @@ BEGIN
 # or list of conduct abbreviations, depending on context. The list of
 # conduct abbreviations is ordered according to ordering in
 # "nh_conduct_ord".
+#
+# There's one complication: in some variants elberethless conduct is
+# signalled by the 'elbereths' xlogfile field.
 #===========================================================================
 
 sub nh_conduct
 {
-	my $conduct_bitfield = shift;    # 1. conduct field from xlogfile
-  my $variant          = shift;    # 2. variant code
+  my (
+    $conduct_bitfield,    # 1. 'conduct' field from xlogfile
+    $elbereths,           # 2. 'elbereths' field from xlogfile
+    $variant              # 3. variant code
+  ) = @_;
+
+  #--- other variables
+
   my @conducts;
 
   #--- choose mapping to be used
@@ -79,6 +88,10 @@ sub nh_conduct
 	#--- get ordered list of conducts
 
 	for my $c (@{$nh_def->{'nh_conduct_ord'}}) {
+    if($c eq 'elbe' && defined $elbereths && !$elbereths) {
+      push(@conducts, $c);
+      last;
+    }
     my $v = $con_to_val{$c};
 		if($conduct_bitfield & $v) {
       push(@conducts, $c);

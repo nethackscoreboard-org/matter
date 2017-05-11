@@ -37,6 +37,7 @@ CREATE TABLE games (
   maxlvl        int NOT NULL,
   points        bigint NOT NULL,
   conduct       integer NOT NULL,
+  elbereths     integer,
   turns         bigint NOT NULL,
   achieve       integer,
   realtime      bigint,
@@ -66,8 +67,8 @@ CREATE OR REPLACE VIEW v_games_recent AS
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
-    endtime_raw, starttime_raw, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime, 
+    endtime_raw, starttime_raw, death, dumplog, deathlev,
+    hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
     games.version, ascended
   FROM 
     games
@@ -83,8 +84,8 @@ CREATE OR REPLACE VIEW v_games AS
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
-    endtime_raw, starttime_raw, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime, 
+    endtime_raw, starttime_raw, death, dumplog, deathlev,
+    hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
     games.version, ascended
   FROM 
     games
@@ -100,8 +101,8 @@ CREATE OR REPLACE VIEW v_games_all AS
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
-    endtime_raw, starttime_raw, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime, 
+    endtime_raw, starttime_raw, death, dumplog, deathlev,
+    hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
     games.version, ascended, scummed
   FROM 
     games
@@ -117,8 +118,8 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     gender, gender0, align, align0,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
-    endtime_raw, starttime_raw, death,
-    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime,
+    endtime_raw, starttime_raw, death, deathlev,
+    hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
     games.version, ascended, dumplog,
     extract('year'  from age(
       current_timestamp AT TIME ZONE 'UTC', 
