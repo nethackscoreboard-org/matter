@@ -1630,23 +1630,12 @@ sub gen_page_about
 
   $logger->info('Creating page: About');
 
-  #--- define query fields
+  #--- run a query
 
-  my @fields = (
-    q{*},
-    q{to_char(lastchk, 'YYYY-MM-DD HH24:MI') AS lastchk_trunc},
-    q{current_timestamp - lastchk < interval '1 hour' AS lastchk_1h},
-    q{current_timestamp - lastchk < interval '1 day' AS lastchk_1d},
-    q{current_timestamp - lastchk < interval '30 days' AS lastchk_30d}
-  );
-
-  #--- pull data from db
-
-  my $query = sprintf(
-    q{SELECT %s FROM logfiles ORDER BY logfiles_i},
-    join(', ', @fields)
-  );
-  my $result = sql_load($query);
+  my $result = sql_load('SELECT * FROM v_sources');
+  if(!ref($result)) {
+    $logger->error($result);
+  }
   return $result if !ref($result);
   $data{'logfiles'} = $result;
 

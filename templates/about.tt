@@ -45,14 +45,20 @@ also have their personal statistics put together into one summary view.
 <th>logfile</th>
 <th>size</th>
 <th>lastchk</th>
+<th>lastentry</th>
 </tr>
 
 [% FOREACH row IN logfiles -%]
-[%- SET stale = "stale_30d" -%]
-[%- IF row.lastchk_30d; SET stale = "stale_1d"; END -%]
-[%- IF row.lastchk_1d; SET stale = "stale_1h"; END -%]
+[%- SET stale = "stale_hi" -%]
+[%- IF row.lastchk_30d; SET stale = "stale_mid"; END -%]
+[%- IF row.lastchk_1d; SET stale = "stale_low"; END -%]
 [%- IF row.lastchk_1h; SET stale = "fresh"; END -%]
 [%- IF row.static; SET stale = "static"; END -%]
+[%- SET entryage = "stale_hi" -%]
+[%- IF row.lastentry_30d; SET entryage = "stale_mid"; END -%]
+[%- IF row.lastentry_7d; SET entryage = "stale_low"; END -%]
+[%- IF row.lastentry_1d; SET entryage = "fresh"; END -%]
+[%- IF row.static; SET entryage = "static"; END -%]
 <tr>
 <td class="numeric">[% row.logfiles_i %]</td>
 <td>[% row.server %]</td>
@@ -65,16 +71,29 @@ also have their personal statistics put together into one summary view.
 <td class="numeric">[% number(row.fpos) %]</td>
 [% END %]
 <td><span class="[% GET stale %]">&nbsp;</span>&nbsp;[% row.lastchk_trunc %]</td>
+<td><span class="[% GET entryage %]">&nbsp;</span>&nbsp;[% row.lastentry_trunc %]</td>
 </tr>
 [% END %]
 </table>
 
-<span class="notice">
+<p>
+<span class="notice">lastchk:
 <span class="fresh">&nbsp;</span>&nbsp;updated in last hour &nbsp;
-<span class="stale_1h">&nbsp;</span>&nbsp;no updates in last hour &nbsp;
-<span class="stale_1d">&nbsp;</span>&nbsp;no updates in last day &nbsp;
-<span class="stale_30d">&nbsp;</span>&nbsp;no updates in last 30 days &nbsp;
+<span class="stale_low">&nbsp;</span>&nbsp;no updates in last hour &nbsp;
+<span class="stale_mid">&nbsp;</span>&nbsp;no updates in last day &nbsp;
+<span class="stale_hi">&nbsp;</span>&nbsp;no updates in last 30 days &nbsp;
 <span class="static">&nbsp;</span>&nbsp;historic data, no longer updated &nbsp; 
 </span>
+
+<br>
+
+<span class="notice">lastentry:
+<span class="fresh">&nbsp;</span>&nbsp;no older than 1 day &nbsp;
+<span class="stale_low">&nbsp;</span>&nbsp;no older than 7 days &nbsp;
+<span class="stale_mid">&nbsp;</span>&nbsp;no older than 30 days &nbsp;
+<span class="stale_hi">&nbsp;</span>&nbsp;older than 30 days &nbsp;
+<span class="static">&nbsp;</span>&nbsp;historic data, last entry age not shown &nbsp; 
+</span>
+</p>
 
 [% INCLUDE footer.tt %]

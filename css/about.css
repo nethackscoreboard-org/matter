@@ -3,18 +3,18 @@ SPAN.fresh {
   padding : 0 0.2em;
 }
 
-SPAN.stale_1h {
+SPAN.stale_low {
   background : red;
   opacity : 0.5;
   padding : 0 0.2em;
 }
 
-SPAN.stale_1d {
+SPAN.stale_mid {
   background : red;
   padding : 0 0.2em;
 }
 
-SPAN.stale_30d {
+SPAN.stale_hi {
   background : magenta;
   padding : 0 0.2em;
 }
