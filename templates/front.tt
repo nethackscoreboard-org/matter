@@ -57,7 +57,7 @@
 <td class="numeric" data-sortkey="[% row.realtime_raw %]">[% row.realtime %]</td>
 <td class="numeric" data-sortkey="[%row.maxlvl %]">[% row.deathlev %]/[% row.maxlvl %]</td>
 <td class="numeric" data-sortkey="[% row.maxhp %]">[% row.hp %]/[% row.maxhp %]</td>
-<td>[% row.endtime %]</td>
+<td>[% row.endtime_fmt %]</td>
 <td>[% row.age %]</td>
 </tr>
 [% END %]

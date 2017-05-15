@@ -58,12 +58,12 @@
 <td class="numeric">[% games_count_scum %]</td>
 <td class="numeric">[% zscore.item('val').item(name).item(variant).item('all') ? zsc(zscore.item('val').item(name).item(variant).item('all')) : 0 %]</td>
 [% IF games_first.dump -%]
-<td class="numeric"><a href="[% games_first.dump %]">[% games_first.endtime %]</a></td>
+<td class="numeric"><a href="[% games_first.dump %]">[% games_first.endtime_fmt %]</a></td>
 [%- ELSE -%]
-  <td class="numeric">[% games_first.endtime %]</td>
+  <td class="numeric">[% games_first.endtime_fmt %]</td>
 [%- END %]
 [% IF games_last.dump -%]
-<td class="numeric"><a href="[% games_last.dump %]">[% games_last.endtime %]</a></td>
+<td class="numeric"><a href="[% games_last.dump %]">[% games_last.endtime_fmt %]</a></td>
 [%- ELSE -%]
   <td class="numeric">[% games_last.endtime %]</td>
 [%- END %]

@@ -1483,9 +1483,9 @@ sub gen_page_player
     $row->{'open'}       = $streaks[$i]->{'open'};
     $row->{'open'}       = 0 if $row->{'server'} eq 'dev';
     $row->{'variant'}    = $ascs_by_rowid{$game_first}{'variant'};
-    $row->{'start'}      = $ascs_by_rowid{$game_first}{'endtime'};
+    $row->{'start'}      = $ascs_by_rowid{$game_first}{'endtime_fmt'};
     $row->{'start_dump'} = $ascs_by_rowid{$game_first}{'dump'};
-    $row->{'end'}        = $ascs_by_rowid{$game_last}{'endtime'};
+    $row->{'end'}        = $ascs_by_rowid{$game_last}{'endtime_fmt'};
     $row->{'end_dump'}   = $ascs_by_rowid{$game_last}{'dump'};
     $row->{'glist'}      = [];
     for my $game_rowid (@{$streaks[$i]->{'games'}}) {

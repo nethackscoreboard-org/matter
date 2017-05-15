@@ -50,7 +50,7 @@
   <td class="numeric">[% row.realtime %]</td>
   <td class="numeric">[% row.deathlev %]/[% row.maxlvl %]</td>
   <td class="numeric">[% row.hp %]/[% row.maxhp %]</td>
-  <td>[% row.endtime %]</td>
+  <td>[% row.endtime_fmt %]</td>
   <td>[% row.death %]</td>
 [% IF datetick %]
 [% IF row.short_date != dt%]

@@ -7,7 +7,7 @@
     <td class="numeric">[% r.size %]</td>
     <td>[% IF r.size %]<a href="[% r.0.plrpage %]">[% r.0.name_orig %]</a>[% END %]</td>
     <td>[% IF r.size %][% r.0.role %]-[% r.0.race %]-[% r.0.gender0 %]-[% r.0.align0 %][% END %]</td>
-    <td>[% r.0.endtime %]</td>
+    <td>[% r.0.endtime_fmt %]</td>
   </tr>
 [%- END -%]
 

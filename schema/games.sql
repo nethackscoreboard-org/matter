@@ -64,8 +64,8 @@ GRANT USAGE ON games_seq TO nhdbfeeder;
 CREATE OR REPLACE VIEW v_games_recent AS
   SELECT 
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
-    gender, gender0, align, align0,
-    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+    gender, gender0, align, align0, endtime,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
@@ -82,8 +82,8 @@ GRANT SELECT ON v_games_recent TO nhdbstats;
 CREATE OR REPLACE VIEW v_games AS
   SELECT 
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
-    gender, gender0, align, align0,
-    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+    gender, gender0, align, align0, endtime,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
     games.version, ascended
@@ -99,8 +99,8 @@ GRANT SELECT ON v_games TO nhdbstats;
 CREATE OR REPLACE VIEW v_games_all AS
   SELECT 
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
-    gender, gender0, align, align0,
-    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+    gender, gender0, align, align0, endtime,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
     games.version, ascended, scummed
@@ -115,8 +115,8 @@ GRANT SELECT ON v_games_all TO nhdbstats;
 CREATE OR REPLACE VIEW v_ascended_recent AS
   SELECT
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
-    gender, gender0, align, align0,
-    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+    gender, gender0, align, align0, endtime,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, death, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
@@ -153,8 +153,8 @@ GRANT SELECT ON v_ascended_recent TO nhdbstats;
 CREATE OR REPLACE VIEW v_ascended AS
   SELECT
     rowid, logfiles_i, name, name_orig, server, variant, role, race,
-    gender, gender0, align, align0,
-    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+    gender, gender0, align, align0, endtime,
+    to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog,
     deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime,
     games.version, ascended
@@ -204,9 +204,11 @@ RETURNS TABLE (
   r_race           char(3),
   r_align          char(3),
   r_gender         char(3),
-  r_starttime      text,
+  r_starttime      timestamp with time zone,
+  r_starttime_fmt  text,
   r_starttime_raw  bigint,
-  r_endtime        text,
+  r_endtime        timestamp with time zone,
+  r_endtime_fmt    text,
   r_endtime_raw    bigint,
   r_deathlev       int,
   r_hp             int,
@@ -224,9 +226,10 @@ RETURNS TABLE (
 
 SELECT
   server, variant, g.name, g.role, g.race, g.align0, g.gender0,
-  to_char(g.starttime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS starttime,
-  starttime_raw,
-  to_char(g.endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime,
+  starttime,
+  to_char(g.starttime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS starttime_fmt,
+  starttime_raw, endtime,
+  to_char(g.endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
   endtime_raw,
   g.deathlev, g.hp, g.maxhp, g.maxlvl, g.points, g.conduct, g.turns,
   l.logfiles_i, g.dumplog, g.ascended, g.realtime, g.elbereths
