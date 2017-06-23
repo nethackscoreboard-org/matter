@@ -35,6 +35,7 @@
   #--- define all races
 
   "nh_races_def" : {
+    "bat" : "chiropteran",
     "clk" : "clockwork automaton",
     "hum" : "human",
     "dro" : "drow",
@@ -48,6 +49,7 @@
     "ogr" : "ogre",
     "orc" : "orc",
     "scu" : "scurrier",
+    "swn" : "yuki-onna",
     "syl" : "sylph",
     "vam" : "vampire"
   },
@@ -152,6 +154,9 @@
       [ "Bin", "Orc", "Mal", "Non" ],
       [ "Bin", "Vam", "Fem", "Non" ],
       [ "Bin", "Vam", "Mal", "Non" ],
+      [ "Bin", "Bat", "Fem", "Non" ],
+      [ "Bin", "Bat", "Mal", "Non" ],
+      [ "Bin", "Swn", "Fem", "Non" ],
       [ "Brd", "Clk", "Fem", "Neu" ],
       [ "Brd", "Clk", "Mal", "Neu" ],
       [ "Brd", "Dro", "Fem", "Cha" ],
@@ -174,6 +179,8 @@
       [ "Brd", "Inc", "Mal", "Neu" ],
       [ "Brd", "Orc", "Fem", "Cha" ],
       [ "Brd", "Orc", "Mal", "Cha" ],
+      [ "Brd", "Swn", "Fem", "Neu" ],
+      [ "Brd", "Swn", "Fem", "Cha" ],
       [ "Cav", "Dwa", "Fem", "Law" ],
       [ "Cav", "Dwa", "Mal", "Law" ],
       [ "Cav", "Gno", "Fem", "Neu" ],
@@ -186,6 +193,10 @@
       [ "Cav", "Inc", "Fem", "Neu" ],
       [ "Cav", "Inc", "Mal", "Law" ],
       [ "Cav", "Inc", "Mal", "Neu" ],
+      [ "Cav", "Bat", "Fem", "Neu" ],
+      [ "Cav", "Bat", "Fem", "Law" ],
+      [ "Cav", "Bat", "Mal", "Neu" ],
+      [ "Cav", "Bat", "Mal", "Law" ],
       [ "Con", "Dro", "Fem", "Cha" ],
       [ "Con", "Dro", "Mal", "Neu" ],
       [ "Con", "Dwa", "Fem", "Cha" ],
@@ -204,6 +215,8 @@
       [ "Con", "Orc", "Mal", "Cha" ],
       [ "Con", "Vam", "Fem", "Cha" ],
       [ "Con", "Vam", "Mal", "Cha" ],
+      [ "Con", "Bat", "Fem", "Cha" ],
+      [ "Con", "Bat", "Mal", "Cha" ],
       [ "Hea", "Gno", "Fem", "Neu" ],
       [ "Hea", "Gno", "Mal", "Neu" ],
       [ "Hea", "Hum", "Fem", "Neu" ],
@@ -242,6 +255,9 @@
       [ "Mon", "Inc", "Mal", "Cha" ],
       [ "Mon", "Inc", "Mal", "Neu" ],
       [ "Mon", "Inc", "Mal", "Law" ],
+      [ "Mon", "Swn", "Fem", "Law" ],
+      [ "Mon", "Swn", "Fem", "Neu" ],
+      [ "Mon", "Swn", "Fem", "Cha" ],
       [ "Nob", "Dro", "Fem", "Cha" ],
       [ "Nob", "Dro", "Mal", "Neu" ],
       [ "Nob", "Dwa", "Fem", "Law" ],
@@ -316,6 +332,8 @@
       [ "Rog", "Orc", "Mal", "Cha" ],
       [ "Rog", "Vam", "Fem", "Cha" ],
       [ "Rog", "Vam", "Mal", "Cha" ],
+      [ "Rog", "Bat", "Fem", "Cha" ],
+      [ "Rog", "Bat", "Mal", "Cha" ],
       [ "Ran", "Dro", "Fem", "Cha" ],
       [ "Ran", "Dro", "Mal", "Neu" ],
       [ "Ran", "Elf", "Fem", "Cha" ],
@@ -336,6 +354,10 @@
       [ "Ran", "Inc", "Mal", "Neu" ],
       [ "Ran", "Orc", "Fem", "Cha" ],
       [ "Ran", "Orc", "Mal", "Cha" ],
+      [ "Ran", "Bat", "Fem", "Neu" ],
+      [ "Ran", "Bat", "Mal", "Neu" ],
+      [ "Ran", "Bat", "Fem", "Cha" ],
+      [ "Ran", "Bat", "Mal", "Cha" ],
       [ "Sam", "Clk", "Fem", "Law" ],
       [ "Sam", "Clk", "Mal", "Law" ],
       [ "Sam", "Hlf", "Fem", "Law" ],
@@ -344,6 +366,7 @@
       [ "Sam", "Hum", "Mal", "Law" ],
       [ "Sam", "Inc", "Fem", "Law" ],
       [ "Sam", "Inc", "Mal", "Law" ],
+      [ "Sam", "Swn", "Fem", "Law" ],
       [ "Tou", "Hum", "Fem", "Neu" ],
       [ "Tou", "Hum", "Mal", "Neu" ],
       [ "Tou", "Inc", "Fem", "Neu" ],
@@ -375,6 +398,8 @@
       [ "Val", "Hum", "Fem", "Neu" ],
       [ "Val", "Inc", "Fem", "Law" ],
       [ "Val", "Inc", "Fem", "Neu" ],
+      [ "Val", "Swn", "Fem", "Law" ],
+      [ "Val", "Swn", "Fem", "Neu" ],
       [ "Wiz", "Dro", "Fem", "Cha" ],
       [ "Wiz", "Dro", "Mal", "Neu" ],
       [ "Wiz", "Elf", "Fem", "Cha" ],
@@ -594,7 +619,8 @@
         "nob", "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
       ],
       "races" : [ 
-        "clk", "dro", "dwa", "elf", "gno", "hum", "inc", "orc", "vam" 
+        "bat", "clk", "dro", "dwa", "elf", "gno", "hum", "inc",
+        "orc", "swn", "vam"
       ],
       "aligns" : [
         "law", "neu", "cha", "non"
@@ -702,7 +728,8 @@
         "nob", "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
       ],
       "races" : [
-        "clk", "dro", "dwa", "elf", "gno", "hlf", "hum", "inc", "orc", "vam" 
+        "bat", "clk", "dro", "dwa", "elf", "gno", "hlf", "hum", "inc",
+        "orc", "swn", "vam"
       ],
       "aligns" : [ "law", "neu", "cha", "non" ],
       "genders" : [ "mal", "fem" ]
