@@ -377,6 +377,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles VALUES (
+  34, 'hardfought.org (SporkHack)',
+  'hdf', 'sh', NULL,
+  'https://www.hardfought.org/xlogfiles/sporkhack/xlogfile',
+  'hdf.sh.log',
+  'https://www.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
 -----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
