@@ -606,6 +606,7 @@ INSERT INTO logfiles VALUES (
   'dnt', 'nh', NULL,
   'https://hardfought.org/devnull/xlogfiles.dnt',
   'devnull-2017.log',
+  'https://www.hardfought.org/userdata/%U/%u/dn36/dumplog/%s.dn36.txt',
   NULL,
   NULL,
   TRUE, FALSE, TRUE,
