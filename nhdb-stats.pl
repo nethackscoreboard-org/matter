@@ -728,6 +728,7 @@ sub row_fix
   my $row = shift;
   my $devnull = shift;
   my $logfiles_i = $row->{'logfiles_i'};
+  my $logfile = $logfiles->{$logfiles_i};
 
   #--- convert realtime to human-readable form
 
@@ -756,9 +757,9 @@ sub row_fix
 
   #--- game dump URL
 
-  if($logfiles->{$logfiles_i}{'dumpurl'}) {
+  if($logfile->{'dumpurl'}) {
     $row->{'dump'} = url_substitute(
-      $logfiles->{$logfiles_i}{'dumpurl'},
+      $logfile->{'dumpurl'},
       $row
     );
   }
