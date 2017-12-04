@@ -485,16 +485,6 @@ sub sql_insert_games
     ($l->{'role'}, $l->{'race'}) = nh_dnethack_map($l->{'role'}, $l->{'race'});
   }
 
-  #--- NetHack 3.6.0 bogus realtime workaround
-  # According to paxed, NH 3.6.0 sometimes saves bogus realtime; he recommended
-  # to discard any realtime that is larger than endttime - starttime.
-  if(
-    $l->{'variant'} eq 'nh' && $l->{'version'} eq '3.6.0' &&
-    $l->{'endttime'} - $l->{'starttime'} < $l->{'realtime'}
-  ) {
-    $l->{'realtime'} = undef;
-  }
-
   #--- regular fields
   for my $k (@{$NHdb::nhdb_def->{'feeder'}{'regular_fields'}}) {
     if(exists $l->{$k}) {

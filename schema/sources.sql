@@ -16,6 +16,7 @@ INSERT INTO logfiles VALUES (
   'nao.nh.343.log',
   'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh343.txt'
   'http://alt.org/nethack/userdata/%u/%u.nh343rc',
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -27,6 +28,7 @@ INSERT INTO logfiles VALUES (
   'nao.nh.360.log',
   NULL,
   NULL,
+  '{"bug360duration"}',
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -36,6 +38,7 @@ INSERT INTO logfiles VALUES (
   'nao', 'nh', '3.6.1',
   'https://alt.org/nethack/xlogfile.nh361dev',
   'nao.nh.361dev.log',
+  NULL,
   NULL,
   NULL,
   TRUE, FALSE, TRUE,
@@ -53,6 +56,7 @@ INSERT INTO logfiles VALUES (
   'ade.ace.log',
   'https://ascension.run/history/ade/userdata/%u/acehack/dumplog/%s',
   NULL,
+  NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
@@ -68,6 +72,7 @@ INSERT INTO logfiles VALUES (
   'une.unh.log',
   'http://un.nethack.nu/user/%u/dumps/eu/%u.%e.txt.html',
   'http://un.nethack.nu/rcfiles/%u.nethackrc',
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -82,6 +87,7 @@ INSERT INTO logfiles VALUES (
   'http://un.nethack.nu/logs/xlogfile-us',
   'unu.unh.log',
   'http://un.nethack.nu/user/%u/dumps/us/%u.%e.txt.html',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -98,6 +104,7 @@ INSERT INTO logfiles VALUES (
   'n4o.nh4-3.log',
   'http://nethack4.org/dumps/%D',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -107,6 +114,7 @@ INSERT INTO logfiles VALUES (
   'n4o', 'nh4', '4.2',
   'http://nethack4.org/4.2-xlogfile',
   'n4o.nh4-2.log',
+  NULL,
   NULL,
   NULL,
   TRUE, TRUE, TRUE,
@@ -124,6 +132,7 @@ INSERT INTO logfiles VALUES (
   'shc.sh.log',
   NULL,
   NULL,
+  NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
@@ -139,6 +148,7 @@ INSERT INTO logfiles VALUES (
   'gho.gh.log',
   'http://grunthack.org/userdata/%U/%u/dumplog/%s.gh020.txt',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -152,8 +162,9 @@ INSERT INTO logfiles VALUES (
   'did', 'dnh', NULL,
   'http://dnethack.ilbelkyr.de/xlogfile.txt',
   'did.dnh.log',
-  NULL,
   'https://ascension.run/history/ilbelkyr/userdata/%u/dnethack/dumplog/%s',
+  NULL,
+  NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
@@ -168,6 +179,7 @@ INSERT INTO logfiles VALUES (
  'https://ascension.run/history/aeu/xlogfiles/acehack',
  'aeu.ace.log',
  'https://ascension.run/history/aeu/userdata/%u/acehack/dumplog/%s',
+ NULL,
  NULL,
  TRUE, TRUE, FALSE,
  'UTC', NULL, NULL
@@ -184,6 +196,7 @@ INSERT INTO logfiles VALUES (
   'asc.nh.log',
   'https://ascension.run/userdata/%u/nethack/dumplog/%s',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -194,6 +207,7 @@ INSERT INTO logfiles VALUES (
   'https://ascension.run/xlogfiles/dnethack',
   'asc.dnh.log',
   'https://ascension.run/userdata/%u/dnethack/dumplog/%s',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -206,6 +220,7 @@ INSERT INTO logfiles VALUES (
   'asc.nhf.log',
   'https://ascension.run/userdata/%u/nhfourk/dumplog/%D',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -216,6 +231,7 @@ INSERT INTO logfiles VALUES (
   'https://ascension.run/history/junethack2015/xlogfiles/sporkhack',
   'asc.sh.2015.log',
   'https://ascension.run/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
+  NULL,
   NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
@@ -228,6 +244,7 @@ INSERT INTO logfiles VALUES (
   'asc.gh.2015.log',
   'https://ascension.run/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
   NULL,
+  NULL,
   TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
@@ -238,6 +255,7 @@ INSERT INTO logfiles VALUES (
   'https://ascension.run/xlogfiles/unnethack',
   'asc.unh.log',
   'https://ascension.run/userdata/%u/unnethack/dumplog/%s',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -250,6 +268,7 @@ INSERT INTO logfiles VALUES (
   'asc.dyn.log',
   'https://ascension.run/userdata/%u/dynahack/dumplog/%d',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -261,6 +280,7 @@ INSERT INTO logfiles VALUES (
   'asc.nh4.log',
   'https://ascension.run/userdata/%u/nethack4/dumplog/%D',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -271,6 +291,7 @@ INSERT INTO logfiles VALUES (
   'https://ascension.run/xlogfiles/fiqhack',
   'asc.fh.log',
   'https://ascension.run/userdata/%u/fiqhack/dumplog/%D',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -287,6 +308,7 @@ INSERT INTO logfiles VALUES (
   'hdf.nh.343.log',
   'https://www.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -297,6 +319,7 @@ INSERT INTO logfiles VALUES (
   'https://www.hardfought.org/xlogfiles/gh/xlogfile',
   'hdf.gh.log',
   'https://www.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -309,6 +332,7 @@ INSERT INTO logfiles VALUES (
   'hdf.unh.log',
   'https://www.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -319,6 +343,7 @@ INSERT INTO logfiles VALUES (
   'https://www.hardfought.org/xlogfiles/nhdev/xlogfile',
   'hdf.nhdev.log',
   'https://www.hardfought.org/userdata/%U/%u/nhdev/dumplog/%s.nhdev.txt',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -331,6 +356,7 @@ INSERT INTO logfiles VALUES (
   'hdf.fh.log',
   'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -341,6 +367,7 @@ INSERT INTO logfiles VALUES (
   'https://www.hardfought.org/xlogfiles/4k/xlogfile',
   'hdf.nhf.log',
   'https://www.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -353,6 +380,7 @@ INSERT INTO logfiles VALUES (
   'hdf.dnh.log',
   'https://www.hardfought.org/userdata/%U/%u/dnethack/dumplog/%s.dnh.txt',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -363,6 +391,7 @@ INSERT INTO logfiles VALUES (
   'https://www.hardfought.org/xlogfiles/nethack4/xlogfile',
   'hdf.nh4.log',
   'https://www.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -375,6 +404,7 @@ INSERT INTO logfiles VALUES (
   'hdf.dyn.log',
   'https://www.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -385,6 +415,7 @@ INSERT INTO logfiles VALUES (
   'https://www.hardfought.org/xlogfiles/sporkhack/xlogfile',
   'hdf.sh.log',
   'https://www.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -401,6 +432,7 @@ INSERT INTO logfiles VALUES (
   'esm.nh.360.log',
   'https://em.slashem.me/userdata/%u/nethack/dumplog/%E.txt',
   NULL,
+  '{"bug360duration"}',
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -412,6 +444,7 @@ INSERT INTO logfiles VALUES (
   'esm.gh.log',
   'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt',
   NULL,
+  NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -422,6 +455,7 @@ INSERT INTO logfiles VALUES (
   'https://em.slashem.me/xlogfiles/sporkhack',
   'esm.sh.log',
   'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt',
+  NULL,
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -438,6 +472,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2006.log',
   NULL,
   NULL,
+  NULL,
   TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
@@ -447,6 +482,7 @@ INSERT INTO logfiles VALUES (
   'dev', 'nh', NULL,
   NULL,
   'devnull-2007.log',
+  NULL,
   NULL,
   NULL,
   TRUE, TRUE, FALSE,
@@ -460,6 +496,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2008.log',
   NULL,
   NULL,
+  NULL,
   TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
@@ -469,6 +506,7 @@ INSERT INTO logfiles VALUES (
   'dev', 'nh', NULL,
   NULL,
   'devnull-2009.log',
+  NULL,
   NULL,
   NULL,
   TRUE, TRUE, FALSE,
@@ -482,6 +520,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2010.log',
   NULL,
   NULL,
+  NULL,
   TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
@@ -491,6 +530,7 @@ INSERT INTO logfiles VALUES (
   'dev', 'nh', NULL,
   NULL,
   'devnull-2011.log',
+  NULL,
   NULL,
   NULL,
   TRUE, TRUE, FALSE,
@@ -504,6 +544,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2012.log',
   NULL,
   NULL,
+  NULL,
   TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
@@ -513,6 +554,7 @@ INSERT INTO logfiles VALUES (
   'dev', 'nh', NULL,
   NULL,
   'devnull-2013.log',
+  NULL,
   NULL,
   NULL,
   TRUE, TRUE, FALSE,
@@ -526,6 +568,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2014.log',
   NULL,
   NULL,
+  NULL,
   TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
@@ -537,6 +580,7 @@ INSERT INTO logfiles VALUES (
   'devnull-2015.log',
   NULL,
   NULL,
+  NULL,
   TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
@@ -546,6 +590,7 @@ INSERT INTO logfiles VALUES (
   'dev', 'nh', NULL,
   'http://nethack.devnull.net/tournament/scores.xlogfile',
   'devnull-2016.log',
+  NULL,
   NULL,
   NULL,
   TRUE, TRUE, FALSE,

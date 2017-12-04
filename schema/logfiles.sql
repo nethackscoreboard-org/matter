@@ -33,6 +33,14 @@
 --
 -- rcfileurl
 -- Determines location of player rc files
+--
+-- options
+-- Defines options for the logfile, usually some special handling. Currently
+-- defined options are:
+--
+--  * bug360duration - do not show the duration to the user, this exists
+--      because NetHack 3.6.0 was recording bogus 'realtime' field into
+--      xlogfile
 -- 
 -- oper
 -- If true, the feeder will process this entry; if false the logfile
@@ -79,6 +87,7 @@ CREATE TABLE logfiles (
   localfile   varchar(128) NOT NULL,
   dumpurl     varchar(128),
   rcfileurl   varchar(128),
+  options     varchar(16) ARRAY,
   oper        boolean,
   static      boolean,
   httpcont    boolean,

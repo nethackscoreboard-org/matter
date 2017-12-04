@@ -772,7 +772,7 @@ sub row_fix
     $row->{'variant'} eq 'nhf' ||
     $row->{'variant'} eq 'dyn' ||
     $row->{'variant'} eq 'fh'  ||
-    ($row->{'variant'} eq 'nh' && $row->{'version'} eq '3.6.0')
+    grep(/^bug360duration$/, @{$logfile->{'options'}})
   ) {
     $row->{'realtime'} = '';
   }
