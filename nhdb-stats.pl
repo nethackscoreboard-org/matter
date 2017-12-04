@@ -2719,7 +2719,7 @@ $logger = get_logger('Stats');
 #--- title
 
 $logger->info('NetHack Scoreboard / Stats');
-$logger->info('(c) 2013-15 Borek Lupomesky');
+$logger->info('(c) 2013-17 Borek Lupomesky');
 $logger->info('---');
 
 #--- process command-line
