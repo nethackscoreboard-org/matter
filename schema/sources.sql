@@ -7,12 +7,14 @@
 -- nethack.alt org/NAO ------------------------------------------------------
 -----------------------------------------------------------------------------
 
+-- https://s3.amazonaws.com/altorg/dumplog/Bezz/1434625913.nh343.txt
+
 INSERT INTO logfiles VALUES (
   1, 'nethack.alt.org (3.4.3)',
   'nao', 'nh', '3.4.3',
   'http://alt.org/nethack/xlogfile.full.txt',
   'nao.nh.343.log',
-  'http://alt.org/nethack/userdata/%U/%u/dumplog/%s.nh343.txt',
+  'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh343.txt'
   'http://alt.org/nethack/userdata/%u/%u.nh343rc',
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
@@ -372,6 +374,17 @@ INSERT INTO logfiles VALUES (
   'https://www.hardfought.org/xlogfiles/dynahack/xlogfile',
   'hdf.dyn.log',
   'https://www.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d',
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles VALUES (
+  34, 'hardfought.org (SporkHack)',
+  'hdf', 'sh', NULL,
+  'https://www.hardfought.org/xlogfiles/sporkhack/xlogfile',
+  'hdf.sh.log',
+  'https://www.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt',
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
