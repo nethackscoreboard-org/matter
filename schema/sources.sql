@@ -284,7 +284,7 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  19, 'ascension.run (FiqHack)',
+  19, 'ascension.run (FIQHack)',
   'asc', 'fh', NULL,
   'https://ascension.run/xlogfiles/fiqhack',
   'asc.fh.log',
@@ -348,7 +348,7 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  29, 'hardfought.org (FIQhack)',
+  29, 'hardfought.org (FIQHack)',
   'hdf', 'fh', NULL,
   'https://www.hardfought.org/xlogfiles/fh/xlogfile',
   'hdf.fh.log',
