@@ -7,8 +7,6 @@
 -- nethack.alt org/NAO ------------------------------------------------------
 -----------------------------------------------------------------------------
 
--- https://s3.amazonaws.com/altorg/dumplog/Bezz/1434625913.nh343.txt
-
 INSERT INTO logfiles VALUES (
   1, 'nethack.alt.org (3.4.3)',
   'nao', 'nh', '3.4.3',
