@@ -538,3 +538,18 @@ INSERT INTO logfiles VALUES (
   TRUE, TRUE, FALSE,
   'UTC', NULL, NULL
 );
+
+-----------------------------------------------------------------------------
+-- /dev/null/nethack Tribute 2017 -------------------------------------------
+-----------------------------------------------------------------------------
+
+INSERT INTO logfiles VALUES (
+  2017, '/dev/null Tribute 2017',
+  'dnt', 'nh', NULL,
+  'https://hardfought.org/devnull/xlogfiles.dnt',
+  'devnull-2017.log',
+  NULL,
+  NULL,
+  TRUE, FALSE, TRUE,
+  'UTC', NULL, NULL
+);
