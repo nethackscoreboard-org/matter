@@ -16,6 +16,7 @@ use Getopt::Long;
 use NHdb;
 use NetHack;
 use Log::Log4perl qw(get_logger);
+use MIME::Base64 qw(decode_base64);
 
 $| = 1;
 
@@ -74,6 +75,16 @@ sub parse_log
   for my $field (@$a0) {
     $field =~ /^(.+?)=(.+)$/;
     $l{$1} = $2;
+  }
+
+  #--- if this is enabled for a source (through "logfiles.options"), check
+  #--- whether base64 fields exist and decode them
+
+  if(grep(/^base64xlog$/, @{$log->{'options'}})) {
+    for my $field (keys %l) {
+      next if $field !~ /^(.+)64$/;
+      $l{$1} = decode_base64($l{$field});
+    }
   }
 
   #--- finish returning hashref

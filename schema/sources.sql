@@ -290,7 +290,7 @@ INSERT INTO logfiles VALUES (
   'asc.fh.log',
   'https://ascension.run/userdata/%u/fiqhack/dumplog/%D',
   NULL,
-  NULL,
+  '{"base64xlog"}',
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );
@@ -354,7 +354,7 @@ INSERT INTO logfiles VALUES (
   'hdf.fh.log',
   'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
   NULL,
-  NULL,
+  '{"base64xlog"}',
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
 );

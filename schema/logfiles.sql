@@ -41,6 +41,10 @@
 --  * bug360duration - do not show the duration to the user, this exists
 --      because NetHack 3.6.0 was recording bogus 'realtime' field into
 --      xlogfile
+--
+--  * base64xlog - this allows using base64 encoded data in xlogfile, the
+--      fields should have same name with '64' appended; if such encoded
+--      field exists, it is preferred to plain unencoded field
 -- 
 -- oper
 -- If true, the feeder will process this entry; if false the logfile
