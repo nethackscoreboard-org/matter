@@ -23,7 +23,6 @@ our @EXPORT = qw(
   dbdone
   format_duration
   url_substitute
-  url_encode
   logfile_require_fields
   sql_show_query
   cmd_option_array_expand
