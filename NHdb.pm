@@ -6,6 +6,7 @@
 
 package NHdb;
 require Exporter;
+use URI::Escape;
 use Dir::Self;
 use JSON;
 use DBI;
@@ -22,6 +23,7 @@ our @EXPORT = qw(
   dbdone
   format_duration
   url_substitute
+  url_encode
   logfile_require_fields
   sql_show_query
   cmd_option_array_expand
@@ -227,7 +229,7 @@ sub url_substitute
   my $r_endtime = $data->{'endtime_raw'};
   my $r_username_orig = $data->{'name_orig'};
   my $r_version = $data->{'version'};
-  my $r_dumpfile = $data->{'dumplog'};
+  my $r_dumpfile = uri_escape($data->{'dumplog'});
 
   my @et = gmtime($data->{'endtime_raw'});
   my $r_endtime2 = sprintf(
@@ -246,7 +248,7 @@ sub url_substitute
 
   my $r_dumpfile_nh4 = $data->{'dumplog'};
   $r_dumpfile_nh4 =~ s/(\d{2})_(\d{2})_(\d{2})/$1:$2:$3/;
-  $r_dumpfile_nh4 =~ s/ /%20/g;
+  $r_dumpfile_nh4 = uri_escape($r_dumpfile_nh4);
 
   # perform the token replacement
 
