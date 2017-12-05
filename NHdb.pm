@@ -27,8 +27,6 @@ our @EXPORT = qw(
   sql_show_query
   cmd_option_array_expand
   cmd_option_state
-  devnull_get_logfiles_i
-  devnull_get_url_path
   referentize
   nhdb_show_version
 );
@@ -333,39 +331,6 @@ sub cmd_option_state
     return 'off';
   } else {
     return 'undefined';
-  }
-}
-
-
-#===============================================================================
-# For given devnull year return the logfiles_i value.
-#===============================================================================
-
-sub devnull_get_logfiles_i
-{
-  my $devnull_year = shift;
-  if(exists $nhdb_def->{'devnull'}{'years'}{$devnull_year}) {
-    return $nhdb_def->{'devnull'}{'years'}{$devnull_year};
-  } else {
-    return undef;
-  }
-}
-
-
-#===============================================================================
-# For given devnull year return the URL path where HTML files should be
-# generated.
-#===============================================================================
-
-sub devnull_get_url_path
-{
-  my $devnull_year = shift;
-  if(exists $nhdb_def->{'devnull'}{'http_path'}) {
-    my $devnull_path = $nhdb_def->{'devnull'}{'http_path'};
-    $devnull_path =~ s/%Y/$devnull_year/g;
-    return $devnull_path;
-  } else {
-    return undef;
   }
 }
 
