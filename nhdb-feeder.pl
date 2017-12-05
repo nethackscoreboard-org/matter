@@ -72,8 +72,8 @@ sub parse_log
   #--- split keys and values
 
   for my $field (@$a0) {
-    my ($key, $val) = split(/=/, $field);
-    $l{$key} = $val;
+    $field =~ /^(.+?)=(.+)$/;
+    $l{$1} = $2;
   }
 
   #--- finish returning hashref
