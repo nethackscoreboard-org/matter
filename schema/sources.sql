@@ -420,6 +420,118 @@ INSERT INTO logfiles VALUES (
 );
 
 -----------------------------------------------------------------------------
+-- hardfought.org EU --------------------------------------------------------
+-----------------------------------------------------------------------------
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  35, 'eu.hardfought.org (NetHack 3.4.3)',
+  'hfe', 'nh',
+  'https://eu.hardfought.org/xlogfiles/nh343/xlogfile',
+  'hfe.nh.343.log',
+  'https://eu.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  36, 'eu.hardfought.org (NetHack 3.6.1dev)',
+  'hfe', 'nh',
+  'https://eu.hardfought.org/xlogfiles/nhdev/xlogfile',
+  'hfe.nh.361dev.log',
+  'https://eu.hardfought.org/userdata/%U/%u/nhdev/dumplog/%s.nhdev.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  37, 'eu.hardfought.org (NetHack Fourk)',
+  'hfe', 'nhf',
+  'https://eu.hardfought.org/xlogfiles/4k/xlogfile',
+  'hfe.nhf.log',
+  'https://eu.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  38, 'eu.hardfought.org (dNetHack)',
+  'hfe', 'dnh',
+  'https://eu.hardfought.org/xlogfiles/dnethack/xlogfile',
+  'hfe.dnh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/dnethack/dumplog/%s.dnh.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz, options
+) VALUES (
+  39, 'eu.hardfought.org (FIQHack)',
+  'hfe', 'fh',
+  'https://eu.hardfought.org/xlogfiles/fh/xlogfile',
+  'hfe.fh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
+  TRUE, FALSE, TRUE, 'UTC', '{"base64xlog"}'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  40, 'eu.hardfought.org (GruntHack)',
+  'hfe', 'gh',
+  'https://eu.hardfought.org/xlogfiles/gh/xlogfile',
+  'hfe.gh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  41, 'eu.hardfought.org (NetHack 4)',
+  'hfe', 'nh4',
+  'https://eu.hardfought.org/xlogfiles/nethack4/xlogfile',
+  'hfe.nh4.log',
+  'https://eu.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  42, 'eu.hardfought.org (SporkHack)',
+  'hfe', 'sh',
+  'https://eu.hardfought.org/xlogfiles/sporkhack/xlogfile',
+  'hfe.sh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  43, 'eu.hardfought.org (UnNetHack)',
+  'hfe', 'unh',
+  'https://eu.hardfought.org/xlogfiles/un531/xlogfile',
+  'hfe.unh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+-----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
 
