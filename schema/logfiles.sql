@@ -88,7 +88,7 @@ CREATE TABLE logfiles (
   variant     varchar(3) NOT NULL,
   version     varchar(16),
   logurl      varchar(128),
-  localfile   varchar(128) NOT NULL,
+  localfile   varchar(128) NOT NULL UNIQUE,
   dumpurl     varchar(128),
   rcfileurl   varchar(128),
   options     varchar(16) ARRAY,
