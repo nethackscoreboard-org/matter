@@ -531,6 +531,18 @@ INSERT INTO logfiles (
   TRUE, FALSE, TRUE, 'UTC'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  44, 'eu.hardfought.org (DynaHack)',
+  'hfe', 'dyn',
+  'https://eu.hardfought.org/xlogfiles/dynahack/xlogfile',
+  'hfe.dyn.log',
+  'https://eu.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
 -----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
