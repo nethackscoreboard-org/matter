@@ -40,3 +40,4 @@ INSERT INTO translations VALUES ( 'hdf', 'Hanako', 'Raisse' );
 INSERT INTO translations VALUES ( 'dev', 'lrr', 'nyarlatoteph' );
 INSERT INTO translations VALUES ( 'nao', 'Hothraxxa', 'hothraxxa');
 INSERT INTO translations VALUES ( 'dev', 'grasshopper', 'Grasshopper' );
+INSERT INTO translations VALUES ( 'dev', 'fiq', 'FIQ' );
