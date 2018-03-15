@@ -419,6 +419,18 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  45, 'hardfought.org (xNetHack)',
+  'hdf', 'xnh',
+  'https://www.hardfought.org/xlogfiles/xnethack/xlogfile',
+  'hdf.xnh.log',
+  'https://www.hardfought.org/userdata/%U/%u/xnethack/dumplog/%s.xnh.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org EU --------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -540,6 +552,18 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/xlogfiles/dynahack/xlogfile',
   'hfe.dyn.log',
   'https://eu.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  46, 'hardfought.org (xNetHack)',
+  'hfe', 'xnh',
+  'https://eu.hardfought.org/xlogfiles/xnethack/xlogfile',
+  'hfe.xnh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/xnethack/dumplog/%s.xnh.txt',
   TRUE, FALSE, TRUE, 'UTC'
 );
 

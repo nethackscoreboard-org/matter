@@ -599,13 +599,14 @@
     "dnh" : "dNetHack",
     "nhf" : "Fourk",
     "dyn" : "DynaHack",
-    "fh"  : "FIQHack"
+    "fh"  : "FIQHack",
+    "xnh" : "xNetHack",
   },
 
   #--- ordered list of variants
 
   "nh_variants_ord" : [
-    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh"
+    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh", "xnh"
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -824,7 +825,33 @@
         "8192"  : "pudd",
         "16384" : "algn"
       }
-    }
+    },
+
+    "xnh" : {
+      "roles" : [
+        "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
+        "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
+      "aligns" : [ "law", "neu", "cha" ],
+      "genders" : [ "mal", "fem" ],
+      "conduct" : {
+        "1"     : "food",
+        "2"     : "vegn",
+        "4"     : "vegt",
+        "8"     : "athe",
+        "16"    : "weap",
+        "32"    : "paci",
+        "64"    : "illi",
+        "128"   : "pile",
+        "256"   : "self",
+        "512"   : "wish",
+        "1024"  : "arti",
+        "2048"  : "geno",
+        "4096"  : "artl",
+        "8192"  : "petl",
+      }
+    },
 
   }
 
