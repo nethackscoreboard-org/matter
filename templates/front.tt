@@ -7,6 +7,7 @@
 <head>
   <meta charset="utf-8" />
   <link rel="stylesheet" type="text/css" href="default.css" />
+  <link rel="icon" type="image/png" href="favicon.png">
   <title>NetHack Scoreboard</title>
 </head>
 
