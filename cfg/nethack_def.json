@@ -581,8 +581,8 @@
   #--- ordered list of all conducts
 
   "nh_conduct_ord" : [
-    "bone", "arti", "pile", "self", "pudd", "algn", "soko", "geno",
-    "wish", "unih", "athe", "vegt", "vegn", "weap", "elbe", "illi",
+    "petl", "bone", "arti", "pile", "self", "pudd", "algn", "soko", "geno",
+    "artl", "wish", "unih", "athe", "vegt", "vegn", "weap", "elbe", "illi",
     "paci", "food", "acce", "cont", "tool", "magi", "armo", "raci",
     "thie", "zen", "nude"
   ],
