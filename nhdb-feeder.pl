@@ -482,7 +482,7 @@ sub sql_insert_games
   my $death = $l->{'death'};
   $death =~ tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;
   push(@fields, 'death');
-  push(@values, $death);
+  push(@values, substr($death, 0, 128));
 
   #--- ascended flag
   $l->{'ascended'} = $death =~ /^(ascended|defied the gods)\b/ ? 1 : 0;
