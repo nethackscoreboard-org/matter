@@ -582,9 +582,9 @@
 
   "nh_conduct_ord" : [
     "bone", "pets", "arti", "arts", "pile", "self", "pudd", "algn",
-    "soko", "geno", "wish", "unih", "scar", "athe", "vegt", "vegn",
-    "weap", "elbe", "illi", "paci", "food", "acce", "cont", "tool",
-    "magi", "armo", "raci", "thie", "zen", "nude",
+    "soko", "geno", "wish", "unih", "scar", "pray", "athe", "vegt",
+    "vegn", "weap", "elbe", "illi", "paci", "food", "acce", "cont",
+    "tool", "magi", "armo", "raci", "thie", "zen", "nude",
   ],
 
   #--- definition of all variants
@@ -601,12 +601,13 @@
     "dyn" : "DynaHack",
     "fh"  : "FIQHack",
     "xnh" : "xNetHack",
+    "slx" : "SLASH'EM Ex",
   },
 
   #--- ordered list of variants
 
   "nh_variants_ord" : [
-    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh", "xnh"
+    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh", "xnh", "slx",
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -851,6 +852,30 @@
         "4096"  : "pets",
         "8192"  : "arts",
         "16384" : "scar",
+      }
+    },
+
+    # SLASH'EM Extended is special in that it has massive amount of
+    # roles/races, therefore we are not listing them here at all
+    # and any output that would aggregate or tabelate them will be
+    # omitted. Also the combo validity check is not performed on
+    # xlogfile import.
+
+    "slx" : {
+      "conduct" : {
+        "1"     : "food",
+        "2"     : "vegn",
+        "4"     : "vegt",
+        "8"     : "athe",
+        "16"    : "weap",
+        "32"    : "paci",
+        "64"    : "illi",
+        "128"   : "pile",
+        "256"   : "self",
+        "512"   : "wish",
+        "1024"  : "arti",
+        "2048"  : "geno",
+        "4096"  : "pray",
       }
     },
 

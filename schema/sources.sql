@@ -431,6 +431,19 @@ INSERT INTO logfiles (
   TRUE, FALSE, TRUE, 'UTC'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  47, 'hardfought.org (SLASH''EM Extended)',
+  'hdf', 'slx',
+  'https://www.hardfought.org/xlogfiles/slex/xlogfile',
+  'hdf.slx.log',
+  'https://www.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+
 -----------------------------------------------------------------------------
 -- hardfought.org EU --------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -605,6 +618,18 @@ INSERT INTO logfiles VALUES (
   NULL,
   TRUE, FALSE, TRUE,
   'UTC', NULL, NULL
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  48, 'em.slash.em (SLASH''EM Extended)',
+  'esm', 'slx',
+  'https://em.slashem.me/xlogfiles/slex',
+  'esm.slx.log',
+  'https://em.slashem.me/userdata/%u/slex/dumplog/%s.txt',
+  TRUE, FALSE, TRUE, 'UTC'
 );
 
 -----------------------------------------------------------------------------
