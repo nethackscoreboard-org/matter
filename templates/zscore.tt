@@ -27,56 +27,69 @@
 [% IF zscore.item('ord').item(variant).size %]
 <table class="bordered">
 
-<thead>
-<tr>
-<th>&nbsp;</th>
-<th>name</th>
-[% IF variant == 'all' %]
-[% FOR var IN variants %]
-<th>[% var %]</td>
-[% END %]
-[% ELSE %]
-[% FOR role IN nh_roles %]
-<th>[% role == "all" ? role : role.ucfirst %]</td>
-[% END %]
-[% END %]
-</tr>
-</thead>
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th>name</th>
+      [% IF variant == 'all' %]
+        [% FOR var IN variants %]
+          <th>[% var %]</th>
+        [% END %]
+      [% ELSE %]
+        [%
+          # special-casing for SLASH'EM Extended: because of too many roles
+          # we only list those with ascensions in them; to maintain deterministic
+          # order we remove the 'all' key, sort the list and then push the 'all'
+          # item to the beginning
 
-<tbody>
-[% SET n = 0; SET prev = -1 %]
-[% FOR plr IN zscore.item('ord').item(variant) %]
-[% SET next = (zscore.item('val').item(plr).item(variant).item("all") ? zscore.item('val').item(plr).item(variant).item("all") : 0) %]
-[% IF prev != next; SET n = n + 1; SET prev = next; END %]
-<tr>
-<td class="numeric">[% n %]</td>
-<td><a href="players/[% plr.substr(0,1) %]/[% plr %].[% variant %].html">[% plr %]</a></td>
+          SET z_roles = nh_roles;
+          IF variant == 'slx'; THEN;
+            z_roles = zscore.item('max').item('slx').keys.grep('^(?:(?!all).)*$').sort;
+            z_roles.unshift('all');
+          END;
+        %]
+        [% FOR role IN z_roles %]
+          <th>[% role == "all" ? role : role.ucfirst %]</th>
+        [% END %]
+      [% END %]
+    </tr>
+  </thead>
 
-[% IF variant == 'all' %]
+  <tbody>
+    [% SET n = 0; SET prev = -1 %]
+    [% FOR plr IN zscore.item('ord').item(variant) %]
+      [% SET next = (zscore.item('val').item(plr).item(variant).item("all") ? zscore.item('val').item(plr).item(variant).item("all") : 0) %]
+      [% IF prev != next; SET n = n + 1; SET prev = next; END %]
+      <tr>
+      <td class="numeric">[% n %]</td>
+      <td><a href="players/[% plr.substr(0,1) %]/[% plr %].[% variant %].html">[% plr %]</a></td>
 
-[% FOR var IN variants %]
-[% SET v = zscore.item('val').item(plr).item(var).item("all") %]
-[% IF zscore.item('max').item(var).item("all") == v && v %]
-<td class="numeric"><span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span></td>
-[% ELSE %]
-<td class="numeric">[% v ? zsc(v) : '&nbsp;' %]</td>
-[% END %]
-[% END %]
+      [% IF variant == 'all' %]
 
-[% ELSE %]
+        [% FOR var IN variants %]
+        [% SET v = zscore.item('val').item(plr).item(var).item("all") %]
+        [% IF zscore.item('max').item(var).item("all") == v && v %]
+        <td class="numeric"><span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span></td>
+        [% ELSE %]
+        <td class="numeric">[% v ? zsc(v) : '&nbsp;' %]</td>
+        [% END %]
+        [% END %]
 
-[% FOR role IN nh_roles %]
-[% SET v = zscore.item('val').item(plr).item(variant).item(role) ? zscore.item('val').item(plr).item(variant).item(role) : 0 %]
-[% IF zscore.item('max').item(variant).item(role) == v && v %]
-<td class="numeric"><span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span></td>
-[% ELSE %]
-<td class="numeric">[% v ? zsc(v) : '&nbsp;' %]</td>
-[% END %]
-[% END %]
-[% END %]
-</tr>
-[% END %]
-</tbody>
+      [% ELSE %]
+
+        [% FOR role IN z_roles %]
+        [% SET v = zscore.item('val').item(plr).item(variant).item(role) ? zscore.item('val').item(plr).item(variant).item(role) : 0 %]
+        [% IF zscore.item('max').item(variant).item(role) == v && v %]
+        <td class="numeric"><span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span></td>
+        [% ELSE %]
+        <td class="numeric">[% v ? zsc(v) : '&nbsp;' %]</td>
+        [% END %]
+        [% END %]
+
+      [% END %]
+      </tr>
+    [% END %]
+  </tbody>
 
 </table>
 [% ELSE %]

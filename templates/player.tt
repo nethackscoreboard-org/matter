@@ -146,7 +146,11 @@
 </table>
 [% END %]
 
+[%# ======================================================================
+    === ROLES, RACES, ALIGNMENTS =========================================
+    ====================================================================== %]
 
+[% IF result_roles_all %]
 
 <h3>Roles, races, alignments</h3>
 
@@ -307,6 +311,7 @@
 
 </table>
 
+[% END %]
 
 
 <h3>Recent Games</h3>
@@ -414,81 +419,92 @@
 
 </table>
 
-
+[%# ======================================================================
+    === Z-SCORE ==========================================================
+    ====================================================================== %]
 
 <h3>Z-score Breakdown</h3>
 
 <table class="bordered">
 
-<thead>
-<tr>
-<th>&nbsp;</th>
-[% FOREACH role IN nh_roles -%]
-<th>[% role.ucfirst %]</th>
-[% END -%]
-<th>&nbsp;Σ</th>
-</tr>
-</thead>
+  [%
+    SET z_roles = nh_roles;
+    IF variant == 'slx'; THEN;
+      IF zscore.item('val').item(name).item('slx').exists('all'); THEN;
+        SET z_roles = zscore.item('val').item(name).item('slx').keys;
+      END;
+    END;
+  %]
 
-<tbody>
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      [% FOREACH role IN z_roles -%]
+        <th>[% role.ucfirst %]</th>
+      [% END -%]
+      <th>&nbsp;Σ</th>
+    </tr>
+  </thead>
 
-[% IF variant == 'all' %]
+  <tbody>
 
-[% var_all = variants.shift; variants.push(var_all) %]
-[% FOREACH var IN variants %]
-<tr>
-<th>[% var %]</th>
-[% FOREACH role IN nh_roles -%]
-<td class="numeric">
-[% SET v = zscore.item('val').item(name).item(var).item(role) %]
-[% IF zscore.item('max').item(var).item(role) == v && v %]
-<span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span>
-[% ELSE %]
-[% v ? zsc(v) : '&nbsp;' %]
-[% END %]
-</td>
-[% END %]
-<td class="numeric"><b>
-[% SET v = zscore.item('val').item(name).item(var).item('all') %]
-[% IF !v; SET v = 0; END %]
-[% IF zscore.item('max').item(var).item('all') == v && v %]
-<span class="zscmax">[% zsc(v) %]</span>
-[% ELSE %]
-[% zsc(v) %]
-[% END %]
-</b></td>
-</tr>
-[% END %]
+    [% IF variant == 'all' %]
 
-[% ELSE %]
+      [% var_all = variants.shift; variants.push(var_all) %]
+      [% FOREACH var IN variants %]
+        <tr>
+          <th>[% var %]</th>
+          [% FOREACH role IN nh_roles -%]
+            <td class="numeric">
+            [% SET v = zscore.item('val').item(name).item(var).item(role) %]
+            [% IF zscore.item('max').item(var).item(role) == v && v %]
+              <span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span>
+            [% ELSE %]
+              [% v ? zsc(v) : '&nbsp;' %]
+            [% END %]
+            </td>
+          [% END %]
+          <td class="numeric"><b>
+          [% SET v = zscore.item('val').item(name).item(var).item('all') %]
+          [% IF !v; SET v = 0; END %]
+          [% IF zscore.item('max').item(var).item('all') == v && v %]
+            <span class="zscmax">[% zsc(v) %]</span>
+          [% ELSE %]
+            [% zsc(v) %]
+          [% END %]
+          </b></td>
+        </tr>
+      [% END %]
 
-<tr>
-<th>[% variant %]</th>
-[% FOREACH role IN nh_roles -%]
-<td class="numeric">
-[% SET v = zscore.item('val').item(name).item(variant).item(role) %]
-[% IF zscore.item('max').item(variant).item(role) == v && v %]
-<span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span>
-[% ELSE %]
-[% v ? zsc(v) : '&nbsp;' %]
-[% END %]
-</td>
-[% END %]
-[% SET v = zscore.item('val').item(name).item(variant).item('all') %]
-[% IF zscore.item('max').item(variant).item('all') == v && v %]
-<td class="numeric"><b><span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span></b></td>
-[% ELSE %]
-<td class="numeric"><b>[% v ? zsc(v) : '&nbsp;' %]</b></td>
-[% END %]
-</tr>
+    [% ELSE %]
 
-[% END %]
+      <tr>
+        <th>[% variant %]</th>
+        [% FOREACH role IN z_roles -%]
+          <td class="numeric">
+          [% SET v = zscore.item('val').item(name).item(variant).item(role) %]
+          [% IF zscore.item('max').item(variant).item(role) == v && v %]
+            <span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span>
+          [% ELSE %]
+            [% v ? zsc(v) : '&nbsp;' %]
+          [% END %]
+          </td>
+        [% END %]
+        [% SET v = zscore.item('val').item(name).item(variant).item('all') %]
+        [% IF zscore.item('max').item(variant).item('all') == v && v %]
+          <td class="numeric"><b><span class="zscmax">[% v ? zsc(v) : '&nbsp;' %]</span></b></td>
+        [% ELSE %]
+          <td class="numeric"><b>[% v ? zsc(v) : '&nbsp;' %]</b></td>
+        [% END %]
+      </tr>
 
-</tbody>
+    [% END %]
+
+  </tbody>
 
 </table>
+
+
 [% END %]
-
-
 
 [% INCLUDE footer.tt %]
