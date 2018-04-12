@@ -15,6 +15,7 @@ use JSON;
 our @ISA = qw(Exporter);
 our @EXPORT = qw(
   nh_conduct
+  nh_combo_defined
   nh_combo_valid
   nh_variants
   nh_char
@@ -138,6 +139,10 @@ sub nh_char
 
   return undef if !exists $nh_def->{'nh_variants'}{$variant};
 
+  #--- check if the category is defined
+
+  return undef if !exists $nh_def->{'nh_variants'}{$variant}{$cat};
+
   #--- return the list
 
   return 
@@ -145,6 +150,27 @@ sub nh_char
     @{$nh_def->{'nh_variants'}{$variant}{$cat}} :
     $nh_def->{'nh_variants'}{$variant}{$cat};
 }
+
+
+
+#===========================================================================
+# Function returns true if all of the available roles/races/genders/aligns
+# are defined in the configuration for given variant.
+#===========================================================================
+
+sub nh_combo_defined
+{
+  my $variant = shift;
+
+  return
+    !exists $nh_def->{'nh_variants'}{$variant}{'roles'}
+    || !exists $nh_def->{'nh_variants'}{$variant}{'races'}
+    || !exists $nh_def->{'nh_variants'}{$variant}{'genders'}
+    || !exists $nh_def->{'nh_variants'}{$variant}{'aligns'}
+    ?
+    0 : 1;
+}
+
 
 
 #===========================================================================
@@ -296,6 +322,16 @@ sub nh_combo_valid_by_enum
 
 sub nh_combo_valid
 {
+  my $variant = $_[0];
+
+  #--- if the given variant does not all of the allowable character
+  #--- categories defined, then we do not perform combo validity check at
+  #--- all and just return true
+
+  return 1 if !nh_combo_defined($variant);
+
+  #--- combine the two validation methods
+
   return nh_combo_valid_by_enum(@_) || nh_combo_valid_by_rules(@_);
 }
 
