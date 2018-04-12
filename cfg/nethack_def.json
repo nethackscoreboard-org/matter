@@ -581,10 +581,10 @@
   #--- ordered list of all conducts
 
   "nh_conduct_ord" : [
-    "bone", "arti", "pile", "self", "pudd", "algn", "soko", "geno",
-    "wish", "unih", "athe", "vegt", "vegn", "weap", "elbe", "illi",
-    "paci", "food", "acce", "cont", "tool", "magi", "armo", "raci",
-    "thie", "zen", "nude"
+    "bone", "pets", "arti", "arts", "pile", "self", "pudd", "algn",
+    "soko", "geno", "wish", "unih", "scar", "athe", "vegt", "vegn",
+    "weap", "elbe", "illi", "paci", "food", "acce", "cont", "tool",
+    "magi", "armo", "raci", "thie", "zen", "nude",
   ],
 
   #--- definition of all variants
@@ -848,8 +848,9 @@
         "512"   : "wish",
         "1024"  : "arti",
         "2048"  : "geno",
-        "4096"  : "artl",
-        "8192"  : "petl",
+        "4096"  : "pets",
+        "8192"  : "arts",
+        "16384" : "scar",
       }
     },
 
