@@ -572,7 +572,7 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
   static, httpcont, tz
 ) VALUES (
-  46, 'hardfought.org (xNetHack)',
+  46, 'eu.hardfought.org (xNetHack)',
   'hfe', 'xnh',
   'https://eu.hardfought.org/xlogfiles/xnethack/xlogfile',
   'hfe.xnh.log',
