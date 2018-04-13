@@ -43,6 +43,7 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+
 -----------------------------------------------------------------------------
 -- acehack.de/ADE (defunct) -------------------------------------------------
 -----------------------------------------------------------------------------
@@ -443,7 +444,6 @@ INSERT INTO logfiles (
   TRUE, FALSE, TRUE, 'UTC'
 );
 
-
 -----------------------------------------------------------------------------
 -- hardfought.org EU --------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -577,6 +577,18 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/xlogfiles/xnethack/xlogfile',
   'hfe.xnh.log',
   'https://eu.hardfought.org/userdata/%U/%u/xnethack/dumplog/%s.xnh.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  49, 'eu.hardfought.org (SLASH''EM Extended)',
+  'hfe', 'slx',
+  'https://eu.hardfought.org/xlogfiles/slex/xlogfile',
+  'hfe.slx.log',
+  'https://eu.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt',
   TRUE, FALSE, TRUE, 'UTC'
 );
 
