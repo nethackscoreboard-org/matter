@@ -43,6 +43,17 @@ INSERT INTO logfiles VALUES (
   'UTC', NULL, NULL
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, version, logurl, localfile, dumpurl,
+  oper, static, httpcont, tz
+) VALUES (
+  50, 'nethack.alt.org (3.6.1)',
+  'nao', 'nh', '3.6.1',
+  'https://alt.org/nethack/xlogfile.nh361',
+  'nao.nh.361.log',
+  'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh361.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
 
 -----------------------------------------------------------------------------
 -- acehack.de/ADE (defunct) -------------------------------------------------
@@ -337,11 +348,11 @@ INSERT INTO logfiles VALUES (
 );
 
 INSERT INTO logfiles VALUES (
-  25, 'hardfought.org (NetHack 3.6.1dev)',
+  25, 'hardfought.org (NetHack 3.6.1)',
   'hdf', 'nh', NULL,
-  'https://www.hardfought.org/xlogfiles/nhdev/xlogfile',
-  'hdf.nhdev.log',
-  'https://www.hardfought.org/userdata/%U/%u/nhdev/dumplog/%s.nhdev.txt',
+  'https://www.hardfought.org/xlogfiles/nh361/xlogfile',
+  'hdf.nh361.log',
+  'https://www.hardfought.org/userdata/%U/%u/nh361/dumplog/%s.nh361.txt',
   NULL,
   NULL,
   TRUE, FALSE, TRUE,
@@ -464,11 +475,11 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
   static, httpcont, tz
 ) VALUES (
-  36, 'eu.hardfought.org (NetHack 3.6.1dev)',
+  36, 'eu.hardfought.org (NetHack 3.6.1)',
   'hfe', 'nh',
-  'https://eu.hardfought.org/xlogfiles/nhdev/xlogfile',
-  'hfe.nh.361dev.log',
-  'https://eu.hardfought.org/userdata/%U/%u/nhdev/dumplog/%s.nhdev.txt',
+  'https://eu.hardfought.org/xlogfiles/nh361/xlogfile',
+  'hfe.nh.361.log',
+  'https://eu.hardfought.org/userdata/%U/%u/nh361/dumplog/%s.nh361.txt',
   TRUE, FALSE, TRUE, 'UTC'
 );
 
