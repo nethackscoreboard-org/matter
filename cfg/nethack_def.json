@@ -456,7 +456,7 @@
        [ "$kni", "%hum",                         "#law"                 ],
        [ "$mon", "%hum"                                                 ],
        [ "$pri", "%hum", "%elf"                                         ],
-       [ "$ran", "%hum", "%elf", "%gno",         "#neu", "#cha"         ],
+       [ "$ran", "%hum", "%elf", "%gno", "%orc", "#neu", "#cha"         ],
        [ "$rog", "%hum", "%orc",                 "#cha"                 ],
        [ "$sam", "%hum",                         "#law"                 ],
        [ "$tou", "%hum",                         "#neu"                 ],
