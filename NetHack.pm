@@ -86,18 +86,18 @@ sub nh_conduct
     $con_to_val{$bitmap_def->{$v}} = $v;
   }
 
-	#--- get ordered list of conducts
+  #--- get ordered list of conducts
 
-	for my $c (@{$nh_def->{'nh_conduct_ord'}}) {
+  for my $c (@{$nh_def->{'nh_conduct_ord'}}) {
     if($c eq 'elbe' && defined $elbereths && !$elbereths) {
       push(@conducts, $c);
       last;
     }
     my $v = $con_to_val{$c};
-		if($conduct_bitfield & $v) {
+    if($conduct_bitfield & $v) {
       push(@conducts, $c);
-		}
-	}
+    }
+  }
 
   #--- return depending on context
 
