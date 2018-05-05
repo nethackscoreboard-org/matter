@@ -602,12 +602,14 @@
     "fh"  : "FIQHack",
     "xnh" : "xNetHack",
     "slx" : "SLASH'EM Ex",
+    "sph" : "SpliceHack",
   },
 
   #--- ordered list of variants
 
   "nh_variants_ord" : [
-    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh", "xnh", "slx",
+    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh",
+    "xnh", "slx", "sph",
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -877,6 +879,9 @@
         "2048"  : "geno",
         "4096"  : "pray",
       }
+    },
+
+    "sph" : {
     },
 
   }

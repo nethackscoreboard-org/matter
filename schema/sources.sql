@@ -455,6 +455,18 @@ INSERT INTO logfiles (
   TRUE, FALSE, TRUE, 'UTC'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  51, 'hardfought.org (SpliceHack)',
+  'hdf', 'sph',
+  'https://www.hardfought.org/xlogfiles/splicehack/xlogfile',
+  'hdf.spl.log',
+  NULL,
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org EU --------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -600,6 +612,18 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/xlogfiles/slex/xlogfile',
   'hfe.slx.log',
   'https://eu.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  52, 'eu.hardfought.org (SpliceHack)',
+  'hfe', 'sph',
+  'https://eu.hardfought.org/xlogfiles/splicehack/xlogfile',
+  'hfe.spl.log',
+  NULL,
   TRUE, FALSE, TRUE, 'UTC'
 );
 
