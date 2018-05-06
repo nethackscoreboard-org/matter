@@ -151,16 +151,16 @@ INSERT INTO logfiles VALUES (
 -- grunthack.org/GHO --------------------------------------------------------
 -----------------------------------------------------------------------------
 
-INSERT INTO logfiles VALUES (
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
   7, 'grunthack.org',
-  'gho', 'gh', NULL,
+  'gho', 'gh',
   'http://grunthack.org/xlogfile',
   'gho.gh.log',
   'http://grunthack.org/userdata/%U/%u/dumplog/%s.gh020.txt',
-  NULL,
-  NULL,
-  TRUE, FALSE, TRUE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, TRUE, 'UTC'
 );
 
 -----------------------------------------------------------------------------
