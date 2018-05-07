@@ -11,9 +11,11 @@ use warnings;
 use feature 'state';
 use utf8;
 
+use Moo;
 use DBI;
 use Getopt::Long;
 use NetHack;
+use NetHack2;
 use NHdb;
 use Template;
 use Log::Log4perl qw(get_logger);
@@ -28,6 +30,7 @@ $| = 1;
 my $dbh;
 my $logfiles;
 my $logger;              # log4perl primary instance
+my $nh = new NetHack2('cfg/nethack_def.json');
 
 
 #============================================================================
@@ -215,7 +218,7 @@ sub update_schedule_players
   # against the configured variants, so that user cannot supply unconfigured
   # variant). @variants_final will contain the result of this step.
 
-  my @variants_known = ('all', nh_variants());
+  my @variants_known = ('all', $nh->variants());
   my @variants_final = @variants_known;
   if(@$cmd_variant) {
     @variants_final = map {
@@ -366,7 +369,7 @@ sub update_schedule_variants
   #--- list of allowed variants targets; anything not in this array
   #--- is invalid
 
-  my @variants_known = ('all', nh_variants());
+  my @variants_known = ('all', $nh->variants());
   $logger->debug('Known variants: (', join(',', @variants_known), ')');
 
   #--- forced processing
@@ -1020,7 +1023,7 @@ sub gen_page_recent
   $logger->info(
     sprintf("%s Creating list of %s games", $loghdr, $page)
   );
-  push(@variants, nh_variants());
+  push(@variants, $nh->variants());
 
   #--- select source view
 
@@ -1066,8 +1069,8 @@ sub gen_page_recent
 
   $data{'result'}   = $result;
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', nh_variants() ];
-  $data{'vardef'}   = nh_variants(1);
+  $data{'variants'} = [ 'all', $nh->variants() ];
+  $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
   $data{'showversion'} =
     (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
@@ -1463,10 +1466,10 @@ sub gen_page_player
   $data{'name'} = $name;
   $data{'variant'} = $variant;
   $data{'variants'} = array_sort_by_reference(
-    [ 'all', nh_variants() ],
+    [ 'all', $nh->variants() ],
     [ keys %{$player_combos->{$name}} ]
   );
-  $data{'vardef'} = nh_variants(1);
+  $data{'vardef'} = $nh->variant_names();
   $data{'result_calendar'} = ascensions_calendar_view($data{'result_ascended'})
     if $data{'games_count_asc'};
   $data{'showversion'} =
@@ -1525,7 +1528,7 @@ sub gen_page_streaks
   #--- init
 
   $logger->info('Creating page: Streaks/', $variant);
-  push(@variants, nh_variants());
+  push(@variants, $nh->variants());
 
   #--- load streak list
 
@@ -1538,8 +1541,8 @@ sub gen_page_streaks
 
   #--- supply additional data
 
-  $data{'variants'} = [ 'all', nh_variants() ];
-  $data{'vardef'}   = nh_variants(1);
+  $data{'variants'} = [ 'all', $nh->variants() ];
+  $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
   $data{'cur_time'} = scalar(localtime());
   $data{'showversion'} =
@@ -1610,7 +1613,7 @@ sub gen_page_front
   #--- other variables
 
   my %data;
-  my @variants = nh_variants();
+  my @variants = $nh->variants();
   my $logger = get_logger("Stats::gen_page_front");
 
   #--- info
@@ -1718,7 +1721,7 @@ sub gen_page_front
   #--- generate page
 
   $data{'variants'} = \@variants_ordered;
-  $data{'vardef'} = nh_variants(1);
+  $data{'vardef'} = $nh->variant_names();
   $data{'cur_time'} = scalar(localtime());
   $data{'showversion'} = 1;
   if(!$tt->process('front.tt', \%data, 'index.html')) {
@@ -1754,8 +1757,8 @@ sub gen_page_zscores
   #--- supply additional data
 
   $data{'cur_time'} = scalar(localtime());
-  $data{'vardef'}   = nh_variants(1);
-  $data{'variants'} = [ 'all', nh_variants() ];
+  $data{'vardef'}   = $nh->variant_names();
+  $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'variant'}  = $variant;
   $data{'nh_roles'} = [ 'all', nh_char($variant, 'roles') ];
 
@@ -1817,8 +1820,8 @@ sub gen_page_conducts
   #--- supply additional data
 
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', nh_variants() ];
-  $data{'vardef'}   = nh_variants(1);
+  $data{'variants'} = [ 'all', $nh->variants() ];
+  $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
   $data{'showversion'} =
     (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
@@ -1877,8 +1880,8 @@ sub gen_page_lowscore
   #--- supply additional data
 
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', nh_variants() ];
-  $data{'vardef'}   = nh_variants(1);
+  $data{'variants'} = [ 'all', $nh->variants() ];
+  $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
   $data{'showversion'} =
     (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;
@@ -2017,7 +2020,7 @@ sub gen_page_first_to_ascend
   $data{'variant'}  = $variant;
   $data{'cur_time'} = scalar(localtime());
   $data{'variants'} = $NHdb::nhdb_def->{'firsttoascend'};
-  $data{'vardef'}   = nh_variants(1);
+  $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
 
   #--- render template
@@ -2107,8 +2110,8 @@ sub gen_page_gametime
 
   $data{'variant'}  = $variant;
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', nh_variants() ];
-  $data{'vardef'}   = nh_variants(1);
+  $data{'variants'} = [ 'all', $nh->variants() ];
+  $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
   $data{'showversion'} =
     (nhdb_show_version($variant) || $variant eq 'all') ? 1 : 0;

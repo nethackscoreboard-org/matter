@@ -17,7 +17,6 @@ our @EXPORT = qw(
   nh_conduct
   nh_combo_defined
   nh_combo_valid
-  nh_variants
   nh_char
   nh_combo_table_init
   nh_combo_table_cell
