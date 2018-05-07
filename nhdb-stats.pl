@@ -15,7 +15,7 @@ use Moo;
 use DBI;
 use Getopt::Long;
 use NetHack;
-use NetHack2;
+use NetHack::Config;
 use NHdb;
 use Template;
 use Log::Log4perl qw(get_logger);
@@ -30,7 +30,10 @@ $| = 1;
 my $dbh;
 my $logfiles;
 my $logger;              # log4perl primary instance
-my $nh = new NetHack2('cfg/nethack_def.json');
+
+my $nh = NetHack::Config->instance(
+  config_file => 'cfg/nethack_def.json'
+);
 
 
 #============================================================================
