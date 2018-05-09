@@ -1226,7 +1226,7 @@ sub gen_page_player
 
   #>>> following section only for variants with defined roles/races
 
-  if(nh_combo_defined($variant) || $variant eq 'all') {
+  if($variant eq 'all' || $nh->variant($variant)->combo_defined()) {
 
   #=== games by roles/all ==================================================
 
@@ -1459,14 +1459,13 @@ sub gen_page_player
 
   #--- if variant is 'all', list only the canonical roles/races/alignments
 
-  my $variant2 = $variant;
-  if($variant2 eq 'all') { $variant2 = 'nh'; }
+  my $nv = $nh->variant($variant eq 'all' ? 'nh' : $variant);
 
   #--- the rest
 
-  $data{'nh_roles'} = nh_char($variant2, 'roles');
-  $data{'nh_races'} = nh_char($variant2, 'races');
-  $data{'nh_aligns'} = nh_char($variant2, 'aligns');
+  $data{'nh_roles'} = $nv->roles();
+  $data{'nh_races'} = $nv->races();
+  $data{'nh_aligns'} = $nv->alignments();
   $data{'cur_time'} = scalar(localtime());
   $data{'name'} = $name;
   $data{'variant'} = $variant;
@@ -1750,6 +1749,7 @@ sub gen_page_zscores
   state $ascs;
   my $logger = get_logger("Stats::gen_page_zscores");
   my %data;
+  my $nv = $nh->variant($variant eq 'all' ? 'nh' : $variant);
 
   #--- info
 
@@ -1765,7 +1765,7 @@ sub gen_page_zscores
   $data{'vardef'}   = $nh->variant_names();
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'variant'}  = $variant;
-  $data{'nh_roles'} = [ 'all', nh_char($variant, 'roles') ];
+  $data{'nh_roles'} = [ 'all', $nv->roles() ];
 
   #--- process template
 
@@ -1924,6 +1924,8 @@ sub gen_page_first_to_ascend
     $re
   );
 
+  my $nv = $nh->variant($variant);
+
   #--- processing of the database rows
 
   # remove 'r_' from hash keys (field names), row_fix();
@@ -1950,10 +1952,10 @@ sub gen_page_first_to_ascend
   $ct = nh_combo_table_init($variant);
   $data{'table'} = $ct->{'table'};
 
-  $data{'roles'} = nh_char($variant, 'roles');
-  $data{'races'} = nh_char($variant, 'races');
-  $data{'genders'} = nh_char($variant, 'genders');
-  $data{'aligns'} = nh_char($variant, 'aligns');
+  $data{'roles'} = $nv->roles();
+  $data{'races'} = $nv->races();
+  $data{'genders'} = $nv->genders();
+  $data{'aligns'} = $nv->alignments();
 
   $data{'roles_def'} = $NetHack::nh_def->{'nh_roles_def'};
   $data{'races_def'} = $NetHack::nh_def->{'nh_races_def'};
