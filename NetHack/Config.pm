@@ -1,24 +1,35 @@
 #!/usr/bin/env perl
 
 #===========================================================================
-# This module contains NetHack configuration related functions.
+# This module encapsulates NetHack configuration and creates interfaces to
+# access the configuration data. Note, that variant-specific info uses the
+# NetHack::Variant class (which still uses the ::Config class as the data
+# source).
 #===========================================================================
 
 package NetHack::Config;
+use NetHack::Variant;
 
 use Moo;
-with 'MooX::Singleton';
 use JSON;
 
-has config_file => (is => 'ro', required => 1);
-has config      => (is => 'rw');
+has config_file => (
+  is       => 'ro',
+  required => 1,
+);
+
+has config => (
+  is       => 'lazy',
+  builder  => '_build_config',
+);
 
 
 #===========================================================================
 # Parsing the configuration file on creation of a new object.
 #===========================================================================
 
-sub BUILD {
+sub _build_config
+{
   my ($self) = @_;
   
   if(-r $self->config_file()) {
@@ -27,7 +38,7 @@ sub BUILD {
     open(my $fh, '<', $self->config_file());
     my $def_json = <$fh>;
     my $cfg = $js->decode($def_json) or die 'Cannot parse NetHack.pm configuration';
-    $self->config($cfg);
+    return $cfg;
   } else {
     die 'Cannot read config file ' . $self->config_file();
   }
@@ -55,6 +66,20 @@ sub variant_names
   my $self = shift;
   my $h = { %{$self->config()->{'nh_variants_def'}} };
   return $h;
+}
+
+
+#===========================================================================
+# Return instance of the NetHack::Variant object with the 'config' attribute
+# set to reference self (ie. this NetHack::Config object)
+#===========================================================================
+
+sub variant
+{
+  my $self = shift;
+  my $variant = shift;
+
+  return new NetHack::Variant(config => $self, variant => $variant);
 }
 
 

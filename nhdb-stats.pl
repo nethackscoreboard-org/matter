@@ -31,7 +31,7 @@ my $dbh;
 my $logfiles;
 my $logger;              # log4perl primary instance
 
-my $nh = NetHack::Config->instance(
+my $nh = new NetHack::Config(
   config_file => 'cfg/nethack_def.json'
 );
 
