@@ -560,24 +560,6 @@
      ]
   },
 
-  #--- this defines default semantics for 'conduct' xlogfiles field; this can
-  #--- be overriden by variant-specific conduct lists
-
-  "nh_conduct_bitmap_def" : {
-    "1"    : "food",
-    "2"    : "vegn",
-    "4"    : "vegt",
-    "8"    : "athe",
-    "16"   : "weap",
-    "32"   : "paci",
-    "64"   : "illi",
-    "128"  : "pile",
-    "256"  : "self",
-    "512"  : "wish",
-    "1024" : "arti",
-    "2048" : "geno"
-  },
-
   #--- ordered list of all conducts
 
   "nh_conduct_ord" : [
@@ -616,23 +598,9 @@
 
   "nh_variants" : {
 
-    "all" : {
-      "roles" : [ 
-        "ana", "arc", "bar", "bin", "cav", "con", "hea", "kni", "mon",
-        "nob", "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
-      ],
-      "races" : [ 
-        "bat", "clk", "dro", "dwa", "elf", "gno", "hum", "inc",
-        "orc", "swn", "vam"
-      ],
-      "aligns" : [
-        "law", "neu", "cha", "non"
-      ],
-      "genders" : [
-        "mal", "fem"
-      ]
-    },
-    
+    # Vanilla NetHack, this is the fallback definition; if variant definition
+    # omits some info, the code uses this instead.
+
     "nh" : {
       "roles" : [ 
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
@@ -640,7 +608,21 @@
       ],
       "races" : [ "hum", "elf", "dwa", "gno", "orc" ],
       "aligns" : [ "law", "neu", "cha" ],
-      "genders" : [ "mal", "fem" ]
+      "genders" : [ "mal", "fem" ],
+      "conduct" : {
+        "1"    : "food",
+        "2"    : "vegn",
+        "4"    : "vegt",
+        "8"    : "athe",
+        "16"   : "weap",
+        "32"   : "paci",
+        "64"   : "illi",
+        "128"  : "pile",
+        "256"  : "self",
+        "512"  : "wish",
+        "1024" : "arti",
+        "2048" : "geno"
+      },
     },
     
     "ace" : {

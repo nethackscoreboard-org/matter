@@ -70,6 +70,17 @@ sub variant_names
 
 
 #===========================================================================
+# Get list of conducts ordering
+#===========================================================================
+
+sub list_conducts_ordered
+{
+  my $self = shift;
+  return @{$self->config()->{'nh_conduct_ord'}};
+}
+
+
+#===========================================================================
 # Return instance of the NetHack::Variant object with the 'config' attribute
 # set to reference self (ie. this NetHack::Config object)
 #===========================================================================

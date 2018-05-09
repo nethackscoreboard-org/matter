@@ -16,6 +16,7 @@ use DBI;
 use Getopt::Long;
 use NetHack;
 use NetHack::Config;
+use NetHack::Variant;
 use NHdb;
 use Template;
 use Log::Log4perl qw(get_logger);
@@ -697,6 +698,7 @@ sub row_fix
   my $row = shift;
   my $logfiles_i = $row->{'logfiles_i'};
   my $logfile = $logfiles->{$logfiles_i};
+  my $variant = $nh->variant($row->{'variant'});
 
   #--- convert realtime to human-readable form
 
@@ -710,7 +712,7 @@ sub row_fix
   #--- include conducts in the ascended message
 
   if($row->{'ascended'}) {
-    my @c = nh_conduct(@{$row}{'conduct', 'elbereths', 'variant'});
+    my @c = $variant->conduct(@{$row}{'conduct', 'elbereths'});
     $row->{'ncond'} = scalar(@c);
     $row->{'tcond'} = join(' ', @c);
     if(scalar(@c) == 0) {
