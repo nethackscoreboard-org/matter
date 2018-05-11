@@ -15,6 +15,8 @@ use DBI;
 use Getopt::Long;
 use NHdb;
 use NetHack;
+use NetHack::Config;
+use NetHack::Variant;
 use Log::Log4perl qw(get_logger);
 use MIME::Base64 qw(decode_base64);
 
@@ -36,6 +38,7 @@ my $dbh;
 my %translations;               # name-to-name translations
 my $translations_cnt = 0;       # number of name translation
 my $logger;                     # log4perl instance
+my $nh = new NetHack::Config(config_file => 'cfg/nethack_def.json');
 
 
 #============================================================================
@@ -493,7 +496,8 @@ sub sql_insert_games
   # please refer to comment in NetHack.pm; this is only done to two specific
   # winning games!
   if($variant eq 'dnh' && $l->{'ascended'}) {
-    ($l->{'role'}, $l->{'race'}) = nh_dnethack_map($l->{'role'}, $l->{'race'});
+    ($l->{'role'}, $l->{'race'})
+    = $nh->variant('dnh')->dnethack_map($l->{'role'}, $l->{'race'});
   }
 
   #--- regular fields

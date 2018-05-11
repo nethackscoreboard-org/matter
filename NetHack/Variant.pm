@@ -344,4 +344,34 @@ sub combo_valid
 }
 
 
+#===========================================================================
+# This is a workaround for dNetHack peculiar combo descriptor mangling.
+# This mangling was later fixed (combo now shows what one would expect),
+# so this is only done for the two extant winning games with mangled combo.
+# WARNING: The 'Elf' in role field can actually mean many other roles apart
+# from Noble and there is no way to know which one it really is. The non-
+# winning game will remain messed up.
+#===========================================================================
+
+sub dnethack_map
+{
+  my $self = shift;
+  my ($role, $race) = @_;
+
+  if($role eq 'Dna') {
+    return ('Kni', 'Dwa');
+  }
+
+  if($role eq 'Elf' && $race eq 'Elf') {
+    return ('Nob', 'Elf');
+  }
+
+  if($role eq 'Hdr' && $race eq 'Dro') {
+    return ('Rog', 'Dro');
+  }
+
+  return ($role, $race);
+}
+
+
 1;
