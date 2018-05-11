@@ -60,6 +60,11 @@ has enum => (
   builder => sub { _build_validation($_[0], 'enum') },
 );
 
+has combo_table => (
+  is => 'lazy',
+  builder => sub { _combo_table_init($_[0]) },
+);
+
 
 #===========================================================================
 # Builder function for the above attributes.
@@ -342,6 +347,121 @@ sub combo_valid
 
   return $self->combo_valid_by_enum(@_) || $self->combo_valid_by_rules(@_);
 }
+
+
+#===========================================================================
+# Function to initialize table of role-race-alignment combos (gender is left
+# out). It returns hashref with two keys:
+# - table -- contains three dimensional array reference
+# - idx -- contains hash ref with {role}{race}{align} index to above table;
+#          the index is understood as triplet of indexes into the 3-d array
+#===========================================================================
+
+sub _combo_table_init
+{
+  #--- arguments
+
+  my $self = shift;
+
+  #--- do nothing for variants with undefined rules/enums
+
+  return undef if
+    !$self->combo_defined()
+    || !( $self->rules() || $self->enum() );
+
+  #--- init the structure
+
+  my @table;
+  my %idx;
+  my %ct = ( 'table' => \@table, 'idx' => \%idx );
+
+  #--- init the table
+  # value of -1 marks unavailable combo
+
+  my $i = 0;
+  foreach my $role (@{$self->roles()}) {
+    my @ary_races;
+    my $j = 0;
+    foreach my $race (@{$self->races()}) {
+      my @ary_aligns;
+      my $k = 0;
+      foreach my $align (@{$self->alignments()}) {
+        my $val = 0;
+        foreach my $gender (@{$self->genders()}) {
+          $val ||= $self->combo_valid($role, $race, $gender, $align);
+        }
+        $val = $val ? undef : -1;
+        push(@ary_aligns, $val);
+        $idx{$role}{$race}{$align} = [ $i, $j, $k ];
+        $k++;
+      }
+      push(@ary_races, \@ary_aligns);
+      $j++
+    }
+    push(@table, \@ary_races);
+    $i++;
+  }
+
+  return \%ct;
+}
+
+
+
+#===========================================================================
+# Update value in a combotable cell specified by (role, race, alignment).
+#===========================================================================
+
+sub combo_table_cell
+{
+  my $self = shift;
+  my ($role, $race, $align, $val) = @_;
+  my ($i, $j, $k);
+  my $ct = $self->combo_table();
+
+  return undef if !defined $ct;
+
+  ($role, $race, $align) = map { lc } ($role, $race, $align);
+
+  if(!exists $ct->{'idx'}{$role}{$race}{$align}) {
+    die sprintf('Invalid character combination %s-%s-%s', $role, $race, $align);
+  }
+  ($i, $j, $k) = @{$ct->{'idx'}{$role}{$race}{$align}};
+
+  if($val) {
+    $ct->{'table'}[$i][$j][$k] = $val;
+  }
+  return $ct->{'table'}[$i][$j][$k];
+}
+
+
+
+#===========================================================================
+# Combotable iterator. The iterator function is called for every cell of the
+# table and gets value/role/race/alignment as its four arguments.
+#===========================================================================
+
+sub combo_table_iterate
+{
+  my $self = shift;
+  my $iterator = shift;
+  my $cnt = 0;
+
+  my $i = 0;
+  foreach my $role (@{$self->roles()}) {
+    my $j = 0;
+    foreach my $race (@{$self->races()}) {
+      my $k = 0;
+      foreach my $align (@{$self->alignments()}) {
+        my $val = $self->combo_table_cell($role, $race, $align);
+        $cnt++ if &$iterator($val, $role, $race, $align);
+      }
+      $j++
+    }
+    $i++;
+  }
+  return $cnt;
+}
+
 
 
 #===========================================================================

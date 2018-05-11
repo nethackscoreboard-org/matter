@@ -1949,8 +1949,7 @@ sub gen_page_first_to_ascend
 
   #--- initialize combo table
 
-  $ct = nh_combo_table_init($variant);
-  $data{'table'} = $ct->{'table'};
+  $data{'table'} = $nv->combo_table()->{'table'};
 
   $data{'roles'} = $nv->roles();
   $data{'races'} = $nv->races();
@@ -1973,8 +1972,8 @@ sub gen_page_first_to_ascend
 
     #--- add the entries to combo table
 
-    nh_combo_table_cell(
-      $ct, $row->{'role'}, $row->{'race'}, $row->{'align'}, $row->{'name'}
+    $nv->combo_table_cell(
+      $row->{'role'}, $row->{'race'}, $row->{'align'}, $row->{'name'}
     );
   }
 
@@ -1982,7 +1981,7 @@ sub gen_page_first_to_ascend
 
   $data{'unascend'} = [];
   $data{'byplayer'} = {};
-  nh_combo_table_iterate($ct, sub {
+  $nv->combo_table_iterate(sub {
     my ($val, $role, $race, $align) = @_;
 
     # unascended combos
