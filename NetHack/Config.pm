@@ -64,8 +64,12 @@ sub variants
 sub variant_names
 {
   my $self = shift;
-  my $h = { %{$self->config()->{'nh_variants_def'}} };
-  return $h;
+  my %variants;
+
+  foreach my $variant ($self->variants()) {
+    $variants{$variant} = $self->config()->{'nh_variants'}{$variant}{'name'};
+  }
+  return \%variants;
 }
 
 
