@@ -1764,7 +1764,7 @@ sub gen_page_zscores
   $data{'vardef'}   = $nh->variant_names();
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'variant'}  = $variant;
-  $data{'nh_roles'} = [ 'all', $nv->roles() ];
+  $data{'nh_roles'} = [ 'all', @{$nv->roles()} ];
 
   #--- process template
 
