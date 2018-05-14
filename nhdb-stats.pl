@@ -14,7 +14,6 @@ use utf8;
 use Moo;
 use DBI;
 use Getopt::Long;
-use NetHack;
 use NetHack::Config;
 use NetHack::Variant;
 use NHdb;
@@ -1956,8 +1955,8 @@ sub gen_page_first_to_ascend
   $data{'genders'} = $nv->genders();
   $data{'aligns'} = $nv->alignments();
 
-  $data{'roles_def'} = $NetHack::nh_def->{'nh_roles_def'};
-  $data{'races_def'} = $NetHack::nh_def->{'nh_races_def'};
+  $data{'roles_def'} = $nh->config()->{'nh_roles_def'};
+  $data{'races_def'} = $nh->config()->{'nh_races_def'};
 
   #--- query database
 

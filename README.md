@@ -8,6 +8,7 @@ The NetHack Scoreboard is written using:
 * **PostgreSQL** as backend database
 * **Template Toolkit** as templating engine
 * **Log4Perl** as logging system
+* **Moo as OOP framework
 
 -----
 
