@@ -14,7 +14,6 @@ use utf8;
 use DBI;
 use Getopt::Long;
 use NHdb;
-use NetHack;
 use NetHack::Config;
 use NetHack::Variant;
 use Log::Log4perl qw(get_logger);
