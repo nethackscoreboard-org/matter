@@ -5,9 +5,7 @@
 [%- IF NOT devnull -%]
   <th>srv</th>
   <th>var</th>
-[%- IF showversion -%]
   <th>ver</th>
-[%- END -%]
 [%- END -%]
 [%- IF not name -%]
   <th>name</th>
@@ -31,9 +29,7 @@
 [%- IF NOT devnull -%]
   <td>[% row.server %]</td>
   <td>[% row.variant %]</td>
-[%- IF showversion -%]
-  <td>[% IF row.showversion %][% row.version %][% END %]</td>
-[%- END -%]
+  <td>[% row.version %]</td>
 [%- END -%]
 [%- IF not name -%]
   [%- IF devnull; THEN; row.name = row.name_orig; END -%]

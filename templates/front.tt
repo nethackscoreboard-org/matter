@@ -95,7 +95,7 @@
 <td class="numeric">[% row.wins %]</td>
 <td>[% row.server %]</td>
 <td>[% row.variant %]</td>
-<td>[% IF row.showversion %][% row.version %][% END %]</td>
+<td>[% row.version %]</td>
 <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 <td class="numeric">[% number(row.turns) %]</td>
 [% IF row.start_dump %]

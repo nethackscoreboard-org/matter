@@ -66,9 +66,4 @@
     "dnh", "nhf", "dyn"
   ],
 
-  #--- variants that should show the version number
-
-  "showversion" : [
-    "nh", "gh",
-  ],
 }

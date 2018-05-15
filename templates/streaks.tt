@@ -35,9 +35,7 @@
 <th>wins</th>
 <th>srv</th>
 <th>var</th>
-[%- IF showversion -%]
 <th>ver</th>
-[%- END -%]
 <th>name</th>
 <th>turns</th>
 <th>start</th>
@@ -56,9 +54,7 @@
 [% END %]
 <td>[% row.server %]</td>
 <td>[% row.variant %]</td>
-[%- IF showversion -%]
-  <td>[% IF row.showversion %][% row.version %][% END %]</td>
-[%- END -%]
+<td>[% row.version %]</td>
 <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 <td class="numeric">[% number(row.turns) %]</td>
 [% IF row.start_dump %]

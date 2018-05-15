@@ -28,7 +28,7 @@ our @EXPORT = qw(
   cmd_option_array_expand
   cmd_option_state
   referentize
-  nhdb_show_version
+  nhdb_version
 );
 
 
@@ -350,15 +350,16 @@ sub referentize
 
 
 #===============================================================================
-# Function returns true when supplied variant should be presenting version
-# number to the user.
+# Version string mangling (cutting off the prefix, so "UNH-5.2" becomes "5.2"
+# etc.).
 #===============================================================================
 
-sub nhdb_show_version
+sub nhdb_version
 {
-  my $var = shift;
+  my $ver = shift;
 
-  return (grep { $_ eq $var; } @{$nhdb_def->{'showversion'}}) ? 1 : 0;
+  $ver =~ s/^.*-//;
+  return $ver
 }
 
 
