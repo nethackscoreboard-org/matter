@@ -427,15 +427,6 @@
 
 <table class="bordered">
 
-  [%
-    SET z_roles = nh_roles;
-    IF variant == 'slx'; THEN;
-      IF zscore.item('val').item(name).item('slx').exists('all'); THEN;
-        SET z_roles = zscore.item('val').item(name).item('slx').keys;
-      END;
-    END;
-  %]
-
   <thead>
     <tr>
       <th>&nbsp;</th>

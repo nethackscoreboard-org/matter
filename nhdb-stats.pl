@@ -1460,6 +1460,24 @@ sub gen_page_player
 
   my $nv = $nh->variant($variant eq 'all' ? 'nh' : $variant);
 
+  #--- z-roles -- roles shown in z-score table
+
+  # normally all roles in a variant are shown in the z-score breakdown table,
+  # but when the varient doesn't have defined list of roles (I am talking
+  # about you, SLASH'EM Extended), only roles with ascensions are shown.
+
+  if($nv->roles()) {
+    $data{'z_roles'} = [ 'all', @{$nv->roles()} ];
+  } else {
+    # zscore.item('val').item(name).item('slx').keys;
+    $data{'z_roles'} = [
+      'all',
+      sort
+      grep { $_ ne 'all' }
+      keys %{$data{'zscore'}{'val'}{$name}{$variant}}
+    ];
+  }
+
   #--- the rest
 
   $data{'nh_roles'} = $nv->roles();
@@ -1764,7 +1782,20 @@ sub gen_page_zscores
   $data{'vardef'}   = $nh->variant_names();
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'variant'}  = $variant;
-  $data{'nh_roles'} = [ 'all', @{$nv->roles()} ];
+
+  #--- following key holds roles that are included in the z-score table
+  #--- for variants that have enumerated their roles in the configuration,
+  #--- this simply lists all of them plus 'all'; for variants that do not
+  #--- have their roles listed (such as SLASH'EM Extended), this works
+  #--- differently: we only list roles that have ascending games.
+
+  if(!$nv->roles()) {
+    $data{'z_roles'} = [
+      'all', grep { $_ ne 'all' } keys %{$data{'zscore'}{'max'}{$variant}}
+    ];
+  } else {
+    $data{'z_roles'} = [ 'all', @{$nv->roles()} ];
+  }
 
   #--- process template
 

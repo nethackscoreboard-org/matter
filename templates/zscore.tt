@@ -36,18 +36,6 @@
           <th>[% var %]</th>
         [% END %]
       [% ELSE %]
-        [%
-          # special-casing for SLASH'EM Extended: because of too many roles
-          # we only list those with ascensions in them; to maintain deterministic
-          # order we remove the 'all' key, sort the list and then push the 'all'
-          # item to the beginning
-
-          SET z_roles = nh_roles;
-          IF variant == 'slx'; THEN;
-            z_roles = zscore.item('max').item('slx').keys.grep('^(?:(?!all).)*$').sort;
-            z_roles.unshift('all');
-          END;
-        %]
         [% FOR role IN z_roles %]
           <th>[% role == "all" ? role : role.ucfirst %]</th>
         [% END %]
