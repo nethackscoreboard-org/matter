@@ -30,6 +30,11 @@ has conducts => (
   builder => sub { _build_data($_[0], 'conduct') },
 );
 
+has achievements => (
+  is => 'lazy',
+  builder => sub { _build_data($_[0], 'achieve') },
+);
+
 has roles => (
   is => 'lazy',
   builder => sub { _build_data($_[0], 'roles') },
@@ -77,7 +82,7 @@ sub _build_data
   my $vc = $self->_def();
   my $gc = $self->config()->config();
 
-  if(exists $vc->{$category}) {
+  if(exists $vc->{$category} || $category eq 'achieve') {
     return $vc->{$category};
   } elsif(exists $gc->{'nh_variants'}{'nh'}{$category}) {
     return $gc->{'nh_variants'}{'nh'}{$category}
@@ -130,13 +135,15 @@ sub _def
 
 
 #===========================================================================
-# This function takes conduct bitmap and returns either number of conducts
-# or list of conduct abbreviations, depending on context. The list of
-# conduct abbreviations is ordered according to ordering in
+# This function takes conduct and achieve bitmap and returns either number
+# of conducts or list of conduct abbreviations, depending on context.  The
+# list of conduct abbreviations is ordered according to ordering in
 # "nh_conduct_ord".
 #
-# There's one complication: in some variants elberethless conduct is
-# signalled by the 'elbereths' xlogfile field.
+# Conducts are signalled through 'conduct' and (oddly) 'achieve' xlogfile
+# fields. Also, there is a patch that causes the game write out number
+# of times the player has written Elbereth, which can be used to deduce
+# the state of "elberethless" conduct.
 #===========================================================================
 
 sub conduct
@@ -145,6 +152,7 @@ sub conduct
     $self,
     $conduct_bitfield,    # 1. 'conduct' field from xlogfile
     $elbereths,           # 2. 'elbereths' field from xlogfile
+    $achieve_bitfield,    # 3. 'achieve' field from xlogfile
   ) = @_;
 
   my @conducts;
@@ -152,19 +160,29 @@ sub conduct
   #--- get reverse code-to-value mapping for conducts
 
   my %con_to_val = reverse %{$self->conducts()};
+  my %ach_to_val = reverse %{$self->achievements() // {}};
 
   #--- get ordered list of conducts
 
   for my $c ($self->config()->list_conducts_ordered()) {
+
     if($c eq 'elbe' && defined $elbereths && !$elbereths) {
       push(@conducts, $c);
       last;
     }
-    my $v = $con_to_val{$c};
-    next if !$v;
-    if($conduct_bitfield & $v) {
-      push(@conducts, $c);
+
+    if(exists $con_to_val{$c} && $conduct_bitfield) {
+      if($conduct_bitfield & $con_to_val{$c}) {
+        push(@conducts, $c);
+      }
     }
+
+    elsif(exists $ach_to_val{$c} && $achieve_bitfield) {
+      if($achieve_bitfield & $ach_to_val{$c}) {
+        push(@conducts, $c);
+      }
+    }
+
   }
 
   #--- return depending on context

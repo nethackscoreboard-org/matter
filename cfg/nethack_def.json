@@ -77,7 +77,8 @@
     "bone", "pets", "arti", "arts", "pile", "self", "pudd", "algn",
     "soko", "geno", "wish", "unih", "scar", "pray", "athe", "vegt",
     "vegn", "weap", "elbe", "illi", "paci", "food", "acce", "cont",
-    "tool", "magi", "armo", "raci", "thie", "zen", "nude",
+    "tool", "magi", "armo", "raci", "thie", "deaf", "fumb", "hall",
+    "illf", "zen", "nude",
   ],
 
   #--- ordered list of variants
@@ -118,7 +119,8 @@
     #===  |_| \_|\___|\__|_| |_|\__,_|\___|_|\_\  ============================
 
     # Vanilla NetHack, this is the fallback definition; if variant definition
-    # omits some info, the code uses this instead.
+    # omits some info, the code uses this instead. The 'achieve' section is
+    # an exemption as it doesn't fall back.
 
     "nh" : {
       "name" : "NetHack",
@@ -143,6 +145,10 @@
         "1024" : "arti",
         "2048" : "geno",
         "4096" : "elbe",
+      },
+      "achieve" : {
+        "4096" : "zen",
+        "8192" : "nude",
       },
       "rules" : [
         [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
@@ -876,6 +882,14 @@
 
     "sph" : {
       "name" : "SpliceHack",
+      "achieve" : {
+        "4096"   : "zen",
+        "8192"   : "nude",
+        "65536"  : "deaf",
+        "131072" : "fumb",
+        "262144" : "hall",
+        "524288" : "illf",
+      },
     },
 
   }
