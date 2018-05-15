@@ -75,32 +75,36 @@ INSERT INTO logfiles VALUES (
 -- eu.un.nethack.nu/UNE -----------------------------------------------------
 -----------------------------------------------------------------------------
 
-INSERT INTO logfiles VALUES (
+-- Shut down in May 2018, archived on ascension.run
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
   3, 'eu.un.nethack.nu',
-  'une', 'unh', '5',
-  'http://un.nethack.nu/logs/xlogfile-eu',
+  'une', 'unh',
+  'https://ascension.run/history/unn/eu/xlogfile'
   'une.unh.log',
-  'http://un.nethack.nu/user/%u/dumps/eu/%u.%e.txt.html',
-  'http://un.nethack.nu/rcfiles/%u.nethackrc',
-  NULL,
-  TRUE, FALSE, TRUE,
-  'UTC', NULL, NULL
+  'https://ascension.run/history/unn/users/%u/dumps/eu/%u.%e.txt.html'
+  TRUE, TRUE, TRUE, 'UTC'
 );
 
 -----------------------------------------------------------------------------
 -- us.un.nethack.nu/UNU -----------------------------------------------------
 -----------------------------------------------------------------------------
 
-INSERT INTO logfiles VALUES (
+-- Shut down in May 2018, archived on ascension.run
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
   10, 'us.un.nethack.nu',
-  'unu', 'unh', '5',
-  'http://un.nethack.nu/logs/xlogfile-us',
+  'unu', 'unh',
+  'https://ascension.run/history/unn/us/xlogfile'
   'unu.unh.log',
-  'http://un.nethack.nu/user/%u/dumps/us/%u.%e.txt.html',
-  NULL,
-  NULL,
-  TRUE, FALSE, TRUE,
-  'UTC', NULL, NULL
+  'https://ascension.run/history/unn/users/%u/dumps/us/%u.%e.txt.html'
+  TRUE, TRUE, TRUE, 'UTC'
 );
 
 -----------------------------------------------------------------------------
