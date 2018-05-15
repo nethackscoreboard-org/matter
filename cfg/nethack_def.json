@@ -141,7 +141,8 @@
         "256"  : "self",
         "512"  : "wish",
         "1024" : "arti",
-        "2048" : "geno"
+        "2048" : "geno",
+        "4096" : "elbe",
       },
       "rules" : [
         [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
