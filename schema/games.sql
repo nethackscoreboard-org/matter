@@ -68,7 +68,7 @@ CREATE OR REPLACE VIEW v_games_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended
   FROM 
     games
@@ -85,7 +85,7 @@ CREATE OR REPLACE VIEW v_games AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended
   FROM 
     games
@@ -102,7 +102,7 @@ CREATE OR REPLACE VIEW v_games_all AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended, scummed
   FROM 
     games
@@ -119,7 +119,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, death, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended, dumplog,
     extract('year'  from age(
       current_timestamp AT TIME ZONE 'UTC', 
@@ -156,7 +156,7 @@ CREATE OR REPLACE VIEW v_ascended AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct, turns, realtime,
+    deathlev, hp, maxhp, maxlvl, points, conduct, achieve, turns, realtime,
     games.version, ascended
   FROM
     games
@@ -221,7 +221,8 @@ RETURNS TABLE (
   r_dumplog        varchar(128),
   r_ascended       boolean,
   r_realtime       bigint,
-  r_elbereths      int
+  r_elbereths      int,
+  r_achieve        int
 ) AS $$
 
 SELECT
@@ -232,7 +233,7 @@ SELECT
   to_char(g.endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
   endtime_raw,
   g.deathlev, g.hp, g.maxhp, g.maxlvl, g.points, g.conduct, g.turns,
-  l.logfiles_i, g.dumplog, g.ascended, g.realtime, g.elbereths
+  l.logfiles_i, g.dumplog, g.ascended, g.realtime, g.elbereths, g.achieve
 FROM (
   SELECT
     min(h.endtime) AS endtime, h.role, h.race, h.align0
