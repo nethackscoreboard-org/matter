@@ -199,6 +199,7 @@ CREATE OR REPLACE FUNCTION first_to_ascend(_variant varchar)
 RETURNS TABLE (
   r_server         varchar(3),
   r_variant        varchar(3),
+  r_version        varchar(16),
   r_name           varchar(48),
   r_role           char(3),
   r_race           char(3),
@@ -226,7 +227,7 @@ RETURNS TABLE (
 ) AS $$
 
 SELECT
-  server, variant, g.name, g.role, g.race, g.align0, g.gender0,
+  server, variant, g.version, g.name, g.role, g.race, g.align0, g.gender0,
   starttime,
   to_char(g.starttime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS starttime_fmt,
   starttime_raw, endtime,
