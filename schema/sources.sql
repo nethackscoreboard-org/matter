@@ -268,7 +268,7 @@ INSERT INTO logfiles VALUES (
   'asc', 'unh', NULL,
   'https://ascension.run/xlogfiles/unnethack',
   'asc.unh.log',
-  'https://ascension.run/userdata/%u/unnethack/dumplog/%s',
+  'https://ascension.run/userdata/%u/unnethack/dumplog/%s.html',
   NULL,
   NULL,
   TRUE, FALSE, TRUE,
