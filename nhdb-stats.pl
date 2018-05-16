@@ -1384,85 +1384,18 @@ sub gen_page_player
   }
 
   #== streaks ==============================================================
-  # get player's streaks; the data structure we load it in is ordered
-  # array of following hashrefs:
-  #
-  # { 
-  #   "streaks_i" : INTEGER,
-  #   "open"      : BOOLEAN,
-  #   "games"     : [ rowid1, ..., rowidN ]
-  # }
-  
-  my (@streaks, $current_streak);
-  $query = 
-    'SELECT rowid, streaks_i, open ' .
-    'FROM streaks ' .
-    'JOIN logfiles USING ( logfiles_i ) ' .
-    'JOIN map_games_streaks USING ( streaks_i ) ' .
-    'JOIN games USING ( rowid ) ' .
-    'WHERE %s ' .
-    'ORDER BY num_games DESC, streaks_i, endtime ASC';
-  $where = 'streaks.name = ?';
-  @arg = ($name);
-  if($variant ne 'all') {
-    $where .= ' AND variant = ?';
-    push(@arg, $variant);
-  }
-  $query = sprintf($query, $where);
-  $result = sql_load(
-    $query, undef, undef,
-    sub {
-      if(
-        !ref($current_streak)
-        || $current_streak->{'streaks_i'} != $_[0]->{'streaks_i'}
-      ) {
-        push(@streaks, $current_streak) if ref($current_streak);
-        $current_streak = {
-          'streaks_i' => $_[0]->{'streaks_i'},
-          'open'      => $_[0]->{'open'},
-          'games'     => []
-        };
-      }
-      push(@{$current_streak->{'games'}}, $_[0]->{'rowid'});
-    },
-    @arg
-  );
-  push(@streaks, $current_streak) if ref($current_streak);
-  return $result if !ref($result);
-  $result = undef;
 
-  #--- now some reprocessing for TT2
-  # =1=
-  # On the player page, we display list of open (active) streaks on top,
-  # this include potiential (num_games = 1) streaks as well
-  # =2=
-  # We make separate counts of the two streak counts: real streaks
-  # (streaks.num games > 1) and open streaks (streaks.open = true)
+  my ($streaks_ord, $streaks_dat)
+  = sql_load_streaks($variant, $name, undef, 1);
+  die if !ref($streaks_ord);
+  $data{'streaks'} = process_streaks($streaks_ord, $streaks_dat);
 
-  $data{'result_streak_cnt_open'} = 0;
-  $data{'result_streak_cnt_all'} = 0;
-  $data{'result_streaks'} = [];
-  for(my $i = 0; $i < scalar(@streaks); $i++) {
-    my $row = {};
-    my $games_num = scalar(@{$streaks[$i]->{'games'}});
-    my $game_first = $streaks[$i]->{'games'}[0];
-    my $game_last = $streaks[$i]->{'games'}[$games_num - 1];
-    @{$data{'result_streaks'}}[$i] = $row;
-    $row->{'n'}          = $i + 1;
-    $row->{'wins'}       = $games_num;
-    $row->{'server'}     = $ascs_by_rowid{$game_first}{'server'};
-    $row->{'open'}       = $streaks[$i]->{'open'};
-    $row->{'variant'}    = $ascs_by_rowid{$game_first}{'variant'};
-    $row->{'start'}      = $ascs_by_rowid{$game_first}{'endtime_fmt'};
-    $row->{'start_dump'} = $ascs_by_rowid{$game_first}{'dump'};
-    $row->{'end'}        = $ascs_by_rowid{$game_last}{'endtime_fmt'};
-    $row->{'end_dump'}   = $ascs_by_rowid{$game_last}{'dump'};
-    $row->{'glist'}      = [];
-    for my $game_rowid (@{$streaks[$i]->{'games'}}) {
-      push(@{$row->{'glist'}}, $ascs_by_rowid{$game_rowid});
-    }
-    $data{'result_streak_cnt_open'}++ if($row->{'open'});
-    $data{'result_streak_cnt_all'}++ if $games_num > 1;
+  #--- some auxiliary metadata
+
+  $data{'streaks_count'} = { all => 0, open => 0 };
+  foreach my $row (@{$data{'streaks'}}) {
+    $data{'streaks_count'}{'all'}++ if $row->{'wins'} > 1;
+    $data{'streaks_count'}{'open'}++ if $row->{'open'};
   }
 
   #=== additional data =====================================================

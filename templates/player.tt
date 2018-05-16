@@ -1,8 +1,12 @@
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
 [%- USE percent = format("%0.1f%%") -%]
 [%- USE zsc = format("%0.4f") -%]
+[%- USE Dumper -%]
 <!doctype html>
 
+<!--
+[% Dumper.dump(streaks) %]
+-->
 <html>
 
 <head>
@@ -89,61 +93,67 @@
 </table>
 
 
-[% IF result_streak_cnt_open %]
-<h3>Active Streaks</h3>
 
-<table class="bordered">
+[%# ======================================================================
+    === OPEN STREAKS =====================================================
+    ====================================================================== %]
 
-<tr>
-<th></th>
-<th>wins</th>
-<th>srv</th>
-<th>var</th>
-[%- IF variant == 'nh' || variant == 'all' -%]
-  <th>ver</th>
-[%- END -%]
-<th>start</th>
-<th>end</th>
-<th>games</th>
-</tr>
+[% IF streaks_count.open %]
 
-[% FOREACH row IN result_streaks %]
-[% IF row.open %]
-<tr>
-<td class="numeric">[% row.n %]</td>
-[% IF row.open %]
-<td class="numeric"><span class="streak-open">[% row.wins %]</span></td>
-[% ELSE %]
-<td class="numeric">[% row.wins %]</td>
-[% END %]
-<td>[% row.server %]</td>
-<td>[% row.variant %]</td>
-[%- IF variant == 'nh' || variant == 'all' -%]
-  <td>[% IF row.glist.0.variant == 'nh' %][% row.glist.0.version %][% END %]</td>
-[%- END -%]
-[% IF row.start_dump %]
-<td><a href="[% row.start_dump %]">[% row.start %]</a></td>
-[% ELSE %]
-<td>[% row.start %]</td>
-[% END %]
+  <h3>Active Streaks</h3>
 
-[% IF row.end_dump %]
-<td><a href="[% row.end_dump %]">[% row.end %]</a></td>
-[% ELSE %]
-<td>[% row.end %]</td>
-[% END %]
+  <table class="bordered">
 
-<td>
-[% FOREACH game IN row.glist %]
-<span class="combono"><a href="#asc[% game.n %]">[% game.n %]</a></span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
-[% END %]
-</td>
-</tr>
-[% END %]
-[% END %]
+    <tr>
+      <th>wins</th>
+      <th>srv</th>
+      <th>var</th>
+      <th>ver</th>
+      <th>start</th>
+      <th>end</th>
+      <th>games</th>
+    </tr>
 
+    [% FOREACH row IN streaks %]
 
-</table>
+      [% IF row.open %]
+
+        <tr>
+
+          <td class="numeric">
+            <span class="streak-open">[% row.wins %]</span>
+          </td>
+
+          <td>[% row.server %]</td>
+          <td>[% row.variant %]</td>
+          <td>[% row.version %]</td>
+
+          [% IF row.start_dump %]
+            <td><a href="[% row.start_dump %]">[% row.start %]</a></td>
+          [% ELSE %]
+            <td>[% row.start %]</td>
+          [% END %]
+
+          [% IF row.end_dump %]
+            <td><a href="[% row.end_dump %]">[% row.end %]</a></td>
+          [% ELSE %]
+            <td>[% row.end %]</td>
+          [% END %]
+
+          <td>
+            [% FOREACH game IN row.glist %]
+              <span class="combono"><a href="#asc[% game.n %]">[% game.n %]</a></span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span> 
+            [% END %]
+          </td>
+
+        </tr>
+
+      [% END %]
+
+    [% END %]
+
+  </table>
+
 [% END %]
 
 [%# ======================================================================
@@ -327,8 +337,11 @@
 
 
 
+[%# ======================================================================
+    === STREAKS OF ASCENSIONS ============================================
+    ====================================================================== %]
 
-[% IF result_streak_cnt_all %]
+[% IF streaks_count.all %]
 <h3>Streaks of Ascensions</h3>
 
 <table class="bordered">
@@ -338,12 +351,13 @@
 <th>wins</th>
 <th>srv</th>
 <th>var</th>
+<th>ver</th>
 <th>start</th>
 <th>end</th>
 <th>games</th>
 </tr>
 
-[% FOREACH row IN result_streaks %]
+[% FOREACH row IN streaks %]
 [% IF row.wins > 1 %]
 <tr>
 <td class="numeric">[% row.n %]</td>
@@ -354,6 +368,7 @@
 [% END %]
 <td>[% row.server %]</td>
 <td>[% row.variant %]</td>
+<td>[% row.version %]</td>
 [% IF row.start_dump %]
 <td><a href="[% row.start_dump %]">[% row.start %]</a></td>
 [% ELSE %]
