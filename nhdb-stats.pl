@@ -1420,11 +1420,9 @@ sub gen_page_player
   # about you, SLASH'EM Extended), only roles with ascensions are shown.
 
   if($nv->roles()) {
-    $data{'z_roles'} = [ 'all', @{$nv->roles()} ];
+    $data{'z_roles'} = [ @{$nv->roles()} ];
   } else {
-    # zscore.item('val').item(name).item('slx').keys;
     $data{'z_roles'} = [
-      'all',
       sort
       grep { $_ ne 'all' }
       keys %{$data{'zscore'}{'val'}{$name}{$variant}}
