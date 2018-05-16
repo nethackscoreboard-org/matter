@@ -466,10 +466,11 @@ sub sql_load_logfiles
 #
 # Arguments:
 # 1. variant id, 'all' or undef
-# 2. LIMIT value
-# 3. list streaks with at least this many games (no value or value of 0-1
+# 2. player name (optional)
+# 3. LIMIT value
+# 4. list streaks with at least this many games (no value or value of 0-1
 #    means listing even potential streaks)
-# 4. select only open streaks
+# 5. select only open streaks
 #============================================================================
 
 sub sql_load_streaks
@@ -563,14 +564,25 @@ sub sql_load_streaks
   # 2 or more 
 
   $query = 
-  q{SELECT *, } .
+  q{SELECT } .
+
+  # direct fields
+  q{g.name, g.name_orig, } .
+  q{role, race, gender, gender0, align, align0, server, variant, } .
+  q{g.version, elbereths, scummed, conduct, achieve, dumplog, turns, hp, } .
+  q{maxhp, realtime, rowid, starttime_raw, endtime_raw, g.logfiles_i, } .
+  q{streaks_i, } .
+
+  # computed fields
   q{to_char(starttime,'YYYY-MM-DD HH24:MI') AS starttime_fmt, } .
   q{to_char(endtime,'YYYY-MM-DD HH24:MI') AS endtime_fmt, } .
   q{floor(extract(epoch from age(endtime))/86400) AS age_day } .
+
+  # the rest of the query
   q{FROM streaks } .
   q{JOIN logfiles USING ( logfiles_i ) } .
   q{JOIN map_games_streaks USING ( streaks_i ) } .
-  q{JOIN games USING ( rowid ) } .
+  q{JOIN games g USING ( rowid ) } .
   q{WHERE %s } .
   q{ORDER BY endtime};
 
