@@ -578,12 +578,23 @@ sub sql_load_streaks
   @conds = (); 
   @args = ();
 
-  push(@conds, 'num_games > ?');
-  push(@args, 1);
+  if($num_games) {
+    push(@conds, 'num_games >= ?');
+    push(@args, $num_games);
+  }
 
   if($variant && $variant ne 'all') {
     push(@conds, 'variant = ?');
     push(@args, $variant);
+  }
+
+  if($name) {
+    push(@conds, 'streaks.name = ?');
+    push(@args, $name);
+  }
+
+  if($open_only) {
+    push(@conds, 'open is true');
   }
 
   $query = sprintf($query, join(' AND ', @conds));
