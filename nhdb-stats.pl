@@ -650,15 +650,15 @@ sub process_streaks
 
   #--- processing
 
-  for(my $i = 0; $i < scalar(@$streaks_ord); $i++) {
+  for(my $i = 0; $i < @$streaks_ord; $i++) {
     
     my $streak = $streaks->{$streaks_ord->[$i]};
-    my $games_num = scalar(@{$streak->{'games'}});
+    my $games_num = $streak->{'num_games'};
     my $game_first = $streak->{'games'}[0];
     my $game_last = $streak->{'games'}[$games_num - 1];
-    
+
     $result[$i] = my $row = {};
-    
+
     $row->{'n'}          = $i + 1;
     $row->{'wins'}       = $games_num;
     $row->{'server'}     = $game_first->{'server'};
