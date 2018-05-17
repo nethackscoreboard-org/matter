@@ -29,6 +29,8 @@ CREATE TABLE games (
   starttime_raw bigint,
   endtime       timestamp with time zone NOT NULL,
   endtime_raw   bigint,
+  birthdate     date,
+  deathdate     date,
   death         varchar(128),
   deathdnum     int,
   deathlev      int NOT NULL,
@@ -37,9 +39,9 @@ CREATE TABLE games (
   maxhp         int NOT NULL,
   maxlvl        int NOT NULL,
   points        bigint NOT NULL,
-  conduct       integer NOT NULL,
+  conduct       integer,
   elbereths     integer,
-  turns         bigint NOT NULL,
+  turns         bigint,
   achieve       integer,
   realtime      bigint,
   version       varchar(16) NOT NULL,
@@ -71,7 +73,7 @@ CREATE OR REPLACE VIEW v_games_recent AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
-    endtime_raw, starttime_raw, death, dumplog, deathlev,
+    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended
   FROM 
@@ -88,7 +90,7 @@ CREATE OR REPLACE VIEW v_games AS
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
-    endtime_raw, starttime_raw, death, dumplog, deathlev,
+    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended
   FROM 
@@ -105,7 +107,7 @@ CREATE OR REPLACE VIEW v_games_all AS
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
-    endtime_raw, starttime_raw, death, dumplog, deathlev,
+    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended, scummed
   FROM 
@@ -122,7 +124,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
-    endtime_raw, starttime_raw, death, deathlev,
+    endtime_raw, starttime_raw, birthdate, deathdate, death, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended, dumplog,
     extract('year'  from age(
@@ -159,7 +161,7 @@ CREATE OR REPLACE VIEW v_ascended AS
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
-    endtime_raw, starttime_raw, death, dumplog,
+    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog,
     deathlev, hp, maxhp, maxlvl, points, conduct, achieve, turns, realtime,
     games.version, ascended
   FROM

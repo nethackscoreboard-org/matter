@@ -571,7 +571,7 @@ sub sql_load_streaks
   q{role, race, gender, gender0, align, align0, server, variant, } .
   q{g.version, elbereths, scummed, conduct, achieve, dumplog, turns, hp, } .
   q{maxhp, realtime, rowid, starttime_raw, endtime_raw, g.logfiles_i, } .
-  q{streaks_i, } .
+  q{streaks_i, deathdate, } .
 
   # computed fields
   q{to_char(starttime,'YYYY-MM-DD HH24:MI') AS starttime_fmt, } .
@@ -701,6 +701,16 @@ sub process_streaks
         '%s-%s', $game_first->{'version'}, $game_last->{'version'}
       );
     }
+
+    #--- truncate time for games without endtime field
+
+    if($game_first->{'deathdate'}) {
+      $row->{'start'} =~ s/\s.*$//;
+    }
+    if($game_last->{'deathdate'}) {
+      $row->{'end'} =~ s/\s.*$//;
+    }
+
   }
 
   #--- return
@@ -723,8 +733,10 @@ sub row_fix
 
   #--- convert realtime to human-readable form
 
-  $row->{'realtime_raw'} = defined $row->{'realtime'} ? $row->{'realtime'} : 0;
-  $row->{'realtime'} = format_duration($row->{'realtime'});
+  if($row->{'realtime'}) {
+    $row->{'realtime_raw'} = defined $row->{'realtime'} ? $row->{'realtime'} : 0;
+    $row->{'realtime'} = format_duration($row->{'realtime'});
+  }
 
   #--- format version string
 
@@ -732,7 +744,7 @@ sub row_fix
 
   #--- include conducts in the ascended message
 
-  if($row->{'ascended'}) {
+  if($row->{'ascended'} && $row->{'conduct'}) {
     my @c = $variant->conduct(@{$row}{'conduct', 'elbereths', 'achieve'});
     $row->{'ncond'} = scalar(@c);
     $row->{'tcond'} = join(' ', @c);
@@ -774,6 +786,12 @@ sub row_fix
     sprintf("players/%%U/%%u.%s.html", $row->{'variant'}),
     $row
   );
+
+  #--- truncate time if needed
+
+  if($row->{'birthdate'}) {
+    $row->{'endtime_fmt'} =~ s/\s.*$//;
+  }
 }
 
 
@@ -1778,7 +1796,7 @@ sub gen_page_conducts
   
   $query = q{SELECT *, bitcount(conduct) AS ncond FROM v_ascended };
   if($variant ne 'all') {
-    $query .= q{WHERE variant = ? };
+    $query .= q{WHERE variant = ? AND conduct IS NOT NULL AND turns IS NOT NULL };
     push(@args, $variant);
   }
   $query .= q{ORDER BY ncond DESC, turns ASC LIMIT 100};

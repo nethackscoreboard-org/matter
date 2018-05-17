@@ -363,7 +363,7 @@ sub sql_streak_get_tail
   my $qry = q{SELECT * FROM streaks };
   $qry .= q{JOIN map_games_streaks USING (streaks_i) };
   $qry .= q{JOIN games USING (rowid) };
-  $qry .= q{WHERE streaks_i = ? ORDER BY endtime DESC LIMIT 1};
+  $qry .= q{WHERE streaks_i = ? ORDER BY endtime DESC, line DESC LIMIT 1};
   my $sth = $dbh->prepare($qry);
   my $r = $sth->execute($streaks_i);
   if(!$r) {
@@ -529,8 +529,10 @@ sub sql_insert_games
   push(@values, $line_no);
 
   #--- conduct
-  push(@fields, 'conduct');
-  push(@values, eval($l->{'conduct'}));
+  if($l->{'conduct'}) {
+    push(@fields, 'conduct');
+    push(@values, eval($l->{'conduct'}));
+  }
 
   #--- achieve
   if(exists $l->{'achieve'}) {
@@ -539,16 +541,36 @@ sub sql_insert_games
   }
   
   #--- start time
-  push(@fields, 'starttime');
-  push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $l->{'starttime'} ]) ;
-  push(@fields, 'starttime_raw');
-  push(@values, $l->{'starttime'});
+  if(exists $l->{'starttime'}) {
+    push(@fields, 'starttime');
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $l->{'starttime'} ]) ;
+    push(@fields, 'starttime_raw');
+    push(@values, $l->{'starttime'});
+  }
 
   #--- end time
-  push(@fields, 'endtime');
-  push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $l->{'endtime'} ]);
-  push(@fields, 'endtime_raw');
-  push(@values, $l->{'endtime'});
+  if(exists $l->{'endtime'}) {
+    push(@fields, 'endtime');
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $l->{'endtime'} ]);
+    push(@fields, 'endtime_raw');
+    push(@values, $l->{'endtime'});
+  }
+
+  #--- birth date
+  if(exists $l->{'birthdate'} && !exists $l->{'starttime'}) {
+    push(@fields, 'birthdate');
+    push(@values, $l->{'birthdate'});
+    push(@fields, 'starttime');
+    push(@values, $l->{'birthdate'});
+  }
+
+  #--- death date
+  if(exists $l->{'deathdate'} && !exists $l->{'endtime'}) {
+    push(@fields, 'deathdate');
+    push(@values, $l->{'deathdate'});
+    push(@fields, 'endtime');
+    push(@values, $l->{'deathdate'});
+  }
 
   #--- quit flag (escaped also counts)
   my $flag_quit = 'FALSE';
@@ -1425,7 +1447,10 @@ for my $log (@logfiles) {
 
     #--- game is ASCENDED / streak is OPEN
     # we are checking for overlap between the last game of the streak
-    # and the current game; if there is overlap, the streak is broken
+    # and the current game; if there is overlap, the streak is broken;
+    # NOTE: overlap can only be checked when starttime/endtime fields
+    # actually exist! This is not fulfilled for NAO games before
+    # March 19, 2018.
 
           else {
             my $last_game = sql_streak_get_tail(
@@ -1437,7 +1462,11 @@ for my $log (@logfiles) {
                 $streak_open{$logfiles_i}{$pl->{'name'}}, $last_game
               );
             }
-            if($last_game->{'endtime_raw'} >= $pl->{'starttime'}) {
+            if(
+              $last_game->{'endtime_raw'}
+              && $pl->{'starttime'}
+              && $last_game->{'endtime_raw'} >= $pl->{'starttime'}
+            ) {
               # close current streak
               $logger->info($lbl,
                 sprintf('Closing overlapping streak %d', $streak_open{$logfiles_i}{$pl->{'name'}})
