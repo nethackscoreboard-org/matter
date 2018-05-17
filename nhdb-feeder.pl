@@ -733,12 +733,13 @@ sub sql_purge_database
   #--- reset 'fpos' field in 'logfiles' table
 
       $r = $dbh->do(
-        'UPDATE logfiles SET fpos = NULL WHERE logfiles_i = ?', undef, $logfiles_i
+        'UPDATE logfiles SET fpos = NULL, lines = 0 WHERE logfiles_i = ?',
+        undef, $logfiles_i
       );
       if(!$r) {
         $logger->fatal(
           sprintf(
-            '[%s/%s] Failed to reset the fpos field',
+            '[%s/%s] Failed to reset the fpos/lines fields',
             $srv, $var
           )
         );
