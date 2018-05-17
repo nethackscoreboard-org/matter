@@ -442,9 +442,10 @@ sub sql_insert_games
 
   my (
     $logfiles_i,       # 1. logfile id
-    $server,           # 2. server id
-    $variant,          # 3. variant id
-    $l                 # 4. line to be parsed, transformed into SQL
+    $line_no,          # 2. line number
+    $server,           # 3. server id
+    $variant,          # 4. variant id
+    $l                 # 5. line to be parsed, transformed into SQL
   ) = @_;
 
   #--- other variables
@@ -523,6 +524,10 @@ sub sql_insert_games
   push(@fields, 'logfiles_i');
   push(@values, $logfiles_i);
   
+  #--- line number
+  push(@fields, 'line');
+  push(@values, $line_no);
+
   #--- conduct
   push(@fields, 'conduct');
   push(@values, eval($l->{'conduct'}));
@@ -1359,6 +1364,7 @@ for my $log (@logfiles) {
       my ($rowid, $values);
       ($qry, $values) = sql_insert_games(
         $logfiles_i,
+        $log->{'lines'} + $lc,
         $log->{'server'},
         $log->{'variant'},
         $pl

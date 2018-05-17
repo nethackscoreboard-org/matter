@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS games;
 
 CREATE TABLE games (
   rowid         bigint DEFAULT nextval('games_seq') NOT NULL,
+  line          int NOT NULL,
   logfiles_i    int REFERENCES logfiles,
   name          varchar(48) NOT NULL,
   name_orig     varchar(48) NOT NULL,
@@ -49,7 +50,10 @@ CREATE TABLE games (
   PRIMARY KEY ( rowid )
 );
 
-CREATE INDEX idx_games_endtime ON games ( (endtime AT TIME ZONE 'UTC') DESC );
+CREATE INDEX idx_games_endtime ON games (
+  (endtime AT TIME ZONE 'UTC') DESC,
+  line DESC
+);
 CREATE INDEX idx_games_name1 ON games ( name );
 CREATE INDEX idx_games_name2 ON games ( name_orig );
 GRANT SELECT, INSERT, UPDATE, DELETE ON games TO nhdbfeeder;
@@ -63,7 +67,7 @@ GRANT USAGE ON games_seq TO nhdbfeeder;
 
 CREATE OR REPLACE VIEW v_games_recent AS
   SELECT 
-    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
@@ -74,14 +78,14 @@ CREATE OR REPLACE VIEW v_games_recent AS
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   WHERE scummed = FALSE
-  ORDER BY endtime AT TIME ZONE 'UTC' DESC;
+  ORDER BY endtime AT TIME ZONE 'UTC' DESC, line DESC;
 
 GRANT SELECT ON v_games_recent TO nhdbstats;
 
 
 CREATE OR REPLACE VIEW v_games AS
   SELECT 
-    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog, deathlev,
@@ -91,14 +95,14 @@ CREATE OR REPLACE VIEW v_games AS
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   WHERE scummed = FALSE
-  ORDER BY endtime AT TIME ZONE 'UTC' ASC;
+  ORDER BY endtime AT TIME ZONE 'UTC' ASC, line ASC;
 
 GRANT SELECT ON v_games TO nhdbstats;
 
 
 CREATE OR REPLACE VIEW v_games_all AS
   SELECT 
-    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog, deathlev,
@@ -107,14 +111,14 @@ CREATE OR REPLACE VIEW v_games_all AS
   FROM 
     games
     LEFT JOIN logfiles USING ( logfiles_i )
-  ORDER BY endtime AT TIME ZONE 'UTC' ASC;
+  ORDER BY endtime AT TIME ZONE 'UTC' ASC, line ASC;
 
 GRANT SELECT ON v_games_all TO nhdbstats;
 
 
 CREATE OR REPLACE VIEW v_ascended_recent AS
   SELECT
-    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
@@ -145,14 +149,14 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   WHERE ascended = TRUE
-  ORDER BY endtime AT TIME ZONE 'UTC' DESC;
+  ORDER BY endtime AT TIME ZONE 'UTC' DESC, line DESC;
 
 GRANT SELECT ON v_ascended_recent TO nhdbstats;
 
 
 CREATE OR REPLACE VIEW v_ascended AS
   SELECT
-    rowid, logfiles_i, name, name_orig, server, variant, role, race,
+    rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, death, dumplog,
@@ -162,7 +166,7 @@ CREATE OR REPLACE VIEW v_ascended AS
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   WHERE ascended = TRUE
-  ORDER BY endtime AT TIME ZONE 'UTC' ASC;
+  ORDER BY endtime AT TIME ZONE 'UTC' ASC, line ASC;
 
 GRANT SELECT ON v_ascended TO nhdbstats;
 
