@@ -75,6 +75,11 @@
 -- this field, one forces the whole logfile to be parsed and fed into
 -- db again (but that won't erase the redundant db entries!)
 --
+-- lines
+-- Number of lines read so far. This is used to number the entries in the
+-- games table. This doesn't need to be the number of entries in the database,
+-- as some lines could possibly be rejected.
+--
 -- lastchk
 -- Time of last processing of the logfile.
 
@@ -97,6 +102,7 @@ CREATE TABLE logfiles (
   httpcont    boolean,
   tz          varchar(32),
   fpos        bigint,
+  lines       int,
   lastchk     timestamp with time zone,
   PRIMARY KEY (logfiles_i)
 );
@@ -112,6 +118,7 @@ GRANT SELECT ON logfiles TO nhdbstats;
 CREATE OR REPLACE VIEW v_sources AS
   SELECT
     logfiles_i, server, variant, descr, logurl, localfile, fpos, static,
+    lines,
     to_char(lastchk, 'YYYY-MM-DD HH24:MI') AS lastchk_trunc,
     current_timestamp - lastchk < interval '1 hour' AS lastchk_1h,
     current_timestamp - lastchk < interval '1 day' AS lastchk_1d,
@@ -124,7 +131,8 @@ CREATE OR REPLACE VIEW v_sources AS
     logfiles
     LEFT JOIN games USING ( logfiles_i )
   GROUP BY
-    logfiles_i, server, variant, descr, logurl, localfile, fpos, static
+    logfiles_i, server, variant, descr, logurl, localfile, fpos, static,
+    lines
   ORDER BY
     logfiles_i;
 

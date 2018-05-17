@@ -1499,14 +1499,23 @@ for my $log (@logfiles) {
     if($re) { die $re; }
 
     #--- update database with new position in the file
-    
-    my @logupdate = ( 'fpos = ?', 'lastchk = current_timestamp' );
+
+    my @logupdate = (
+      'fpos = ?',
+      'lastchk = current_timestamp',
+      'lines = ?'
+    );
+
     if($log->{'static'}) { push(@logupdate, 'oper = false'); }
     $qry = sprintf(
       'UPDATE logfiles SET %s WHERE logfiles_i = ?', join(', ', @logupdate)
     );
     $sth = $dbh->prepare($qry);
-    $r = $sth->execute($fsize[1], $log->{'logfiles_i'});
+    $r = $sth->execute(
+      $fsize[1],
+      $log->{'lines'} + $lc,
+      $log->{'logfiles_i'}
+    );
     if(!$r) {
       $logger->error($lbl, q{Failed to update table 'servers'});
       die;
