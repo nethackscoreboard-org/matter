@@ -760,7 +760,13 @@ sub row_fix
 
   #--- game dump URL
 
-  if($logfile->{'dumpurl'}) {
+  # special case is NAO 3.4.3 xlogfile where it seems that dumplogs became
+  # available on Mar 19, 2008 (the same time where xlogfile was significantly
+  # extended). To accommodate this, we will not create the 'dump' key if
+  # the 'endtime' field doesn't exist in the xlogfile (signalled by
+  # endtime_raw being undefined).
+
+  if($logfile->{'dumpurl'} && $row->{'endtime_raw'}) {
     $row->{'dump'} = url_substitute(
       $logfile->{'dumpurl'},
       $row
