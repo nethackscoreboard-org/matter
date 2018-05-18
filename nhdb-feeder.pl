@@ -352,6 +352,34 @@ sub sql_streak_close
 
 
 #============================================================================
+# This will close all streaks for a given source.
+#============================================================================
+
+sub sql_streak_close_all
+{
+  my $logfiles_i = shift;
+  my $logger = get_logger('Streaks');
+
+  my $qry = q{UPDATE streaks SET open = FALSE WHERE logfiles_i = ?};
+  my $sth = $dbh->prepare($qry);
+  my $r = $sth->execute($logfiles_i);
+  if(!$r) {
+    $logger->error(
+      sprintf(
+        'sql_streak_close_all(%d) failed to close streaks, errdb=%s',
+        $logfiles_i, $dbh->errstr()
+      )
+    );
+    return $sth->errstr();
+  }
+
+  #--- finish
+
+  return [ $r ];
+}
+
+
+#============================================================================
 # This function gets last game in a streak entry.
 #============================================================================
 
@@ -1538,7 +1566,20 @@ for my $log (@logfiles) {
     $logger->info($lbl,
       sprintf('Finished reading %d lines', $lc)
     );
-    
+
+    #--- close streak for 'static' sources
+
+    if($log->{'static'}) {
+      my $re = sql_streak_close_all($logfiles_i);
+      if(!ref($re)) {
+        $logger->error($lbl, q{Failed to close all streaks});
+        die;
+      }
+      if($re->[0]) {
+        $logger->info($lbl, sprintf('Closed %d streak(s)', $re->[0]));
+      }
+    }
+
     #--- write update info
 
     my $re = sql_update_info(\%update_variant, \%update_name);
