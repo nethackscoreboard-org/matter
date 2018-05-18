@@ -809,6 +809,6 @@ INSERT INTO logfiles VALUES (
   'https://www.hardfought.org/userdata/%U/%u/dn36/dumplog/%s.dn36.txt',
   NULL,
   NULL,
-  TRUE, FALSE, TRUE,
+  TRUE, TRUE, TRUE,
   'UTC', NULL, NULL
 );
