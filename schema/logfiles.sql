@@ -45,6 +45,10 @@
 --  * base64xlog - this allows using base64 encoded data in xlogfile, the
 --      fields should have same name with '64' appended; if such encoded
 --      field exists, it is preferred to plain unencoded field
+--
+--  * devnull - this marks logfile as being from the /dev/null/nethack
+--      tournament, which means that it has slightly different format that
+--      needs to be accommodated
 -- 
 -- oper
 -- If true, the feeder will process this entry; if false the logfile

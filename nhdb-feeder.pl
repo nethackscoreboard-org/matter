@@ -1371,12 +1371,22 @@ for my $log (@logfiles) {
     my %update_name;      # updated names
     my %update_variant;   # updated variants
     my %streak_open;      # indicates open streak for
+    my $devnull;          # devnull xlogfile option
+
+    $devnull = grep(/^devnull$/, @{$log->{'options'}});
 
     $logger->info($lbl, 'Processing file ', $localfile);
 
     while(my $l = <F>) { #<<< read loop beings here
 
       chomp($l);
+
+    #--- devnull logfiles are slightly modified by having a server id
+    #--- prepended to the usual xlogfile line
+
+      if($devnull) {
+        $l =~ s/^\S+\s(.*)$/$1/;
+      }
 
     #--- parse log
     

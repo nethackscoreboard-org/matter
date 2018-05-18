@@ -687,136 +687,114 @@ INSERT INTO logfiles (
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------
 
-INSERT INTO logfiles VALUES (
-  2006, '/dev/null 2006',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2006, '/dev/null 2006', 'dev', 'nh',
   'devnull-2006.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2007, '/dev/null 2007',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2007, '/dev/null 2007', 'dev', 'nh',
   'devnull-2007.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2008, '/dev/null 2008',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2008, '/dev/null 2008', 'dev', 'nh',
   'devnull-2008.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2009, '/dev/null 2009',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2009, '/dev/null 2009', 'dev', 'nh',
   'devnull-2009.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2010, '/dev/null 2010',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2010, '/dev/null 2010', 'dev', 'nh',
   'devnull-2010.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2011, '/dev/null 2011',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2011, '/dev/null 2011', 'dev', 'nh',
   'devnull-2011.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2012, '/dev/null 2012',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2012, '/dev/null 2012', 'dev', 'nh',
   'devnull-2012.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2013, '/dev/null 2013',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2013, '/dev/null 2013', 'dev', 'nh',
   'devnull-2013.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2014, '/dev/null 2014',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2014, '/dev/null 2014', 'dev', 'nh',
   'devnull-2014.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2015, '/dev/null 2015',
-  'dev', 'nh', NULL,
-  NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2015, '/dev/null 2015', 'dev', 'nh',
   'devnull-2015.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
-INSERT INTO logfiles VALUES (
-  2016, '/dev/null 2016',
-  'dev', 'nh', NULL,
-  'http://nethack.devnull.net/tournament/scores.xlogfile',
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, localfile, oper,
+  static, httpcont, tz, options
+) VALUES (
+  2016, '/dev/null 2016', 'dev', 'nh',
   'devnull-2016.log',
-  NULL,
-  NULL,
-  NULL,
-  TRUE, TRUE, FALSE,
-  'UTC', NULL, NULL
+  TRUE, TRUE, FALSE, 'UTC',
+  '{"devnull"}'
 );
 
 -----------------------------------------------------------------------------
