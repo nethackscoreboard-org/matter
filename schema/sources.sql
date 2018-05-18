@@ -801,14 +801,14 @@ INSERT INTO logfiles (
 -- /dev/null/nethack Tribute 2017 -------------------------------------------
 -----------------------------------------------------------------------------
 
-INSERT INTO logfiles VALUES (
-  2017, '/dev/null Tribute 2017',
-  'dnt', 'nh', NULL,
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  2017, '/dev/null Tribute 2017', 'dnt', 'nh',
   'https://hardfought.org/devnull/xlogfiles.dnt',
   'devnull-2017.log',
   'https://www.hardfought.org/userdata/%U/%u/dn36/dumplog/%s.dn36.txt',
-  NULL,
-  NULL,
   TRUE, TRUE, TRUE,
-  'UTC', NULL, NULL
+  'UTC'
 );
