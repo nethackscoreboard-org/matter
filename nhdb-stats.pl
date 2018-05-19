@@ -744,14 +744,14 @@ sub row_fix
 
   #--- include conducts in the ascended message
 
-  if($row->{'ascended'} && $row->{'conduct'}) {
+  if($row->{'ascended'} && defined $row->{'conduct'}) {
     my @c = $variant->conduct(@{$row}{'conduct', 'elbereths', 'achieve'});
     $row->{'ncond'} = scalar(@c);
     $row->{'tcond'} = join(' ', @c);
     if(scalar(@c) == 0) {
-      $row->{death} = 'ascended with all conducts broken';
+      $row->{'death'} = 'ascended with all conducts broken';
     } else {
-      $row->{death} = sprintf(
+      $row->{'death'} = sprintf(
         qq{ascended with %d conduct%s intact (%s)},
         scalar(@c), (scalar(@c) == 1 ? '' : 's'), $row->{'tcond'}
       );
