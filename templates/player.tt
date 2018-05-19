@@ -70,7 +70,7 @@
 [% IF games_last.dump -%]
 <td class="numeric"><a href="[% games_last.dump %]">[% games_last.endtime_fmt %]</a></td>
 [%- ELSE -%]
-  <td class="numeric">[% games_last.endtime %]</td>
+  <td class="numeric">[% games_last.endtime_fmt %]</td>
 [%- END %]
 [% IF total_duration %]
   <td>[% total_duration %]</td>
