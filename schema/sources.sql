@@ -632,6 +632,154 @@ INSERT INTO logfiles (
 );
 
 -----------------------------------------------------------------------------
+-- hardfought.org AU --------------------------------------------------------
+-----------------------------------------------------------------------------
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  53, 'au.hardfought.org (NetHack 3.4.3)', 'hfa', 'nh',
+  'https://au.hardfought.org/xlogfiles/nh343/xlogfile',
+  'hfa.nh.343.log',
+  'https://au.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  54, 'au.hardfought.org (GruntHack)', 'hfa', 'gh',
+  'https://au.hardfought.org/xlogfiles/gh/xlogfile',
+  'hfa.gh.log',
+  'https://au.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  55, 'au.hardfought.org (UnNetHack)', 'hfa', 'unh',
+  'https://au.hardfought.org/xlogfiles/un531/xlogfile',
+  'hfa.unh.log',
+  'https://au.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  56, 'au.hardfought.org (NetHack 3.6.1)', 'hfa', 'nh',
+  'https://au.hardfought.org/xlogfiles/nh361/xlogfile',
+  'hfa.nh361.log',
+  'https://au.hardfought.org/userdata/%U/%u/nh361/dumplog/%s.nh361.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, options,
+  oper, static, httpcont, tz
+) VALUES (
+  57, 'au.hardfought.org (FIQHack)', 'hfa', 'fh',
+  'https://au.hardfought.org/xlogfiles/fh/xlogfile',
+  'hfa.fh.log',
+  'https://au.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
+  '{"base64xlog"}',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  58, 'au.hardfought.org (Fourk)', 'hfa', 'nhf',
+  'https://au.hardfought.org/xlogfiles/4k/xlogfile',
+  'hfa.nhf.log',
+  'https://au.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  59, 'au.hardfought.org (dNetHack)', 'hfa', 'dnh',
+  'https://au.hardfought.org/xlogfiles/dnethack/xlogfile',
+  'hfa.dnh.log',
+  'https://au.hardfought.org/userdata/%U/%u/dnethack/dumplog/%s.dnh.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  60, 'au.hardfought.org (NetHack 4)', 'hfa', 'nh4',
+  'https://au.hardfought.org/xlogfiles/nethack4/xlogfile',
+  'hfa.nh4.log',
+  'https://hfa.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  61, 'au.hardfought.org (DynaHack)', 'hfa', 'dyn',
+  'https://au.hardfought.org/xlogfiles/dynahack/xlogfile',
+  'hfa.dyn.log',
+  'https://au.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  62, 'au.hardfought.org (SporkHack)', 'hfa', 'sh',
+  'https://au.hardfought.org/xlogfiles/sporkhack/xlogfile',
+  'hfa.sh.log',
+  'https://au.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  63, 'au.hardfought.org (xNetHack)', 'hfa', 'xnh',
+  'https://au.hardfought.org/xlogfiles/xnethack/xlogfile',
+  'hfa.xnh.log',
+  'https://au.hardfought.org/userdata/%U/%u/xnethack/dumplog/%s.xnh.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  64, 'au.hardfought.org (SLASH''EM Extended)', 'hfa', 'slx',
+  'https://au.hardfought.org/xlogfiles/slex/xlogfile',
+  'hfa.slx.log',
+  'https://au.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper,
+  static, httpcont, tz
+) VALUES (
+  65, 'au.hardfought.org (SpliceHack)', 'hfa', 'sph',
+  'https://au.hardfought.org/xlogfiles/splicehack/xlogfile',
+  'hfa.spl.log',
+  'https://au.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt',
+  TRUE, FALSE, TRUE, 'UTC'
+);
+
+-----------------------------------------------------------------------------
 -- em.slashem.me ------------------------------------------------------------
 -----------------------------------------------------------------------------
 
