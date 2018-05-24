@@ -467,7 +467,7 @@ INSERT INTO logfiles (
   'hdf', 'sph',
   'https://www.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hdf.spl.log',
-  NULL,
+  'https://www.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt',
   TRUE, FALSE, TRUE, 'UTC'
 );
 
@@ -627,7 +627,7 @@ INSERT INTO logfiles (
   'hfe', 'sph',
   'https://eu.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hfe.spl.log',
-  NULL,
+  'https://eu.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt',
   TRUE, FALSE, TRUE, 'UTC'
 );
 
