@@ -65,10 +65,6 @@
 -- In general, if you want to use static file, you probably also want 
 -- to set 'oper' to false.
 --
--- httpcon
--- Site supports HTTP continuation, allowing incremental downloads.
--- If false, the whole file needs to be redownloaded every time.
---
 -- tz
 -- Time zone used for this logfile
 --
@@ -95,16 +91,14 @@ CREATE TABLE logfiles (
   descr       varchar(64),
   server      varchar(3) NOT NULL,
   variant     varchar(3) NOT NULL,
-  version     varchar(16),
   logurl      varchar(128),
   localfile   varchar(128) NOT NULL UNIQUE,
   dumpurl     varchar(128),
   rcfileurl   varchar(128),
   options     varchar(16) ARRAY,
-  oper        boolean,
-  static      boolean,
-  httpcont    boolean,
-  tz          varchar(32),
+  oper        boolean DEFAULT TRUE,
+  static      boolean DEFAULT FALSE,
+  tz          varchar(32) DEFAULT 'UTC',
   fpos        bigint,
   lines       int,
   lastchk     timestamp with time zone,
