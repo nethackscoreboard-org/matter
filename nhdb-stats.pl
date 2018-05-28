@@ -1016,41 +1016,6 @@ sub zscore
 
 
 #============================================================================
-#============================================================================
-
-sub gen_page_info
-{
-  my ($re, $sth);
-  my %data;
-
-  $logger->info('Creating page: Generic Stats');
-
-  #--- get database data
-
-  $sth = $dbh->prepare(q{SELECT count(*) FROM games});
-  $sth->execute() or die;
-  ($data{'inf_games_total'}) = $sth->fetchrow_array();
-  
-  $sth = $dbh->prepare(q{SELECT count(*) FROM games WHERE scummed IS TRUE});
-  $sth->execute() or die;
-  ($data{'inf_games_scum'}) = $sth->fetchrow_array();
-
-  $sth = $dbh->prepare(q{SELECT count(*) FROM games WHERE ascended IS TRUE});
-  $sth->execute() or die;
-  ($data{'inf_games_asc'}) = $sth->fetchrow_array();
-  
-  #--- generate page
-
-  $data{'cur_time'} = scalar(localtime());
-  if(!$tt->process('general.tt', \%data, 'general.html')) {
-    $logger->error(q{Failed to create page 'Generic Stats', }, $tt->error());
-    die $tt->error();
-  }
-
-}
-
-
-#============================================================================
 # Generate "Recent Games" and "Ascended Games" pages.
 #============================================================================
 
