@@ -45,6 +45,26 @@ my $nh = new NetHack::Config(
   config_file => 'cfg/nethack_def.json'
 );
 
+#--- aggregate and summary pages generators
+
+# this hash contains code references to code that generates aggregate pages;
+
+my %aggr_pages = (
+  'recentgames' => sub { gen_page_recent('recent', @_) },
+  'recentascs' => sub { gen_page_recent('ascended', @_) },
+  'streaks' => \&gen_page_streaks,
+  'zscores' => \&gen_page_zscores,
+  'conducts' => \&gen_page_conducts,
+  'lowscore' => \&gen_page_lowscore,
+  'firstasc' => \&gen_page_first_to_ascend,
+  'gametime' => \&gen_page_gametime,
+);
+
+my %summ_pages = (
+  'about' => \&gen_page_about,
+  'front' => \&gen_page_front,
+);
+
 
 #============================================================================
 #=== definitions ============================================================
@@ -1885,6 +1905,11 @@ sub gen_page_first_to_ascend
     $variant
   ) = @_;
 
+  #--- don't generate if not enable in the config (we do not do
+  #--- 'first to ascend' for all variants)
+
+  return if !grep(/^$variant$/, @{$NHdb::nhdb_def->{'firsttoascend'}});
+
   #--- other variables
 
   my (
@@ -2224,17 +2249,8 @@ if($cmd_aggr) {
   for my $var (@$update_variants) {
 
     #--- regular stats
-    gen_page_recent('recent', $var);
-    gen_page_recent('ascended', $var);
-    gen_page_streaks($var);
-    gen_page_zscores($var);
-    gen_page_conducts($var);
-    gen_page_lowscore($var);
-    gen_page_gametime($var);
-
-    #--- first to ascend page
-    if(grep(/^$var$/, @{$NHdb::nhdb_def->{'firsttoascend'}})) {
-      gen_page_first_to_ascend($var);
+    foreach my $page (sort keys %aggr_pages) {
+      $aggr_pages{$page}->($var);
     }
 
     #--- clear update flag
@@ -2268,8 +2284,9 @@ if($cmd_players) {
 # even as new data isn't arriving.
 
 if($cmd_aggr) {
-  gen_page_front();
-  gen_page_about();
+  foreach my $page (sort keys %summ_pages) {
+    $summ_pages{$page}->();
+  }
 }
 
 #--- disconnect from database
