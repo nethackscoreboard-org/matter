@@ -2138,6 +2138,9 @@ sub help
   print "  --player=NAME  update only given player\n";
   print "  --noplayers    disable generating player pages\n";
   print "  --noaggr       disable generating aggregate pages\n";
+  print "  --pages=PAGES  limit processing to specified pages (";
+  print join(',', sort (keys %aggr_pages, keys %summ_pages));
+  print ")\n";
   print "\n";
 }
 
@@ -2172,6 +2175,7 @@ my $cmd_force = 0;
 my @cmd_player;
 my $cmd_players = 1;
 my $cmd_aggr = 1;
+my @cmd_pages;
 
 if(!GetOptions(
   'variant=s' => \@cmd_variant,
@@ -2179,6 +2183,7 @@ if(!GetOptions(
   'player=s'  => \@cmd_player,
   'players!'  => \$cmd_players,
   'aggr!'     => \$cmd_aggr,
+  'pages=s'   => \@cmd_pages,
 )) {
   help();
   exit(1);
@@ -2191,6 +2196,7 @@ if(!GetOptions(
 cmd_option_array_expand(
   \@cmd_variant,
   \@cmd_player,
+  \@cmd_pages,
 );
 
 # debugging log of command-lines options as we parsed them
@@ -2200,6 +2206,7 @@ $logger_cmd->debug('cmd_force = ', cmd_option_state($cmd_force));
 $logger_cmd->debug('cmd_players = ', cmd_option_state($cmd_players));
 $logger_cmd->debug('cmd_player = (', join(',', @cmd_player), ')');
 $logger_cmd->debug('cmd_aggr = ', $cmd_aggr ? 'on' : 'off');
+$logger_cmd->debug('cmd_pages = (', join(',', @cmd_pages), ')');
 $logger_cmd->debug('---');
 
 #--- lock file check/open
@@ -2250,6 +2257,7 @@ if($cmd_aggr) {
 
     #--- regular stats
     foreach my $page (sort keys %aggr_pages) {
+      next if @cmd_pages && !grep { $page eq $_ } @cmd_pages;
       $aggr_pages{$page}->($var);
     }
 
@@ -2285,6 +2293,7 @@ if($cmd_players) {
 
 if($cmd_aggr) {
   foreach my $page (sort keys %summ_pages) {
+    next if @cmd_pages && !grep { $page eq $_ } @cmd_pages;
     $summ_pages{$page}->();
   }
 }
