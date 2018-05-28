@@ -27,9 +27,19 @@ $| = 1;
 #=== globals ================================================================
 #============================================================================
 
+#--- DBI database handle
+
 my $dbh;
+
+#--- list of sources ('logfiles') loaded from database
+
 my $logfiles;
+
+#--- Log4Perl instance
+
 my $logger;              # log4perl primary instance
+
+#--- NetHack::Config instance
 
 my $nh = new NetHack::Config(
   config_file => 'cfg/nethack_def.json'
