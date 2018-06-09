@@ -647,22 +647,28 @@ INSERT INTO logfiles (
   '{"bug360duration"}'
 );
 
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  27, 'em.slashem.me (GruntHack)', 'esm', 'gh',
-  'https://em.slashem.me/xlogfiles/grunthack',
-  'esm.gh.log',
-  'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt'
-);
+--- xlogfile gratuitously discontinued on June 8, 2018
 
 INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  27, 'em.slashem.me (GruntHack)', 'esm', 'gh',
+  'https://em.slashem.me/xlogfiles/grunthackold',
+  'esm.gh.log',
+  'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt',
+  TRUE
+);
+
+--- xlogfile gratuitously discontinued on June 8, 2018
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   28, 'em.slashem.me (SporkHack)', 'esm', 'sh',
-  'https://em.slashem.me/xlogfiles/sporkhack',
+  'https://em.slashem.me/xlogfiles/sporkhackold',
   'esm.sh.log',
-  'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt'
+  'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt',
+  TRUE
 );
 
 INSERT INTO logfiles (
@@ -672,6 +678,24 @@ INSERT INTO logfiles (
   'https://em.slashem.me/xlogfiles/slex',
   'esm.slx.log',
   'https://em.slashem.me/userdata/%u/slex/dumplog/%s.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  66, 'em.slashem.me (GruntHack)', 'esm', 'gh',
+  'https://em.slashem.me/xlogfiles/grunthack',
+  'esm.gh.01.log',
+  'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  67, 'em.slashem.me (SporkHack)', 'esm', 'sh',
+  'https://em.slashem.me/xlogfiles/sporkhackold',
+  'esm.sh.01.log',
+  'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt'
 );
 
 -----------------------------------------------------------------------------
