@@ -1177,7 +1177,7 @@ my @logfiles;
 my @qry;
 
 push(@qry, q{SELECT * FROM logfiles});
-push(@qry, q{WHERE oper = 't'}) if !scalar(@cmd_server);
+push(@qry, q{WHERE oper = 't'});
 push(@qry, q{ORDER BY logfiles_i ASC});
 my $qry = join(' ', @qry);
 my $sth = $dbh->prepare($qry);
