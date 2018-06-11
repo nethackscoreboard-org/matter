@@ -76,7 +76,7 @@ sub parse_log
 
   for my $field (@$a0) {
     $field =~ /^(.+?)=(.+)$/;
-    $l{$1} = $2;
+    $l{$1} = $2 unless exists $l{$1};
   }
 
   #--- if this is enabled for a source (through "logfiles.options"), check
