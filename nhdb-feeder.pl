@@ -3,21 +3,31 @@
 #============================================================================
 # NHDB Feeder
 # """""""""""
-# (c) 2013-2017 Borek Lupomesky
+# (c) 2013-2018 Borek Lupomesky
 #
 # This program scrapes logs from pre-defined NetHack servers and inserts
 # game entries into database.
 #============================================================================
 
+#--- pragmas ----------------------------------------------------------------
+
 use strict;
 use utf8;
+
+#--- external modules -------------------------------------------------------
+
 use DBI;
 use Getopt::Long;
+use Log::Log4perl qw(get_logger);
+use MIME::Base64 qw(decode_base64);
+
+#--- internal modules -------------------------------------------------------
+
 use NHdb;
 use NetHack::Config;
 use NetHack::Variant;
-use Log::Log4perl qw(get_logger);
-use MIME::Base64 qw(decode_base64);
+
+#--- additional perl runtime setup ------------------------------------------
 
 $| = 1;
 
