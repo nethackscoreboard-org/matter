@@ -698,6 +698,15 @@ INSERT INTO logfiles (
   'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  68, 'em.slashem.me (dnhslex)', 'esm', 'dns',
+  'https://em.slashem.me/xlogfiles/dnhslex',
+  'esm.dns.01.log',
+  'https://em.slashem.me/userdata/%u/dnhslex/dumplog/%s'
+);
+
 -----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------

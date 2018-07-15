@@ -85,7 +85,7 @@
 
   "nh_variants_ord" : [
     "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh",
-    "xnh", "slx", "sph",
+    "xnh", "slx", "sph", "dns",
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -890,6 +890,22 @@
         "262144" : "hall",
         "524288" : "illf",
       },
+    },
+
+    #===       _       _         _             ===============================
+    #===    __| |_ __ | |__  ___| | _____  __  ===============================
+    #===   / _` | '_ \| '_ \/ __| |/ _ \ \/ /  ===============================
+    #===  | (_| | | | | | | \__ \ |  __/>  <   ===============================
+    #===   \__,_|_| |_|_| |_|___/_|\___/_/\_\  ===============================
+
+    # For the time being we leave everything undefined.
+
+    "dns" : {
+      "name" : "dnhslex",
+      "roles" : null,
+      "races" : null,
+      "genders" : null,
+      "aligns" : null,
     },
 
   }
