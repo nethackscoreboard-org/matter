@@ -15,8 +15,10 @@
     "bar" : "barbarian",
     "brd" : "bard",
     "bin" : "binder",
+    "car" : "cartomancer",
     "cav" : "caveman",
     "con" : "convict",
+    "dra" : "dragonmaster",
     "hea" : "healer",
     "hlf" : "half-dragon",
     "kni" : "knight",
@@ -35,6 +37,7 @@
   #--- define all races
 
   "nh_races_def" : {
+    "ang" : "angel",
     "bat" : "chiropteran",
     "clk" : "clockwork automaton",
     "hum" : "human",
@@ -45,13 +48,16 @@
     "gno" : "gnome",
     "hlf" : "half-dragon",
     "inc" : "incantifier",
+    "inf" : "infernal",
     "kob" : "kobold",
+    "mer" : "merfolk",
     "ogr" : "ogre",
     "orc" : "orc",
     "scu" : "scurrier",
     "swn" : "yuki-onna",
     "syl" : "sylph",
-    "vam" : "vampire"
+    "vam" : "vampire",
+    "wer" : "werewolf",
   },
 
   #--- define all alignments
@@ -890,6 +896,38 @@
         "262144" : "hall",
         "524288" : "illf",
       },
+      "roles" : [
+        "arc", "bar", "car", "cav", "dra", "hea", "kni", "mon", "pir", "pri",
+        "ran", "rog", "sam", "tou", "val", "wiz"
+      ],
+      "races" : [ "hum", "elf", "dwa", "gno", "orc", "ang", "mer", "inf", "wer" ],
+      "rules" : [
+        [ "$arc", "%hum", "%ang", "%mer", "%dwa", "%gno",                 "#law", "#neu"         ],
+        [ "$bar", "%hum", "%ang", "%mer", "%orc", "%inf", "%wer",         "#neu", "#cha"         ],
+        [ "$car", "%hum", "%ang", "%mer", "%elf", "%gno"                                         ],
+        [ "$cav", "%hum", "%ang", "%mer", "%dwa", "%gno",                 "#law", "#neu"         ],
+        [ "$dra", "%hum", "%ang", "%mer",                                                        ],
+        [ "$hea", "%hum", "%ang", "%mer", "%gno",                         "#neu"                 ],
+        [ "$kni", "%hum", "%ang", "%mer",                                 "#law"                 ],
+        [ "$mon", "%hum", "%ang", "%mer",                                                        ],
+        [ "$pir", "%hum", "%ang", "%mer",                                                        ],
+        [ "$pri", "%hum", "%ang", "%mer", "%elf"                                                 ],
+        [ "$ran", "%hum", "%ang", "%mer", "%elf", "%gno", "%orc", "%inf", "%wer", "#neu", "#cha" ],
+        [ "$rog", "%hum", "%ang", "%mer", "%orc", "%inf",                 "#cha"                 ],
+        [ "$sam", "%hum", "%ang", "%mer",                                 "#law"                 ],
+        [ "$tou", "%hum", "%ang", "%mer",                                 "#neu"                 ],
+        [ "$val", "%hum", "%ang", "%mer", "%dwa",                         "#law", "#neu", "!fem" ],
+        [ "$wiz", "%hum", "%ang", "%mer", "%elf", "%gno", "%orc", "%inf", "%wer", "#neu", "#cha" ],
+
+        [ "%ang", "#law" ],
+        [ "%elf", "#cha" ],
+        [ "%dwa", "#law" ],
+        [ "%gno", "#neu" ],
+        [ "%inf", "#law", "#cha" ],
+        [ "%mer", "#law", "#neu" ],
+        [ "%orc", "#cha" ],
+        [ "%wer", "#neu", "#cha" ],
+      ],
     },
 
     #===       _       _         _             ===============================
