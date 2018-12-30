@@ -11,6 +11,9 @@ use warnings;
 use feature 'state';
 use utf8;
 
+use FindBin qw($Bin);
+use lib "$Bin/lib";
+
 use Moo;
 use DBI;
 use Getopt::Long;
@@ -42,7 +45,7 @@ my $logger;              # log4perl primary instance
 #--- NetHack::Config instance
 
 my $nh = new NetHack::Config(
-  config_file => 'cfg/nethack_def.json'
+  config_file => "$Bin/cfg/nethack_def.json"
 );
 
 #--- aggregate and summary pages generators

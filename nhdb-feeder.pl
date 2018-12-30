@@ -23,6 +23,8 @@ use MIME::Base64 qw(decode_base64);
 
 #--- internal modules -------------------------------------------------------
 
+use FindBin qw($Bin);
+use lib "$Bin/lib";
 use NHdb;
 use NetHack::Config;
 use NetHack::Variant;

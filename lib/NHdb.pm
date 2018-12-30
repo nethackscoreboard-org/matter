@@ -7,10 +7,11 @@
 package NHdb;
 require Exporter;
 use URI::Escape;
-use Dir::Self;
 use JSON;
 use DBI;
 use POSIX qw(strftime);
+use FindBin qw($Bin);
+use lib "$Bin/lib";
 use integer;
 use strict;
 
@@ -49,7 +50,7 @@ BEGIN
 
   #--- read the main config file
 
-  open(my $fh, '<', __DIR__ . '/cfg/nhdb_def.json') or die;
+  open(my $fh, '<', "$Bin/cfg/nhdb_def.json") or die;
   my $def_json = <$fh>;
   close($fh);
   $nhdb_def = $js->decode($def_json);
@@ -57,7 +58,7 @@ BEGIN
   #--- read the file with db passwords (if defined)
 
   if(exists $nhdb_def->{'auth'}) {
-    open($fh, '<', __DIR__ . '/cfg/' . $nhdb_def->{'auth'}) or die;
+    open($fh, '<', "$Bin/cfg/" . $nhdb_def->{'auth'}) or die;
     $def_json = <$fh>;
     close($fh);
     $nhdb_def->{'auth'} = $js->decode($def_json);
