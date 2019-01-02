@@ -28,6 +28,8 @@ use lib "$Bin/lib";
 use NHdb;
 use NetHack::Config;
 use NetHack::Variant;
+use NHdb::Feeder::Cmdline;
+
 
 #--- additional perl runtime setup ------------------------------------------
 
@@ -1046,28 +1048,6 @@ sub sql_player_name_map
 
 
 #============================================================================
-# Display usage help.
-#============================================================================
-
-sub help
-{
-  print "Usage: nhdb-feeder.pl [options]\n\n";
-  print "  --help            get this information text\n";
-  print "  --logfiles        display configured logfiles, then exit\n";
-  print "  --variant=VAR     limit processing to specified variant(s)\n";
-  print "  --server=SRV      limit processing to specified server(s)\n";
-  print "  --logid=ID        limit processing to specified logid\n";
-  print "  --purge           delete database content\n";
-  print "  --oper            enable/disable source(s)\n";
-  print "  --static          enable/disable static flag on source(s)\n";
-  print "  --pmap-list       list existing player name mappings\n";
-  print "  --pmap-add=MAP    add player name mapping(s)\n";
-  print "  --pmap-remove=MAP remove player name mapping(s)\n";
-  print "\n";
-}
-
-
-#============================================================================
 #===================  _  ====================================================
 #===  _ __ ___   __ _(_)_ __  ===============================================
 #=== | '_ ` _ \ / _` | | '_ \  ==============================================
@@ -1090,52 +1070,12 @@ $logger->info('---');
 
 #--- process commandline options
 
-my (
- $cmd_logfiles,
- @cmd_variant,
- @cmd_server,
- $cmd_purge,
- $cmd_logid,
- $cmd_oper,
- $cmd_static,
- @cmd_pmap_add,
- @cmd_pmap_remove,
- $cmd_pmap_list
-);
-
-if(!GetOptions(
-  'logfiles'      => \$cmd_logfiles,
-  'variant=s'     => \@cmd_variant,
-  'server=s'      => \@cmd_server,
-  'logid=s'       => \$cmd_logid,
-  'purge'         => \$cmd_purge,
-  'oper!'         => \$cmd_oper,
-  'static!'       => \$cmd_static,
-  'pmap-add=s'    => \@cmd_pmap_add,
-  'pmap-remove=s' => \@cmd_pmap_remove,
-  'pmap-list'     => \$cmd_pmap_list
-)) {
-  help();
-  exit(1);
-}
-
-cmd_option_array_expand(
-  \@cmd_variant,
-  \@cmd_server,
-  \@cmd_pmap_add,
-  \@cmd_pmap_remove
-);
+my $cmd = NHdb::Feeder::Cmdline->instance();
 
 #--- lock file check/open
 
 if(
-  !$cmd_logfiles &&
-  !$cmd_purge &&
-  !defined($cmd_oper) &&
-  !defined($cmd_static) &&
-  !@cmd_pmap_add &&
-  !@cmd_pmap_remove &&
-  !$cmd_pmap_list
+  !$cmd->no_lockfile()
 ) {
   if(-f $lockfile) {
     $logger->warn('Another instance running, exiting');
@@ -1155,25 +1095,33 @@ if(!ref($dbh)) {
 
 #--- process --oper and --static options
 
-if(defined($cmd_oper) || defined($cmd_static)) {
+if(defined($cmd->operational()) || defined($cmd->static())) {
   sql_logfile_set_state(
-    \@cmd_variant, \@cmd_server, $cmd_logid, $cmd_oper, $cmd_static
+    $cmd->variants(),
+    $cmd->servers(),
+    $cmd->logid(),
+    $cmd->operational(),
+    $cmd->static()
   );
   exit(0);
 }
 
 #--- process --pmap options
 
-if($cmd_pmap_list) {
+my (@cmd_pmap_add, @cmd_pmap_remove);
+
+if($cmd->pmap_list()) {
   my $r = sql_player_name_map();
   exit($r ? 1 : 0);
 }
 
-if(@cmd_pmap_add || @cmd_pmap_remove) {
+if($cmd->pmap_add() || $cmd->pmap_remove()) {
   @cmd_pmap_add =
-    grep { /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+=[a-zA-Z0-9]+$/ } @cmd_pmap_add;
+    grep { /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+=[a-zA-Z0-9]+$/ } @{$cmd->pmap_add()}
+    if $cmd->pmap_add();
   @cmd_pmap_remove =
-    grep { /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/ } @cmd_pmap_remove;
+    grep { /^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/ } @{$cmd->pmap_remove()}
+    if $cmd->pmap_remove();
   my $r = 1;
   if(scalar(@cmd_pmap_add) + scalar(@cmd_pmap_remove)) {
     $r = sql_player_name_map(@cmd_pmap_add, @cmd_pmap_remove);
@@ -1189,7 +1137,7 @@ my @logfiles;
 my @qry;
 
 push(@qry, q{SELECT * FROM logfiles});
-push(@qry, q{WHERE oper = 't'});
+push(@qry, q{WHERE oper = 't'}) unless $cmd->show_logfiles();
 push(@qry, q{ORDER BY logfiles_i ASC});
 my $qry = join(' ', @qry);
 my $sth = $dbh->prepare($qry);
@@ -1213,16 +1161,24 @@ $logger->info(
 
 #--- display logfiles, if requested
 
-if($cmd_logfiles) {
+if($cmd->show_logfiles()) {
   $logger->info('Displaying configured logfiles (--logfiles option)');
   $logger->info('');
-  $logger->info('rowid srv var descr');
-  $logger->info('----- --- --- ' . '-' x 42);
+  $logger->info('* disabled sources, + static sources');
+  $logger->info('');
+  $logger->info('rowid  srv var descr');
+  $logger->info('------ --- --- ' . '-' x 42);
   for my $log (@logfiles) {
+
+    my $s = ' ';
+    if($log->{'static'}) { $s = '+'; }
+    if(!$log->{'oper'}) { $s = '*'; }
+
     $logger->info(
       sprintf(
-        "%5d %-3s %-3s %s\n",
+        "%5d%1s %-3s %-3s %s\n",
         $log->{'logfiles_i'},
+        $s,
         $log->{'server'},
         $log->{'variant'},
         substr($log->{'descr'}, 0, 48)
@@ -1234,8 +1190,8 @@ if($cmd_logfiles) {
 
 #--- database purge
 
-if($cmd_purge) {
-  sql_purge_database(\@cmd_variant, \@cmd_server, $cmd_logid);
+if($cmd->purge()) {
+  sql_purge_database($cmd->variants(), $cmd->servers(), $cmd->logid());
   exit(0);
 }
 
@@ -1312,16 +1268,16 @@ for my $log (@logfiles) {
 
   #--- user selection processing
 
-  next if 
-    scalar(@cmd_variant) &&
-    !grep { $log->{'variant'} eq lc($_) } @cmd_variant;
   next if
-    scalar(@cmd_server) &&
-    !grep { $log->{'server'} eq lc($_) } @cmd_server;
+    @{$cmd->variants()} &&
+    !grep { $log->{'variant'} eq lc($_) } @{$cmd->variants()};
   next if
-    $cmd_logid &&
-    $log->{'logfiles_i'} != $cmd_logid;
-  
+    scalar(@{$cmd->servers()}) &&
+    !grep { $log->{'server'} eq lc($_) } @{$cmd->servers()};
+  next if
+    $cmd->logid() &&
+    $log->{'logfiles_i'} != $cmd->logid();
+
   eval { # <--- eval starts here -------------------------------------------
 
     #--- prepare, print info
