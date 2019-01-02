@@ -293,7 +293,7 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
   24, 'hardfought.org (UnNetHack)', 'hdf', 'unh',
-  'https://www.hardfought.org/xlogfiles/un531/xlogfile',
+  'https://www.hardfought.org/xlogfiles/unnethack/xlogfile',
   'hdf.unh.log',
   'https://www.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html'
 );
@@ -470,7 +470,7 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
   43, 'eu.hardfought.org (UnNetHack)', 'hfe', 'unh',
-  'https://eu.hardfought.org/xlogfiles/un531/xlogfile',
+  'https://eu.hardfought.org/xlogfiles/unnethack/xlogfile',
   'hfe.unh.log',
   'https://eu.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html'
 );
@@ -537,7 +537,7 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
   55, 'au.hardfought.org (UnNetHack)', 'hfa', 'unh',
-  'https://au.hardfought.org/xlogfiles/un531/xlogfile',
+  'https://au.hardfought.org/xlogfiles/unnethack/xlogfile',
   'hfa.unh.log',
   'https://au.hardfought.org/userdata/%U/%u/un531/dumplog/%s.un531.txt.html'
 );
