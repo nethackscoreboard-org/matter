@@ -418,8 +418,8 @@ sub sql_streak_get_tail
   my $result = $sth->fetchrow_hashref();
   $sth->finish();
 
-  #--- finish 
-  
+  #--- finish
+
   return $result;
 }
 
@@ -505,10 +505,10 @@ sub sql_insert_games
   #if($l->{'name'} eq 'wizard') { return undef; }
   #if($l->{'name'} eq 'paxedtest' && $server eq 'nao') { return undef; }
   return undef
-    if grep 
-      { $l->{'name'} eq $_ } 
+    if grep
+      { $l->{'name'} eq $_ }
       @{$NHdb::nhdb_def->{'feeder'}{'reject_name'}};
-  
+
   #--- reject "special" modes of NH4 and its kin
   #--- Fourk challenge mode is okay, though
   if(
@@ -563,7 +563,7 @@ sub sql_insert_games
   #--- logfiles_i
   push(@fields, 'logfiles_i');
   push(@values, $logfiles_i);
-  
+
   #--- line number
   push(@fields, 'line');
   push(@values, $line_no);
@@ -579,7 +579,7 @@ sub sql_insert_games
     push(@fields, 'achieve');
     push(@values, eval($l->{'achieve'}));
   }
-  
+
   #--- start time
   if(exists $l->{'starttime'}) {
     push(@fields, 'starttime');
@@ -661,7 +661,7 @@ sub sql_update_info
       if(!$re) {
         return $dbh->errstr();
       }
-      
+
       # if no entry was updated, we have to create one instead
       elsif($re == 0) {
         $re = $dbh->do(
@@ -682,7 +682,7 @@ sub sql_update_info
         undef, $var, $name
       );
       if(!$re) { return $dbh->errstr(); }
-      if($re == 0) { 
+      if($re == 0) {
         $re = $dbh->do(
           q{INSERT INTO update VALUES (?, ?, TRUE)},
           undef, $var, $name
@@ -1323,9 +1323,9 @@ for my $log (@logfiles) {
     $log->{'logfiles_i'} != $cmd_logid;
   
   eval { # <--- eval starts here -------------------------------------------
-  
+
     #--- prepare, print info
-      
+
     my $localfile = sprintf(
       '%s/%s',
       $NHdb::nhdb_def->{'logs'}{'localpath'},
@@ -1374,7 +1374,7 @@ for my $log (@logfiles) {
     }
 
     #--- seek into the file (if position is known)
-       
+
     if($fpos) {
       $logger->info($lbl, sprintf('Seeking to %d', $fpos));
       $r = seek(F, $fpos, 0);
@@ -1383,18 +1383,18 @@ for my $log (@logfiles) {
         die;
       }
     }
-    
+
     #--- set timezone
-    
+
     $logger->info($lbl, 'Setting time zone to ', $log->{'tz'});
-    $r = $dbh->do(sprintf(q{SET TIME ZONE '%s'}, $log->{'tz'})); 
+    $r = $dbh->do(sprintf(q{SET TIME ZONE '%s'}, $log->{'tz'}));
     if(!$r) {
       $logger->error($lbl, 'Failed to set time zone');
       die;
     }
 
     #--- begin transaction
-    
+
     $logger->info($lbl, 'Starting database transaction');
     $r = $dbh->begin_work();
     if(!$r) {
@@ -1402,9 +1402,9 @@ for my $log (@logfiles) {
       die;
     }
     $transaction_in_progress = 1;
-    
+
     #--- now read content of the file
-    
+
     my $lc = 0;           # line counter
     my $tm = time();      # timer
     my $ll = 0;           # time of last info
@@ -1429,7 +1429,7 @@ for my $log (@logfiles) {
       }
 
     #--- parse log
-    
+
       my $pl = parse_log($log, $l);
 
     #--- insert row into database
@@ -1458,7 +1458,7 @@ for my $log (@logfiles) {
     # FIXME: There's subtle potential issue with this, since
     # scummed games do trigger these updates; I haven't decided
     # if we want this or not.
-    
+
         $update_variant{$log->{'variant'}} = 1;
         $update_name{$pl->{'name'}}{$log->{'variant'}} = 1;
 
@@ -1486,7 +1486,7 @@ for my $log (@logfiles) {
 
           if(!$streak_open{$logfiles_i}{$pl->{'name'}}) {
             my $streaks_i = sql_streak_create_new(
-              $logfiles_i, 
+              $logfiles_i,
               $pl->{'name'},
               $pl->{'name_orig'},
               $rowid
@@ -1527,7 +1527,7 @@ for my $log (@logfiles) {
               die $r if !ref($r);
               # open new
               $r = sql_streak_create_new(
-                $logfiles_i, 
+                $logfiles_i,
                 $pl->{'name'},
                 $pl->{'name_orig'},
                 $rowid
@@ -1555,7 +1555,7 @@ for my $log (@logfiles) {
               $streak_open{$logfiles_i}{$pl->{'name'}}
             );
             die $r if !ref($r);
-            $streak_open{$logfiles_i}{$pl->{'name'}} = undef;  
+            $streak_open{$logfiles_i}{$pl->{'name'}} = undef;
           }
 
         }
@@ -1566,7 +1566,7 @@ for my $log (@logfiles) {
 
       if((time() - $tm) > 5) {
         $tm = time();
-        $logger->info($lbl, 
+        $logger->info($lbl,
           sprintf('Processing (%d lines, %d l/sec)', $lc, ($lc-$ll)/5 )
         );
         $ll = $lc;
@@ -1621,7 +1621,7 @@ for my $log (@logfiles) {
     }
 
     #--- commit transaction
-    
+
     $r = $dbh->commit();
     $transaction_in_progress = 0;
     if(!$r) {
@@ -1629,7 +1629,7 @@ for my $log (@logfiles) {
       die;
     }
     $logger->info($lbl, 'Transaction commited');
-  
+
   }; # <--- eval ends here -------------------------------------------------
 
   #--- log exception message, if any
@@ -1639,14 +1639,14 @@ for my $log (@logfiles) {
   }
 
   #--- rollback if needed
-  
+
   if($transaction_in_progress) {
     $logger->warn($lbl, 'Transaction rollback');
     $dbh->rollback();
   }
 
   #--- finish
-  
+
   $logger->info($lbl, 'Processing finished');
 }
 
