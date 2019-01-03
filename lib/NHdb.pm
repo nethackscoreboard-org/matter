@@ -26,8 +26,6 @@ our @EXPORT = qw(
   url_substitute
   logfile_require_fields
   sql_show_query
-  cmd_option_array_expand
-  cmd_option_state
   referentize
   nhdb_version
 );
@@ -98,7 +96,7 @@ sub dbdone
 {
   my ($id) = @_;
   my $dbh;
-  
+
   $dbh = $dbconn{$id}{conn};
   if(!ref($dbh)) { return undef; }
   $dbh->disconnect;
@@ -180,24 +178,24 @@ sub format_duration
   my $realtime = shift;
   my ($d, $h, $m, $s) = (0,0,0,0);
   my $duration;
-  
+
   $d = $realtime / 86400;
   $realtime %= 86400;
-  
+
   $h = $realtime / 3600;
   $realtime %= 3600;
-  
+
   $m = $realtime / 60;
   $realtime %= 60;
-  
+
   $s = $realtime;
-  
+
   $duration = sprintf("%s:%02s:%02s", $h, $m, $s);
   if($d) {
     $duration = sprintf("%s, %s:%02s:%02s", $d, $h, $m, $s);
   }
 
-  return $duration;  
+  return $duration;
 }
 
 
@@ -297,42 +295,6 @@ sub sql_show_query
   }
 
   return $qry;
-}
-
-
-#===============================================================================
-# Function to help parse multiple-value command-line arguments. The arrayref
-# passed in contains strings, that can have form "aaa,bbb,ccc". These strings
-# are expanded to a list ("aaa","bbb","ccc") that replaces the source array
-# element.
-#===============================================================================
-
-sub cmd_option_array_expand
-{
-  for my $ary (@_) {
-    for(my $i = 0; $i < scalar(@$ary); $i++) {
-      splice(@$ary, $i, 1, grep { $_ } split(/,/, $ary->[$i]));
-    }
-  }
-}
-
-
-#===============================================================================
-# Get argument and return 'on', 'off' or 'undefined' depending on the state of
-# the argument.
-#===============================================================================
-
-sub cmd_option_state
-{
-  my $option = shift;
-
-  if($option) {
-    return 'on';
-  } elsif(defined $option) {
-    return 'off';
-  } else {
-    return 'undefined';
-  }
 }
 
 
