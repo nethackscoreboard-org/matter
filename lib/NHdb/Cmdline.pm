@@ -48,6 +48,26 @@ sub _add_to
 }
 
 
+#===============================================================================
+# Return 'on', 'off' or 'undefined' depending on the state of an attribute
+# passed in as the argument.
+#===============================================================================
+
+sub option_state
+{
+  my ($self, $option) = @_;
+  my $value = $self->$option();
+
+  if($value) {
+    return 'on';
+  } elsif(defined $value) {
+    return 'off';
+  } else {
+    return 'undefined';
+  }
+}
+
+
 #=============================================================================
 
 1;

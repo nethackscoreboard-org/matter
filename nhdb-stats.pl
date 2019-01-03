@@ -19,6 +19,7 @@ use DBI;
 use Getopt::Long;
 use NetHack::Config;
 use NetHack::Variant;
+use NHdb::Stats::Cmdline;
 use NHdb;
 use Template;
 use Log::Log4perl qw(get_logger);
@@ -2128,26 +2129,6 @@ sub gen_page_gametime
 }
 
 
-#============================================================================
-# Display usage help.
-#============================================================================
-
-sub help
-{
-  print "Usage: nhdb-stats.pl [options]\n\n";
-  print "  --help         get this information text\n";
-  print "  --variant=VAR  limit processing to specified variant(s)\n";
-  print "  --force        force processing of everything\n";
-  print "  --player=NAME  update only given player\n";
-  print "  --noplayers    disable generating player pages\n";
-  print "  --noaggr       disable generating aggregate pages\n";
-  print "  --pages=PAGES  limit processing to specified pages (";
-  print join(',', sort (keys %aggr_pages, keys %summ_pages));
-  print ")\n";
-  print "\n";
-}
-
-
 
 #============================================================================
 #===================  _  ====================================================
@@ -2173,43 +2154,19 @@ $logger->info('---');
 
 my $logger_cmd = get_logger("Stats::Cmdline");
 
-my @cmd_variant;
-my $cmd_force = 0;
-my @cmd_player;
-my $cmd_players = 1;
-my $cmd_aggr = 1;
-my @cmd_pages;
-
-if(!GetOptions(
-  'variant=s' => \@cmd_variant,
-  'force'     => \$cmd_force,
-  'player=s'  => \@cmd_player,
-  'players!'  => \$cmd_players,
-  'aggr!'     => \$cmd_aggr,
-  'pages=s'   => \@cmd_pages,
-)) {
-  help();
-  exit(1);
-}
-
-# expand textual lists into actual perl arrays; this allows to specify lists
-# on commandline in the form --option=EL1,EL2,EL3,..,ELn which is more
-# convenient than --option EL1 --option EL2 --option EL3 etc.
-
-cmd_option_array_expand(
-  \@cmd_variant,
-  \@cmd_player,
-  \@cmd_pages,
+my $cmd = NHdb::Stats::Cmdline->instance(
+  aggr_pages => \%aggr_pages,
+  summ_pages => \%summ_pages,
 );
 
 # debugging log of command-lines options as we parsed them
 
-$logger_cmd->debug('cmd_variant = (', join(',', @cmd_variant), ')');
-$logger_cmd->debug('cmd_force = ', cmd_option_state($cmd_force));
-$logger_cmd->debug('cmd_players = ', cmd_option_state($cmd_players));
-$logger_cmd->debug('cmd_player = (', join(',', @cmd_player), ')');
-$logger_cmd->debug('cmd_aggr = ', $cmd_aggr ? 'on' : 'off');
-$logger_cmd->debug('cmd_pages = (', join(',', @cmd_pages), ')');
+$logger_cmd->debug('cmd_variant = (', join(',', @{$cmd->variants()}), ')');
+$logger_cmd->debug('cmd_force = ', $cmd->option_state('force'));
+$logger_cmd->debug('cmd_players = ', $cmd->option_state('process_players'));
+$logger_cmd->debug('cmd_player = (', join(',', @{$cmd->players()}), ')');
+$logger_cmd->debug('cmd_aggr = ', $cmd->process_aggregate() ? 'on' : 'off');
+$logger_cmd->debug('cmd_pages = (', join(',', @{$cmd->pages()}), ')');
 $logger_cmd->debug('---');
 
 #--- lock file check/open
@@ -2243,8 +2200,11 @@ $logger->info('Loaded list of logfiles');
 
 #--- read what is to be updated
 
-if($cmd_aggr) {
-  my $update_variants = update_schedule_variants($cmd_force, \@cmd_variant);
+if($cmd->process_aggregate()) {
+  my $update_variants = update_schedule_variants(
+    $cmd->force(),
+    $cmd->variants(),
+  );
   if(@$update_variants) {
     $logger->info(
       'Following variants have new data: ',
@@ -2260,7 +2220,7 @@ if($cmd_aggr) {
 
     #--- regular stats
     foreach my $page (sort keys %aggr_pages) {
-      next if @cmd_pages && !grep { $page eq $_ } @cmd_pages;
+      next if $cmd->has_pages() && !grep { $page eq $_ } @{$cmd->pages()};
       $aggr_pages{$page}->($var);
     }
 
@@ -2274,9 +2234,9 @@ if($cmd_aggr) {
 
 #--- generate per-player pages
 
-if($cmd_players) {
+if($cmd->has_players()) {
   my ($pages_update, $player_combos) = update_schedule_players(
-    $cmd_force, \@cmd_variant, \@cmd_player
+    $cmd->force(), $cmd->variants(), $cmd->players()
   );
   for my $pg (@$pages_update) {
     gen_page_player(@$pg, $player_combos);
@@ -2294,9 +2254,9 @@ if($cmd_players) {
 # needs to be updated. Also this is indication to users that NHS is working
 # even as new data isn't arriving.
 
-if($cmd_aggr) {
+if($cmd->process_aggregate()) {
   foreach my $page (sort keys %summ_pages) {
-    next if @cmd_pages && !grep { $page eq $_ } @cmd_pages;
+    next if $cmd->has_pages && !grep { $page eq $_ } @{$cmd->pages()};
     $summ_pages{$page}->();
   }
 }
