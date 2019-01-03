@@ -8,6 +8,7 @@ package NHdb::Feeder::Cmdline;
 
 use Moo;
 with 'MooX::Singleton';
+extends 'NHdb::Cmdline';
 
 use Getopt::Long;
 use Carp;
@@ -154,40 +155,6 @@ Usage: nhdb-feeder.pl [options]
   --pmap-remove=MAP remove player name mapping(s)
 
 EOHD
-}
-
-#=============================================================================
-# Function that expands list in form ( "arg1,arg2", "arg3,arg4", "arg5" )
-# to ( "arg1", "arg2", "arg3", "arg4", "arg5" ).
-#=============================================================================
-
-sub _cmd_list_expand
-{
-  my ($self, @list) = @_;
-  my @result;
-
-  foreach my $el (@list) {
-    push(@result, split(/,/, $el));
-  }
-
-  return @result;
-}
-
-
-#=============================================================================
-# Add values to an attribute
-#=============================================================================
-
-sub _add_to
-{
-  my ($self, $where) = splice(@_, 0, 2);
-  my $attrval = $self->$where();
-
-  if(!ref $attrval) {
-    my $setter = "_set_$where";
-    $self->$setter($attrval = []);
-  }
-  push(@$attrval, $self->_cmd_list_expand(@_));
 }
 
 
