@@ -110,7 +110,7 @@
   #---
   #--- once the trigger(s) match(es), the requirements must be satisfied;
   #--- if the requirements are not satisfied, the combo is rejected and
-  #--- no further matching is attempted; if the requirements are met, 
+  #--- no further matching is attempted; if the requirements are met,
   #--- matching continues with next rule;
   #---
   #--- the requirements match so that for given race/gender/alignment the
@@ -130,7 +130,7 @@
 
     "nh" : {
       "name" : "NetHack",
-      "roles" : [ 
+      "roles" : [
         "arc", "bar", "cav", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
@@ -183,7 +183,7 @@
     #===    / _ \ / __/ _ \ |_| |/ _` |/ __| |/ /  ===========================
     #===   / ___ \ (_|  __/  _  | (_| | (__|   <   ===========================
     #===  /_/   \_\___\___|_| |_|\__,_|\___|_|\_\  ===========================
-    
+
     "ace" : {
       "name" : "AceHack",
       "conduct" : {
@@ -208,7 +208,7 @@
     #===  |  \| |/ _ \ __| |_| |/ _` |/ __| |/ / || |_   =====================
     #===  | |\  |  __/ |_|  _  | (_| | (__|   <|__   _|  =====================
     #===  |_| \_|\___|\__|_| |_|\__,_|\___|_|\_\  |_|    =====================
-    
+
     "nh4" : {
       "name" : "NetHack4",
       "conduct" : {
@@ -238,7 +238,7 @@
 
     "unh" : {
       "name" : "UnNetHack",
-      "roles" : [ 
+      "roles" : [
         "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran",
         "rog", "sam", "tou", "val", "wiz"
       ],
@@ -273,7 +273,7 @@
     #===   ___) | |_) | (_) | |  |   <|  _  | (_| | (__|   <   ===============
     #===  |____/| .__/ \___/|_|  |_|\_\_| |_|\__,_|\___|_|\_\  ===============
     #===        |_|                                            ===============
-    
+
     "sh" : {
       "name" : "SporkHack",
       "rules" : [
@@ -303,7 +303,7 @@
     #===  | |  _| '__| | | | '_ \| __| |_| |/ _` |/ __| |/ /  ================
     #===  | |_| | |  | |_| | | | | |_|  _  | (_| | (__|   <   ================
     #===   \____|_|   \__,_|_| |_|\__|_| |_|\__,_|\___|_|\_\  ================
-    
+
     "gh" : {
       "name" : "GruntHack",
       "races" : [ "hum", "elf", "dwa", "gia", "gno", "kob", "ogr", "orc" ],
@@ -762,7 +762,7 @@
 
     "dyn" : {
       "name" : "DynaHack",
-      "roles" : [ 
+      "roles" : [
         "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran",
         "rog", "sam", "tou", "val", "wiz"
       ],
