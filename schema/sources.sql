@@ -862,5 +862,5 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/xlogfiles/tnnt/xlogfile-tnnt-merged',
   'tnnt-2018.log',
   'https://www.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.txt',
-  FALSE
+  TRUE
 );
