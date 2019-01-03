@@ -7,6 +7,7 @@
 package NHdb;
 require Exporter;
 use URI::Escape;
+use Path::Tiny;
 use JSON;
 use DBI;
 use POSIX qw(strftime);
@@ -48,17 +49,13 @@ BEGIN
 
   #--- read the main config file
 
-  open(my $fh, '<', "$Bin/cfg/nhdb_def.json") or die;
-  my $def_json = <$fh>;
-  close($fh);
+  my $def_json = path($Bin, 'cfg/nhdb_def.json')->slurp_raw();
   $nhdb_def = $js->decode($def_json);
 
   #--- read the file with db passwords (if defined)
 
   if(exists $nhdb_def->{'auth'}) {
-    open($fh, '<', "$Bin/cfg/" . $nhdb_def->{'auth'}) or die;
-    $def_json = <$fh>;
-    close($fh);
+    $def_json = path($Bin, 'cfg', $nhdb_def->{'auth'})->slurp_raw();
     $nhdb_def->{'auth'} = $js->decode($def_json);
   }
 }
