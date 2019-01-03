@@ -91,7 +91,7 @@
 
   "nh_variants_ord" : [
     "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh",
-    "xnh", "slx", "sph", "dns",
+    "xnh", "slx", "sph", "dns", "sle",
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -946,6 +946,19 @@
       "aligns" : null,
     },
 
+    #===   ____  _        _    ____  _   _ _ _____ __  __   ==================
+    #===  / ___|| |      / \  / ___|| | | ( ) ____|  \/  |  ==================
+    #===  \___ \| |     / _ \ \___ \| |_| |/|  _| | |\/| |  ==================
+    #===   ___) | |___ / ___ \ ___) |  _  | | |___| |  | |  ==================
+    #===  |____/|_____/_/   \_\____/|_| |_| |_____|_|  |_|  ==================
+
+    "sle" : {
+      "name" : "SLASH'EM",
+      "roles" : null,
+      "races" : null,
+      "genders" : null,
+      "aligns" : null,
+    }
   }
 
 }
