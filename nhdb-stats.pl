@@ -118,7 +118,7 @@ sub format_duration_plr
   my @a;
 
   return undef if !$t;
-  
+
   my $years = $t / 31536000;
   $t %= 31536000;
   my $months = $t / 2592000;
@@ -298,12 +298,12 @@ sub update_schedule_players
     q{SELECT name, variant FROM update WHERE name <> ''}
   );
   $r = $sth->execute();
-  if(!$r) { 
+  if(!$r) {
     my $errmsg = sprintf(
       'Cannot get list of player,variant combos (%s)', $sth->errstr()
     );
     $logger->error($errmsg);
-    die $errmsg; 
+    die $errmsg;
   }
   while(my ($plr, $var) = $sth->fetchrow_array()) {
     $player_combos{$plr}{$var} = 1;
@@ -347,7 +347,7 @@ sub update_schedule_players
   my $cnt = 0;
   $sth = $dbh->prepare(q{SELECT * FROM update WHERE name <> '' AND upflag IS TRUE});
   $r = $sth->execute();
-  if(!$r) { 
+  if(!$r) {
     my $errmsg = sprintf(
       'Cannot get list of player updates (%s)', $sth->errstr()
     );
@@ -425,7 +425,7 @@ sub update_schedule_variants
       q{SELECT variant FROM update WHERE name = '' AND upflag IS TRUE}
     );
     my $re = $sth->execute();
-    if(!$re) { 
+    if(!$re) {
       my $errmsg = sprintf(
         "Failed to read from update table (%s)" . $sth->errstr()
       );
@@ -530,7 +530,7 @@ sub sql_load_streaks
 
   #--- the query -> ( streaks_i, turns_sum, num_games, open )
 
-  $query = 
+  $query =
   q{SELECT streaks_i, sum(turns) AS turns_sum, num_games, open } .
   q{FROM streaks } .
   q{JOIN logfiles USING ( logfiles_i ) } .
@@ -594,9 +594,9 @@ sub sql_load_streaks
   #--- prepare query
   # FIXME: this query pulls down too much data; the query above pulls down
   # first 100 streaks, but this query pulls down everything with streak length
-  # 2 or more 
+  # 2 or more
 
-  $query = 
+  $query =
   q{SELECT } .
 
   # direct fields
@@ -620,7 +620,7 @@ sub sql_load_streaks
   q{ORDER BY endtime};
 
   #--- conditions
-  @conds = (); 
+  @conds = ();
   @args = ();
 
   if($num_games) {
@@ -696,7 +696,7 @@ sub process_streaks
   #--- processing
 
   for(my $i = 0; $i < @$streaks_ord; $i++) {
-    
+
     my $streak = $streaks->{$streaks_ord->[$i]};
     my $games_num = $streak->{'num_games'};
     my $game_first = $streak->{'games'}[0];
@@ -909,7 +909,7 @@ sub harmonic_number
 
 
 #============================================================================
-# Calculate zscore from list of all ascensions. This function builds the 
+# Calculate zscore from list of all ascensions. This function builds the
 # complete %zscore structure that is reused for all pages displaying zscore.
 #============================================================================
 
@@ -1018,8 +1018,8 @@ sub zscore
     #--- sort
 
     @sorted = sort {
-      ($zval->{$b}{$var}{'all'} // 0) 
-      <=> 
+      ($zval->{$b}{$var}{'all'} // 0)
+      <=>
       ($zval->{$a}{$var}{'all'} // 0)
     } keys (%$zval);
 
@@ -1181,7 +1181,7 @@ sub gen_page_player
   }
   $result = sql_load(
     $query, 1, 1,
-    sub { 
+    sub {
       row_fix($_[0]);
       $ascs_by_rowid{$_[0]{'rowid'}} = $_[0];
     },
@@ -1423,7 +1423,7 @@ sub gen_page_player
   #=== additional data =====================================================
   # nh_roles  -- all known roles for given variant
   # nh_races  -- all known races for given variant
-  # nh_aligns -- all known aligments 
+  # nh_aligns -- all known aligments
   # cur_time  -- current time (formatted)
   # name      -- player name
   # variant   -- variant (including 'all')
@@ -1542,7 +1542,7 @@ sub gen_page_streaks
 
   if(!$tt->process(
     'streaks.tt',
-    \%data, 
+    \%data,
     "streaks.$variant.html"
   )) {
     $logger->error("Failed to create page 'Streaks/$variant'");
@@ -1615,7 +1615,7 @@ sub gen_page_front
   for my $variant (@variants) {
 
     #--- check if any games exist for given variant
-    
+
     my $query = q{SELECT rowid FROM v_games_recent WHERE variant = ? LIMIT 1};
     my $sth = $dbh->prepare($query);
     my $r = $sth->execute($variant);
@@ -1625,9 +1625,9 @@ sub gen_page_front
     }
     $sth->finish();
     next if $r == 0;
-      
+
     #--- retrieve the last won game
-    
+
     $query = q{SELECT * FROM v_ascended_recent WHERE variant = ? LIMIT 1};
     $sth = $dbh->prepare($query);
     $r = $sth->execute($variant);
@@ -1638,9 +1638,9 @@ sub gen_page_front
       my $row = $sth->fetchrow_hashref();
       row_fix($row);
       $row->{'age'} = fmt_age(
-        $row->{'age_years'}, 
-        $row->{'age_months'}, 
-        $row->{'age_days'}, 
+        $row->{'age_years'},
+        $row->{'age_months'},
+        $row->{'age_days'},
         $row->{'age_hours'}
       );
       $data{'last_ascensions'}{$variant} = $row;
@@ -1702,12 +1702,12 @@ sub gen_page_front
   #----------------------------------------------------------------------------
 
   #--- sort the results
-  
+
   my @variants_ordered = sort {
-    $data{'last_ascensions'}{$a}{'age_raw'} 
+    $data{'last_ascensions'}{$a}{'age_raw'}
     <=> $data{'last_ascensions'}{$b}{'age_raw'}
   } keys %{$data{'last_ascensions'}};
-  
+
   #--- generate page
 
   $data{'variants'} = \@variants_ordered;
@@ -1797,7 +1797,7 @@ sub gen_page_conducts
   $logger->info('Creating page: Conducts/', $variant);
 
   #--- query database
-  
+
   $query = q{SELECT *, bitcount(conduct) AS ncond FROM v_ascended };
   if($variant ne 'all') {
     $query .= q{WHERE variant = ? AND conduct IS NOT NULL AND turns IS NOT NULL };
@@ -1805,7 +1805,7 @@ sub gen_page_conducts
   }
   $query .= q{ORDER BY ncond DESC, turns ASC LIMIT 100};
   $ascs = sql_load(
-    $query, 1, 1, 
+    $query, 1, 1,
     sub { row_fix($_[0]) },
     @args
   );
@@ -2150,7 +2150,7 @@ sub help
 
 
 #============================================================================
-#===================  _  ====================================================     
+#===================  _  ====================================================
 #===  _ __ ___   __ _(_)_ __  ===============================================
 #=== | '_ ` _ \ / _` | | '_ \  ==============================================
 #=== | | | | | | (_| | | | | | ==============================================
