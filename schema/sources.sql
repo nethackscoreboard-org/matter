@@ -657,7 +657,7 @@ INSERT INTO logfiles (
   71, 'au.hardfought.org (SLASH''EM)', 'hfa', 'sle',
   'https://au.hardfought.org/xlogfiles/slashem/xlogfile',
   'hfa.sle.log',
-  'https://eu.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
+  'https://au.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
 );
 
 -----------------------------------------------------------------------------
