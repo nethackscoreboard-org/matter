@@ -28,6 +28,8 @@ use lib "$Bin/lib";
 use NHdb;
 use NetHack::Config;
 use NetHack::Variant;
+use NHdb::Config;
+use NHdb::Utils;
 use NHdb::Feeder::Cmdline;
 
 
@@ -52,6 +54,7 @@ my %translations;               # name-to-name translations
 my $translations_cnt = 0;       # number of name translation
 my $logger;                     # log4perl instance
 my $nh = new NetHack::Config(config_file => 'cfg/nethack_def.json');
+my $nhdb = NHdb::Config->new();
 
 
 #============================================================================
@@ -501,15 +504,10 @@ sub sql_insert_games
   my @values;
 
   #--- reject too old log entries without necessary info
-  return undef unless logfile_require_fields($l);
+  return undef unless $nhdb->require_fields(keys %$l);
 
   #--- reject wizmode games, paxed test games
-  #if($l->{'name'} eq 'wizard') { return undef; }
-  #if($l->{'name'} eq 'paxedtest' && $server eq 'nao') { return undef; }
-  return undef
-    if grep
-      { $l->{'name'} eq $_ }
-      @{$NHdb::nhdb_def->{'feeder'}{'reject_name'}};
+  return undef if $nhdb->reject_name($l->{'name'});
 
   #--- reject "special" modes of NH4 and its kin
   #--- Fourk challenge mode is okay, though
@@ -543,7 +541,7 @@ sub sql_insert_games
   }
 
   #--- regular fields
-  for my $k (@{$NHdb::nhdb_def->{'feeder'}{'regular_fields'}}) {
+  for my $k ($nhdb->regular_fields()) {
     if(exists $l->{$k}) {
       push(@fields, $k);
       push(@values, $l->{$k});
@@ -1284,7 +1282,7 @@ for my $log (@logfiles) {
 
     my $localfile = sprintf(
       '%s/%s',
-      $NHdb::nhdb_def->{'logs'}{'localpath'},
+      $nhdb->config()->{'logs'}{'localpath'},
       $log->{'localfile'}
     );
     my @fsize;
@@ -1304,7 +1302,9 @@ for my $log (@logfiles) {
       $logger->warn($lbl, 'Log URL not defined, skipping retrieval');
     } else {
       $logger->info($lbl, 'Getting logfile from the server');
-      $r = system(sprintf($NHdb::nhdb_def->{'wget'}, $localfile, $log->{'logurl'}));
+      $r = system(
+        sprintf($nhdb->config()->{'wget'}, $localfile, $log->{'logurl'})
+      );
       if($r) { $logger->warn($lbl, 'Failed to get the logfile'); die; }
       $fsize[1] = -s $localfile;
       $logger->info($lbl, sprintf('Logfile retrieved successfully, got %d bytes', $fsize[1] - $fsize[0]));

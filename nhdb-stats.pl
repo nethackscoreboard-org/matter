@@ -17,10 +17,12 @@ use lib "$Bin/lib";
 use Moo;
 use DBI;
 use Getopt::Long;
+use NHdb;
 use NetHack::Config;
 use NetHack::Variant;
+use NHdb::Config;
 use NHdb::Stats::Cmdline;
-use NHdb;
+use NHdb::Utils;
 use Template;
 use Log::Log4perl qw(get_logger);
 
@@ -48,6 +50,9 @@ my $logger;              # log4perl primary instance
 my $nh = new NetHack::Config(
   config_file => "$Bin/cfg/nethack_def.json"
 );
+#--- NHdb::Config instance
+
+my $nhdb = NHdb::Config->new();
 
 #--- aggregate and summary pages generators
 
@@ -75,7 +80,7 @@ my %summ_pages = (
 #============================================================================
 
 my $lockfile = '/tmp/nhdb-stats.lock';
-my $http_root = $NHdb::nhdb_def->{'http_root'};
+my $http_root = $nhdb->config()->{'http_root'};
 my $tt = Template->new(
   'OUTPUT_PATH' => $http_root,
   'INCLUDE_PATH' => 'templates',
@@ -1580,7 +1585,7 @@ sub gen_page_about
   # if this is not undef, it will cause the template to link to local
   # logfiles from the 'size' column
 
-  $data{'urlpath'} = $NHdb::nhdb_def->{'logs'}{'urlpath'};
+  $data{'urlpath'} = $nhdb->config()->{'logs'}{'urlpath'};
 
   #--- generate page
 
@@ -1912,7 +1917,7 @@ sub gen_page_first_to_ascend
   #--- don't generate if not enable in the config (we do not do
   #--- 'first to ascend' for all variants)
 
-  return if !grep(/^$variant$/, @{$NHdb::nhdb_def->{'firsttoascend'}});
+  return if !$nhdb->first_to_ascend($variant);
 
   #--- other variables
 
@@ -2025,7 +2030,7 @@ sub gen_page_first_to_ascend
 
   $data{'variant'}  = $variant;
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = $NHdb::nhdb_def->{'firsttoascend'};
+  $data{'variants'} = [ $nhdb->first_to_ascend() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
 
