@@ -2239,7 +2239,7 @@ if($cmd->process_aggregate()) {
 
 #--- generate per-player pages
 
-if($cmd->has_players()) {
+if($cmd->process_players()) {
   my ($pages_update, $player_combos) = update_schedule_players(
     $cmd->force(), $cmd->variants(), $cmd->players()
   );
