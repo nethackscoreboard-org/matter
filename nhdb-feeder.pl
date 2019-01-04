@@ -25,10 +25,10 @@ use MIME::Base64 qw(decode_base64);
 
 use FindBin qw($Bin);
 use lib "$Bin/lib";
-use NHdb;
 use NetHack::Config;
 use NetHack::Variant;
 use NHdb::Config;
+use NHdb::Db;
 use NHdb::Utils;
 use NHdb::Feeder::Cmdline;
 
@@ -49,12 +49,12 @@ my $lockfile = '/tmp/nhdb-feeder.lock';
 #=== globals ================================================================
 #============================================================================
 
-my $dbh;
 my %translations;               # name-to-name translations
 my $translations_cnt = 0;       # number of name translation
 my $logger;                     # log4perl instance
 my $nh = new NetHack::Config(config_file => 'cfg/nethack_def.json');
 my $nhdb = NHdb::Config->new();
+my $db;                         # NHdb::Db instance
 
 
 #============================================================================
@@ -233,10 +233,7 @@ sub sql_logfile_set_state
 
   #--- perform the query
 
-  my $dbh = dbconn('nhdbfeeder');
-  if(!ref($dbh)) {
-    die sprintf('Failed to connect to the database (%s)', $dbh);
-  }
+  my $dbh = $db->handle();
   my $r = $dbh->do($qry, undef, @arg);
   if(!$r) {
     $logger->fatal('Database error occured');
@@ -259,6 +256,7 @@ sub sql_streak_create_new
   my $name_orig = shift;
   my $rowid = shift;
   my $logger = get_logger('Streaks');
+  my $dbh = $db->handle();
 
   #--- create new streak entry
 
@@ -308,6 +306,7 @@ sub sql_streak_append_game
   my $streaks_i = shift;     # 1. streak to be appended to
   my $rowid = shift;         # 2. the game to be appended
   my $logger = get_logger('Streaks');
+  my $dbh = $db->handle();
 
   #--- create mapping entry
 
@@ -344,6 +343,7 @@ sub sql_streak_close
 {
   my $streaks_i = shift;
   my $logger = get_logger('Streaks');
+  my $dbh = $db->handle();
 
   #--- close streak entity and get its current state
 
@@ -376,6 +376,7 @@ sub sql_streak_close_all
 {
   my $logfiles_i = shift;
   my $logger = get_logger('Streaks');
+  my $dbh = $db->handle();
 
   my $qry = q{UPDATE streaks SET open = FALSE WHERE logfiles_i = ?};
   my $sth = $dbh->prepare($qry);
@@ -404,6 +405,7 @@ sub sql_streak_get_tail
 {
   my $streaks_i = shift;
   my $logger = get_logger('Streaks');
+  my $dbh = $db->handle();
 
   my $qry = q{SELECT * FROM streaks };
   $qry .= q{JOIN map_games_streaks USING (streaks_i) };
@@ -443,6 +445,7 @@ sub sql_streak_find
   #--- other init
 
   my $logger = get_logger('Streaks');
+  my $dbh = $db->handle();
 
   #--- db query
 
@@ -502,6 +505,7 @@ sub sql_insert_games
 
   my @fields;
   my @values;
+  my $dbh = $db->handle();
 
   #--- reject too old log entries without necessary info
   return undef unless $nhdb->require_fields(keys %$l);
@@ -649,6 +653,7 @@ sub sql_update_info
   my $update_variant = shift;
   my $update_name    = shift;
   my ($qry, $re);
+  my $dbh = $db->handle();
 
   #--- write updated variants
 
@@ -710,6 +715,10 @@ sub sql_purge_database
   #--- arguments
 
   my ($variants, $servers, $logids) = referentize(@_);
+
+  #--- other variables
+
+  my $dbh = $db->handle();
 
   #--- init logging
 
@@ -862,17 +871,13 @@ sub sql_player_name_map
   #--- init
 
   my $logger = get_logger('Feeder::Admin');
-  my $dbh = dbconn('nhdbfeeder');
+  my $dbh = $db->handle();
   my $in_transaction = 0;
   my $r;
 
   #--- eval loop
 
   eval {
-
-  #--- ensure database connection
-
-    die "Database connection failed\n" if !ref($dbh);
 
   #--- listing all configured mappings
 
@@ -1086,10 +1091,9 @@ if(
 
 #--- connect to database
 
-$dbh = dbconn('nhdbfeeder');
-if(!ref($dbh)) {
-  die sprintf('Failed to connect to the database (%s)', $dbh);
-}
+$db = NHdb::Db->new(id => 'nhdbfeeder', config => $nhdb);
+my $dbh = $db->handle();
+die "Undefined database handle" if !$dbh;
 
 #--- process --oper and --static options
 
@@ -1605,10 +1609,6 @@ for my $log (@logfiles) {
 
   $logger->info($lbl, 'Processing finished');
 }
-
-#--- disconnect from database
-
-dbdone('nhdbfeeder');
 
 #--- release lock file
 

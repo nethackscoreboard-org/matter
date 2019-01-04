@@ -17,10 +17,10 @@ use lib "$Bin/lib";
 use Moo;
 use DBI;
 use Getopt::Long;
-use NHdb;
 use NetHack::Config;
 use NetHack::Variant;
 use NHdb::Config;
+use NHdb::Db;
 use NHdb::Stats::Cmdline;
 use NHdb::Utils;
 use Template;
@@ -32,10 +32,6 @@ $| = 1;
 #============================================================================
 #=== globals ================================================================
 #============================================================================
-
-#--- DBI database handle
-
-my $dbh;
 
 #--- list of sources ('logfiles') loaded from database
 
@@ -50,9 +46,14 @@ my $logger;              # log4perl primary instance
 my $nh = new NetHack::Config(
   config_file => "$Bin/cfg/nethack_def.json"
 );
+
 #--- NHdb::Config instance
 
 my $nhdb = NHdb::Config->new();
+
+#--- NHdb::Db instance (initalized later)
+
+my $db;
 
 #--- aggregate and summary pages generators
 
@@ -218,6 +219,7 @@ sub sql_load
   my $preproc   = shift;         # 4. subroutine to pre-process row
   my (@args)    = @_;            # R. arguments to db query
   my @result;
+  my $dbh = $db->handle();
 
   my $sth = $dbh->prepare($query);
   my $r = $sth->execute(@args);
@@ -252,6 +254,7 @@ sub update_schedule_players
   #--- other variables
 
   my ($sth, $r);
+  my $dbh = $db->handle();
 
   #--- get list of allowed variants
 
@@ -399,6 +402,7 @@ sub update_schedule_variants
   my $cmd_force = shift;
   my $cmd_variant = shift;
   my $logger = get_logger('Stats::update_schedule_variants');
+  my $dbh = $db->handle();
 
   $logger->debug(
     sprintf(
@@ -470,6 +474,7 @@ sub update_schedule_variants
 
 sub sql_load_logfiles
 {
+  my $dbh = $db->handle();
   my $sth = $dbh->prepare('SELECT * FROM logfiles');
   my $r = $sth->execute();
   if(!$r) {
@@ -526,6 +531,7 @@ sub sql_load_streaks
 
   #--- other variables
 
+  my $dbh = $db->handle();
   my @streaks_ord;   # ordered list of streaks_i
   my %streaks;       # streaks_i-keyed hash with all info
   my ($query, $sth, $r, @conds, @args);
@@ -697,6 +703,7 @@ sub process_streaks
 
   #--- other variables
 
+  my $dbh = $db->handle();
   my @result;
 
   #--- processing
@@ -1611,6 +1618,7 @@ sub gen_page_front
   my %data;
   my @variants = $nh->variants();
   my $logger = get_logger("Stats::gen_page_front");
+  my $dbh = $db->handle();
 
   #--- info
 
@@ -2191,11 +2199,8 @@ $logger->info('Created lockfile');
 
 #--- connect to database
 
-$dbh = dbconn('nhdbstats');
-if(!ref($dbh)) {
-  $logger->error("Failed to connect to the database ($dbh)");
-  die "Failed to connect to the database ($dbh)";
-}
+$db = NHdb::Db->new(id => 'nhdbstats', config => $nhdb);
+my $dbh = $db->handle();
 $logger->info('Connected to database');
 
 #--- load list of logfiles
@@ -2265,11 +2270,6 @@ if($cmd->process_aggregate()) {
     $summ_pages{$page}->();
   }
 }
-
-#--- disconnect from database
-
-dbdone('nhdbstats');
-$logger->info('Disconnected from database');
 
 #--- release lock file
 
