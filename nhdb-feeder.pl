@@ -72,14 +72,6 @@ sub parse_log
   my $l = shift;
   my %l;
   my (@a1, @a2, $a0);
-  my $version = 0;
-
-  #--- make NetHack's version numeric
-
-  if($log->{'variant'} eq 'nh' && $log->{'version'}) {
-    $log->{'version'} =~ /^(\d+)\.(\d+)\.(\d+)$/;
-    $version = int(sprintf('%02d%02d%02d', $1, $2, $3));
-  }
 
   #--- there are two field separators in use: comma and horizontal tab;
   #--- we use simple heuristics to find out the one that is used for given
