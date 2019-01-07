@@ -419,7 +419,7 @@ sub sql_streak_get_tail
 
   #--- finish
 
-  return $result;
+  return $result ? $result : "Last game in streak $streaks_i not found";
 }
 
 
