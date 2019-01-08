@@ -7,6 +7,8 @@
 package NHdb::Config;
 
 use Moo;
+with 'MooX::Singleton';
+
 use JSON;
 use FindBin qw($Bin);
 use Path::Tiny;

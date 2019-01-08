@@ -49,7 +49,7 @@ my $nh = new NetHack::Config(
 
 #--- NHdb::Config instance
 
-my $nhdb = NHdb::Config->new();
+my $nhdb = NHdb::Config->instance;
 
 #--- NHdb::Db instance (initalized later)
 

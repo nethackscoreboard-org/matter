@@ -53,7 +53,7 @@ my %translations;               # name-to-name translations
 my $translations_cnt = 0;       # number of name translation
 my $logger;                     # log4perl instance
 my $nh = new NetHack::Config(config_file => 'cfg/nethack_def.json');
-my $nhdb = NHdb::Config->new();
+my $nhdb = NHdb::Config->instance;
 my $db;                         # NHdb::Db instance
 
 
