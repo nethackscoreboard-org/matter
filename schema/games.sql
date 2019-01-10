@@ -8,7 +8,7 @@ CREATE SEQUENCE games_seq;
 
 
 ----------------------------------------------------------------------------
---- tables 
+--- tables
 ----------------------------------------------------------------------------
 
 DROP TABLE IF EXISTS games;
@@ -68,7 +68,7 @@ GRANT USAGE ON games_seq TO nhdbfeeder;
 ----------------------------------------------------------------------------
 
 CREATE OR REPLACE VIEW v_games_recent AS
-  SELECT 
+  SELECT
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
@@ -76,7 +76,7 @@ CREATE OR REPLACE VIEW v_games_recent AS
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended
-  FROM 
+  FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   WHERE scummed = FALSE
@@ -86,14 +86,14 @@ GRANT SELECT ON v_games_recent TO nhdbstats;
 
 
 CREATE OR REPLACE VIEW v_games AS
-  SELECT 
+  SELECT
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended
-  FROM 
+  FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   WHERE scummed = FALSE
@@ -103,14 +103,14 @@ GRANT SELECT ON v_games TO nhdbstats;
 
 
 CREATE OR REPLACE VIEW v_games_all AS
-  SELECT 
+  SELECT
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended, scummed
-  FROM 
+  FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   ORDER BY endtime AT TIME ZONE 'UTC' ASC, line ASC;
@@ -128,7 +128,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended, dumplog,
     extract('year'  from age(
-      current_timestamp AT TIME ZONE 'UTC', 
+      current_timestamp AT TIME ZONE 'UTC',
       endtime AT TIME ZONE 'UTC')
     ) AS age_years,
     extract('month' from age(
@@ -144,7 +144,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
       endtime AT TIME ZONE 'UTC')
     ) AS age_hours,
     round(extract('epoch' from age(
-      current_timestamp AT TIME ZONE 'UTC', 
+      current_timestamp AT TIME ZONE 'UTC',
       endtime AT TIME ZONE 'UTC')
     )) AS age_raw
   FROM
