@@ -17,6 +17,7 @@ use lib "$Bin/lib";
 use Moo;
 use DBI;
 use Getopt::Long;
+use Try::Tiny;
 use NetHack::Config;
 use NetHack::Variant;
 use NHdb::Config;
@@ -2170,6 +2171,7 @@ my $logger_cmd = get_logger("Stats::Cmdline");
 my $cmd = NHdb::Stats::Cmdline->instance(
   aggr_pages => \%aggr_pages,
   summ_pages => \%summ_pages,
+  lockfile => $lockfile,
 );
 
 # debugging log of command-lines options as we parsed them
@@ -2184,18 +2186,13 @@ $logger_cmd->debug('---');
 
 #--- lock file check/open
 
-if(-f $lockfile) {
-  $logger->warn('Another instance running');
-  die "Another instance running\n";
+try {
+  $cmd->lock;
+} catch {
+  chomp;
+  $logger->warn($_);
   exit(1);
-}
-open(F, "> $lockfile") || do {
-  $logger->error("Cannot open lock file $lockfile");
-  die "Cannot open lock file $lockfile\n";
 };
-print F $$, "\n";
-close(F);
-$logger->info('Created lockfile');
 
 #--- connect to database
 
@@ -2273,5 +2270,4 @@ if($cmd->process_aggregate()) {
 
 #--- release lock file
 
-unlink($lockfile);
-$logger->info('Removed lockfile');
+$cmd->unlock;

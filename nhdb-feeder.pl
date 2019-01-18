@@ -20,6 +20,7 @@ use DBI;
 use Getopt::Long;
 use Log::Log4perl qw(get_logger);
 use MIME::Base64 qw(decode_base64);
+use Try::Tiny;
 
 #--- internal modules -------------------------------------------------------
 
@@ -1065,21 +1066,17 @@ $logger->info('---');
 
 #--- process commandline options
 
-my $cmd = NHdb::Feeder::Cmdline->instance();
+my $cmd = NHdb::Feeder::Cmdline->instance(lockfile => $lockfile);
 
 #--- lock file check/open
 
-if(
-  !$cmd->no_lockfile()
-) {
-  if(-f $lockfile) {
-    $logger->warn('Another instance running, exiting');
-    exit(1);
-  }
-  open(F, "> $lockfile") || $logger->error("Cannot open lock file $lockfile");
-  print F $$, "\n";
-  close(F);
-}
+try {
+  $cmd->lock;
+} catch {
+  chomp;
+  $logger->warn($_);
+  exit(1);
+};
 
 #--- connect to database
 
@@ -1605,4 +1602,4 @@ for my $log (@logfiles) {
 
 #--- release lock file
 
-unlink($lockfile);
+$cmd->unlock;

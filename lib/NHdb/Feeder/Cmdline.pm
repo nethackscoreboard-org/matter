@@ -89,12 +89,6 @@ has pmap_list => (
   is => 'rwp',
 );
 
-# do not create lock file flag
-
-has no_lockfile => (
-  is => 'rwp',
-);
-
 
 #=============================================================================
 # Initialize the object according to the command-line options given

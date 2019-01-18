@@ -8,6 +8,22 @@ package NHdb::Cmdline;
 
 use Moo;
 
+#=============================================================================
+#=== ATTRIBUTES ==============================================================
+#=============================================================================
+
+# lockfile
+
+has lockfile => (
+  is => 'ro',
+);
+
+# do not create lock file flag
+
+has no_lockfile => (
+  is => 'rwp',
+);
+
 
 #=============================================================================
 #=== METHODS =================================================================
@@ -65,6 +81,37 @@ sub option_state
   } else {
     return 'undefined';
   }
+}
+
+
+#=============================================================================
+# Creating and removing of lockfile. These methods take into account the fact
+# that some of the command-line options avoid this locking. Unsuccessful
+# attempt at locking throws an exception.
+#=============================================================================
+
+sub lock
+{
+  my ($self) = @_;
+  my $lockfile = $self->lockfile;
+
+  #--- do nothing when we should not do locking
+
+  return if $self->no_lockfile();
+
+  #--- perform locking
+
+  die "Another instance running, exiting\n" if -f $lockfile;
+  open(F, '>', $lockfile) or die "Cannot open lock file $lockfile\n";
+  print F $$, "\n";
+  close(F);
+}
+
+sub unlock
+{
+  my ($self) = @_;
+
+  unlink($self->lockfile);
 }
 
 
