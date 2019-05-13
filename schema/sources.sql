@@ -301,10 +301,10 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  25, 'hardfought.org (NetHack 3.6.1)', 'hdf', 'nh',
-  'https://www.hardfought.org/xlogfiles/nh361/xlogfile',
-  'hdf.nh361.log',
-  'https://www.hardfought.org/userdata/%U/%u/nh361/dumplog/%s.nh361.txt'
+  25, 'hardfought.org (NetHack)', 'hdf', 'nh',
+  'https://www.hardfought.org/xlogfiles/nethack/xlogfile',
+  'hdf.nh.log',
+  'https://www.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
@@ -414,10 +414,10 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  36, 'eu.hardfought.org (NetHack 3.6.1)', 'hfe', 'nh',
-  'https://eu.hardfought.org/xlogfiles/nh361/xlogfile',
-  'hfe.nh.361.log',
-  'https://eu.hardfought.org/userdata/%U/%u/nh361/dumplog/%s.nh361.txt'
+  36, 'eu.hardfought.org (NetHack)', 'hfe', 'nh',
+  'https://eu.hardfought.org/xlogfiles/nethack/xlogfile',
+  'hfe.nh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
@@ -563,10 +563,10 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  56, 'au.hardfought.org (NetHack 3.6.1)', 'hfa', 'nh',
-  'https://au.hardfought.org/xlogfiles/nh361/xlogfile',
-  'hfa.nh361.log',
-  'https://au.hardfought.org/userdata/%U/%u/nh361/dumplog/%s.nh361.txt'
+  56, 'au.hardfought.org (NetHack)', 'hfa', 'nh',
+  'https://au.hardfought.org/xlogfiles/nethack/xlogfile',
+  'hfa.nh.log',
+  'https://au.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
