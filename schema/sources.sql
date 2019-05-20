@@ -398,6 +398,15 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  72, 'hardfought.org (EvilHack)', 'hdf', 'eh',
+  'https://www.hardfought.org/xlogfiles/evilhack/xlogfile',
+  'hdf.eh.log',
+  'https://www.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Europe/HFE ------------------------------------------------
 -----------------------------------------------------------------------------
@@ -529,6 +538,15 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  73, 'eu.hardfought.org (EvilHack)', 'hfe', 'eh',
+  'https://eu.hardfought.org/xlogfiles/evilhack/xlogfile',
+  'hfe.eh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Australia/HFA ---------------------------------------------
 -----------------------------------------------------------------------------
@@ -658,6 +676,15 @@ INSERT INTO logfiles (
   'https://au.hardfought.org/xlogfiles/slashem/xlogfile',
   'hfa.sle.log',
   'https://au.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  74, 'au.hardfought.org (EvilHack)', 'hfa', 'eh',
+  'https://eu.hardfought.org/xlogfiles/evilhack/xlogfile',
+  'hfa.eh.log',
+  'https://au.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
 );
 
 -----------------------------------------------------------------------------
