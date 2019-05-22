@@ -45,6 +45,15 @@ INSERT INTO logfiles (
   'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh361.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  75, 'nethack.alt.org (3.6.2)', 'nao', 'nh',
+  'https://alt.org/nethack/xlogfile.nh362',
+  'nao.nh.362.log',
+  'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh362.txt'
+);
+
 -----------------------------------------------------------------------------
 -- acehack.de/ADE (defunct) -------------------------------------------------
 -----------------------------------------------------------------------------
