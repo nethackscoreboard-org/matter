@@ -682,7 +682,7 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
   74, 'au.hardfought.org (EvilHack)', 'hfa', 'eh',
-  'https://eu.hardfought.org/xlogfiles/evilhack/xlogfile',
+  'https://au.hardfought.org/xlogfiles/evilhack/xlogfile',
   'hfa.eh.log',
   'https://au.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
 );
