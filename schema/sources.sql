@@ -888,7 +888,7 @@ INSERT INTO logfiles (
 );
 
 -----------------------------------------------------------------------------
--- TNNT 2018 ----------------------------------------------------------------
+-- TNNT ---------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles (
@@ -897,6 +897,16 @@ INSERT INTO logfiles (
   2018, 'The November NetHack Tournament 2018', 'nnt', 'nh',
   'https://www.hardfought.org/xlogfiles/tnnt/xlogfile-tnnt-merged',
   'tnnt-2018.log',
+  'https://www.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.txt',
+  TRUE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2019, 'The November NetHack Tournament 2019', 'nnt', 'nh',
+  'https://www.hardfought.org/tnnt/xlogfiles/xlogfile.tnnt',
+  'tnnt-2019.log',
   'https://www.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.txt',
   TRUE
 );
