@@ -78,9 +78,9 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   3, 'eu.un.nethack.nu', 'une', 'unh',
-  'https://ascension.run/history/unn/eu/xlogfile'
+  'https://ascension.run/history/unn/eu/xlogfile',
   'une.unh.log',
-  'https://ascension.run/history/unn/users/%u/dumps/eu/%u.%e.txt.html'
+  'https://ascension.run/history/unn/users/%u/dumps/eu/%u.%e.txt.html',
   TRUE
 );
 
@@ -94,9 +94,9 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   10, 'us.un.nethack.nu', 'unu', 'unh',
-  'https://ascension.run/history/unn/us/xlogfile'
+  'https://ascension.run/history/unn/us/xlogfile',
   'unu.unh.log',
-  'https://ascension.run/history/unn/users/%u/dumps/us/%u.%e.txt.html'
+  'https://ascension.run/history/unn/users/%u/dumps/us/%u.%e.txt.html',
   TRUE
 );
 
@@ -273,7 +273,7 @@ INSERT INTO logfiles (
   'https://ascension.run/xlogfiles/fiqhack',
   'asc.fh.log',
   'https://ascension.run/userdata/%u/fiqhack/dumplog/%D',
-  '{"base64xlog"}',
+  '{"base64xlog"}'
 );
 
 -----------------------------------------------------------------------------
@@ -907,6 +907,6 @@ INSERT INTO logfiles (
   2019, 'The November NetHack Tournament 2019', 'nnt', 'nh',
   'https://www.hardfought.org/tnnt/xlogfiles/xlogfile.tnnt',
   'tnnt-2019.log',
-  'https://www.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.txt',
+  'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.html',
   TRUE
 );
