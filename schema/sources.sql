@@ -317,6 +317,15 @@ INSERT INTO logfiles (
 );
 
 INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  76, 'hardfought.org (NetHack 3.7.x)', 'hdf', 'nh',
+  'https://www.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
+  'hdf.nh.37x.log',
+  'https://www.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+);
+
+INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, options
 ) VALUES (
   29, 'hardfought.org (FIQHack)', 'hdf', 'fh',
@@ -435,6 +444,15 @@ INSERT INTO logfiles (
   36, 'eu.hardfought.org (NetHack)', 'hfe', 'nh',
   'https://eu.hardfought.org/xlogfiles/nethack/xlogfile',
   'hfe.nh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  77, 'eu.hardfought.org (NetHack 3.7.x)', 'hfe', 'nh',
+  'https://eu.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
+  'hfe.nh.37x.log',
   'https://eu.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
 );
 
@@ -593,6 +611,15 @@ INSERT INTO logfiles (
   56, 'au.hardfought.org (NetHack)', 'hfa', 'nh',
   'https://au.hardfought.org/xlogfiles/nethack/xlogfile',
   'hfa.nh.log',
+  'https://au.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  78, 'au.hardfought.org (NetHack 3.7.x)', 'hfa', 'nh',
+  'https://au.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
+  'hfa.nh.37x.log',
   'https://au.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
 );
 
