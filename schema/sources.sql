@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- This file defines data sources NHS aggregates. Please note, that we define
 -- all sources with oper = TRUE, even historical sources with static = TRUE.
--- The nhdf-feeder will read all operational sources in and if they are
+-- The nhdb-feeder will read all operational sources in and if they are
 -- static, it will toggle the 'oper' field to false.
 -----------------------------------------------------------------------------
 
