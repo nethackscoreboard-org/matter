@@ -70,6 +70,8 @@ sub format_duration
 # %v - version number
 # %d - dumpfile (content of the 'dumpfile' xlogfile field)
 # %D - dumpfile processed for NH4 (_ replaced with :)
+# %S - contents of the src field (workaround for TNNT, FIXME: this needs
+#      a better solution
 #===============================================================================
 
 sub url_substitute
@@ -84,6 +86,7 @@ sub url_substitute
   my $r_username_orig = $data->{'name_orig'};
   my $r_version = $data->{'version'};
   my $r_dumpfile = uri_escape($data->{'dumplog'});
+  my $r_src = $data->{'src'} // '';
 
   my @et = gmtime($data->{'endtime_raw'});
   my $r_endtime2 = sprintf(
@@ -115,6 +118,7 @@ sub url_substitute
   $strg =~ s/%v/$r_version/g;
   $strg =~ s/%d/$r_dumpfile/g;
   $strg =~ s/%D/$r_dumpfile_nh4/g;
+  $strg =~ s/%S/$r_src/g;
 
   return $strg;
 }
