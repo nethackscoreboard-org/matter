@@ -47,7 +47,7 @@
     "gno" : "gnome",
     "hlf" : "half-dragon",
     "hob" : "hobbit",
-    "ill" : "illithid",
+    "ith" : "illithid",
     "inc" : "incantifier",
     "inf" : "infernal",
     "kob" : "kobold",
@@ -946,7 +946,7 @@
         "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "cen", "hum", "hob", "elf", "dwa", "gia", "gno", "orc", "ill" ],
+      "races" : [ "cen", "hum", "hob", "elf", "dwa", "gia", "gno", "orc", "ith" ],
       "enum" : [
         [ "Arc", "Hum", "Mal", "Law" ], [ "Arc", "Hum", "Fem", "Law" ],
         [ "Arc", "Hum", "Mal", "Neu" ], [ "Arc", "Hum", "Fem", "Neu" ],
@@ -1004,7 +1004,7 @@
         [ "Pri", "Cen", "Mal", "Neu" ], [ "Pri", "Cen", "Fem", "Neu" ], # 13
         [ "Pri", "Cen", "Mal", "Cha" ], [ "Pri", "Cen", "Fem", "Cha" ], # 14
         [ "Pri", "Orc", "Mal", "Cha" ], [ "Pri", "Orc", "Fem", "Cha" ], # 15
-        [ "Pri", "Ill", "Mal", "Cha" ], [ "Pri", "Ill", "Fem", "Cha" ], # 16
+        [ "Pri", "Ith", "Mal", "Cha" ], [ "Pri", "Ith", "Fem", "Cha" ], # 16
 
         [ "Ran", "Hum", "Mal", "Neu" ], [ "Ran", "Hum", "Fem", "Neu" ], # 1
         [ "Ran", "Hum", "Mal", "Cha" ], [ "Ran", "Hum", "Fem", "Cha" ], # 2
@@ -1049,7 +1049,7 @@
         [ "Wiz", "Gno", "Mal", "Cha" ], [ "Wiz", "Gno", "Fem", "Cha" ], # 9
         [ "Wiz", "Hob", "Mal", "Neu" ], [ "Wiz", "Hob", "Fem", "Neu" ], # 10
         [ "Wiz", "Orc", "Mal", "Cha" ], [ "Wiz", "Orc", "Fem", "Cha" ], # 11
-        [ "Wiz", "Ill", "Mal", "Cha" ], [ "Wiz", "Ill", "Fem", "Cha" ], # 12
+        [ "Wiz", "Ith", "Mal", "Cha" ], [ "Wiz", "Ith", "Fem", "Cha" ], # 12
       ],
     },
   }
