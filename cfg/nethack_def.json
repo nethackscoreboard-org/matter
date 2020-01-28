@@ -35,6 +35,7 @@
   #--- define all races
 
   "nh_races_def" : {
+    "and" : "android",
     "ang" : "angel",
     "bat" : "chiropteran",
     "cen" : "centaur",
@@ -344,7 +345,7 @@
         "nob", "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
       ],
       "races" : [
-        "bat", "clk", "dro", "dwa", "elf", "gno", "hlf", "hum", "inc",
+        "and", "bat", "clk", "dro", "dwa", "elf", "gno", "hlf", "hum", "inc",
         "orc", "swn", "vam"
       ],
       "aligns" : [ "law", "neu", "cha", "non" ],
@@ -365,6 +366,8 @@
         [ "Ana", "Vam", "Mal", "Cha" ],
         [ "Ana", "Dro", "Fem", "Cha" ],
         [ "Ana", "Dro", "Mal", "Neu" ],
+        [ "Ana", "And", "Mal", "Neu" ],
+        [ "Ana", "And", "Fem", "Neu" ],
         [ "Arc", "Clk", "Fem", "Law" ],
         [ "Arc", "Clk", "Fem", "Neu" ],
         [ "Arc", "Clk", "Mal", "Law" ],
