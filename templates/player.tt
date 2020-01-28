@@ -4,9 +4,6 @@
 [%- USE Dumper -%]
 <!doctype html>
 
-<!--
-[% Dumper.dump(streaks) %]
--->
 <html>
 
 <head>
