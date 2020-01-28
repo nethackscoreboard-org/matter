@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------
 -- This file defines data sources NHS aggregates. Please note, that we define
 -- all sources with oper = TRUE, even historical sources with static = TRUE.
--- The nhdf-feeder will read all operational sources in and if they are
+-- The nhdb-feeder will read all operational sources in and if they are
 -- static, it will toggle the 'oper' field to false.
 -----------------------------------------------------------------------------
 
@@ -45,6 +45,15 @@ INSERT INTO logfiles (
   'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh361.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  75, 'nethack.alt.org (3.6.2)', 'nao', 'nh',
+  'https://alt.org/nethack/xlogfile.nh362',
+  'nao.nh.362.log',
+  'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh362.txt'
+);
+
 -----------------------------------------------------------------------------
 -- acehack.de/ADE (defunct) -------------------------------------------------
 -----------------------------------------------------------------------------
@@ -69,9 +78,9 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   3, 'eu.un.nethack.nu', 'une', 'unh',
-  'https://ascension.run/history/unn/eu/xlogfile'
+  'https://ascension.run/history/unn/eu/xlogfile',
   'une.unh.log',
-  'https://ascension.run/history/unn/users/%u/dumps/eu/%u.%e.txt.html'
+  'https://ascension.run/history/unn/users/%u/dumps/eu/%u.%e.txt.html',
   TRUE
 );
 
@@ -85,9 +94,9 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   10, 'us.un.nethack.nu', 'unu', 'unh',
-  'https://ascension.run/history/unn/us/xlogfile'
+  'https://ascension.run/history/unn/us/xlogfile',
   'unu.unh.log',
-  'https://ascension.run/history/unn/users/%u/dumps/us/%u.%e.txt.html'
+  'https://ascension.run/history/unn/users/%u/dumps/us/%u.%e.txt.html',
   TRUE
 );
 
@@ -264,7 +273,7 @@ INSERT INTO logfiles (
   'https://ascension.run/xlogfiles/fiqhack',
   'asc.fh.log',
   'https://ascension.run/userdata/%u/fiqhack/dumplog/%D',
-  '{"base64xlog"}',
+  '{"base64xlog"}'
 );
 
 -----------------------------------------------------------------------------
@@ -304,6 +313,15 @@ INSERT INTO logfiles (
   25, 'hardfought.org (NetHack)', 'hdf', 'nh',
   'https://www.hardfought.org/xlogfiles/nethack/xlogfile',
   'hdf.nh.log',
+  'https://www.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  76, 'hardfought.org (NetHack 3.7.x)', 'hdf', 'nh',
+  'https://www.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
+  'hdf.nh.37x.log',
   'https://www.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
 );
 
@@ -426,6 +444,15 @@ INSERT INTO logfiles (
   36, 'eu.hardfought.org (NetHack)', 'hfe', 'nh',
   'https://eu.hardfought.org/xlogfiles/nethack/xlogfile',
   'hfe.nh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  77, 'eu.hardfought.org (NetHack 3.7.x)', 'hfe', 'nh',
+  'https://eu.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
+  'hfe.nh.37x.log',
   'https://eu.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
 );
 
@@ -588,6 +615,15 @@ INSERT INTO logfiles (
 );
 
 INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  78, 'au.hardfought.org (NetHack 3.7.x)', 'hfa', 'nh',
+  'https://au.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
+  'hfa.nh.37x.log',
+  'https://au.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+);
+
+INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, options
 ) VALUES (
   57, 'au.hardfought.org (FIQHack)', 'hfa', 'fh',
@@ -682,7 +718,7 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
   74, 'au.hardfought.org (EvilHack)', 'hfa', 'eh',
-  'https://eu.hardfought.org/xlogfiles/evilhack/xlogfile',
+  'https://au.hardfought.org/xlogfiles/evilhack/xlogfile',
   'hfa.eh.log',
   'https://au.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
 );
@@ -879,7 +915,7 @@ INSERT INTO logfiles (
 );
 
 -----------------------------------------------------------------------------
--- TNNT 2018 ----------------------------------------------------------------
+-- TNNT ---------------------------------------------------------------------
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles (
@@ -889,5 +925,15 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/xlogfiles/tnnt/xlogfile-tnnt-merged',
   'tnnt-2018.log',
   'https://www.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.txt',
+  TRUE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2019, 'The November NetHack Tournament 2019', 'nnt', 'nh',
+  'https://www.hardfought.org/tnnt/xlogfiles/xlogfile.tnnt',
+  'tnnt-2019.log',
+  'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.html',
   TRUE
 );
