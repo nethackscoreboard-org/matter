@@ -68,6 +68,7 @@ sub format_duration
 # %E - end time (as YYYYMMDDHHMMSS)
 # %x - username before translation (as it appears in xlogfile)
 # %v - version number
+# %V - version number stripped of dots (ie 3.6.3 becomes 363)
 # %d - dumpfile (content of the 'dumpfile' xlogfile field)
 # %D - dumpfile processed for NH4 (_ replaced with :)
 # %S - contents of the src field (workaround for TNNT, FIXME: this needs
@@ -85,6 +86,7 @@ sub url_substitute
   my $r_endtime = $data->{'endtime_raw'};
   my $r_username_orig = $data->{'name_orig'};
   my $r_version = $data->{'version'};
+  my $r_version_dotless = $data->{'version'} =~ s/\.//gr;
   my $r_dumpfile = uri_escape($data->{'dumplog'});
   my $r_src = $data->{'src'} // '';
 
@@ -116,6 +118,7 @@ sub url_substitute
   $strg =~ s/%E/$r_endtime2/g;
   $strg =~ s/%x/$r_username_orig/g;
   $strg =~ s/%v/$r_version/g;
+  $strg =~ s/%V/$r_version_dotless/g;
   $strg =~ s/%d/$r_dumpfile/g;
   $strg =~ s/%D/$r_dumpfile_nh4/g;
   $strg =~ s/%S/$r_src/g;
