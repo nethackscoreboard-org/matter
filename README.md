@@ -11,7 +11,13 @@ The NetHack Scoreboard is written using:
 * **Moo** as OOP framework
 
 -----
-Mandevil is no longer maintaining nhs, the new fork will be maintained by elenmirie_, aoei & mobileuser, with hosting provided by K2
+Mandevil is no longer maintaining nhs, the new fork will be maintained by elenmirië, aoei & mobileuser, with hosting provided by K2
+
+## New To Do
+
+Get K2 to set up hosting.
+Get copy of old DB from Mandevil.
+Get the thing running.
 
 -----
 
