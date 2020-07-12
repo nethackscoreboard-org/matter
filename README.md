@@ -11,7 +11,21 @@ The NetHack Scoreboard is written using:
 * **Moo** as OOP framework
 
 -----
-Mandevil is no longer maintaining nhs, the new fork will be maintained by elenmirië, aoei & mobileuser, with hosting provided by K2
+other deps as either cpan modules or distro packages where available:
+Moo
+Template
+Log::Log4perl
+DBI
+JSON (perl-JSON on fedora/dnf)
+Path::Tiny (perl-Path-Tiny dnf)
+MooX::Singleton (complete the pattern)
+Ref::Util
+Log::Dispatch::Screen (cpan)
+DBD::Pg
+[also Carp::Always is helpful for traceback]
+
+-----
+Mandevil is no longer maintaining nhs, the proposed fork will be maintained by elenmirië, aoei & mobileuser, with hosting provided by K2 (Mandevil's blessing pending).
 
 
 -----
@@ -50,6 +64,18 @@ For a given player, all games can be browsed in a paginated display (like on
 NAO).
 
 -----
+
+## Setup
+
+Create users nhdbfeeder and nhdbstats in postgresql with access to an empty nhdb database.
+Initialise db with files in schema/ (some depend on others being run first, see schema/hint).
+nhdb-feeder.pl aggregates xlogfiles from various sources and populates the database as local logs in logs/.
+nhdb-stats.pl generates HTML content in the httpd directory to serve to the web.
+
+Both scripts require the files cfg/nhdb_def.json and cfg/auth.json are present to run.
+cfg/nhdb_def.json specifies e.g. httpd root, dbname, dbuser
+cfg/nhdb_def.json.example is a sample configuration
+auth.json contains only two entries, the keys are the dbusers for each script and the values are their passwords, md5 auth needs to be permitted in postgresql config for this to work.
 
 ## Command-line parameters
 
