@@ -76,6 +76,7 @@ Both scripts require the files cfg/nhdb_def.json and cfg/auth.json are present t
 cfg/nhdb_def.json specifies e.g. httpd root, dbname, dbuser
 cfg/nhdb_def.json.example is a sample configuration
 auth.json contains only two entries, the keys are the dbusers for each script and the values are their passwords, md5 auth needs to be permitted in postgresql config for this to work.
+nhdb-stats.pl will crash unless this file is present: templates/about_news.tt (included by templates/about.tt)
 
 ## Command-line parameters
 
