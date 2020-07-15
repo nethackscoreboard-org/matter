@@ -1,0 +1,75 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="default.css" />
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>NetHack Scoreboard</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.html.tt2 mnu="front" lvl=0 var="all" %]
+
+<div class="page_content">
+
+<h1>NetHack Scoreboard</h1>
+
+<hr>
+
+<h3>Last Ascension In Each Variant</h3>
+
+<table class="bordered">
+
+<tr>
+  <th>variant</th>
+  <th>srv</th>
+  <th>name</th>
+  <th>character</th>
+  <th>points</th>
+  <th>turns&nbsp;&nbsp;</th>
+  <th>duration</th>
+  <th>dlvl&nbsp;</th>
+  <th>HP</th>
+  <th>time</th>
+  <th>age</th>
+</tr>
+
+[% FOREACH var IN variants %]
+[% NEXT IF !last_ascensions.item(var) %]
+[% row = last_ascensions.item(var) %]
+<tr>
+<th><a href="ascended.[% var %].html">[% vardef.item(var) %]</a></th>
+<td>[% row.server %]</td>
+<td><a href="[% row.plrpage %]">[% row.name %]</a></td>
+<td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
+[% IF row.dump -%]
+<td class="numeric" data-sortkey="[% row.points %]"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
+[%- ELSE -%]
+<td class="numeric" data-sortkey="[% row.points %]">[% number(row.points) %]</td>
+[%- END %]
+<td class="numeric">[% row.turns %]</td>
+<td class="numeric" data-sortkey="[% row.realtime_raw %]">[% row.realtime %]</td>
+<td class="numeric" data-sortkey="[%row.maxlvl %]">[% row.deathlev %]/[% row.maxlvl %]</td>
+<td class="numeric" data-sortkey="[% row.maxhp %]">[% row.hp %]/[% row.maxhp %]</td>
+<td>[% row.endtime_fmt %]</td>
+<td>[% row.age %]</td>
+</tr>
+[% END %]
+
+</table>
+
+</div>
+</div>
+
+<div class="updatetime">[% cur_time %]</div>
+
+</body>
+
+</html>

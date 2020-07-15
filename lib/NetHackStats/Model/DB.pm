@@ -275,18 +275,50 @@ sub new
 #    return $row;
 #}
 
+sub _get_recent_games
+{
+    my ($self, $var, $n, $asc) = @_;
+    my (@args, $view, @games);
+
+    # won or died?
+    if ($asc == 1) {
+        $view = 'v_ascended_recent';
+    } else {
+        $view = 'v_games_recent';
+    }
+
+    my $q_string = "select * from $view ";
+
+    # variant filter or no?
+    if ($var ne 'all') {
+        $q_string .= 'where variant = ? ';
+        push @args, $var;
+    }
+
+    # limit? set absolute max 500, 'nh' and 'all' are throttled to 100 elsewhere
+    if ($n < 1) {
+        $n = 500;
+    }
+    $q_string .= sprintf('limit %d', $n);
+    
+    # get results
+    # need to add error handling and logging
+    $r = $self->db->query($q_string, @args);
+    my @games;
+    while (my $row = $r->hash) {
+        row_fix($self->app->nh, $row);
+        push @games, $row;
+    }
+    return @games;
+}
+
+
 # Grabs the DB row corresonding to the most recent ascension for a given variant
-sub get_most_recent_asc_var
+sub get_most_recent_asc
 {
     my ($self, $var) = @_;
-
-    my $r = $self->db->query('select * from v_ascended_recent where variant = ? limit 1', $var);
-    if (!$r) {
-        # do something about error
-    }
-    my $row = $r->hash;
-    # row fix needs a NetHack instance for the variant method
-    row_fix($self->app->nh, $row);
+    my @rows = $self->_get_recent_games($var, 1, 1);
+    my $row = $rows[0];
     $row->{'age'} = fmt_age(
         $row->{'age_years'},
         $row->{'age_months'},
@@ -295,22 +327,32 @@ sub get_most_recent_asc_var
     return $row;
 }
 
-# Grabs the DB row corresonding to the most recent ascension for a given variant
+# Grabs n recent ascensions
 sub get_n_recent_ascs
 {
-    my ($self, $n) = @_;
+    my ($self, $var, $n) = @_;
+    return $self->_get_recent_games($var, $n, 1);
+}
 
-    my $r = $self->db->query('select * from v_ascended_recent limit ?', $n);
-    if (!$r) {
-        # do something about error
-    }
-    my @rows;
-    while (my $row = $r->hash) {
-        # row fix needs a NetHack instance for the variant method
-        row_fix($self->app->nh, $row);
-        push @rows, $row;
-    }
-    return @rows;
+# Grabs n recent games
+sub get_n_recent_games
+{
+    my ($self, $var, $n) = @_;
+    return $self->_get_recent_games($var, $n, 0);
+}
+
+# Grabs recent ascensions
+sub get_all_ascs
+{
+    my ($self, $var) = @_;
+    return $self->_get_recent_games($var, 0, 1);
+}
+
+# Grabs recent games
+sub get_recent_games
+{
+    my ($self, $var) = @_;
+    return $self->_get_recent_games($var, 0, 0);
 }
 
 #============================================================================

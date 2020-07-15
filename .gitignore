@@ -11,6 +11,7 @@ cfg/auth.json
 nhdb.sublime-project-nms1
 cfg/nhdb_def.json
 cfg/nhdb_mojo.json
+cfg/nethackstats.json
 test/
 www/
 html/
