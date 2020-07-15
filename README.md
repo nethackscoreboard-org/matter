@@ -1,3 +1,7 @@
+TESTING BRANCH!
+
+the purpose of this branch is to rework the front-end code in the Mojolicious framework, with PSGI/Plack used as a PSGI server, which nginx passes control to.
+
 # NETHACK SCOREBOARD
 
 This is the code used to run [NetHack Scoreboard](https://scoreboard.xd.cm/) web site. The code consists of two main components: *feeder* and *stats generator*. The feeder retrieves [xlogfiles](http://nethackwiki.com/wiki/Xlogfile) from public NetHack servers, parses them and stores the parsed log entries in a back-end database. The stats generator then uses this data to generate static HTML pages with various statistics, including personal pages.
@@ -25,10 +29,9 @@ DBD::Pg
 [also Carp::Always is helpful for traceback]
 
 -----
-Mandevil is no longer maintaining nhs, the fork is now being maintained by elenmirië, aoei & mobileuser,
-with hosting for the new site at https://nethackscoreboard.org/ provided by K2 & with Mandevil's blessing.
+Mandevil is no longer maintaining nhs, the fork will be maintained by elenmirië, aoei & mobileuser, with hosting provided by K2 and Mandevil's blessing for all this.
 
-Currently work is ongoing to set up a Mojo Front-End, instead of generating static HTML pages.
+
 -----
 
 ## To Do

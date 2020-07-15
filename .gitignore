@@ -1,5 +1,6 @@
 *~
 *.gif
+*.swp
 nhdb.sublime-project
 nhdb.sublime-workspace
 logs/
@@ -9,6 +10,7 @@ schema/db-reset.sql
 cfg/auth.json
 nhdb.sublime-project-nms1
 cfg/nhdb_def.json
+cfg/nhdb_mojo.json
 test/
 www/
 html/
