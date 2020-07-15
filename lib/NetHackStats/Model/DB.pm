@@ -355,6 +355,25 @@ sub get_recent_games
     return $self->_get_recent_games($var, 0, 0);
 }
 
+# fetch the most recent ascension in each variant
+# ordered by age, returns the list of ascensions and
+# the variants ordered as they appear in the asc list
+sub get_last_asc_per_var
+{
+    my ($self, @vars) = @_;
+    my %latest_ascs;
+    for my $var (@vars) {
+        my $row = $self->get_most_recent_asc($var);
+        $latest_ascs{$var} = $row;
+    }
+    my @vars_ordered = sort {
+        $latest_ascs{$a}{'age_raw'}
+        <=> $latest_ascs{$b}{'age_raw'}
+    } keys %latest_ascs;
+    # need to pass these as references or they won't pack nicely in a tuple
+    return \%latest_ascs, \@vars_ordered;
+}
+
 #============================================================================
 # Load streak information from database. The streaks are ordered by number
 # of games and sum of turns in streak games (lower is better).
@@ -582,6 +601,62 @@ sub get_current_streaks
     }
 
     return $streaks_proc_2;
+}
+
+# fetch the fastest wins
+sub get_n_lowest_gametime
+{
+    my ($self, $var, $lim) = @_;
+
+    my $r;
+    if ($var ne 'all') {
+        my $q_string = sprintf('select * from v_ascended where variant = ? and turns > 0 order by turns asc limit %d', $lim);
+        $r = $self->db->query($q_string, $var);
+    } else {
+        my $q_string = sprintf('select * from v_ascended where turns > 0 order by turns asc limit %d', $lim);
+        $r = $self->db->query($q_string);
+    }
+
+    my @games;
+    my $i = 1;
+    while (my $row = $r->hash) {
+        row_fix($self->app->nh, $row);
+        $row->{n} = $i;
+        $i += 1;
+        push @games, $row;
+    }
+    return @games;
+}
+
+# count subn turncount wins
+sub count_subn_games
+{
+    my ($self, $var, $lim) = @_;
+    my @cond = ('turns > 0');
+    my @arg = ($lim);
+    push (@cond, 'turns < ?');
+
+    if ($var ne 'all') {
+        push(@cond, 'variant = ?');
+        push(@arg, $var);
+    }
+
+    my $q_string = sprintf(
+        'select name, count(*), sum(turns), round(avg(turns)) as avg ' .
+        'from v_ascended ' .
+        'where %s group by name order by count desc, sum asc',
+        join(' and ', @cond)
+    );
+
+    my $r = $self->db->query($q_string, @arg);
+    my @rows;
+    my $i = 1;
+    while (my $row = $r->hash) {
+        $row->{n} = $i;
+        $i += 1;
+        push @rows, $row;
+    }
+    return @rows;
 }
 
 1;

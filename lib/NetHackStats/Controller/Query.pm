@@ -9,20 +9,15 @@ sub front {
     my $self = shift;
 
     # first the most recent ascension in each variant is fetched
-    my %last_ascensions;
     my @variants = $self->app->nh->variants();
-    for my $var (@variants) {
-        my $row = $self->app->nhdb->get_most_recent_asc($var);
-        $last_ascensions{$var} = $row;
-    }
-    my @variants_ordered = sort {
-        $last_ascensions{$a}{'age_raw'}
-        <=> $last_ascensions{$b}{'age_raw'}
-    } keys %last_ascensions;
-    $self->stash(variants => \@variants_ordered,
+    # these are a \% and a \@ - stash wants pointers anyway so this is no problem
+    # tuple return wouldn't work if they were passed as whole hash and array
+    my ($last_ascs, $vars_ordered) = $self->app->nhdb->get_last_asc_per_var(@variants);
+
+    $self->stash(variants => $vars_ordered,
                 vardef => $self->app->nh->variant_names(),
                 cur_time => scalar(localtime()),
-                last_ascensions => \%last_ascensions);
+                last_ascensions => $last_ascs);
 
     # next get streaks
     $self->stash(streaks => $self->app->nhdb->get_current_streaks());
@@ -66,12 +61,30 @@ sub recent {
     }
 
     $self->stash(result => \@games,
-                 cur_time => scalar(localtime()),
-                 variants => \@variants,
-                 vardef => $self->app->nh->variant_names(),
-                 variant => $var);
+                 variant => $var,
+                 $self->nh->aux_data());
 
     $self->render(template => $page, handler => 'tt2');
+}
+
+# server the gametime speedrun stats
+sub gametime {
+    my $self = shift;
+    my $var = $self->stash('var');
+    my $lim = 100;
+
+    # populate list of the fastest 100 ascensions (gametime)
+    my @ascensions = $self->app->nhdb->get_n_lowest_gametime($var, $lim);
+
+    # count and rank users by number of sub-20k, sub-10k and sub-5k wins
+    $self->stash(sub20 => [ $self->app->nhdb->count_subn_games($var, 20000) ],
+                 sub10 => [ $self->app->nhdb->count_subn_games($var, 10000) ],
+                 sub5  => [ $self->app->nhdb->count_subn_games($var, 5000) ],
+                 variant => $var,
+                 $self->nh->aux_data(),
+                 result => \@ascensions);
+
+    $self->render(template => 'gametime', handler => 'tt2');
 }
 
 1;

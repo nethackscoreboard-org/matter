@@ -44,6 +44,15 @@ sub _build_config
   }
 }
 
+# added shortcut as these parameters come up very often
+sub aux_data {
+    my $self = shift;
+    my %data;
+    $data{'cur_time'} = scalar(localtime());
+    $data{'variants'} = [ 'all', $self->variants() ];
+    $data{'vardef'}   = $self->variant_names();
+    return %data;
+}
 
 #===========================================================================
 # Return ordered list of variant shortcodes

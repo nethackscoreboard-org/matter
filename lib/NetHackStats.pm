@@ -37,6 +37,11 @@ sub startup {
     # my redirects to .all don't work, not super important though
     $r->add_type(recent_page => ['recent', 'ascended']);
     $r->any('/<page:recent_page>.<var:variants>')->to('query#recent');
+    $r->any('/<page:recent_page>')->to('query#recent', var => 'all');
+
+    # low turncount
+    $r->any('/gametime.<var:variants>')->to('query#gametime');
+    $r->any('/gametime')->to('query#gametime', var => 'all');
 }
 
 1;
