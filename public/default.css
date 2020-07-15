@@ -17,7 +17,7 @@ a:visited {
 body {
   font-family: "Trebuchet MS", "Tahoma", "Verdana", "Sans-Serif";
   font-size: 12px;
-  background: #fff;
+  background: #c0f;
   padding: 8px 10px;
 }
 
@@ -71,7 +71,7 @@ th {
 }
 
 tr {
-  color: #666;
+  color: #333;
 }
 
 tr:nth-child(even) {
@@ -89,7 +89,7 @@ div.content {
 
 .page {
     border: 2px solid #333;
-    background: #ffffff;
+    background: #3399cc;
     margin: 0px;
     position: relative;
 }
