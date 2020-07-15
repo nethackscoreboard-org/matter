@@ -504,7 +504,10 @@ sub sql_insert_games
   return undef unless $nhdb->require_fields(keys %$l);
 
   #--- reject wizmode games, paxed test games
-  return undef if $nhdb->reject_name($l->{'name'});
+  # in certain cases this gives a warning, probably empty name field
+  if (exists($l->{'name'}) and scalar $l->{'name'} > 0) {
+    return undef if $nhdb->reject_name($l->{'name'});
+  }
 
   #--- reject "special" modes of NH4 and its kin
   #--- Fourk challenge mode is okay, though
