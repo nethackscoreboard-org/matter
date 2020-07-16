@@ -99,4 +99,40 @@ sub streaks {
     $self->render(template => 'streaks', handler => 'tt2');
 }
 
+# server Z-Scores
+sub zscore {
+    my $self = shift;
+    my $var = $self->stash('var');
+
+    # get variant specific role info etc.
+    my $nv = $self->nh->variant($var eq 'all' ? 'nh' : $var);
+    my $zscore = $self->app->nhdb->get_zscore();
+    my %zscore = %$zscore;
+    
+    #--- following key holds roles that are included in the z-score table
+    #--- for variants that have enumerated their roles in the configuration,
+    #--- this simply lists all of them plus 'all'; for variants that do not
+    #--- have their roles listed (such as SLASH'EM Extended), this works
+    #--- differently: we only list roles that have ascending games.
+  
+    my @z_roles;
+    for my $role (keys %{$zscore{'max'}{$var}}) {
+        push @z_roles, $role unless $role eq 'all';
+    }
+    if(!$nv->roles()) {
+        $self->stash(z_roles => [
+            'all', @z_roles
+        ]);
+    } else {
+        $self->stash(z_roles => [ 'all', @{$nv->roles()} ]);
+    }
+
+    $self->stash(zscore => $zscore,
+                 variant => $var,
+                 $self->nh->aux_data()
+                );
+
+    $self->render(template => 'zscore', handler => 'tt2');
+}
+
 1;

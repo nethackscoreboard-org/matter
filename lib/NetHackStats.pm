@@ -47,6 +47,10 @@ sub startup {
     $r->any('/streaks.<var:variants>')->to('query#streaks');
     $r->any('/streaks')->to('query#streaks', var => 'all');
 
+    # Z-Scores
+    $r->any('/zscore.<var:variants>')->to('query#zscore');
+    $r->any('/zscore')->to('query#zscore', var => 'all');
+
 	# player views
 	$r->any('/players/<:name>.<var:variants>')->to('player#view');
 	$r->any('/players/<:name>')->to('player#view', var => 'all');
