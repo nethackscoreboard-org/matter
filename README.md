@@ -63,6 +63,11 @@ pseudovariant
 For a given player, all games can be browsed in a paginated display (like on
 NAO).
 
+* Ensure duplicate entries are not added to the db.
+If fpos flags are removed to attempt to force integration of missing data, duplicate entries are read.
+Once this happens, removing dupes may be tricky with a very large database.
+I propose adding a one-way hash of each entire row as an additional key, if any new update matches an existing hash, the update will be discarded.
+
 -----
 
 ## Setup
