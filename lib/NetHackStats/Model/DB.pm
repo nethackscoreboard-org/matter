@@ -737,4 +737,160 @@ sub count_subn_games
     return @rows;
 }
 
+#============================================================================
+# Calculate zscore from list of all ascensions. This function builds the
+# complete %zscore structure that is reused for all pages displaying zscore.
+#============================================================================
+
+sub get_zscore
+{
+  my $self = shift;
+  #--- logging
+
+  #my $logger = get_logger('Stats::zscore');
+  #$logger->debug('zscore() entry');
+
+  #--- zscore structure instantiation
+
+  my %zscore;
+  my $zscore_loaded;
+
+  #--- just return current state if already processed
+
+  if($zscore_loaded) {
+      #$logger->debug('zscore() finish (cached)');
+    return \%zscore;
+  }
+
+  #--- zscore structure definition
+  # val ... z-score values (player->variant->role)
+  # max ... maximum values (variant->role)
+  # ord ... ordering of player within variant (including 'all' pseudovariant)
+
+  my $zval = $zscore{'val'} = {};
+  my $zmax = $zscore{'max'} = {};
+  my $zord = $zscore{'ord'} = {};
+
+  #--- retrieve the data from database
+
+      #$logger->error('zscore() failed, ', $ascs);
+  
+  #$logger->debug(sprintf('zscore() data loaded from db, %d rows', scalar(@$ascs)));
+
+  #--- get the counts
+  # this creates hash with counts of (player, variant, role)
+  # triples
+
+  my %counts;
+  my %variants;
+  my $r = $self->db->query('select * from v_ascended');
+  my $ascs = [];
+  while (my $row = $r->hash) {
+      push (@$ascs, $row);
+  }
+  for my $row (@$ascs) {
+    $counts{$row->{'name'}}{$row->{'variant'}}{lc($row->{'role'})}++;
+    $variants{$row->{'variant'}} = 0;
+  }
+  #$logger->debug(
+  #  'zscore() counts completed, variants: ', join(',', (keys %variants))
+  #);
+  #$logger->debug(
+  #  sprintf('zscore() players found: %d', scalar(keys %counts))
+  #);
+
+  #--- get the z-numbers
+  # this calculates z-scores from the counts and stores them
+  # in hash of 'val'->PLAYER->VARIANT->ROLE; key 'all' contains
+  # sum of z-scores per-role and per-variant; therefore
+  # PLAYER->'all'->'all' is player's multi-variant z-score;
+  # PLAYER->VARIANT->'all' is player's z-score in given variant
+
+  my $cache = {};
+  my $v;
+  for my $plr (keys %counts) {
+    for my $var (keys %{$counts{$plr}}) {
+      for my $role (keys %{$counts{$plr}{$var}}) {
+        ($v, $cache) = harmonic_number($counts{$plr}{$var}{$role}, $cache);
+        $zval->{$plr}{'all'}{'all'} += $v;
+        $zval->{$plr}{$var}{$role}  += $v;
+        $zval->{$plr}{$var}{'all'}  += $v;
+        $zval->{$plr}{'all'}{$role} += $v;
+      }
+    }
+  }
+
+  #--- get the max z-values per (variant, role)
+  # these are stored into $zscore{'max'} subtree
+
+  for my $plr (keys %$zval) {
+    for my $var (keys %{$zval->{$plr}}) {
+      next if $var eq 'all';
+      for my $role (keys %{$zval->{$plr}{$var}}) {
+        next if $role eq 'all';
+        # per-variant per-role max values
+        $zmax->{$var}{$role} = $zval->{$plr}{$var}{$role}
+          if ($zmax->{$var}{$role} // 0) < $zval->{$plr}{$var}{$role};
+        # per-role all-variant max values
+        $zmax->{'all'}{$role} = $zval->{$plr}{$var}{$role}
+          if ($zmax->{'all'}{$role} // 0) < $zval->{$plr}{$var}{$role};
+      }
+      # per-variant max values
+      $zmax->{$var}{'all'} = $zval->{$plr}{$var}{'all'}
+        if ($zmax->{$var}{'all'} // 0) < $zval->{$plr}{$var}{'all'};
+    }
+    # multivariant max values
+    $zmax->{'all'}{'all'} = $zval->{$plr}{'all'}{'all'}
+      if ($zmax->{'all'}{'all'} // 0) < $zval->{$plr}{'all'}{'all'};
+  }
+
+  #--- sorting for use by player z-score ladders
+
+  for my $var ('all', (keys %variants)) {
+    my @sorted;
+
+    #--- sort
+
+    @sorted = sort {
+      ($zval->{$b}{$var}{'all'} // 0)
+      <=>
+      ($zval->{$a}{$var}{'all'} // 0)
+    } keys (%$zval);
+
+    #--- winnow empty entries
+
+    for my $plr (@sorted) {
+      push(@{$zord->{$var}}, $plr) if exists $zval->{$plr}{$var}{'all'};
+    }
+  }
+
+  #--- finish
+
+  #$logger->debug('zscore() finish (uncached)');
+  $zscore_loaded = 1;
+  return \%zscore;
+}
+
+#============================================================================
+# Calculate partial sum of harmonic series for given number.
+#============================================================================
+
+sub harmonic_number
+{
+    my ($n, $cache) = @_; # cache is \%
+
+    #--- return cached result
+
+    return $cache->{$n} if exists $cache->{$n};
+
+    #--- calculation
+
+    my $v = 0;
+    for(my $i = 0; $i < $n; $i++) {
+        $v += 1 / ($i+1);
+    }
+    $cache->{$n} = $v;
+    return $v, $cache;
+}
+
 1;
