@@ -1302,20 +1302,21 @@ for my $log (@logfiles) {
       $r = system(
         sprintf($nhdb->config()->{'wget'}, $localfile, $log->{'logurl'})
       );
-      if($r) { $logger->warn($lbl, 'Failed to get the logfile'); die; }
-      $fsize[1] = -s $localfile;
-      $logger->info($lbl, sprintf('Logfile retrieved successfully, got %d bytes', $fsize[1] - $fsize[0]));
-      if(
-        $log->{'fpos'}
-        && ($fsize[1] - $fsize[0] < 1)
-        && ($fsize[0] - $log->{'fpos'} < 1)
-      ) {
-        $logger->info($lbl, 'No new data, skipping further processing');
-        $dbh->do(
-          'UPDATE logfiles SET lastchk = current_timestamp WHERE logfiles_i = ?',
-          undef, $logfiles_i
-        );
-        die "OK\n";
+      if($r) { $logger->warn($lbl, 'Failed to get the logfile'); }
+      else {
+        $fsize[1] = -s $localfile;
+        $logger->info($lbl, sprintf('Logfile retrieved successfully, got %d bytes', $fsize[1] - $fsize[0]));
+        if(
+          $log->{'fpos'}
+            && ($fsize[1] - $fsize[0] < 1)
+            && ($fsize[0] - $log->{'fpos'} < 1)
+          ) {
+            $logger->info($lbl, 'No new data, skipping further processing');
+            $dbh->do(
+              'UPDATE logfiles SET lastchk = current_timestamp WHERE logfiles_i = ?',
+              undef, $logfiles_i
+            );
+          }
       }
     }
 
