@@ -87,4 +87,16 @@ sub gametime {
     $self->render(template => 'gametime', handler => 'tt2');
 }
 
+# show statistics for streakers
+sub streaks {
+    my $self = shift;
+    my $var = $self->stash('var');
+    my $lim = 100;
+
+    $self->stash(result => $self->app->nhdb->get_streaks($var, $lim),
+                 variant => $var,
+                 $self->nh->aux_data());
+    $self->render(template => 'streaks', handler => 'tt2');
+}
+
 1;

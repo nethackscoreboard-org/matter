@@ -277,8 +277,8 @@ sub new
 
 sub _get_recent_games
 {
-    my ($self, $var, $n, $asc) = @_;
-    my (@args, $view, @games);
+    my ($self, $var, $name, $n, $asc) = @_;
+    my (@conds, @args, $view, @games);
 
     # won or died?
     if ($asc == 1) {
@@ -287,19 +287,29 @@ sub _get_recent_games
         $view = 'v_games_recent';
     }
 
-    my $q_string = "select * from $view ";
+    my $q_string = "select * from $view";
 
     # variant filter or no?
     if ($var ne 'all') {
-        $q_string .= 'where variant = ? ';
+        push @conds, 'variant = ?';
         push @args, $var;
+    }
+
+    # optional player filter
+    if ($name) {
+        push @conds, 'name = ?';
+        push @args, $name;
+    }
+
+    if (@conds > 0) {
+        $q_string .= ' where ' . join(' and ', @conds);
     }
 
     # limit? set absolute max 500, 'nh' and 'all' are throttled to 100 elsewhere
     if ($n < 1) {
         $n = 500;
     }
-    $q_string .= sprintf('limit %d', $n);
+    $q_string .= sprintf(' limit %d', $n);
     
     # get results
     # need to add error handling and logging
@@ -317,7 +327,7 @@ sub _get_recent_games
 sub get_most_recent_asc
 {
     my ($self, $var) = @_;
-    my @rows = $self->_get_recent_games($var, 1, 1);
+    my @rows = $self->_get_recent_games($var, undef, 1, 1);
     my $row = $rows[0];
     $row->{'age'} = fmt_age(
         $row->{'age_years'},
@@ -331,28 +341,28 @@ sub get_most_recent_asc
 sub get_n_recent_ascs
 {
     my ($self, $var, $n) = @_;
-    return $self->_get_recent_games($var, $n, 1);
+    return $self->_get_recent_games($var, undef, $n, 1);
 }
 
 # Grabs n recent games
 sub get_n_recent_games
 {
     my ($self, $var, $n) = @_;
-    return $self->_get_recent_games($var, $n, 0);
+    return $self->_get_recent_games($var, undef, $n, 0);
 }
 
 # Grabs recent ascensions
 sub get_all_ascs
 {
     my ($self, $var) = @_;
-    return $self->_get_recent_games($var, 0, 1);
+    return $self->_get_recent_games($var, undef, 0, 1);
 }
 
 # Grabs recent games
 sub get_recent_games
 {
     my ($self, $var) = @_;
-    return $self->_get_recent_games($var, 0, 0);
+    return $self->_get_recent_games($var, undef, 0, 0);
 }
 
 # fetch the most recent ascension in each variant
@@ -373,6 +383,27 @@ sub get_last_asc_per_var
     # need to pass these as references or they won't pack nicely in a tuple
     return \%latest_ascs, \@vars_ordered;
 }
+
+# get games or ascensions for a given player
+sub get_n_player_games
+{
+    my ($self, $var, $name, $lim) = @_;
+
+    # this will get more complicated with implementing aliases ... NOPE
+    # I stand corrected, aliases are included in the games rows
+    return $self->_get_recent_games($var, $name, $lim, 0);
+}
+
+# get player ascensions NB this uses v_ascended_recent - will this omit things?
+# will also write a sub for checking the whole of games, but the data structure yielded will not be the same
+# also, games doesn't directly grant a variable variant column for filtering, though it is possible to do this with logfiles_i somehow
+sub get_player_ascs
+{
+    my ($self, $var, $name) = @_;
+
+    return $self->_get_recent_games($var, $name, 0, 1);
+}
+
 
 #============================================================================
 # Load streak information from database. The streaks are ordered by number
@@ -603,6 +634,28 @@ sub get_current_streaks
     return $streaks_proc_2;
 }
 
+# for the main streaks page, get up to $lim streaks, for a given variant
+sub get_streaks
+{
+    my ($self, $var, $lim) = @_;
+
+    my ($streaks_ord, $streaks) = $self->sql_load_streaks($var, undef, $lim, 2);
+    return $streaks_ord if !ref($streaks_ord);
+
+    return process_streaks($streaks_ord, $streaks);
+}
+
+# for the player streaks page, get all streaks, for all or a given variant
+sub get_player_streaks
+{
+    my ($self, $var, $name) = @_;
+
+    my ($streaks_ord, $streaks) = $self->sql_load_streaks($var, $name, undef, 2);
+    return $streaks_ord if !ref($streaks_ord);
+
+    return process_streaks($streaks_ord, $streaks);
+}
+
 # fetch the fastest wins
 sub get_n_lowest_gametime
 {
@@ -615,6 +668,31 @@ sub get_n_lowest_gametime
     } else {
         my $q_string = sprintf('select * from v_ascended where turns > 0 order by turns asc limit %d', $lim);
         $r = $self->db->query($q_string);
+    }
+
+    my @games;
+    my $i = 1;
+    while (my $row = $r->hash) {
+        row_fix($self->app->nh, $row);
+        $row->{n} = $i;
+        $i += 1;
+        push @games, $row;
+    }
+    return @games;
+}
+
+# fetch the fastest wins for a player
+sub get_player_gametime
+{
+    my ($self, $var, $player) = @_;
+
+    my $r;
+    if ($var ne 'all') {
+        my $q_string = sprintf('select * from v_ascended where variant = ? and turns > 0 and name = ? order by turns asc');
+        $r = $self->db->query($q_string, $var, $player);
+    } else {
+        my $q_string = sprintf('select * from v_ascended where turns > 0 and name = ? order by turns asc');
+        $r = $self->db->query($q_string, $player);
     }
 
     my @games;

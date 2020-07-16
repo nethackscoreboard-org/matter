@@ -42,6 +42,18 @@ sub startup {
     # low turncount
     $r->any('/gametime.<var:variants>')->to('query#gametime');
     $r->any('/gametime')->to('query#gametime', var => 'all');
+
+    # streak reports
+    $r->any('/streaks.<var:variants>')->to('query#streaks');
+    $r->any('/streaks')->to('query#streaks', var => 'all');
+
+	# player views
+	$r->any('/players/<:name>.<var:variants>')->to('player#view');
+	$r->any('/players/<:name>')->to('player#view', var => 'all');
+	$r->any('/players/<:name>/streaks.<var:variants>')->to('player#streaks');
+	$r->any('/players/<:name>/streaks')->to('player#streaks', var => 'all');
+	$r->any('/players/<:name>/<page:recent_page>.<var:variants>')->to('player#recent');
+	$r->any('/players/<:name>/<page:recent_page>')->to('player#recent', var => 'all');
 }
 
 1;
