@@ -504,10 +504,7 @@ sub sql_insert_games
   return undef unless $nhdb->require_fields(keys %$l);
 
   #--- reject wizmode games, paxed test games
-  # in certain cases this gives a warning, probably empty name field
-  if (exists($l->{'name'}) and scalar $l->{'name'} > 0) {
-    return undef if $nhdb->reject_name($l->{'name'});
-  }
+  return undef if $nhdb->reject_name($l->{'name'});
 
   #--- reject "special" modes of NH4 and its kin
   #--- Fourk challenge mode is okay, though
@@ -1302,20 +1299,20 @@ for my $log (@logfiles) {
       $r = system(
         sprintf($nhdb->config()->{'wget'}, $localfile, $log->{'logurl'})
       );
-      if($r) { $logger->warn($lbl, 'Failed to get the logfile'); }
+      if($r) { $logger->warn($lbl, 'Failed to get the logfile'); die; }
       $fsize[1] = -s $localfile;
       $logger->info($lbl, sprintf('Logfile retrieved successfully, got %d bytes', $fsize[1] - $fsize[0]));
       if(
         $log->{'fpos'}
-          && ($fsize[1] - $fsize[0] < 1)
-          && ($fsize[0] - $log->{'fpos'} < 1)
-        ) {
-          $logger->info($lbl, 'No new data, skipping further processing');
-          $dbh->do(
-            'UPDATE logfiles SET lastchk = current_timestamp WHERE logfiles_i = ?',
-            undef, $logfiles_i
-          );
-        }
+        && ($fsize[1] - $fsize[0] < 1)
+        && ($fsize[0] - $log->{'fpos'} < 1)
+      ) {
+        $logger->info($lbl, 'No new data, skipping further processing');
+        $dbh->do(
+          'UPDATE logfiles SET lastchk = current_timestamp WHERE logfiles_i = ?',
+          undef, $logfiles_i
+        );
+        die "OK\n";
       }
     }
 
