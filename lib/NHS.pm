@@ -1,22 +1,20 @@
-package NetHackStats;
+package NHS;
 use Mojo::Base 'Mojolicious';
 use Mojolicious::Plugin::TemplateToolkit;
-use NetHackStats::Model::DB;
+use NHS::Model::Scores 'new';
 use NetHack::Config;
 use strict;
 use warnings;
 use feature 'state';
 use utf8;
 
-#use NetHackStats::Model::NH;
-#
 
 sub startup {
     my $self = shift;
-    $self->helper(nhdb => sub { state $nhdb =
-            NetHackStats::Model::DB->new($self) });
     $self->helper(nh => sub { state $nh =
             NetHack::Config->new(config_file => "cfg/nethack_def.json")});
+    $self->helper(scores => sub { state $scores =
+            NHS::Model::Scores->new($self) });
     $self->plugin('TemplateToolkit');
 
     # set up routing roules
@@ -30,30 +28,30 @@ sub startup {
     $r->add_type(variants => \@vars);
 
     # front page!
-    $r->any('/')->to('query#front');
-    $r->any('/index')->to('query#front');
+    $r->any('/')->to('board#overview');
+    $r->any('/index')->to('board#overview');
     
     # recent/ascended games 
     # my redirects to .all don't work, not super important though
     $r->add_type(recent_page => ['recent', 'ascended']);
-    $r->any('/<page:recent_page>.<var:variants>')->to('query#recent');
-    $r->any('/<page:recent_page>')->to('query#recent', var => 'all');
+    $r->any('/<page:recent_page>.<var:variants>')->to('board#recent');
+    $r->any('/<page:recent_page>')->to('board#recent', var => 'all');
 
     # low turncount
-    $r->any('/gametime.<var:variants>')->to('query#gametime');
-    $r->any('/gametime')->to('query#gametime', var => 'all');
+    $r->any('/gametime.<var:variants>')->to('board#gametime');
+    $r->any('/gametime')->to('board#gametime', var => 'all');
 
     # streak reports
-    $r->any('/streaks.<var:variants>')->to('query#streaks');
-    $r->any('/streaks')->to('query#streaks', var => 'all');
+    $r->any('/streaks.<var:variants>')->to('board#streaks');
+    $r->any('/streaks')->to('board#streaks', var => 'all');
 
     # Z-Scores
-    $r->any('/zscore.<var:variants>')->to('query#zscore');
-    $r->any('/zscore')->to('query#zscore', var => 'all');
+    $r->any('/zscore.<var:variants>')->to('board#zscore');
+    $r->any('/zscore')->to('board#zscore', var => 'all');
 
 	# player views
-	$r->any('/players/<:name>.<var:variants>')->to('player#view');
-	$r->any('/players/<:name>')->to('player#view', var => 'all');
+	$r->any('/players/<:name>.<var:variants>')->to('player#overview');
+	$r->any('/players/<:name>')->to('player#overview', var => 'all');
 	$r->any('/players/<:name>/streaks.<var:variants>')->to('player#streaks');
 	$r->any('/players/<:name>/streaks')->to('player#streaks', var => 'all');
 	$r->any('/players/<:name>/<page:recent_page>.<var:variants>')->to('player#recent');

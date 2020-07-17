@@ -1,0 +1,31 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="/default.css" />
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <title>Ascended Games</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.html.tt2 mnu="ascended" lvl=0 var=variant %]
+
+<div class="page_content">
+<h1>Ascended Games</h1>
+
+[% INCLUDE varmenu.html.tt2 page="ascended" %]
+
+[% IF result.size %]
+[% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
+[% INCLUDE tab_ascended.html.tt2 datetick=dt_ena %]
+[% ELSE %]
+<p>No ascensions for this variant.</p>
+[% END %]
+
+[% INCLUDE footer.html.tt2 %]

@@ -1,18 +1,17 @@
-package NetHackStats::Controller::Query;
-use Mojo::Base 'Mojolicious::Controller';
-use NetHackStats::Model::DB;
+package NHS::Controller::Board; use Mojo::Base 'Mojolicious::Controller';
+use NHS::Model::Scores;
 #use NetHack::Config;
 
 
 # this will serve the front page
-sub front {
+sub overview {
     my $self = shift;
 
     # first the most recent ascension in each variant is fetched
     my @variants = $self->app->nh->variants();
     # these are a \% and a \@ - stash wants pointers anyway so this is no problem
     # tuple return wouldn't work if they were passed as whole hash and array
-    my ($last_ascs, $vars_ordered) = $self->app->nhdb->get_last_asc_per_var(@variants);
+    my ($last_ascs, $vars_ordered) = $self->app->scores->lookup_latest_variant_ascensions(@variants);
 
     $self->stash(variants => $vars_ordered,
                 vardef => $self->app->nh->variant_names(),
@@ -20,11 +19,10 @@ sub front {
                 last_ascensions => $last_ascs);
 
     # next get streaks
-    $self->stash(streaks => $self->app->nhdb->get_current_streaks());
+    $self->stash(streaks => $self->app->scores->lookup_current_streaks());
 
     # now for recent ascensions
-    my @recent_ascs = $self->app->nhdb->get_n_recent_ascs('all', 5);
-    $self->stash(ascensions_recent => \@recent_ascs);    
+    $self->stash(ascensions_recent => [ $self->app->scores->lookup_recent_ascensions('all', 5) ]);    
 
     $self->render(template => 'front', handler => 'tt2');
 }
@@ -37,7 +35,7 @@ sub recent {
 
     my $var = $self->stash('var');
     my $page = $self->stash('page');
-    my $lim = 100;
+    my $n = 100;
 
     my @variants = 'all';
     push @variants, $self->app->nh->variants();
@@ -46,12 +44,12 @@ sub recent {
     my @games;
     if ($page eq 'ascended') {
         if ($var ne 'all' && $var ne 'nh') {
-            @games = $self->app->nhdb->get_all_ascs($var);
+            @games = $self->app->scores->lookup_all_ascensions($var);
         } else {
-            @games = $self->app->nhdb->get_n_recent_ascs($var, $lim);
+            @games = $self->app->scores->lookup_recent_ascensions($var, $n);
         }
     } else {
-        @games = $self->app->nhdb->get_n_recent_games($var, $lim);
+        @games = $self->app->scores->lookup_recent_games($var, $n);
     }
     # count games for scoreboard
     my $i = 0;
@@ -71,15 +69,15 @@ sub recent {
 sub gametime {
     my $self = shift;
     my $var = $self->stash('var');
-    my $lim = 100;
+    my $n = 100;
 
     # populate list of the fastest 100 ascensions (gametime)
-    my @ascensions = $self->app->nhdb->get_n_lowest_gametime($var, $lim);
+    my @ascensions = $self->app->scores->lookup_fastest_gametime($var, $n);
 
     # count and rank users by number of sub-20k, sub-10k and sub-5k wins
-    $self->stash(sub20 => [ $self->app->nhdb->count_subn_games($var, 20000) ],
-                 sub10 => [ $self->app->nhdb->count_subn_games($var, 10000) ],
-                 sub5  => [ $self->app->nhdb->count_subn_games($var, 5000) ],
+    $self->stash(sub20 => [ $self->app->scores->count_subn_games($var, 20000) ],
+                 sub10 => [ $self->app->scores->count_subn_games($var, 10000) ],
+                 sub5  => [ $self->app->scores->count_subn_games($var, 5000) ],
                  variant => $var,
                  $self->nh->aux_data(),
                  result => \@ascensions);
@@ -91,9 +89,9 @@ sub gametime {
 sub streaks {
     my $self = shift;
     my $var = $self->stash('var');
-    my $lim = 100;
+    my $n = 100;
 
-    $self->stash(result => $self->app->nhdb->get_streaks($var, $lim),
+    $self->stash(result => $self->app->scores->lookup_streaks($var, $n),
                  variant => $var,
                  $self->nh->aux_data());
     $self->render(template => 'streaks', handler => 'tt2');
@@ -106,7 +104,7 @@ sub zscore {
 
     # get variant specific role info etc.
     my $nv = $self->nh->variant($var eq 'all' ? 'nh' : $var);
-    my $zscore = $self->app->nhdb->get_zscore();
+    my $zscore = $self->app->scores->compute_zscore();
     my %zscore = %$zscore;
     
     #--- following key holds roles that are included in the z-score table
