@@ -25,9 +25,10 @@ DBD::Pg
 [also Carp::Always is helpful for traceback]
 
 -----
-Mandevil is no longer maintaining nhs, the proposed fork will be maintained by elenmirië, aoei & mobileuser, with hosting provided by K2 (Mandevil's blessing pending).
+Mandevil is no longer maintaining nhs, the fork is now being maintained by elenmirië, aoei & mobileuser,
+with hosting for the new site at https://nethackscoreboard.org/ provided by K2 & with Mandevil's blessing.
 
-
+Currently work is ongoing to set up a Mojo Front-End, instead of generating static HTML pages.
 -----
 
 ## To Do
