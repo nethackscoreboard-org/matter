@@ -8,4 +8,4 @@ use lib
 curfile->dirname->sibling('lib')->to_string;
 use Mojolicious::Commands;
 
-Mojolicious::Commands->start_app('NetHackStats')
+Mojolicious::Commands->start_app('NHS')

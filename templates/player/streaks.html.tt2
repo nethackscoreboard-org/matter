@@ -1,0 +1,87 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="/default.css" />
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <title>Streaks of Ascensions</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.html.tt2 mnu="streaks" lvl=0 var=variant %]
+
+<div class="page_content">
+<h1>Streaks of Ascensions</h1>
+
+[% INCLUDE varmenu.html.tt2 page="streaks" %]
+
+[% SET st_cnt = 0 %]
+[% FOREACH row IN result %]
+[% IF row.wins > 1; SET st_cnt = st_cnt + 1; END %]
+[% END %]
+
+[% IF st_cnt %]
+
+<table class="bordered">
+
+<tr>
+<th></th>
+<th>wins</th>
+<th>srv</th>
+<th>var</th>
+<th>ver</th>
+<th>name</th>
+<th>turns</th>
+<th>start</th>
+<th>end</th>
+<th>games</th>
+</tr>
+
+[% FOREACH row IN result %]
+[% IF row.wins > 1 %]
+<tr>
+<td class="numeric">[% row.n %]</td>
+[% IF row.open %]
+<td class="numeric"><span class="streak-open">[% row.wins %]</span></td>
+[% ELSE %]
+<td class="numeric">[% row.wins %]</td>
+[% END %]
+<td>[% row.server %]</td>
+<td>[% row.variant %]</td>
+<td>[% row.version %]</td>
+<td><a href="[% row.plrpage %]">[% row.name %]</a></td>
+<td class="numeric">[% number(row.turns) %]</td>
+[% IF row.start_dump %]
+<td><a href="[% row.start_dump %]">[% row.start %]</a></td>
+[% ELSE %]
+<td>[% row.start %]</td>
+[% END %]
+
+[% IF row.end_dump %]
+<td><a href="[% row.end_dump %]">[% row.end %]</a></td>
+[% ELSE %]
+<td>[% row.end %]</td>
+[% END %]
+
+<td>
+[% FOREACH game IN row.glist %]
+<span class="combono">[% IF game.dump %]<a href="[% game.dump %]">[% END %][% game.n %][% IF game.dump %]</a>[% END %]</span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
+[% END %]
+</td>
+</tr>
+[% END %]
+[% END %]
+
+</table>
+
+[% ELSE %]
+<p>No streaks for this variant.</p>
+[% END %]
+
+[% INCLUDE footer.html.tt2 %]

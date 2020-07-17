@@ -1,0 +1,108 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="default.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>Lowest Turncount Games</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.html.tt2 mnu="gametime" lvl=0 var=variant %]
+
+<div class="page_content">
+<h1>Lowest Turncount Games</h1>
+
+[% INCLUDE varmenu.html.tt2 page="gametime" %]
+
+[% IF result.size %]
+
+[%# ------ %]
+
+<hr>
+
+<h3>100 Lowest Turncount Games</h3>
+[% INCLUDE tab_ascended.html.tt2 %]
+
+[%# ------ %]
+
+<div style="display : inline-block; margin-right : 2em;">
+[% IF sub20.size %]
+<h3>Sub-20K Wins</h3>
+
+<table class="bordered">
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>cnt</th>
+  <th>avg turns</th>
+</tr>
+[% FOR row IN sub20 %]
+<tr>
+<td class="numeric">[% row.n %]</td>
+<td>[% row.name %]</td>
+<td class="numeric">[% row.count %]</td>
+<td class="numeric">[% row.avg %]</td>
+</tr>
+[% END %]
+</table>
+[% END %]
+</div>
+
+<div style="display : inline-block; margin-right : 2em;">
+[% IF sub10.size %]
+<h3>Sub-10K Wins</h3>
+
+<table class="bordered">
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>cnt</th>
+  <th>avg turns</th>
+</tr>
+[% FOR row IN sub10 %]
+<tr>
+<td class="numeric">[% row.n %]</td>
+<td>[% row.name %]</td>
+<td class="numeric">[% row.count %]</td>
+<td class="numeric">[% row.avg %]</td>
+</tr>
+[% END %]
+</table>
+[% END %]
+</div>
+
+<div style="display : inline-block">
+[% IF sub5.size %]
+<h3>Sub-5K Wins</h3>
+
+<table class="bordered">
+<tr>
+  <th>&nbsp;</th>
+  <th>name</th>
+  <th>cnt</th>
+  <th>avg turns</th>
+</tr>
+[% FOR row IN sub5 %]
+<tr>
+<td class="numeric">[% row.n %]</td>
+<td>[% row.name %]</td>
+<td class="numeric">[% row.count %]</td>
+<td class="numeric">[% row.avg %]</td>
+</tr>
+[% END %]
+</table>
+[% END %]
+</div>
+
+[% ELSE %]
+<p>No ascensions for this variant.</p>
+[% END %]
+
+[% INCLUDE footer.html.tt2 %]

@@ -1,4 +1,4 @@
-package NetHackStats::Model::DB;
+package NHS::Model::Scores;
 use Mojo::Pg;
 use Mojo::JSON qw(from_json);
 use File::Slurp;
@@ -275,16 +275,28 @@ sub new
 #    return $row;
 #}
 
-sub _get_recent_games
+# this is our main function for fetching game rows from the DB
+# various wrappers are provided for simplicity, but they all
+# are just nice human-readable things that call the same function
+# but with slightly different flags
+sub lookup_games
 {
-    my ($self, $var, $name, $n, $asc) = @_;
+    my ($self,      # model object
+        $var,       # variant or 'all'
+        $name,      # player name or omitted for all players
+        $n,         # limit number of entries (0 = unlimited)
+        $asc,       # bool: true for ascensions, otherwise normal games
+        $recent     # bool: if true, use v_ascended/games_recent view
+    ) = @_;
     my (@conds, @args, $view, @games);
 
-    # won or died?
-    if ($asc == 1) {
-        $view = 'v_ascended_recent';
+    if ($asc) {
+        $view = 'v_ascended';
     } else {
-        $view = 'v_games_recent';
+        $view = 'v_games';
+    }
+    if ($recent) {
+        $view .= '_recent';
     }
 
     my $q_string = "select * from $view";
@@ -324,10 +336,10 @@ sub _get_recent_games
 
 
 # Grabs the DB row corresonding to the most recent ascension for a given variant
-sub get_most_recent_asc
+sub lookup_most_recent_ascension
 {
     my ($self, $var) = @_;
-    my @rows = $self->_get_recent_games($var, undef, 1, 1);
+    my @rows = $self->lookup_games($var, undef, 1, 1, 1);
     my $row = $rows[0];
     $row->{'age'} = fmt_age(
         $row->{'age_years'},
@@ -337,43 +349,29 @@ sub get_most_recent_asc
     return $row;
 }
 
-# Grabs n recent ascensions
-sub get_n_recent_ascs
+# Grabs recent ascensions from everyone
+sub lookup_recent_ascensions
 {
     my ($self, $var, $n) = @_;
-    return $self->_get_recent_games($var, undef, $n, 1);
-}
-
-# Grabs n recent games
-sub get_n_recent_games
-{
-    my ($self, $var, $n) = @_;
-    return $self->_get_recent_games($var, undef, $n, 0);
-}
-
-# Grabs recent ascensions
-sub get_all_ascs
-{
-    my ($self, $var) = @_;
-    return $self->_get_recent_games($var, undef, 0, 1);
+    return $self->lookup_games($var, undef, $n, 1, 1);
 }
 
 # Grabs recent games
-sub get_recent_games
+sub lookup_recent_games
 {
-    my ($self, $var) = @_;
-    return $self->_get_recent_games($var, undef, 0, 0);
+    my ($self, $var, $n) = @_;
+    return $self->lookup_games($var, undef, $n, 0, 1);
 }
 
 # fetch the most recent ascension in each variant
 # ordered by age, returns the list of ascensions and
 # the variants ordered as they appear in the asc list
-sub get_last_asc_per_var
+sub lookup_latest_variant_ascensions
 {
     my ($self, @vars) = @_;
     my %latest_ascs;
     for my $var (@vars) {
-        my $row = $self->get_most_recent_asc($var);
+        my $row = $self->lookup_most_recent_ascension($var);
         $latest_ascs{$var} = $row;
     }
     my @vars_ordered = sort {
@@ -385,25 +383,30 @@ sub get_last_asc_per_var
 }
 
 # get games or ascensions for a given player
-sub get_n_player_games
+sub lookup_player_games
 {
-    my ($self, $var, $name, $lim) = @_;
+    my ($self, $var, $name, $n) = @_;
 
     # this will get more complicated with implementing aliases ... NOPE
     # I stand corrected, aliases are included in the games rows
-    return $self->_get_recent_games($var, $name, $lim, 0);
+    return $self->lookup_games($var, $name, $n, 0, 1);
 }
 
-# get player ascensions NB this uses v_ascended_recent - will this omit things?
-# will also write a sub for checking the whole of games, but the data structure yielded will not be the same
-# also, games doesn't directly grant a variable variant column for filtering, though it is possible to do this with logfiles_i somehow
-sub get_player_ascs
+# lookup player/all or player/variant ascensions
+sub lookup_player_ascensions
 {
     my ($self, $var, $name) = @_;
 
-    return $self->_get_recent_games($var, $name, 0, 1);
+    return $self->lookup_games($var, $name, 0, 1, 0);
 }
 
+# lookup all ascensions (for a variant)
+sub lookup_all_ascensions
+{
+    my ($self, $var) = @_;
+
+    return $self->lookup_games($var, undef, undef, 1, 0);
+}
 
 #============================================================================
 # Load streak information from database. The streaks are ordered by number
@@ -604,7 +607,7 @@ sub sql_load_streaks
 # wrapper to sql_load_streaks complete with streak reprocessing for removing
 # too-old streaks etc. and renumbering the list
 # fetches *current* streaks for the front-page
-sub get_current_streaks
+sub lookup_current_streaks
 {
     my $self = shift;
     my $streaks_proc_1;
@@ -635,9 +638,9 @@ sub get_current_streaks
 }
 
 # for the main streaks page, get up to $lim streaks, for a given variant
-sub get_streaks
+sub lookup_streaks
 {
-    my ($self, $var, $lim) = @_;
+    my ($self, $var, undef, $n) = @_;
 
     my ($streaks_ord, $streaks) = $self->sql_load_streaks($var, undef, $lim, 2);
     return $streaks_ord if !ref($streaks_ord);
@@ -646,18 +649,14 @@ sub get_streaks
 }
 
 # for the player streaks page, get all streaks, for all or a given variant
-sub get_player_streaks
+sub lookup_player_streaks
 {
-    my ($self, $var, $name) = @_;
-
-    my ($streaks_ord, $streaks) = $self->sql_load_streaks($var, $name, undef, 2);
-    return $streaks_ord if !ref($streaks_ord);
-
-    return process_streaks($streaks_ord, $streaks);
+    my ($self, $var, $name, $n) = @_;
+    return $self->lookup_streaks($var, $name, $n, 2);
 }
 
 # fetch the fastest wins
-sub get_n_lowest_gametime
+sub lookup_fastest_gametime
 {
     my ($self, $var, $lim) = @_;
 
@@ -682,7 +681,7 @@ sub get_n_lowest_gametime
 }
 
 # fetch the fastest wins for a player
-sub get_player_gametime
+sub lookup_player_gametime
 {
     my ($self, $var, $player) = @_;
 
@@ -742,7 +741,7 @@ sub count_subn_games
 # complete %zscore structure that is reused for all pages displaying zscore.
 #============================================================================
 
-sub get_zscore
+sub compute_zscore
 {
   my $self = shift;
   #--- logging

@@ -1,0 +1,32 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="/default.css" />
+[% IF result_ascended.size -%]
+  <script type="text/javascript" src="/js/jquery.js" />
+  <script type="text/javascript" src="/js/tablesorter.js" />
+  <script type="text/javascript" src="/js/tabsort.js" />
+[% END -%]
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <title>Recent Games</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.html.tt2 mnu="recent" lvl=0 var=variant %]
+
+<div class="page_content">
+<h1>Recent Games</h1>
+
+[% INCLUDE varmenu.html.tt2 page="recent" %]
+
+[% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
+[% INCLUDE tab_recent.html.tt2 datetick=dt_ena %]
+
+[% INCLUDE footer.html.tt2 %]
