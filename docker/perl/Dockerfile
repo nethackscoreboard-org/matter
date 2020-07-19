@@ -15,10 +15,16 @@ COPY ./templates ./templates
 RUN touch ./templates/about_news.tt
 COPY ./logs ./logs
 COPY ./cfg ./cfg
-COPY ./css ./css
 COPY nhdb-feeder.pl .
 COPY nhdb-stats.pl .
+
+RUN mkdir public
+COPY ./css public/
+
 RUN cpanm --installdeps . --notest
+RUN cpanm Mojolicious --notest
+
+COPY /docker/perl/server.pl .
 
 COPY ./docker/perl/create_config.sh .
 RUN chmod a+x create_config.sh
