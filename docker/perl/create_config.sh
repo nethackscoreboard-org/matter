@@ -9,17 +9,19 @@ EOF
 
 cat <<- EOF > cfg/nhdb_def.json
 {
-  "http_root" : "/var/www/html",
+  "http_root" : "/nhs/public",
   "db" : {
   	"nhdbfeeder" : {
 	    "dbname" : "$DATABASE_NAME",
 	    "dbuser" : "$FEEDER",
-      "dbhost": "database"
+      "dbhost": "database",
+      "dbport": "$DATABASE_PORT"
     },
   	"nhdbstats" : {
 	    "dbname" : "$DATABASE_NAME",
 	    "dbuser" : "$STATS",
-      "dbhost": "database"
+      "dbhost": "database",
+      "dbport": "$DATABASE_PORT"
     }
   },
   "auth" : "auth.json",

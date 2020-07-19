@@ -1,25 +1,15 @@
 version: '3.2'
 services:
-  apache:
-    container_name: nhs_apache
-    build:
-      context: ./
-      dockerfile: ./docker/apache/Dockerfile
-    ports:
-      - 80:80
-      - 443:433
-    volumes:
-      - ./docker/apache/logs:/var/log/
-      - ./html:/var/www/html
   perl:
     container_name: nhs_perl
     build:
       context: ./
       dockerfile: ./docker/perl/Dockerfile
+    command: ['hypnotoad', '-f', 'server.pl']
     env_file:
-      - ./docker/environment/users.env
-    volumes:
-      - ./html:/var/www/html
+      - ./docker/environment/database.env
+    ports:
+      - '8082:8082'
   database:
     container_name: nhs_postgres
     logging: 
@@ -34,6 +24,6 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
     env_file:
-      - ./docker/environment/users.env
+      - ./docker/environment/database.env
     ports:
       - 5432:5432

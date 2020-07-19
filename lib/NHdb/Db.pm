@@ -62,12 +62,12 @@ sub _db_connect
   croak qq{Undefined password for database user "$conn->{'dbuser'}"}
     if !$c->{'auth'} || !$c->{'auth'}{$conn->{'dbuser'}};
 
+
   #--- create the source string
 
   my $src = 'dbi:Pg:dbname=' . $conn->{'dbname'};
   $src .= ';host=' . $conn->{'dbhost'} if $conn->{'dbhost'};
   $src .= ';port=' . $conn->{'dbport'} if $conn->{'dbport'};
-
   #--- connect to the database
 
   my $dbh = DBI->connect(
