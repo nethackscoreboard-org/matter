@@ -66,6 +66,7 @@ sub _db_connect
 
   my $src = 'dbi:Pg:dbname=' . $conn->{'dbname'};
   $src .= ';host=' . $conn->{'dbhost'} if $conn->{'dbhost'};
+  $src .= ';port=' . $conn->{'dbport'} if $conn->{'dbport'};
 
   #--- connect to the database
 
