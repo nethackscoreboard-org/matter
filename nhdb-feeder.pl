@@ -503,8 +503,10 @@ sub sql_insert_games
   #--- reject too old log entries without necessary info
   return undef unless $nhdb->require_fields(keys %$l);
 
-  #--- reject wizmode games, paxed test games
-  return undef if $nhdb->reject_name($l->{'name'});
+  #--- reject entries with no/empty name, or wizmode/banned paxed test names
+  #--- previously the check to reject_name() came before the
+  #--- check if a name was defined, this bug is now fixed
+  if(!$l->{'name'} || $nhdb->reject_name($l->{'name'})) { return undef; }
 
   #--- reject "special" modes of NH4 and its kin
   #--- Fourk challenge mode is okay, though
@@ -514,9 +516,6 @@ sub sql_insert_games
   ) {
     return undef;
   }
-
-  #--- reject entries with empty name
-  if(!exists $l->{'name'} || !$l->{'name'}) { return undef; }
 
   #--- death (reason)
   my $death = $l->{'death'};
