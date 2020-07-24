@@ -2,6 +2,7 @@
 
 After pulling the repository, follow these steps to make the NHS run in a Docker environment. It is assumed that you already run [Docker Desktop](https://www.docker.com/products/docker-desktop) or something comparable for your OS.
 
+0. Make sure logs/ is empty - otherwise 1. can fail.
 1. Create the images and run the containers: `docker-compose up -d`. 
 2. Enter the 'nhs_perl'-container: `docker exec -it nhs_perl /bin/sh`. 
 3. The perl scripts and enviroment is in the '/nhs' folder: `cd /nhs`.
