@@ -22,7 +22,7 @@ sub overview {
     $self->stash(streaks => $self->app->scores->lookup_current_streaks());
 
     # now for recent ascensions
-    $self->stash(ascensions_recent => [ $self->app->scores->lookup_recent_ascensions('all', 5) ]);    
+    $self->stash(ascensions_recent => $self->app->scores->lookup_recent_ascensions('all', 5));    
 
     $self->render(template => 'front', handler => 'tt2');
 }
@@ -41,24 +41,19 @@ sub recent {
     push @variants, $self->app->nh->variants();
 
     # limit output unless looking specifically at ascensions for one variant
-    my @games;
+    my $games;
     if ($page eq 'ascended') {
         if ($var ne 'all' && $var ne 'nh') {
-            @games = $self->app->scores->lookup_all_ascensions($var);
+            $games = $self->app->scores->lookup_all_ascensions($var);
         } else {
-            @games = $self->app->scores->lookup_recent_ascensions($var, $n);
+            $games = $self->app->scores->lookup_recent_ascensions($var, $n);
         }
     } else {
-        @games = $self->app->scores->lookup_recent_games($var, $n);
+        $games = $self->app->scores->lookup_recent_games($var, $n);
     }
     # count games for scoreboard
-    my $i = 0;
-    while ($i < scalar @games) {
-        $games[$i]->{n} = $i + 1;
-        $i += 1;
-    }
 
-    $self->stash(result => \@games,
+    $self->stash(result => $games,
                  variant => $var,
                  $self->nh->aux_data());
 
@@ -72,15 +67,15 @@ sub gametime {
     my $n = 100;
 
     # populate list of the fastest 100 ascensions (gametime)
-    my @ascensions = $self->app->scores->lookup_fastest_gametime($var, $n);
+    my $ascensions = $self->app->scores->lookup_fastest_gametime($var, $n);
 
     # count and rank users by number of sub-20k, sub-10k and sub-5k wins
-    $self->stash(sub20 => [ $self->app->scores->count_subn_games($var, 20000) ],
-                 sub10 => [ $self->app->scores->count_subn_games($var, 10000) ],
-                 sub5  => [ $self->app->scores->count_subn_games($var, 5000) ],
+    $self->stash(sub20 => $self->app->scores->count_subn_ascensions($var, 20000),
+                 sub10 => $self->app->scores->count_subn_ascensions($var, 10000),
+                 sub5  => $self->app->scores->count_subn_ascensions($var, 5000),
                  variant => $var,
                  $self->nh->aux_data(),
-                 result => \@ascensions);
+                 result => $ascensions);
 
     $self->render(template => 'gametime', handler => 'tt2');
 }
@@ -89,9 +84,8 @@ sub gametime {
 sub streaks {
     my $self = shift;
     my $var = $self->stash('var');
-    my $n = 100;
 
-    $self->stash(result => $self->app->scores->lookup_streaks($var, $n),
+    $self->stash(result => $self->app->scores->lookup_streaks($var),
                  variant => $var,
                  $self->nh->aux_data());
     $self->render(template => 'streaks', handler => 'tt2');

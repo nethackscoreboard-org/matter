@@ -7,5 +7,6 @@ use Mojo::File qw(curfile);
 use lib
 curfile->dirname->sibling('lib')->to_string;
 use Mojolicious::Commands;
-
+use Log::Log4perl;
+Log::Log4perl::init('./script/logging.conf');
 Mojolicious::Commands->start_app('NHS')

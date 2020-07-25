@@ -14,6 +14,8 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_DB: ${DATABASE_NAME}
       PGDATA: ${PGDATA}
+    volumes:
+      - db_vol:${PGDATA}:rw
     env_file:
       - ./docker/environment/database.env
     ports:
@@ -41,4 +43,5 @@ services:
       - ./docker/environment/database.env
     ports:
       - '8082:8082'
-
+volumes:
+  db_vol:

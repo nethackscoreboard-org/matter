@@ -1,0 +1,72 @@
+[% IF tabcl; tabcl = tabcl _ ' bordered'; ELSE; tabcl = 'bordered'; END %]
+
+<table[% IF id %] id="[% id %]"[% END %] class="[% tabcl %]">
+
+<thead>
+
+<tr>
+  <th data-sorter="true">&nbsp;</th>
+[%- IF NOT devnull -%]
+  <th>srv</th>
+  <th>var</th>
+  <th>ver</th>
+[%- END -%]
+[%- IF not name -%]
+  <th>name</th>
+[%- END -%]
+  <th data-sorter="true">character</th>
+  <th data-sorter="custkey">points</th>
+  <th data-sorter="true">turns&nbsp;&nbsp;</th>
+  <th data-sorter="custkey">duration</th>
+  <th data-sorter="custkey">dlvl&nbsp;</th>
+  <th data-sorter="custkey">HP</th>
+  <th data-sorter="custkey">time</th>
+  <th colspan="2" data-sorter="true">conducts</th>
+[% IF datetick %]
+  <th class="date"></th>
+[% END %]
+</tr>
+
+</thead>
+
+<tbody>
+
+[% FOREACH row IN result %]
+<tr[% IF row.ascended %] class="win"[% END %]>
+  <td id="asc[% row.n %]" class="numeric">[% row.n %]</td>
+[%- IF NOT devnull -%]
+  <td>[% row.server %]</td>
+  <td>[% row.variant %]</td>
+  <td>[% row.version %]</td>
+[%- END -%]
+[%- IF not name -%]
+  [%- IF devnull; THEN; row.name = row.name_orig; END -%]
+  <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
+[%- END %]
+  [%- IF devnull; THEN; row.gender = row.gender0; row.align = row.align0; END -%]
+  <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
+[% IF row.dump -%]
+  <td class="numeric" data-sortkey="[% row.points %]"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
+[%- ELSE -%]
+  <td class="numeric" data-sortkey="[% row.points %]">[% number(row.points) %]</td>
+[%- END %]
+  <td class="numeric">[% row.turns %]</td>
+  <td class="numeric" data-sortkey="[% row.realtime_raw %]">[% row.realtime %]</td>
+  <td class="numeric" data-sortkey="[%row.maxlvl %]">[% row.deathlev %]/[% row.maxlvl %]</td>
+  <td class="numeric" data-sortkey="[% row.maxhp %]">[% row.hp %]/[% row.maxhp %]</td>
+  <td>[% row.endtime_fmt %]</td>
+  <td class="numeric">[% row.ncond %]</td>
+  <td>[% row.tcond %]</td>
+[% IF datetick %]
+[% IF row.short_date != dt%]
+  <td class="date topdiv">[% row.short_date; SET dt = row.short_date %]</td>
+[% ELSE %]
+  <td class="date"></td>
+[% END %]
+[% END %]
+</tr>
+[%- END %]
+
+</tbody>
+
+</table>
