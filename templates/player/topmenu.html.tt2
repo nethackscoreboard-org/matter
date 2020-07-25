@@ -1,0 +1,66 @@
+[%#===========================================================================
+  Argument to this template:
+
+  mnu     - name of the current menu
+  lvl     - nesting depth (0 or 2 currently)
+  var     - variant
+  devlink - add link to devnull pages
+============================================================================%]
+
+[%- IF lvl == 2; SET path = "../../"; END -%]
+
+<div class="toplinks">
+
+[%- IF devlink -%]
+  <b><a href="devnull/[% devlink %]/">/dev/null/nethack [% devlink %]</a></b> |
+[%- END -%]
+
+[%- IF mnu != "front" -%]
+  [%- IF lvl == 2 -%]
+    <a href="[% path %]">Overview</a> |
+  [%- ELSE -%]
+    <a href="./">Overview</a> |
+  [%- END -%]
+[%- END -%]
+
+[%- IF mnu != "recent" -%]
+  <a href="[% path %]recent.[% var %].html">Recent Games</a> |
+[%- END %]
+
+[%- IF mnu != "ascended" -%]
+  <a href="[% path %]ascended.[% var %].html">Ascended Games</a> |
+[%- END %]
+
+[%- IF mnu != "streaks" -%]
+  <a href="[% path %]streaks.[% var %].html">Streaks</a> |
+[%- END %]
+
+[%- IF mnu != "zscore" -%]
+  <a href="[% path %]zscore.[% var %].html">Z-scores</a> |
+[%- END %]
+
+[%- IF mnu != "conduct" -%]
+  <a href="[% path %]conduct.[% var %].html">Conducts</a> |
+[%- END %]
+
+[%- IF mnu != "lowscore" -%]
+  <a href="[% path %]lowscore.[% var %].html">Low Score</a> |
+[%- END %]
+
+[%- IF mnu != "gametime" -%]
+  <a href="[% path %]gametime.[% var %].html">Low Turncount</a> |
+[%- END %]
+
+[%- IF mnu != "firstasc" -%]
+  [% IF var == "all"; SET var2 = "dnh"; END %]
+  [% IF var == "dnh" || var == "nhf" || var == "dyn"; SET var2 = var; END %]
+  [% IF var2 %]
+  <a href="[% path %]firstasc.[% var2 %].html">First To Ascend</a> |
+  [% END %]
+[%- END %]
+
+[%- IF mnu != "about" -%]
+  <a href="[% path %]about.html">About</a>
+[%- END -%]
+
+</div>

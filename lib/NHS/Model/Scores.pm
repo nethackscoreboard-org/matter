@@ -3,6 +3,7 @@ use Mojo::Pg;
 use Mojo::JSON qw(from_json);
 use File::Slurp;
 use NHdb::Utils qw(nhdb_version url_substitute format_duration);
+use Log::Log4perl qw(get_logger);
 
 #============================================================================
 # Pluralize noun
@@ -41,6 +42,43 @@ sub fmt_age
    }
 
    return join(' ', @result);
+}
+
+#============================================================================
+# Load SQL query into array of hashref with some additional processing.
+#============================================================================
+
+sub sql_load
+{
+  my (
+        $db,                # 0. db pointer
+        $query,             # 1. database query
+        $cnt_start,         # 2. counter start (opt)
+        $cnt_incr,          # 3. counter increment (opt)
+        $preproc,           # 4. subroutine to pre-process row
+        @args               # R. arguments to db query
+    )      = @_;            
+
+  my @result;
+  my $logger = get_logger('NHS');
+  if (@args) {
+    $logger->debug("$query -- (" . join (', ', @args) . ")");
+  } else {
+    $logger->debug("$query");
+  }
+  my $r = $db->query($query, @args);
+  if(!$r->rows) { $logger->debug("query failed: ".$r->sth->errstr()); return undef }
+  while(my $row = $r->hash) {
+    &$preproc($row) if $preproc;
+    if(defined $cnt_start) {
+      $row->{'n'} = $cnt_start;
+      $cnt_start += $cnt_incr;
+    }
+    push(@result, $row);
+  }
+  my $n = scalar (@result);
+  $logger->debug("returned $n rows, with keys ". join ', ', keys %{$result[0]});
+  return \@result;
 }
 
 #============================================================================
@@ -242,39 +280,6 @@ sub new
     return $self;
 }
 
-#sub recent_asc_exists
-#{
-#    my ($self, $var) = @_;
-#
-#    my $r = $self->db->query('select rowid from v_ascended_recent where variant = ? limit 1', $var);
-#    if (!$r) {
-#        # do something about error
-#    }
-#    if ($r > 0) {
-#        return $r->array->[0]; # return rowid
-#    } else {
-#        return 0;
-#    }
-#}
-#
-#sub get_recent_asc_by_row
-#{
-#    my ($self, $rowid) = @_;
-#
-#    my $r = $self->db->query('select * from v_ascended_recent where rowid = ? limit 1', $rowid);
-#    if (!$r) {
-#        # do something about error
-#    }
-#    my $row = $r->hash;
-#    row_fix($self->app->nh, $row);
-#    $row->{'age'} = fmt_age(
-#        $row->{'age_years'},
-#        $row->{'age_months'},
-#        $row->{'age_days'},
-#        $row->{'age_hours'});
-#    return $row;
-#}
-
 # this is our main function for fetching game rows from the DB
 # various wrappers are provided for simplicity, but they all
 # are just nice human-readable things that call the same function
@@ -286,7 +291,9 @@ sub lookup_games
         $name,      # player name or omitted for all players
         $n,         # limit number of entries (0 = unlimited)
         $asc,       # bool: true for ascensions, otherwise normal games
-        $recent     # bool: if true, use v_ascended/games_recent view
+        $recent,    # bool: if true, use v_ascended/games_recent view
+        $counter,
+        $increment
     ) = @_;
     my (@conds, @args, $view, @games);
 
@@ -299,7 +306,7 @@ sub lookup_games
         $view .= '_recent';
     }
 
-    my $q_string = "select * from $view";
+    my $query = "select * from $view";
 
     # variant filter or no?
     if ($var ne 'all') {
@@ -314,33 +321,47 @@ sub lookup_games
     }
 
     if (@conds > 0) {
-        $q_string .= ' where ' . join(' and ', @conds);
+        $query .= ' where ' . join(' and ', @conds);
     }
 
     # limit? set absolute max 500, 'nh' and 'all' are throttled to 100 elsewhere
     if ($n < 1) {
         $n = 500;
     }
-    $q_string .= sprintf(' limit %d', $n);
+    $query .= sprintf(' limit %d', $n);
     
     # get results
     # need to add error handling and logging
-    $r = $self->db->query($q_string, @args);
-    my @games;
+    my $r = $self->db->query($query, @args);
+    if (!$counter) {
+        $counter = 1;
+    }
+    if (!$increment) {
+        $increment = 1;
+    }
     while (my $row = $r->hash) {
+        $row->{n} = $counter;
+        $counter += $increment;
         row_fix($self->app->nh, $row);
         push @games, $row;
     }
-    return @games;
+    return \@games;
 }
 
+# Lookup first game
+sub lookup_first_game
+{
+    my ($self, $var, $name) = @_;
+    my $rows = $self->lookup_games($var, $name, 1, 0, 0);
+    return $rows->[0];
+}
 
 # Grabs the DB row corresonding to the most recent ascension for a given variant
 sub lookup_most_recent_ascension
 {
     my ($self, $var) = @_;
-    my @rows = $self->lookup_games($var, undef, 1, 1, 1);
-    my $row = $rows[0];
+    my $rows = $self->lookup_games($var, undef, 1, 1, 1);
+    my $row = $rows->[0];
     $row->{'age'} = fmt_age(
         $row->{'age_years'},
         $row->{'age_months'},
@@ -361,6 +382,13 @@ sub lookup_recent_games
 {
     my ($self, $var, $n) = @_;
     return $self->lookup_games($var, undef, $n, 0, 1);
+}
+
+# Grab recent games from player
+sub lookup_recent_player_games
+{
+    my ($self, $var, $name, $n, $count, $incr) = @_;
+    return $self->lookup_games($var, $name, $n, 0, 1, $count, $incr);
 }
 
 # fetch the most recent ascension in each variant
@@ -453,9 +481,10 @@ sub sql_load_streaks
 
   #--- other variables
 
+  my $logger = get_logger('NHS');
   my @streaks_ord;   # ordered list of streaks_i
   my %streaks;       # streaks_i-keyed hash with all info
-  my ($query, $sth, $r, @conds, @args);
+  my ($query, $r, @conds, @args);
 
   #---------------------------------------------------------------------------
   #--- get ordered list of streaks with turncounts ---------------------------
@@ -506,9 +535,12 @@ sub sql_load_streaks
 
   #--- execute query
 
+  if (@args) {
+    $logger->debug("$query -- " . join(', ', @args));
+  } else {
+    $logger->debug($query);
+  }
   $r = $self->db->query($query, @args);
-  if(!$r) { return $r->sth->errstr(); }
-
   while(my $row = $r->hash) {
     push(@streaks_ord, $row->{'streaks_i'});
     $streaks{$row->{'streaks_i'}} = {
@@ -518,6 +550,8 @@ sub sql_load_streaks
       'games'     => []
     };
   }
+  my $n = scalar (@streaks_ord);
+  $logger->debug("got $n rows");
 
   #-------------------------------------------------------------------------
   #--- get list of streak games --------------------------------------------
@@ -578,9 +612,12 @@ sub sql_load_streaks
 
   #--- execute query
 
+  if (@args) {
+    $logger->debug("$query -- " . join(', ', @args));
+  } else {
+    $logger->debug($query);
+  }
   $r = $self->db->query($query, @args);
-  if(!$r) { return $r->$sth->errstr(); }
-
   while(my $row = $r->hash) {
 
     if(exists($streaks{$row->{'streaks_i'}})) {
@@ -615,7 +652,7 @@ sub lookup_current_streaks
     my ($streaks_ord, $streaks) = $self->sql_load_streaks('all', undef, undef, 2, 1);
     if (!ref($streaks_ord)) {
         # do something with error
-        die $streaks_ord;
+        return undef;
     }
     $streaks_proc_1 = process_streaks($streaks_ord, $streaks); 
 
@@ -640,19 +677,29 @@ sub lookup_current_streaks
 # for the main streaks page, get up to $lim streaks, for a given variant
 sub lookup_streaks
 {
-    my ($self, $var, undef, $n) = @_;
+    my ($self, $var, $name, $lim) = @_;
 
-    my ($streaks_ord, $streaks) = $self->sql_load_streaks($var, undef, $lim, 2);
-    return $streaks_ord if !ref($streaks_ord);
+    my ($streaks_ord, $streaks) = $self->sql_load_streaks($var, $name, $lim, 2, 1);
+    if (!ref($streaks_ord)) {
+        return undef;
+    }
 
     return process_streaks($streaks_ord, $streaks);
 }
 
+# wrapper - if you call this one you must specify
+# $self, $var, $name and $lim
+sub lookup_streaks_lim
+{
+    return lookup_streaks(@_);
+}
+
 # for the player streaks page, get all streaks, for all or a given variant
+# no limit in this case
 sub lookup_player_streaks
 {
-    my ($self, $var, $name, $n) = @_;
-    return $self->lookup_streaks($var, $name, $n, 2);
+    my ($self, $var, $name) = @_;
+    return $self->lookup_streaks($var, $name);
 }
 
 # fetch the fastest wins
@@ -661,13 +708,15 @@ sub lookup_fastest_gametime
     my ($self, $var, $lim) = @_;
 
     my $r;
+    my $logger = get_logger('NHS');
     if ($var ne 'all') {
-        my $q_string = sprintf('select * from v_ascended where variant = ? and turns > 0 order by turns asc limit %d', $lim);
-        $r = $self->db->query($q_string, $var);
+        my $query = sprintf('select * from v_ascended where variant = ? and turns > 0 order by turns asc limit %d', $lim);
+        $r = $self->db->query($query, $var);
     } else {
-        my $q_string = sprintf('select * from v_ascended where turns > 0 order by turns asc limit %d', $lim);
-        $r = $self->db->query($q_string);
+        my $query = sprintf('select * from v_ascended where turns > 0 order by turns asc limit %d', $lim);
+        $r = $self->db->query($query);
     }
+    if (!$r->rows) { $logger->debug("lookup failed: ".$r->sth->errstr()); }
 
     my @games;
     my $i = 1;
@@ -677,7 +726,7 @@ sub lookup_fastest_gametime
         $i += 1;
         push @games, $row;
     }
-    return @games;
+    return \@games;
 }
 
 # fetch the fastest wins for a player
@@ -687,11 +736,11 @@ sub lookup_player_gametime
 
     my $r;
     if ($var ne 'all') {
-        my $q_string = sprintf('select * from v_ascended where variant = ? and turns > 0 and name = ? order by turns asc');
-        $r = $self->db->query($q_string, $var, $player);
+        my $query = sprintf('select * from v_ascended where variant = ? and turns > 0 and name = ? order by turns asc');
+        $r = $self->db->query($query, $var, $player);
     } else {
-        my $q_string = sprintf('select * from v_ascended where turns > 0 and name = ? order by turns asc');
-        $r = $self->db->query($q_string, $player);
+        my $query = sprintf('select * from v_ascended where turns > 0 and name = ? order by turns asc');
+        $r = $self->db->query($query, $player);
     }
 
     my @games;
@@ -702,38 +751,165 @@ sub lookup_player_gametime
         $i += 1;
         push @games, $row;
     }
-    return @games;
+    return \@games;
+}
+
+# lookup linked accounts
+sub lookup_linked_accounts
+{
+    my ($self, $name) = @_;
+    my $query = 'SELECT * FROM translations WHERE name_to = ?';
+    return sql_load($self->db, $query, 1, 1, undef, $name);
 }
 
 # count subn turncount wins
-sub count_subn_games
+sub count_subn_ascensions
 {
     my ($self, $var, $lim) = @_;
     my @cond = ('turns > 0');
-    my @arg = ($lim);
+    my @args = ($lim);
     push (@cond, 'turns < ?');
 
     if ($var ne 'all') {
         push(@cond, 'variant = ?');
-        push(@arg, $var);
+        push(@args, $var);
     }
 
-    my $q_string = sprintf(
+    my $query = sprintf(
         'select name, count(*), sum(turns), round(avg(turns)) as avg ' .
         'from v_ascended ' .
         'where %s group by name order by count desc, sum asc',
         join(' and ', @cond)
     );
 
-    my $r = $self->db->query($q_string, @arg);
-    my @rows;
-    my $i = 1;
-    while (my $row = $r->hash) {
-        $row->{n} = $i;
-        $i += 1;
-        push @rows, $row;
+    return sql_load($self->db, $query, 1, 1, undef, @args);
+}
+
+# count number of games by some parameters
+sub _count_games
+{
+    my ($db,            # database obj
+        $var,           # variant
+        $name,          # player name
+        $scum,          # count scums bool
+        $good) = @_;    # count legit (non-scum) games bool
+
+    my $logger = get_logger('NHS');
+    my @args = ($name);
+    my $query = 'SELECT count(*) FROM games';
+    my @conds = ('name = ?');
+    if (!$scum && !$good) {
+        return 0;
+    } elsif ($scum && !$good) {
+        push @conds, 'scummed IS TRUE';
+    } elsif (!$scum && $good) {
+        push @conds, 'scummed IS FALSE';
     }
-    return @rows;
+
+    if ($var ne 'all') {
+        # not actually sure what this bit does, but it's in the original code
+        # *when* a variant is specified
+        $query .= ' LEFT JOIN logfiles USING (logfiles_i)';
+        push @conds, 'variant = ?';
+        push @args, $var;
+    }
+    $query .= ' WHERE ' . join ' AND ', @conds;
+    print $query . "\n";
+    my $count = sql_load($db, $query, undef, undef, undef, @args);
+    if (!ref $count) {
+        $logger->warn ("sql_load failed");
+        return undef;
+    } else {
+        return $count->[0]{count};
+    }
+}
+
+# count number of games (not including startscumming)
+sub count_games
+{
+    my ($self, $var, $name) = @_;
+    return _count_games($self->db, $var, $name, 0, 1);
+}
+
+# count number of scummed games
+sub count_scums
+{
+    my ($self, $var, $name) = @_;
+    return _count_games($self->db, $var, $name, 1, 0);
+}
+
+# count all games
+sub count_all_games
+{
+    my ($self, $var, $name) = @_;
+    return _count_games($self->db, $var, $name, 1, 1);
+}
+
+# sum play duration
+sub sum_play_duration
+{
+    my ($self, $var, $name) = @_;
+    my @args = ($name);
+    my $query = 'SELECT sum(realtime) FROM v_games_all WHERE name = ?';
+    if ($variant ne 'all') {
+        $query .= ' AND variant = ?';
+        push @args, $var;
+    }
+    # original code only returns the query if $var is not one of:
+    # nh4, ace, nhf, dyn or fh
+    my $result = sql_load($self->db, $query, undef, undef, undef, @args);
+    return $reuslt->[0]{sum} ? $_ : undef;
+}
+
+# enumerate games
+sub enumerate_by
+{
+    my ($db,        # database obj 
+        $var,       # which variant
+        $name,      # player name
+        $key,       # 'role', 'race' or 'align'
+        $asc) = @_; # bool ascended
+
+    unless ($key eq 'role' || $key eq 'race' || $key eq 'align') {
+        return undef;
+    }
+
+    my $query = "SELECT lower($key) AS $key, count(*) FROM games";
+    $query .= ' LEFT JOIN logfiles USING (logfiles_i)';
+    my @conds;
+    if ($asc) {
+        push @conds, 'ascended IS TRUE';
+    } else {
+        push @conds, 'scummed IS FALSE';
+    }
+    push @conds, 'name = ?';
+    my @args = ($name);
+    if ($var ne 'all') {
+        push @conds, 'variant = ?';
+        push @args, $var;
+    }
+    $query .= ' WHERE ' . join ' AND ', @conds;
+    $query .= " GROUP BY $key";
+    print "$query\n";
+    my $result = sql_load($db, $query, undef, undef, undef, @args);
+    if (!ref $result) { return undef; }
+    my %roles;
+    for my $row (@$result) {
+        $roles{$row->{$key}} = $row->{count};
+    }
+    return \%roles;
+}
+
+sub enumerate_games_by
+{
+    my ($self, $var, $name, $key) = @_;
+    return enumerate_by($self->db, $var, $name, $key, 0);
+}
+
+sub enumerate_ascensions_by
+{
+    my ($self, $var, $name, $key) = @_;
+    return enumerate_by($self->db, $var, $name, $key, 1);
 }
 
 #============================================================================
@@ -743,11 +919,11 @@ sub count_subn_games
 
 sub compute_zscore
 {
-  my $self = shift;
+  my ($self, $name) = @_;
   #--- logging
 
-  #my $logger = get_logger('Stats::zscore');
-  #$logger->debug('zscore() entry');
+  my $logger = get_logger('NHS');
+  $logger->debug('zscore() entry');
 
   #--- zscore structure instantiation
 
@@ -757,7 +933,6 @@ sub compute_zscore
   #--- just return current state if already processed
 
   if($zscore_loaded) {
-      #$logger->debug('zscore() finish (cached)');
     return \%zscore;
   }
 
@@ -771,32 +946,29 @@ sub compute_zscore
   my $zord = $zscore{'ord'} = {};
 
   #--- retrieve the data from database
-
-      #$logger->error('zscore() failed, ', $ascs);
-  
-  #$logger->debug(sprintf('zscore() data loaded from db, %d rows', scalar(@$ascs)));
-
   #--- get the counts
   # this creates hash with counts of (player, variant, role)
   # triples
 
   my %counts;
   my %variants;
-  my $r = $self->db->query('select * from v_ascended');
-  my $ascs = [];
-  while (my $row = $r->hash) {
-      push (@$ascs, $row);
+  my $query = 'select * from v_ascended';
+  my $ascs;
+  #if ($name) {
+  #    $query .= ' WHERE name = ?';
+  #    $ascs = sql_load($self->db, $query, undef, undef, undef, $name);
+  #} else {
+      $ascs = sql_load($self->db, $query, undef, undef, undef);
+  #}
+  if(!ref($ascs)) {
+    $logger->error('zscore() failed, ', $ascs);
+    return $ascs;
   }
+  $logger->debug(sprintf('zscore() data loaded from db, %d rows', scalar(@$ascs)));
   for my $row (@$ascs) {
     $counts{$row->{'name'}}{$row->{'variant'}}{lc($row->{'role'})}++;
     $variants{$row->{'variant'}} = 0;
   }
-  #$logger->debug(
-  #  'zscore() counts completed, variants: ', join(',', (keys %variants))
-  #);
-  #$logger->debug(
-  #  sprintf('zscore() players found: %d', scalar(keys %counts))
-  #);
 
   #--- get the z-numbers
   # this calculates z-scores from the counts and stores them
@@ -864,9 +1036,6 @@ sub compute_zscore
   }
 
   #--- finish
-
-  #$logger->debug('zscore() finish (uncached)');
-  $zscore_loaded = 1;
   return \%zscore;
 }
 

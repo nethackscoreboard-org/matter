@@ -1,0 +1,8 @@
+</div>
+</div>
+
+<div class="updatetime">[% cur_time %]</div>
+
+</body>
+
+</html>

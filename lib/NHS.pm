@@ -56,6 +56,8 @@ sub startup {
 	$r->any('/players/<:name>/streaks')->to('player#streaks', var => 'all');
 	$r->any('/players/<:name>/<page:recent_page>.<var:variants>')->to('player#recent');
 	$r->any('/players/<:name>/<page:recent_page>')->to('player#recent', var => 'all');
+	$r->any('/players/<:name>/gametime.<var:variants>')->to('player#gametime');
+	$r->any('/players/<:name>/gametime')->to('player#gametime', var => 'all');
 }
 
 1;
