@@ -4,14 +4,16 @@ if [ -e /init/database.env ]; then
     export `cat /init/database.env`
 fi
 
-cat <<- EOF > cfg/auth.json
+mkdir /nhs/cfg
+
+cat <<- EOF > /nhs/cfg/auth.json
   { 
     "$FEEDER":"$FEEDER_PW",
     "$STATS":"$STATS_PW" 
   }
 EOF
 
-cat <<- EOF > cfg/nhdb_def.json
+cat <<- EOF > /nhs/cfg/nhdb_def.json
 {
   "http_root" : "/nhs/public",
   "db" : {
@@ -48,7 +50,7 @@ cat <<- EOF > cfg/nhdb_def.json
 }
 EOF
 
-cat <<- EOF > cfg/nethackstats.json
+cat <<- EOF > /nhs/cfg/nethackstats.json
 {
     "dbuser" : "$STATS",
     "dbname" : "$DATABASE_NAME",
