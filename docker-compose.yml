@@ -18,15 +18,27 @@ services:
       - ./docker/environment/database.env
     ports:
       - 5432:5432
-  perl:
-    container_name: nhs_perl
-    depends_on:
-      - database
+  base:
     build:
       context: ./
-      dockerfile: ./docker/perl/Dockerfile
-    command: ['morbo', 'script/net_hack_stats']
+      dockerfile: ./docker/perl/Dockerfile.base
+  cpan:
+    build:
+      context: ./
+      dockerfile: ./docker/perl/Dockerfile.cpan
+  mojo:
+    container_name: nhs_mojo
+    volumes:
+      - ./public:/nhs/public:ro
+      - ./logs:/nhs/logs:rw
+      - ./templates:/nhs/templates:ro
+      - ./script:/nhs/script:ro
+      - ./lib:/nhs/lib:ro
+    build:
+      context: ./
+      dockerfile: ./docker/perl/Dockerfile.mojo
     env_file:
       - ./docker/environment/database.env
     ports:
       - '8082:8082'
+
