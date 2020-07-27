@@ -14,17 +14,17 @@
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="lowscore" lvl=0 var=variant %]
+[% INCLUDE topmenu.html.tt2 mnu="lowscore" lvl=0 var=variant %]
 
 <div class="page_content">
 <h1>Lowest Scoring Games</h1>
 
-[% INCLUDE varmenu.tt page="lowscore" %]
+[% INCLUDE varmenu.html.tt2 page="lowscore" %]
 
 [% IF result.size %]
-[% INCLUDE tab_ascended.tt %]
+[% INCLUDE tab_ascended.html.tt2 %]
 [% ELSE %]
 <p>No ascensions for this variant.</p>
 [% END %]
 
-[% INCLUDE footer.tt %]
+[% INCLUDE footer.html.tt2 %]

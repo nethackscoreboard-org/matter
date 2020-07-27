@@ -15,7 +15,7 @@
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="front" lvl=0 var="all" %]
+[% INCLUDE topmenu.html.tt2 mnu="front" lvl=0 var="all" %]
 
 <div class="page_content">
 
@@ -69,7 +69,7 @@
 <h3>Recent Ascensions</h3>
 
 [% SET result = ascensions_recent %]
-[% INCLUDE tab_ascended.tt variant='all' %]
+[% INCLUDE tab_ascended.html.tt2 variant='all' %]
 
 <h3>Active Streaks</h3>
 

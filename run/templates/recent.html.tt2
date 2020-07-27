@@ -19,14 +19,14 @@
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="recent" lvl=0 var=variant %]
+[% INCLUDE topmenu.html.tt2 mnu="recent" lvl=0 var=variant %]
 
 <div class="page_content">
 <h1>Recent Games</h1>
 
-[% INCLUDE varmenu.tt page="recent" %]
+[% INCLUDE varmenu.html.tt2 page="recent" %]
 
 [% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
-[% INCLUDE tab_recent.tt datetick=dt_ena %]
+[% INCLUDE tab_recent.html.tt2 datetick=dt_ena %]
 
-[% INCLUDE footer.tt %]
+[% INCLUDE footer.html.tt2 %]

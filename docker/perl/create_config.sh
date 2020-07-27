@@ -1,4 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env sh
+
+if [ -e /init/database.env ]; then
+    export `cat /init/database.env`
+fi
 
 cat <<- EOF > cfg/auth.json
   { 
@@ -39,7 +43,17 @@ cat <<- EOF > cfg/nhdb_def.json
     "urlpath" : null
   },  
   "firsttoascend" : [
-    "dnh", "nhf", "dyn"
-  ]
+    "gh", "dnh", "nhf", "dyn", "fh", "sh", "nh4", "unh", "xnh", "eh"
+  ],
+}
+EOF
+
+cat <<- EOF > cfg/nethackstats.json
+{
+    "dbuser" : "$STATS",
+    "dbname" : "$DATABASE_NAME",
+    "dbhost" : "database",
+    "dbpass" : "$STATS_PW",
+    "dbport" : "$DATABASE_PORT"
 }
 EOF

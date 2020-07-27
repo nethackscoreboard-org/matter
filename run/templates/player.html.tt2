@@ -23,13 +23,13 @@
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="player" lvl=2 var=variant %]
+[% INCLUDE topmenu.html.tt2 mnu="player" lvl=2 var=variant %]
 
 <div class="page_content">
 
 <h1>[% name %]</h1>
 
-[% INCLUDE varmenu.tt page=name %]
+[% INCLUDE varmenu.html.tt2 page=name %]
 
 <hr>
 
@@ -323,14 +323,14 @@
 
 <h3>Recent Games</h3>
 
-[% INCLUDE tab_recent.tt result=result_recent %]
+[% INCLUDE tab_recent.html.tt2 result=result_recent %]
 
 
 [% IF result_ascended.size %]
 
 <h3>Ascended Games</h3>
 
-[% INCLUDE tab_ascended.tt result=result_ascended id='ascended' %]
+[% INCLUDE tab_ascended.html.tt2 result=result_ascended id='ascended' %]
 
 
 
@@ -510,4 +510,4 @@
 
 [% END %]
 
-[% INCLUDE footer.tt %]
+[% INCLUDE footer.html.tt2 %]

@@ -14,7 +14,7 @@
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="firstasc" lvl=0 var=variant %]
+[% INCLUDE topmenu.html.tt2 mnu="firstasc" lvl=0 var=variant %]
 
 <div class="page_content">
 
@@ -89,7 +89,7 @@
 
 
 <h1>First Combo Ascensions</h1>
-[% INCLUDE varmenu.tt page="firstasc" %]
+[% INCLUDE varmenu.html.tt2 page="firstasc" %]
 
 <hr>
 
@@ -119,7 +119,7 @@ END
 
 <h3>First Combo Ascensions List</h3>
 
-[% INCLUDE tab_ascended.tt %]
+[% INCLUDE tab_ascended.html.tt2 %]
 
 
 <h3>Combos By Players</h3>
@@ -161,4 +161,4 @@ END
 
 <p>[% unascend.size %] unascended combo[% IF unascended.size != 0 %]s[% END %]</p>
 
-[% INCLUDE footer.tt %]
+[% INCLUDE footer.html.tt2 %]

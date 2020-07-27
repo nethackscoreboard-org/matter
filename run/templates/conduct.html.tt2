@@ -14,17 +14,17 @@
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="conduct" lvl=0 var=variant %]
+[% INCLUDE topmenu.html.tt2 mnu="conduct" lvl=0 var=variant %]
 
 <div class="page_content">
 <h1>Best Conduct Games</h1>
 
-[% INCLUDE varmenu.tt page="conduct" %]
+[% INCLUDE varmenu.html.tt2 page="conduct" %]
 
 [% IF result.size %]
-[% INCLUDE tab_ascended.tt %]
+[% INCLUDE tab_ascended.html.tt2 %]
 [% ELSE %]
 <p>No ascensions for this variant.</p>
 [% END %]
 
-[% INCLUDE footer.tt %]
+[% INCLUDE footer.html.tt2 %]

@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM alpine:latest as base-system
 RUN apk update && apk add ca-certificates wget && update-ca-certificates
 RUN apk add curl
 RUN apk add build-base
@@ -6,29 +6,24 @@ RUN apk add make
 RUN apk add perl-dev
 RUN apk add perl-app-cpanminus
 RUN apk add postgresql-dev
-RUN mkdir nhs
+RUN apk add openssh-client
+RUN apk add git
 
+FROM base-system as init-cpan-env
+RUN mkdir /init
+COPY ./docker/perl/* /init/
+COPY ./cpanfile /init/
+RUN cpanm --installdeps /init/ --notest
+
+FROM init-cpan-env as git-setup
+RUN /init/git_setup.sh
+RUN git clone docker-host:nhs-fork /nhs
 WORKDIR /nhs
-COPY ./cpanfile .
-COPY ./lib ./lib
-COPY ./templates ./templates
-RUN touch ./templates/about_news.tt
-COPY ./logs ./logs
-COPY ./cfg ./cfg
-COPY nhdb-feeder.pl .
-COPY nhdb-stats.pl .
 
-RUN mkdir public
-COPY ./css public/
+FROM git-setup as config-stage
+COPY ./docker/environment/database.env /init/
+RUN ./docker/perl/create_config.sh
+RUN cp /init/feeder_cron.sh /etc/periodic/15min/ && rm -rf /init
 
-RUN cpanm --installdeps . --notest
-RUN cpanm Mojolicious --notest
 
-COPY /docker/perl/server.pl .
-
-COPY ./docker/perl/create_config.sh .
-RUN chmod a+x create_config.sh
-COPY ./docker/perl/entrypoint.sh .
-RUN chmod a+x entrypoint.sh
-
-ENTRYPOINT ["./entrypoint.sh"]
+ENTRYPOINT ["./docker/perl/entrypoint.sh"]

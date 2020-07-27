@@ -15,7 +15,7 @@
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="about" lvl=0 var="all" %]
+[% INCLUDE topmenu.html.tt2 mnu="about" lvl=0 var="all" %]
 
 <div class="page_content">
 <h1>About NetHack Scoreboard</h1>
@@ -31,7 +31,7 @@ also have their personal statistics put together into one summary view.
 
 <hr>
 
-[% INSERT about_news.tt %]
+[% INSERT about_news.html.tt2 %]
 
 <hr>
 
@@ -97,4 +97,4 @@ also have their personal statistics put together into one summary view.
 </span>
 </p>
 
-[% INCLUDE footer.tt %]
+[% INCLUDE footer.html.tt2 %]

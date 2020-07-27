@@ -10,3 +10,7 @@ requires 'Ref::Util';
 requires 'Log::Dispatch::Screen';
 requires 'DBD::Pg';
 requires 'Carp::Always';
+requires 'Mojolicious';
+requires 'Mojolicious::Plugin::TemplateToolkit';
+requires 'Mojo::Pg';
+requires 'File::Slurp';
