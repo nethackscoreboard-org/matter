@@ -14,12 +14,12 @@
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="gametime" lvl=0 var=variant %]
+[% INCLUDE topmenu.html.tt2 mnu="gametime" lvl=0 var=variant %]
 
 <div class="page_content">
 <h1>Lowest Turncount Games</h1>
 
-[% INCLUDE varmenu.tt page="gametime" %]
+[% INCLUDE varmenu.html.tt2 page="gametime" %]
 
 [% IF result.size %]
 
@@ -28,7 +28,7 @@
 <hr>
 
 <h3>100 Lowest Turncount Games</h3>
-[% INCLUDE tab_ascended.tt %]
+[% INCLUDE tab_ascended.html.tt2 %]
 
 [%# ------ %]
 
@@ -105,4 +105,4 @@
 <p>No ascensions for this variant.</p>
 [% END %]
 
-[% INCLUDE footer.tt %]
+[% INCLUDE footer.html.tt2 %]

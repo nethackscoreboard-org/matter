@@ -2,11 +2,42 @@
 
 After pulling the repository, follow these steps to make the NHS run in a Docker environment. It is assumed that you already run [Docker Desktop](https://www.docker.com/products/docker-desktop) or something comparable for your OS.
 
-0. Make sure logs/ is empty - otherwise 1. can fail.
-1. Create the images and run the containers: `docker-compose up -d`. 
-2. Enter the 'nhs_perl'-container: `docker exec -it nhs_perl /bin/sh`. 
-3. The perl scripts and enviroment is in the '/nhs' folder: `cd /nhs`.
-4. Create the config files for the perl scripts: `./create_config.sh`
-5. Run the feeder script. Pulling large xlogfiles from e.g. NAO takes a lot of time, so i recommend to only pull from hdf for now: `perl ./nhdb-feeder.pl --server=hdf`
-6. Run the stats script, which generates the HTML files. The generated files are reflected in the 'html/' folder on the host. `perl ./nhdb-stats.pl` 
-7. Call the generated pages from the browser from the url `localhost:8082/index.html`.
+Note: All commands should be run from the top-level repo dir.
+Security Note: the ssh keys for the user nhs-git are published on
+a publically available repository! This is OK for my setup, as my
+sshd is not exposed to connections from the wild.
+An alternative approach would be to include an ssh-keygen command
+here in the setup instructions, along with instructions for copying
+the key somewhere the scripts can access it, but with a .gitignore
+entry added.
+
+Note also the file .env - this supplies environment variables to
+docker-compose.yml e.g. DATABASE_USER and DATABASE_PASSWORD,
+these are used to set POSTGRES_USER etc.
+
+ -- Initial Setup --
+1. Create a user e.g. nhs-git and copy docker/perl/ssh-key.pub to
+    /home/nhs-git/.ssh/authorized_keys, have this user belong to a
+    particular group e.g. nhs-dev, which you also need to create.
+    # groupadd nhs-dev
+    # useradd -m -G nhs-dev nhs-git
+    # usermod -aG nhs-dev myuser
+2. Ensure this user has read access to the repo and create a symbolic
+    link in their home. I have my repository at /devel/nhs-fork, replace
+    this with the location of your repo. The repo directory and its parents
+    must all be executable to the user nhs-git for this to work.
+    # chmod g+r -R .
+    # ln -s /devel/nhs-fork /home/nhs-git/
+3. Create the images and run the containers. If you are in docker group,
+    sudo is not needed.
+    $ docker-compose up -d
+4. Enter the nhs_perl container.
+    $ docker exec -it nhs_perl /bin/sh
+5. Call the generated pages from the browser from the url `localhost:8082/index.html`.
+
+ -- Development Workflow --
+1. Make and commit changes to local repository.
+2. Inside container nhs_perl:
+    /nhs # git pull
+    morbo will automatically reload when it detects changes to scripts.
+3. Test pages with browser on host at http://localhost:8082/

@@ -1,0 +1,133 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="default.css" />
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>NetHack Scoreboard</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.html.tt2 mnu="front" lvl=0 var="all" %]
+
+<div class="page_content">
+
+<h1>NetHack Scoreboard</h1>
+
+<hr>
+
+<h3>Last Ascension In Each Variant</h3>
+
+<table class="bordered">
+
+<tr>
+  <th>variant</th>
+  <th>srv</th>
+  <th>name</th>
+  <th>character</th>
+  <th>points</th>
+  <th>turns&nbsp;&nbsp;</th>
+  <th>duration</th>
+  <th>dlvl&nbsp;</th>
+  <th>HP</th>
+  <th>time</th>
+  <th>age</th>
+</tr>
+
+[% FOREACH var IN variants %]
+[% NEXT IF !last_ascensions.item(var) %]
+[% row = last_ascensions.item(var) %]
+<tr>
+<th><a href="ascended.[% var %].html">[% vardef.item(var) %]</a></th>
+<td>[% row.server %]</td>
+<td><a href="[% row.plrpage %]">[% row.name %]</a></td>
+<td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
+[% IF row.dump -%]
+<td class="numeric" data-sortkey="[% row.points %]"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
+[%- ELSE -%]
+<td class="numeric" data-sortkey="[% row.points %]">[% number(row.points) %]</td>
+[%- END %]
+<td class="numeric">[% row.turns %]</td>
+<td class="numeric" data-sortkey="[% row.realtime_raw %]">[% row.realtime %]</td>
+<td class="numeric" data-sortkey="[%row.maxlvl %]">[% row.deathlev %]/[% row.maxlvl %]</td>
+<td class="numeric" data-sortkey="[% row.maxhp %]">[% row.hp %]/[% row.maxhp %]</td>
+<td>[% row.endtime_fmt %]</td>
+<td>[% row.age %]</td>
+</tr>
+[% END %]
+
+</table>
+
+
+<h3>Recent Ascensions</h3>
+
+[% SET result = ascensions_recent %]
+[% INCLUDE tab_ascended.html.tt2 variant='all' %]
+
+<h3>Active Streaks</h3>
+
+<table class="bordered">
+
+<tr>
+<th></th>
+<th>wins</th>
+<th>srv</th>
+<th>var</th>
+<th>ver</th>
+<th>name</th>
+<th>turns</th>
+<th>start</th>
+<th>end</th>
+<th>games</th>
+</tr>
+
+[% FOREACH row IN streaks %]
+[% IF row.wins > 1 %]
+<tr>
+<td class="numeric">[% row.n %]</td>
+<td class="numeric">[% row.wins %]</td>
+<td>[% row.server %]</td>
+<td>[% row.variant %]</td>
+<td>[% row.version %]</td>
+<td><a href="[% row.plrpage %]">[% row.name %]</a></td>
+<td class="numeric">[% number(row.turns) %]</td>
+[% IF row.start_dump %]
+<td><a href="[% row.start_dump %]">[% row.start %]</a></td>
+[% ELSE %]
+<td>[% row.start %]</td>
+[% END %]
+
+[% IF row.end_dump %]
+<td><a href="[% row.end_dump %]">[% row.end %]</a></td>
+[% ELSE %]
+<td>[% row.end %]</td>
+[% END %]
+
+<td>
+[% FOREACH game IN row.glist %]
+<span class="combono">[% IF game.dump %]<a href="[% game.dump %]">[% END %][% game.n %][% IF game.dump %]</a>[% END %]</span><span class="combo">[% game.role %]-[% game.race %]-[% game.gender %]-[% game.align %]</span>
+[% END %]
+</td>
+</tr>
+[% END %]
+[% END %]
+
+</table>
+<span class="notice">Only streaks active in last 90 days are shown</span>
+
+
+</div>
+</div>
+
+<div class="updatetime">[% cur_time %]</div>
+
+</body>
+
+</html>
