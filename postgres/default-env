@@ -1,0 +1,8 @@
+DATABASE_USER=nhdb
+DATABASE_NAME=nhdb
+POSTGRES_USER=nhdb
+POSTGRES_DB=nhdb
+FEEDER=nhdbfeeder
+STATS=nhdbstats
+PGDATA=/var/lib/postgresql/data
+POSTGRES_HOST_AUTH_METHOD=password

@@ -21,7 +21,6 @@
 
   	"nhdbstats" : {
 	    "dbname" : "nhdb",
-        "dbhost" : "localhost",
 	    "dbuser" : "nhdbstats"
     }
 
@@ -58,14 +57,14 @@
   #--- path to local xlogfile copies
 
   "logs" : {
-    "localpath" : "logs",
+    "localpath" : "/var/log/xlogs",
     "urlpath" : null
   },
 
   #--- variants to include in the First To Ascend page
   
   "firsttoascend" : [
-    "gh", "dnh", "nhf", "dyn", "fh", "sh", "nh4", "unh", "xnh", "spl", "eh"
+    "dnh", "nhf", "dyn"
   ],
 
 }

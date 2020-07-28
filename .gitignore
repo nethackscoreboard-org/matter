@@ -15,3 +15,9 @@ cfg/nethackstats.json
 test/
 www/
 html/
+legacy/cfg/auth.json
+legacy/cfg/nhdb_def.json
+mojo/cfg/nhdb_def.json
+mojo/cfg/nethackstats.json
+postgres/env
+.env
