@@ -1,3 +1,0 @@
-FROM nhs-fork_base:latest
-COPY ./cpanfile /tmp
-RUN cpanm --installdeps /tmp --notest

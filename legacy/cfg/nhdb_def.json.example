@@ -7,29 +7,28 @@
 {
   #--- HTML files are generated in this place
 
-  "http_root" : "${WEBDIR}",
+  "http_root" : "/home/httpd/nh",
 
   #--- database session configuration
 
   "db" : {
 
   	"nhdbfeeder" : {
-	    "dbname" : "${DBNAME}",
-        "dbhost" : "${DBHOST}",
-	    "dbuser" : "${FEEDER_DBUSER}"
+	    "dbname" : "nhdb",
+        "dbhost" : "localhost",
+	    "dbuser" : "nhdbfeeder"
     },
 
   	"nhdbstats" : {
-	    "dbname" : "${DBNAME}",
-        "dbhost" : "${DBHOST}",
-	    "dbuser" : "${STATS_DBUSER}"
+	    "dbname" : "nhdb",
+	    "dbuser" : "nhdbstats"
     }
 
   },
 
   #--- authentication info for database sessions is stored in this file
 
-  "auth" : "${AUTH_JSON_PATH}",
+  "auth" : "auth.json",
 
   #--- define wget command-line options
 
@@ -65,8 +64,7 @@
   #--- variants to include in the First To Ascend page
   
   "firsttoascend" : [
-    "dnh", "dyn", "evil", "fiq", "4k", "grunt", "nh4",
-    "spork", "spl", "un", "xnh"
+    "dnh", "nhf", "dyn"
   ],
 
 }
