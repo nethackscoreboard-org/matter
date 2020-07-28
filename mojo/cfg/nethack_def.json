@@ -20,7 +20,7 @@
     "dan" : "dancer",
     "dra" : "dragonmaster",
     "hea" : "healer",
-	"inf" : "infidel",
+	  "inf" : "infidel",
     "kni" : "knight",
     "mon" : "monk",
     "nob" : "noble",
@@ -41,8 +41,7 @@
     "ang" : "angel",
     "bat" : "chiropteran",
     "cen" : "centaur",
-    "chn" : "changeling",
-	"dem" : "demon",
+	  "dem" : "demon",
     "clk" : "clockwork automaton",
     "hum" : "human",
     "dro" : "drow",
@@ -1042,10 +1041,10 @@
         [ "Hea", "Gno", "Mal", "Neu" ], [ "Hea", "Gno", "Fem", "Neu" ], # 4
         [ "Hea", "Hob", "Mal", "Neu" ], [ "Hea", "Hob", "Fem", "Neu" ], # 5
 
-		[ "Inf", "Hum", "Mal", "Una" ], [ "Inf", "Hum", "Fem", "Una" ], # 1
-		[ "Inf", "Orc", "Mal", "Una" ], [ "Inf", "Orc", "Fem", "Una" ], # 2
-		[ "Inf", "Ith", "Mal", "Una" ], [ "Inf", "Ith", "Fem", "Una" ], # 3
-		[ "Inf", "Dem", "Mal", "Una" ], [ "Inf", "Dem", "Fem", "Una" ], # 4
+		    [ "Inf", "Hum", "Mal", "Una" ], [ "Inf", "Hum", "Fem", "Una" ], # 1
+	    	[ "Inf", "Orc", "Mal", "Una" ], [ "Inf", "Orc", "Fem", "Una" ], # 2
+	    	[ "Inf", "Ith", "Mal", "Una" ], [ "Inf", "Ith", "Fem", "Una" ], # 3
+	    	[ "Inf", "Dem", "Mal", "Una" ], [ "Inf", "Dem", "Fem", "Una" ], # 4
 		
         [ "Kni", "Hum", "Mal", "Law" ], [ "Kni", "Hum", "Fem", "Law" ], # 1
         [ "Kni", "Hum", "Mal", "Cha" ], [ "Kni", "Hum", "Fem", "Cha" ], # 2
