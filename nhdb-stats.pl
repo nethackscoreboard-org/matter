@@ -1817,6 +1817,8 @@ sub gen_page_conducts
   if($variant ne 'all') {
     $query .= q{WHERE variant = ? AND conduct IS NOT NULL AND turns IS NOT NULL };
     push(@args, $variant);
+  } else {
+    $query .= q{WHERE conduct IS NOT NULL AND turns IS NOT NULL };
   }
   $query .= q{ORDER BY ncond DESC, turns ASC LIMIT 100};
   $ascs = sql_load(
@@ -1833,7 +1835,20 @@ sub gen_page_conducts
     );
     return $ascs;
   }
-  $data{'result'} = $ascs;
+  # row_fix() modifies ncond, sometimes invalidating the order
+  # of results as given by the SQL query itself, reordering should
+  # fix this
+  my @ascs_sorted = sort {$$b{'ncond'} <=> $$a{'ncond'}} @$ascs;
+
+  # above fix also meant $$ascs_sorted{n} are no longer in correct
+  # rank order, need to update those as well, mb worth having
+  # a small function doing both these tasks but this'll do for now
+  my $i = 1;
+  foreach my $row (@ascs_sorted) {
+      $row->{'n'} = $i;
+      $i += 1;
+  }
+  $data{'result'} = \@ascs_sorted;
 
   #--- supply additional data
 
