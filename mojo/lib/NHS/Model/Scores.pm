@@ -228,7 +228,7 @@ sub row_fix
   #--- player page
 
   $row->{'plrpage'} = url_substitute(
-    sprintf("players/%%U/%%u.%s.html", $row->{'variant'}),
+    sprintf("players/%%u.%s.html", $row->{'variant'}),
     $row
   );
 
