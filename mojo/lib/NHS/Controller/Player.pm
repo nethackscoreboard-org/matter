@@ -240,4 +240,32 @@ sub streaks {
     $self->render(template => 'player/streaks', handler => 'tt2');
 }
 
+# conduct page
+sub conduct {
+    my $self = shift;
+    my $scr = $self->app->scores;
+    my $var = $self->stash('var');
+    my $name = $self->stash('name');
+
+    $self->stash(result => $scr->lookup_most_conducts($var, $name),
+                 variant => $var,
+                 $self->nh->aux_data()
+                );
+    $self->render(template => 'player/conduct', handler => 'tt2');
+}
+
+# lowscore page
+sub lowscore {
+    my $self = shift;
+    my $scr = $self->app->scores;
+    my $var = $self->stash('var');
+    my $name = $self->stash('name');
+
+    $self->stash(result => $scr->lookup_lowscore_ascensions($var, $name),
+                 variant => $var,
+                 $self->nh->aux_data()
+                );
+    $self->render(template => 'player/lowscore', handler => 'tt2');
+}
+
 1;
