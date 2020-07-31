@@ -71,8 +71,17 @@ fi
 # and start a new one
 docker container ls | grep nhs-db >/dev/null
 postgres_return=$?
-if [ $postgres_return -eq 0 ] && [ "$refresh_cfg" != "y" ] && [ "$refresh_vol" != "y" ] && [ "$reload_img" != "y" ] && [ -e ./postgres/env ]; then 
-	echo "Skipping postgres restart, nhs-db still running."
+if [ $postgres_return -eq 0 ] && [ "$refresh_cfg" != "y" ] && [ "$refresh_vol" != "y" ] && [ "$reload_img" != "y" ]; then 
+    if [ -e ./postgres/env ]; then
+	    echo "Skipping postgres restart, nhs-db still running."
+    else
+        # Postgres env file went missing, but otherwise it's running
+        # and we don't want to refresh any config unnecessarily or
+        # delete persistent volumes, attempt to fix config/passwords
+        echo "Renew missing config without restarting postgres..."
+        ./postgres/reset-pw.sh -f $feeder_pw -s $stats_pw -d $database_pw
+        refresh_cfg="y"
+    fi
 else
 	# postgres container still running - need to kill
 	if [ $postgres_return -eq 0 ]; then
