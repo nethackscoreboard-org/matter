@@ -145,4 +145,17 @@ sub conduct {
     $self->render(template => 'conduct', handler => 'tt2');
 }
 
+# lowscore page
+sub lowscore {
+    my $self = shift;
+    my $scr = $self->app->scores;
+    my $var = $self->stash('var');
+
+    $self->stash(result => $scr->lookup_lowscore_ascensions($var),
+                 variant => $var,
+                 $self->nh->aux_data()
+                );
+    $self->render(template => 'lowscore', handler => 'tt2');
+}
+
 1;
