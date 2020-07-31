@@ -1013,6 +1013,18 @@ sub lookup_first_to_ascend
     return $data;
 }
 
+sub lookup_sources
+{
+    my $self = shift;
+    my $logger = get_logger('NHS');
+    my $result = sql_load($self->db, 'SELECT * FROM v_sources');
+    if (!ref($result)) {
+        $logger->error('lookup sources failed');
+        return undef;
+    }
+    return $result;
+}
+
 #============================================================================
 # Calculate zscore from list of all ascensions. This function builds the
 # complete %zscore structure that is reused for all pages displaying zscore.
