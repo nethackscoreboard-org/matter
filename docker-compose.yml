@@ -38,20 +38,20 @@ services:
       target: run-feeder
 
   base:
-    image: perl-base
+    image: perl-base:latest
     build:
       context: ./
       dockerfile: ./Dockerfile
 
   libs-legacy:
-    image: cpan-moo
+    image: cpan-moo:latest
     build:
       context: ./legacy
       dockerfile: ./Dockerfile
       target: install-cpan-legacy
 
   libs-mojo:
-    image: cpan-mojo
+    image: cpan-mojo:latest
     build:
       context: ./mojo
       dockerfile: ./Dockerfile
