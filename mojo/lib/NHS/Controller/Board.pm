@@ -6,12 +6,13 @@ use NHS::Model::Scores;
 # this will serve the front page
 sub overview {
     my $self = shift;
+    my $scr = $self->app->scores;
 
     # first the most recent ascension in each variant is fetched
     my @variants = $self->app->nh->variants();
     # these are a \% and a \@ - stash wants pointers anyway so this is no problem
     # tuple return wouldn't work if they were passed as whole hash and array
-    my ($last_ascs, $vars_ordered) = $self->app->scores->lookup_latest_variant_ascensions(@variants);
+    my ($last_ascs, $vars_ordered) = $scr->lookup_latest_variant_ascensions(@variants);
 
     $self->stash(variants => $vars_ordered,
                 vardef => $self->app->nh->variant_names(),
@@ -19,10 +20,10 @@ sub overview {
                 last_ascensions => $last_ascs);
 
     # next get streaks
-    $self->stash(streaks => $self->app->scores->lookup_current_streaks());
+    $self->stash(streaks => $scr->lookup_current_streaks());
 
     # now for recent ascensions
-    $self->stash(ascensions_recent => $self->app->scores->lookup_recent_ascensions('all', 5));    
+    $self->stash(ascensions_recent => $scr->lookup_recent_ascensions('all', 5));    
 
     $self->render(template => 'front', handler => 'tt2');
 }
@@ -32,6 +33,7 @@ sub overview {
 # found in stash->{var}
 sub recent {
     my $self = shift;
+    my $scr = $self->app->scores;
 
     my $var = $self->stash('var');
     my $page = $self->stash('page');
@@ -44,12 +46,12 @@ sub recent {
     my $games;
     if ($page eq 'ascended') {
         if ($var ne 'all' && $var ne 'nh') {
-            $games = $self->app->scores->lookup_all_ascensions($var);
+            $games = $scr->lookup_all_ascensions($var);
         } else {
-            $games = $self->app->scores->lookup_recent_ascensions($var, $n);
+            $games = $scr->lookup_recent_ascensions($var, $n);
         }
     } else {
-        $games = $self->app->scores->lookup_recent_games($var, $n);
+        $games = $scr->lookup_recent_games($var, $n);
     }
     # count games for scoreboard
 
@@ -63,16 +65,17 @@ sub recent {
 # server the gametime speedrun stats
 sub gametime {
     my $self = shift;
+    my $scr = $self->app->scores;
     my $var = $self->stash('var');
     my $n = 100;
 
     # populate list of the fastest 100 ascensions (gametime)
-    my $ascensions = $self->app->scores->lookup_fastest_gametime($var, $n);
+    my $ascensions = $scr->lookup_fastest_gametime($var, $n);
 
     # count and rank users by number of sub-20k, sub-10k and sub-5k wins
-    $self->stash(sub20 => $self->app->scores->count_subn_ascensions($var, 20000),
-                 sub10 => $self->app->scores->count_subn_ascensions($var, 10000),
-                 sub5  => $self->app->scores->count_subn_ascensions($var, 5000),
+    $self->stash(sub20 => $scr->count_subn_ascensions($var, 20000),
+                 sub10 => $scr->count_subn_ascensions($var, 10000),
+                 sub5  => $scr->count_subn_ascensions($var, 5000),
                  variant => $var,
                  $self->nh->aux_data(),
                  result => $ascensions);
@@ -83,9 +86,10 @@ sub gametime {
 # show statistics for streakers
 sub streaks {
     my $self = shift;
+    my $scr = $self->app->scores;
     my $var = $self->stash('var');
 
-    $self->stash(result => $self->app->scores->lookup_streaks($var),
+    $self->stash(result => $scr->lookup_streaks($var),
                  variant => $var,
                  $self->nh->aux_data());
     $self->render(template => 'streaks', handler => 'tt2');
@@ -94,11 +98,12 @@ sub streaks {
 # server Z-Scores
 sub zscore {
     my $self = shift;
+    my $scr = $self->app->scores;
     my $var = $self->stash('var');
 
     # get variant specific role info etc.
     my $nv = $self->nh->variant($var eq 'all' ? 'nh' : $var);
-    my $zscore = $self->app->scores->compute_zscore();
+    my $zscore = $scr->compute_zscore();
     my %zscore = %$zscore;
     
     #--- following key holds roles that are included in the z-score table
@@ -125,6 +130,19 @@ sub zscore {
                 );
 
     $self->render(template => 'zscore', handler => 'tt2');
+}
+
+# conduct page
+sub conduct {
+    my $self = shift;
+    my $scr = $self->app->scores;
+    my $var = $self->stash('var');
+
+    $self->stash(result => $scr->lookup_most_conducts($var),
+                 variant => $var,
+                 $self->nh->aux_data()
+                );
+    $self->render(template => 'conduct', handler => 'tt2');
 }
 
 1;

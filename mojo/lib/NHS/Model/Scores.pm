@@ -912,6 +912,44 @@ sub enumerate_ascensions_by
     return enumerate_by($self->db, $var, $name, $key, 1);
 }
 
+# lookup conducty games
+sub lookup_most_conducts
+{
+    my ($self, $var, $name) = @_;
+	my $logger = get_logger('NHS');
+    my (%result, $query, @args);
+
+    $var = $var ? $var : 'all';
+    $query = 'SELECT *, bitcount(conduct) AS ncond FROM v_ascended ';
+    if ($var ne 'all') {
+        $query .= 'WHERE variant = ? AND conduct IS NOT NULL AND turns IS NOT NULL ';
+        push @args, $var;
+    } else {
+        $query .= 'WHERE conduct IS NOT NULL AND turns IS NOT NULL ';
+    }
+    $query .= 'ORDER BY ncond DESC, turns ASC LIMIT 100';
+    # original code uses a 'sub { row_fix($_[0]) }' instead of undef,
+    # for processing the code. we can't currently pass that to sql_load(),
+    # however, without a way to pass row_fix the $nh object
+    $ascs = sql_load($self->db, $query, 1, 1, undef, @args);
+    if (!ref($ascs)) {
+        $logger->error((sprintf('gen_page_conducts(): Failed to query database (%s)', $ascs)));
+        return undef;
+    }
+    # loop row_fix() afterwards instead
+    foreach my $row (@$ascs) {
+        row_fix($self->app->nh, $row); # NB row fix breaks conduct rankings
+    }
+    # re-sort
+    my @ascs_sorted = sort {$$b{'ncond'} <=> $$a{'ncond'}} @$ascs;
+    my $i = 1;
+    foreach my $row (@ascs_sorted) {
+		$row->{n} = $i;
+		$i += 1;
+	}
+	return \@ascs_sorted;
+}
+
 #============================================================================
 # Calculate zscore from list of all ascensions. This function builds the
 # complete %zscore structure that is reused for all pages displaying zscore.
