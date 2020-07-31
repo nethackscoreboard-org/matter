@@ -917,23 +917,28 @@ sub lookup_most_conducts
 {
     my ($self, $var, $name) = @_;
 	my $logger = get_logger('NHS');
-    my (%result, $query, @args);
+    my ($query, @conds, @args);
 
     $var = $var ? $var : 'all';
-    $query = 'SELECT *, bitcount(conduct) AS ncond FROM v_ascended ';
+    $query = 'SELECT *, bitcount(conduct) AS ncond FROM v_ascended';
     if ($var ne 'all') {
-        $query .= 'WHERE variant = ? AND conduct IS NOT NULL AND turns IS NOT NULL ';
+        push @conds, 'variant = ?';
         push @args, $var;
-    } else {
-        $query .= 'WHERE conduct IS NOT NULL AND turns IS NOT NULL ';
     }
-    $query .= 'ORDER BY ncond DESC, turns ASC LIMIT 100';
+    if ($name) {
+        push @conds, 'name = ?';
+        push @args, $name;
+    }
+    push @conds, 'conduct IS NOT NULL';
+    push @conds, 'turns IS NOT NULL';
+    $query .= ' WHERE ' . join ' AND ', @conds;
+    $query .= ' ORDER BY ncond DESC, turns ASC LIMIT 100';
     # original code uses a 'sub { row_fix($_[0]) }' instead of undef,
     # for processing the code. we can't currently pass that to sql_load(),
     # however, without a way to pass row_fix the $nh object
-    $ascs = sql_load($self->db, $query, 1, 1, undef, @args);
+    my $ascs = sql_load($self->db, $query, 1, 1, undef, @args);
     if (!ref($ascs)) {
-        $logger->error((sprintf('gen_page_conducts(): Failed to query database (%s)', $ascs)));
+        $logger->error((sprintf('conducts: Failed to query database (%s)', $ascs)));
         return undef;
     }
     # loop row_fix() afterwards instead
@@ -948,6 +953,36 @@ sub lookup_most_conducts
 		$i += 1;
 	}
 	return \@ascs_sorted;
+}
+
+# low scoring ascensions
+sub lookup_lowscore_ascensions
+{
+    my ($self, $var, $name, $lim) = @_;
+    my ($query, @conds, @args);
+    my $logger = get_logger('NHS');
+    $var = $var ? $var : 'all';
+    $lim = $lim ? $lim : 100;
+    $query = 'SELECT * FROM v_ascended WHERE ';
+    push @conds, 'points > 0';
+    if ($var ne 'all') {
+        push @conds, 'variant = ?';
+        push @args, $var;
+    }
+    if ($name) {
+        push @conds, 'name = ?';
+        push @args, $name;
+    }
+    $query .= join ' AND ', @conds;
+    $query .= sprintf(' order BY points ASC, turns ASC LIMIT %d', $lim);
+    my $ascs = sql_load($self->db, $query, 1, 1, undef, @args);
+    if (!ref($ascs)) {
+        $logger->error('lowscore: failed to query database (%s)', $ascs);
+    }
+    foreach my $row (@$ascs) {
+        row_fix($self->app->nh, $row);
+    }
+    return $ascs;
 }
 
 #============================================================================

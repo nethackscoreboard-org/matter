@@ -50,8 +50,12 @@ sub startup {
     $r->any('/zscore')->to('board#zscore', var => 'all');
 
     # Conduct
-    $r->any('/conduct.<var.variants>')->to('board#conduct');
+    $r->any('/conduct.<var:variants>')->to('board#conduct');
     $r->any('/conduct')->to('board#conduct', var => 'all');
+
+    # Low Score 
+    $r->any('/lowscore.<var:variants>')->to('board#lowscore');
+    $r->any('/lowscore')->to('board#lowscore', var => 'all');
 
 	# player views
 	$r->any('/players/<:name>.<var:variants>')->to('player#overview');
