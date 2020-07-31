@@ -985,6 +985,34 @@ sub lookup_lowscore_ascensions
     return $ascs;
 }
 
+sub lookup_first_to_ascend
+{
+    my ($self, $var) = @_;
+    my $logger = get_logger('NHS');
+    my $query = 'SELECT * FROM first_to_ascend(?)';
+    $logger->debug("first to ascend $var");
+    my $data = sql_load($self->db, $query, 1, 1, undef, $var);
+    if (!ref($data)) {
+        $logger->error(sprintf('first-to-ascend lookup failed: %s', $data));
+        return undef;
+    }
+    #--- processing of the database rows
+    # remove 'r_' from hash keys (field names), row_fix();
+    # the r_ prefix is added because otherwise there are problem with collision
+    # inside stored procedure in backend db; probably this could be done better
+    foreach my $row (@$data) {
+        for my $k (keys %$row) {
+            $k =~/^r_(.*$)/ && do {
+                $row->{$1} = $row->{$k};
+                delete $row->{$k};
+
+            };
+        }
+        row_fix($self->app->nh, $row);
+    }
+    return $data;
+}
+
 #============================================================================
 # Calculate zscore from list of all ascensions. This function builds the
 # complete %zscore structure that is reused for all pages displaying zscore.

@@ -57,7 +57,11 @@ sub startup {
     $r->any('/lowscore.<var:variants>')->to('board#lowscore');
     $r->any('/lowscore')->to('board#lowscore', var => 'all');
 
-	# player views
+    # First to ascend
+    $r->any('/firstasc.<var:variants>')->to('board#firstasc');
+    $r->any('/firstasc')->to('board#firstasc', var => 'gh');
+
+	# player pages
 	$r->any('/players/<:name>.<var:variants>')->to('player#overview');
 	$r->any('/players/<:name>')->to('player#overview', var => 'all');
 	$r->any('/players/<:name>/streaks.<var:variants>')->to('player#streaks');

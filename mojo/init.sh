@@ -7,6 +7,7 @@ done
 export DATABASE_HOST=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nhs-db`
 
 cp ./mojo/cfg/nhdb_def.json.example ./mojo/cfg/nhdb_def.json
+cp ./legacy/cfg/auth.json ./mojo/cfg/
 
 cat <<- EOF >./mojo/cfg/nethackstats.json
 {
