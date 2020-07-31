@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 if [ "$DOCKER" == "podman" ]; then
-    networking="--pod nhs-pod -p 8085:8085/tcp"
+    networking="--pod nhs-pod"
 else
     networking="--network nhs-bridge -p 8085:8085/tcp"
 fi

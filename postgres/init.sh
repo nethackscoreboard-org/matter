@@ -40,7 +40,7 @@ cp ./default-env ./env
 # need this for docker-compose
 echo PGDATA=$PGDATA >../.env
 
-cat <<- EOF >>./postgres/env
+cat <<- EOF >>./env
 FEEDER_PW=$optionF
 STATS_PW=$optionS
 DATABASE_PW=$optionD

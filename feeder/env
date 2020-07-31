@@ -1,2 +1,2 @@
 PERL5LIB=/cpan-mods/lib/perl5
-DATABASE_HOST=localhost
+PATH=/cpan-mods/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin

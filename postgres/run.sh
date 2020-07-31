@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 if [ "$DOCKER" == "podman" ]; then
-    networking="--pod new:nhs-pod"
+    networking="--pod nhs-pod"
+    $DOCKER pod create -n nhs-pod -p 8085:8085/tcp
 else
     $DOCKER network create -d bridge nhs-bridge
     networking="-p 5432:5432/tcp --network=nhs-bridge"

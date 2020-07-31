@@ -34,9 +34,18 @@ else
     database_pw=data
 fi 
 
+if which docker >/dev/null 2>&1; then
+    export DOCKER=docker
+elif which podman >/dev/null 2>&1; then
+    export DOCKER=podman
+else
+    echo "Need a container to run (docker or podman)"
+    exit 1
+fi
+
 # quit if NHS containers exist already
-containers=`docker container ls -a --format='{{json .Names}}' | sed s/\"//g | grep -E 'nhs-web-m|nhdb-feeder|nhs-db'`
-if [ ! -z "$containers" ]; then
+containers=`$DOCKER container ls -a | grep -E 'nhs-mojo|nhs-feeder|nhs-db'`
+if [ -n "$containers" ]; then
     echo "NHS containers already found! - $containers"
     exit 1
 fi
@@ -47,36 +56,29 @@ if [ -e ./postgres/env ] || [ -e ./feeder/cfg/auth.json ] || [ -e ./mojo/cfg/net
     exit 1
 fi
 
-if which docker >/dev/null; then
-    export DOCKER=docker
-elif which podman >/dev/null; then
-    export DOCKER=podman
-else
-    echo "Need a container to run (docker or podman)"
-    exit 1
-fi
-
     
 echo "Initialise Postgres container..."
 cd postgres
 ./init.sh -f $feeder_pw -s $stats_pw -d $database_pw
 ./build.sh
 ./run.sh
+sleep 30
 
 echo "Build cpan build-tools..."
 cd ../cpan
 ./build.sh
 
 echo "Initialise feeder config..."
-cp env ../feeder/
 cd ../feeder
+cp ../postgres/env ./my-env
+cp ../mojo/env ./env
 ./init.sh
 ./build.sh
 ./run.sh
 
 echo "Initialise mojo-web config..."
 cd ../mojo
-cp ../postgres/env ./my-env
+cp ../feeder/my-env ./my-env
 ./init.sh
 ./build.sh
 ./run.sh
