@@ -21,7 +21,7 @@ do
     esac
 done
 
-$POSTGRES = "psql -U $POSTGRES_USER"
+POSTGRES="psql -U $POSTGRES_USER"
 if [ -e ./postgres/env ]; then
     # in the first case we just update a subset
     # of the passwords and not necessarily all
@@ -70,6 +70,11 @@ else
         export DATABASE_PW=data
     fi
     export POSTGRES_PASSWORD=$DATABASE_PW
+    docker exec -it nhs-db $POSTGRES <<- EOF
+ALTER ROLE $FEEDER WITH PASSWORD '$FEEDER_PW';
+ALTER ROLE $STATS WITH PASSWORD '$STATS_PW';
+ALTER ROLE $POSTGRES_USER WITH PASSWORD '$POSTGRES_PASSWORD';
+EOF
 fi
 
 
