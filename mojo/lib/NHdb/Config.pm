@@ -39,13 +39,13 @@ sub _build_config
 
   #--- read the main config file
 
-  my $def_json = path($Bin, 'cfg/nhdb_def.json')->slurp_raw();
+  my $def_json = path($Bin, '../cfg/nhdb_def.json')->slurp_raw();
   my $nhdb_def = $js->decode($def_json);
 
   #--- read the file with db passwords (if defined)
 
   if(exists $nhdb_def->{'auth'}) {
-    $def_json = path($Bin, 'cfg', $nhdb_def->{'auth'})->slurp_raw();
+    $def_json = path($Bin, '../cfg', $nhdb_def->{'auth'})->slurp_raw();
     $nhdb_def->{'auth'} = $js->decode($def_json);
   }
 

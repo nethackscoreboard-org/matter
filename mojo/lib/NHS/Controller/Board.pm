@@ -1,5 +1,6 @@
 package NHS::Controller::Board; use Mojo::Base 'Mojolicious::Controller';
 use NHS::Model::Scores;
+use NHdb::Config;
 #use NetHack::Config;
 
 
@@ -156,6 +157,84 @@ sub lowscore {
                  $self->nh->aux_data()
                 );
     $self->render(template => 'lowscore', handler => 'tt2');
+}
+
+sub firstasc {
+    my $self = shift;
+    my $var = $self->stash('var');
+    my $scr = $self->app->scores;
+
+    # only run for those enabled in the config JSON
+    # this seems to be the only place we directly
+    # use NHdb::Config
+    my $nhdb = NHdb::Config->instance;
+    return if !$nhdb->first_to_ascend($var);
+
+    my $nv = $self->nh->variant($var);
+    my $games = $scr->lookup_first_to_ascend($var);
+    my %data = (table => $nv->combo_table()->{table},
+                roles => $nv->roles(),
+                races => $nv->races(),
+                genders => $nv->genders(),
+                aligns => $nv->alignments(),
+                roles_def => $self->nh->config()->{nh_roles_def},
+                races_def => $self->nh->config()->{nh_races_def},
+                variant => $var,
+                cur_time => scalar(localtime()),
+                variants => [ $nhdb->first_to_ascend() ],
+                result => $games,
+                vardef => $self->nh->variant_names());
+    foreach my $row (@$games) {
+        # add entries to combo table
+        $nv->combo_table_cell(
+            $row->{role}, $row->{race}, $row->{align}, $row->{name}
+        );
+    }
+    $data{unascend} = [];
+    $data{byplayer} = {};
+    $nv->combo_table_iterate(sub {
+            my ($val, $role, $race, $align) = @_;
+
+            # unascended combos
+            if(!defined($val)) {
+                push(
+                    @{$data{unascend}},
+                    sprintf('%s-%s-%s', ucfirst($role), ucfirst($race), ucfirst($align))
+                );
+            }
+
+            # combos by users
+            if($val && $val ne '-1') {
+                if(!exists $data{byplayer}{$val}) {
+                    $data{byplayer}{$val}{cnt} = 0;
+                    $data{byplayer}{$val}{games} = [];
+                }
+                $data{byplayer}{$val}{cnt}++;
+                push(
+                    @{$data{byplayer}{$val}{games}},
+                    sprintf('%s-%s-%s', ucfirst($role), ucfirst($race), ucfirst($align))
+                );
+            }
+        });
+
+    #--- create sorted index for 'byplayer'
+
+    # ordering by number of games (in 'cnt' key), in case of ties
+    # we want to use the original order from database query
+
+    $data{byplayer_ord} = [ sort {
+            if($data{byplayer}{$b}{cnt} != $data{byplayer}{$a}{cnt}) {
+                $data{byplayer}{$b}{cnt} <=> $data{byplayer}{$a}{cnt}
+            } else {
+                my ($plr_a) = grep { $_->{name} eq $a } @$games;
+                my ($plr_b) = grep { $_->{name} eq $b } @$games;
+                $plr_a->{n} <=> $plr_b->{n};
+            }
+        } keys %{$data{byplayer}} ];
+
+    # generate page
+    $self->stash(%data);
+    $self->render(template => 'firstasc', handler => 'tt2');
 }
 
 1;
