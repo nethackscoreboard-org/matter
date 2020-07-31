@@ -1,0 +1,2 @@
+PERL5LIB=/cpan-mods/lib/perl5
+DATABASE_HOST=localhost

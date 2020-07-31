@@ -1,0 +1,4 @@
+perl
+libldap
+libpq
+libsasl

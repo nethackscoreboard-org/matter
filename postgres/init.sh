@@ -4,7 +4,7 @@ helpFunction()
 {
    echo ""
    echo "Usage: $0 -f feeder-pw -s stats-pw -d postgres-pw"
-   echo -e "\t-f Feeder password is required by postgres and the legacy feeder/aggregator script."
+   echo -e "\t-f Feeder password is required by postgres and the feeder feeder/aggregator script."
    echo -e "\t-s The web front-end uses the stats user, requires this password."
    echo -e "\t-d Database password. Absolutely necessary that this is defined or postgres container won't start."
    echo -e "Yes I know this is not the most secure way of doing things."
@@ -31,14 +31,14 @@ STATS_PW=$optionS
 DATABASE_PW=$optionD
 POSTGRES_PASSWORD=$DATABASE_PW
         
-for i in `cat ./postgres/default-env`; do
+for i in `cat ./default-env`; do
     export $i;
 done
 
-cp ./postgres/default-env ./postgres/env
+cp ./default-env ./env
 
 # need this for docker-compose
-echo PGDATA=$PGDATA >.env
+echo PGDATA=$PGDATA >../.env
 
 cat <<- EOF >>./postgres/env
 FEEDER_PW=$optionF

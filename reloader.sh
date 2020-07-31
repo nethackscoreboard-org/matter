@@ -6,7 +6,7 @@ helpFunction()
     echo -e "\t-C Run git clean -fx to clear .env and old config files containing db pass info etc."
     echo -e "\t-I Rebuild all images."
     echo -e "\t-R Refresh persistent volumes. Necessary if db passwords change."
-    echo -e "\t-S Fix SELinux tags on legacy/ and mojo/ bind-mounts (need sudo)."
+    echo -e "\t-S Fix SELinux tags on feeder/ and mojo/ bind-mounts (need sudo)."
     echo -e "\t-b Rebuild image on docker-compose up commands."
 	echo -e "\t-r Refresh config files. This is default if the relevant files aren't found anyway."
     exit 1
@@ -120,17 +120,17 @@ else
     sleep 30
 fi
 
-# update config for legacy feeder, should not actually mean full
+# update config for feeder feeder, should not actually mean full
 # rebuild of images/containers is necessary, since config comes
 # in through a bind mount
-if [ ! -e ./legacy/cfg/auth.json ] || [ "$refresh_cfg" == "y" ]; then
+if [ ! -e ./feeder/cfg/auth.json ] || [ "$refresh_cfg" == "y" ]; then
     echo "Initialising feeder config..."
-	./legacy/init.sh
+	./feeder/init.sh
 fi
 
 if [ "$selinux" == "y" ]; then
     echo "Attempting to fix SELinux flags"
-	sudo chcon -Rt svirt_sandbox_file_t legacy
+	sudo chcon -Rt svirt_sandbox_file_t feeder
 	sudo chcon -Rt svirt_sandbox_file_t mojo
 fi
 
@@ -142,7 +142,7 @@ fi
 # same for the cpan modules
 docker image ls | grep cpan-moo >/dev/null
 if [ $? -ne 0 ]; then
-    docker-compose build libs-legacy
+    docker-compose build libs-feeder
 fi
 
 # run the database feeder, attached, and wait for reading of
@@ -150,7 +150,7 @@ fi
 echo "Start feeder container..."
 docker-compose up $dc_args feeder
 
-# update config for legacy feeder, should not actually mean full
+# update config for feeder feeder, should not actually mean full
 # rebuild of images/containers is necessary, since config comes
 # in through a bind mount
 if [ ! -e ./mojo/cfg/nethackstats.json ] || [ "$refresh_cfg" == "y" ]; then

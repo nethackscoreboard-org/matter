@@ -1,0 +1,2 @@
+PERL5LIB=/cpan-mods/lib/perl5
+PATH=/cpan-mods/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin

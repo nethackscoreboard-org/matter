@@ -1,5 +1,38 @@
 version: '3.7'
 services:
+  mojo:
+    container_name: nhs-mojo
+    volumes:
+      - ./mojo:/run/nhs:ro
+    build:
+      context: ./mojo
+      dockerfile: ./Dockerfile
+      target: build-small
+    ports:
+      - 8081:8081
+    environment:
+      - PERL5LIB=/cpan-mods/lib/perl5
+    depends_on:
+      - database
+      - feeder
+      - mojo-cpan
+
+  feeder:
+    container_name: nhdb-feeder
+    volumes:
+      - ./feeder:/run/nhs:ro
+      - xlogs_vol:/var/log/xlogs:rw
+    environment:
+      - PERL5LIB=/cpan-mods/lib/perl5
+    build:
+      context: ./feeder
+      dockerfile: ./Dockerfile
+      target: build-small
+    depends_on:
+      - database
+      - feeder-base
+      - feeder-cpan
+
   database:
     container_name: nhs-db
     logging: 
@@ -14,48 +47,47 @@ services:
     env_file:
       - ./postgres/env
     ports:
-      - 5432:5432
+      - 5433:5433
 
-  mojo-web:
-    container_name: nhs-web-m
-    volumes:
-      - ./mojo:/run/nhs:ro
+  feeder-cpan:
+    image: feeder-cpan-mods:latest
+    build:
+      context: ./feeder
+      dockerfile: ./Dockerfile
+      target: build-cpan-deps
+    depends_on:
+      - cpan
+      - feeder-base
+
+  mojo-cpan:
+    image: mojo-cpan-mods:latest
     build:
       context: ./mojo
       dockerfile: ./Dockerfile
-      target: run-mojo
-    ports:
-      - 8082:8082
+      target: build-cpan-deps
+    depends_on:
+      - cpan
+      - mojo-base
 
-  feeder:
-    container_name: nhdb-feeder
-    volumes:
-      - ./legacy:/run/nhs:ro
-      - xlogs_vol:/var/log/xlogs:rw
+  cpan:
+    image: cpan:latest
     build:
-      context: ./legacy
-      dockerfile: ./Dockerfile
-      target: run-feeder
-
-  base:
-    image: perl-base:latest
-    build:
-      context: ./
+      context: ./cpan
       dockerfile: ./Dockerfile
 
-  libs-legacy:
-    image: cpan-moo:latest
+  feeder-base:
+    image: feeder-bin-libs:latest
     build:
-      context: ./legacy
+      context: ./feeder
       dockerfile: ./Dockerfile
-      target: install-cpan-legacy
+      target: install-bin-deps
 
-  libs-mojo:
-    image: cpan-mojo:latest
+  mojo-base:
+    image: mojo-bin-libs:latest
     build:
       context: ./mojo
       dockerfile: ./Dockerfile
-      target: install-cpan-mojo
+      target: install-bin-deps
 
 volumes:
   db_vol:

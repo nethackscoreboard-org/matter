@@ -1,5 +1,5 @@
 ---------OVERVIEW---------
-The legacy backend code resides in legacy/ and a docker system has
+The feeder backend code resides in feeder/ and a docker system has
 been designed so that nhdb-feeder.pl may run in its own container and
 populate the database. The postgresql database also runs in a docker
 container, and the database initialisation files are in postgres/.
@@ -17,7 +17,7 @@ containers or images running NHS. Passwords for nhdbfeeder/nhdbstats
 or the database password itself may be given by command-line.
  `$ ./init.sh -f feedpw -s statspw -d dbpw`
 Additionally, if you use SELinux, you probably need to use the -S flag
-to fix SELinux flags on the directories legacy/ and mojo/ for their
+to fix SELinux flags on the directories feeder/ and mojo/ for their
 bind mounts to the built containers.
 
 An earlier version of init.sh was renamed to reloader.sh. It provides
@@ -55,7 +55,7 @@ be improved perhaps.
 I suggest building the individual components rather than
 running docker-compose up. Especially if the database service
 is not yet ready.
-Targets are: base, libs-legacy, libs-mojo, respectively for
+Targets are: base, libs-feeder, libs-mojo, respectively for
 the images perl-base, cpan-moo and cpan-mojo.
 The targets for live containers are: database, feeder and mojo-web.
 chcon -Rt svirt_sandbox_file_t mojo cfg
@@ -65,9 +65,9 @@ chcon -Rt svirt_sandbox_file_t mojo cfg
     0. If necessary, git clean and docker clean.
         `$ git clean -fX`
         `$ ./clean-docker.sh`   # NB: this removes ALL vols/conts/imgs
-        `$ ls -laZ mojo legacy` # if your system uses SELinux...
+        `$ ls -laZ mojo feeder` # if your system uses SELinux...
         `$ chcon -Rt svirt_sandbox_file_t mojo`
-        `$ chcon -Rt svirt_sandbox_file_t legacy`
+        `$ chcon -Rt svirt_sandbox_file_t feeder`
     1. Initialise config/environment files for the database.
        Remember, changes to DB config won't update unless you remove
        the persistent volume.
@@ -76,10 +76,10 @@ chcon -Rt svirt_sandbox_file_t mojo cfg
         `$ docker-compose build database && docker-compose up -d database`
     3. Build the perl images.
         `$ docker-compose build base`
-        `$ docker-compose build libs-legacy`
+        `$ docker-compose build libs-feeder`
         `$ docker-compose build libs-mojo`
     4. Run config for feeder, start container, then mojo-web
-        `$ ./legacy/init.sh`
+        `$ ./feeder/init.sh`
         `$ docker-compose build feeder`
         `$ docker-compose up feeder`
         `$ ./mojo/init.sh`

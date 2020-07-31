@@ -20,5 +20,6 @@ legacy/cfg/nhdb_def.json
 mojo/cfg/auth.json
 mojo/cfg/nhdb_def.json
 mojo/cfg/nethackstats.json
+mojo/my-env
 postgres/env
 .env

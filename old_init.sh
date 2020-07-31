@@ -2,13 +2,15 @@
 helpFunction()
 {
     echo ""
-    echo "Usage: $0 [ -d db_pw ] [ -f feeder_pw ] [ -s stats_pw ]"
+    echo "Usage: $0 [ -S ] [ -d db_pw ] [ -f feeder_pw ] [ -s stats_pw ]"
+    echo -e "\t-S Fix SELinux tags on feeder/ and mojo/ bind-mounts (need sudo)."
     exit 1
 }
 
 while getopts "Sd:f:s:" opt
 do
     case $opt in
+		S ) selinux="y" ;; 		    # fix SELinux tags for bind mounts - sudo req.
         d ) database_pw="$OPTARG" ;;# set database password
         f ) feeder_pw="$OPTARG" ;;  # set feeder password
 								    # is anyway default if the configs are missing
@@ -47,36 +49,26 @@ if [ -e ./postgres/env ] || [ -e ./feeder/cfg/auth.json ] || [ -e ./mojo/cfg/net
     exit 1
 fi
 
-if which docker >/dev/null; then
-    export DOCKER=docker
-elif which podman >/dev/null; then
-    export DOCKER=podman
-else
-    echo "Need a container to run (docker or podman)"
-    exit 1
-fi
+echo "Initialise Postgres config..."
+./postgres/init.sh -f $feeder_pw -s $stats_pw -d $database_pw
 
-    
-echo "Initialise Postgres container..."
-cd postgres
-./init.sh -f $feeder_pw -s $stats_pw -d $database_pw
-./build.sh
-./run.sh
-
-echo "Build cpan build-tools..."
-cd ../cpan
-./build.sh
+echo "Start postgres container..."
+docker-compose up -d database
 
 echo "Initialise feeder config..."
-cp env ../feeder/
-cd ../feeder
-./init.sh
-./build.sh
-./run.sh
+./feeder/init.sh
+
+if [ "$selinux" == "y" ]; then
+    echo "Attempt to fix SELinux flags..."
+	sudo chcon -Rt svirt_sandbox_file_t feeder
+	sudo chcon -Rt svirt_sandbox_file_t mojo
+fi
+
+echo "Start feeder container..."
+docker-compose up feeder
 
 echo "Initialise mojo-web config..."
-cd ../mojo
-cp ../postgres/env ./my-env
-./init.sh
-./build.sh
-./run.sh
+./mojo/init.sh
+
+echo "Start mojo-web container"
+docker-compose up mojo

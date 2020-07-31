@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
-
-for i in `cat ./postgres/env`; do
-    export $i;
-done
-
-export DATABASE_HOST=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nhs-db`
-
-cp ./mojo/cfg/nhdb_def.json.example ./mojo/cfg/nhdb_def.json
-cp ./legacy/cfg/auth.json ./mojo/cfg/
+export `cat my-env`
+#export DATABASE_HOST=`docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nhs-db`
+cp ./cfg/nhdb_def.json.example ./cfg/nhdb_def.json
+cp ../feeder/cfg/auth.json ./cfg/
 
 cat <<- EOF >./mojo/cfg/nethackstats.json
 {

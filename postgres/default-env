@@ -4,5 +4,5 @@ POSTGRES_USER=nhdb
 POSTGRES_DB=nhdb
 FEEDER=nhdbfeeder
 STATS=nhdbstats
-PGDATA=/var/lib/postgresql/data
+PGDATA=/var/lib/postgresql/data/pgdata
 POSTGRES_HOST_AUTH_METHOD=password
