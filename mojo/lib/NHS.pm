@@ -61,6 +61,9 @@ sub startup {
     $r->any('/firstasc.<var:variants>')->to('board#firstasc');
     $r->any('/firstasc')->to('board#firstasc', var => 'gh');
 
+    # About
+    $r->any('/about')->to('board#about');
+
 	# player pages
 	$r->any('/players/<:name>.<var:variants>')->to('player#overview');
 	$r->any('/players/<:name>')->to('player#overview', var => 'all');

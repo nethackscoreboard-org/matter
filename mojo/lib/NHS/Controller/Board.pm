@@ -3,6 +3,17 @@ use NHS::Model::Scores;
 use NHdb::Config;
 #use NetHack::Config;
 
+sub about {
+    my $self = shift;
+    my $scr = $self->app->scores;
+    my $nhdb = NHdb::Config->instance;
+
+    my $result = $scr->lookup_sources();
+    $self->stash(logfiles => $result,
+                 urlpath => $nhdb->config()->{logs}{urlpath},
+                 cur_time => scalar(localtime()));
+    $self->render(template => 'about', handler => 'tt2');
+}
 
 # this will serve the front page
 sub overview {
