@@ -441,7 +441,8 @@ sub combo_table_cell
   ($role, $race, $align) = map { lc } ($role, $race, $align);
 
   if(!exists $ct->{'idx'}{$role}{$race}{$align}) {
-    die sprintf('Invalid character combination %s-%s-%s', $role, $race, $align);
+    warn sprintf('Invalid character combination %s-%s-%s', $role, $race, $align);
+    return;
   }
   ($i, $j, $k) = @{$ct->{'idx'}{$role}{$race}{$align}};
 

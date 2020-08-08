@@ -807,6 +807,19 @@ INSERT INTO logfiles (
 );
 
 -----------------------------------------------------------------------------
+-- nethack.eu/NEU -----------------------------------------------------------
+-----------------------------------------------------------------------------
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  81, 'nethack.eu (nh343)', 'neu', 'nh',
+  'https://lilith.gnuffy.net/neu/xlogfile',
+  'neu.nh343.02.log',
+  'https://nethackscoreboard.org/neu_dumplogs/%u/nethack/dumplog/%s'
+);
+
+-----------------------------------------------------------------------------
 -- nethack.devnull.com/DEV --------------------------------------------------
 -----------------------------------------------------------------------------
 

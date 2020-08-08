@@ -19,6 +19,7 @@
     "con" : "convict",
     "dra" : "dragonmaster",
     "hea" : "healer",
+	"inf" : "infidel",
     "kni" : "knight",
     "mon" : "monk",
     "nob" : "noble",
@@ -39,6 +40,7 @@
     "ang" : "angel",
     "bat" : "chiropteran",
     "cen" : "centaur",
+	"dem" : "demon",
     "clk" : "clockwork automaton",
     "hum" : "human",
     "dro" : "drow",
@@ -68,7 +70,8 @@
     "law" : "lawful",
     "neu" : "neutral",
     "cha" : "chaotic",
-    "non" : "non-aligned"
+    "non" : "non-aligned",
+    "una" : "unaligned"
   },
 
   #--- define all genders
@@ -946,11 +949,20 @@
     "eh" : {
       "name" : "EvilHack",
       "roles" : [
-        "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran", "rog",
+        "arc", "bar", "cav", "con", "hea", "inf", "kni", "mon", "pri", "ran", "rog",
         "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "cen", "hum", "hob", "elf", "dwa", "gia", "gno", "orc", "ith" ],
+      "races" : [ "cen", "hum", "hob", "elf", "dwa", "gia", "gno", "orc", "ith", "dem" ],
+      "aligns" : [ "law", "neu", "cha", "una" ],
       "enum" : [
+        [ "Arc", "Hum", "Mal", "Law" ], [ "Arc", "Hum", "Fem", "Law" ], # 1
+        [ "Arc", "Hum", "Mal", "Neu" ], [ "Arc", "Hum", "Fem", "Neu" ], # 2
+        [ "Arc", "Dwa", "Mal", "Law" ], [ "Arc", "Dwa", "Fem", "Law" ], # 3
+        [ "Arc", "Dwa", "Mal", "Neu" ], [ "Arc", "Dwa", "Fem", "Neu" ], # 4
+        [ "Arc", "Gno", "Mal", "Neu" ], [ "Arc", "Gno", "Fem", "Neu" ], # 5
+        [ "Arc", "Hob", "Mal", "Law" ], [ "Arc", "Hob", "Fem", "Law" ], # 6
+        [ "Arc", "Hob", "Mal", "Neu" ], [ "Arc", "Hob", "Fem", "Neu" ], # 7
+
         [ "Bar", "Hum", "Mal", "Neu" ], [ "Bar", "Hum", "Fem", "Neu" ], # 1
         [ "Bar", "Hum", "Mal", "Cha" ], [ "Bar", "Hum", "Fem", "Cha" ], # 2
         [ "Bar", "Dwa", "Mal", "Neu" ], [ "Bar", "Dwa", "Fem", "Neu" ], # 3
@@ -980,6 +992,11 @@
         [ "Hea", "Gno", "Mal", "Neu" ], [ "Hea", "Gno", "Fem", "Neu" ], # 4
         [ "Hea", "Hob", "Mal", "Neu" ], [ "Hea", "Hob", "Fem", "Neu" ], # 5
 
+		[ "Inf", "Hum", "Mal", "Una" ], [ "Inf", "Hum", "Fem", "Una" ], # 1
+		[ "Inf", "Orc", "Mal", "Una" ], [ "Inf", "Orc", "Fem", "Una" ], # 2
+		[ "Inf", "Ith", "Mal", "Una" ], [ "Inf", "Ith", "Fem", "Una" ], # 3
+		[ "Inf", "Dem", "Mal", "Una" ], [ "Inf", "Dem", "Fem", "Una" ], # 4
+		
         [ "Kni", "Hum", "Mal", "Law" ], [ "Kni", "Hum", "Fem", "Law" ], # 1
         [ "Kni", "Hum", "Mal", "Cha" ], [ "Kni", "Hum", "Fem", "Cha" ], # 2
         [ "Kni", "Elf", "Mal", "Cha" ], [ "Kni", "Elf", "Fem", "Cha" ], # 3
