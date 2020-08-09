@@ -70,38 +70,38 @@ my $db;                         # NHdb::Db instance
 sub parse_log
 {
   my $log = shift;
-  my $l = shift;
-  my %l;
+  my $xlog_line = shift;
+  my %parsed_line;
   my (@a1, @a2, $a0);
 
   #--- there are two field separators in use: comma and horizontal tab;
   #--- we use simple heuristics to find out the one that is used for given
   #--- xlogfile row
 
-  @a1 = split(/:/, $l);
-  @a2 = split(/\t/, $l);
+  @a1 = split(/:/, $xlog_line);
+  @a2 = split(/\t/, $xlog_line);
   $a0 = scalar(@a1) > scalar(@a2) ? \@a1 : \@a2;
 
   #--- split keys and values
 
   for my $field (@$a0) {
     $field =~ /^(.+?)=(.+)$/;
-    $l{$1} = $2 unless exists $l{$1};
+    $parsed_line{$1} = $2 unless exists $parsed_line{$1};
   }
 
   #--- if this is enabled for a source (through "logfiles.options"), check
   #--- whether base64 fields exist and decode them
 
   if(grep(/^base64xlog$/, @{$log->{'options'}})) {
-    for my $field (keys %l) {
+    for my $field (keys %parsed_line) {
       next if $field !~ /^(.+)64$/;
-      $l{$1} = decode_base64($l{$field});
+      $parsed_line{$1} = decode_base64($parsed_line{$field});
     }
   }
 
   #--- finish returning hashref
 
-  return \%l
+  return \%parsed_line
 }
 
 
@@ -486,7 +486,7 @@ sub sql_insert_games
     $line_no,          # 2. line number
     $server,           # 3. server id
     $variant,          # 4. variant id
-    $l                 # 5. line to be parsed, transformed into SQL
+    $xlog_data         # 5. parsed xlog data to be transformed into SQL
   ) = @_;
 
   #--- other variables
@@ -501,60 +501,61 @@ sub sql_insert_games
   my $dbh = $db->handle();
 
   #--- reject too old log entries without necessary info
-  return undef unless $nhdb->require_fields(keys %$l);
+  return undef unless $nhdb->require_fields(keys %$xlog_data);
 
   #--- reject entries with no/empty name, or wizmode/banned paxed test names
   #--- previously the check to reject_name() came before the
   #--- check if a name was defined, this bug is now fixed
-  if(!$l->{'name'} || $nhdb->reject_name($l->{'name'})) { return undef; }
+  if(!$xlog_data->{'name'} || $nhdb->reject_name($xlog_data->{'name'})) { return undef; }
 
   #--- reject "special" modes of NH4 and its kin
   #--- Fourk challenge mode is okay, though
+  #--- AceHack solo mode is also absolutely *fine*, allow
   if(
-    exists $l->{'mode'} &&
-    !($l->{'mode'} eq 'normal' || $l->{'mode'} eq 'challenge')
+    exists $xlog_data->{'mode'} &&
+    !($xlog_data->{'mode'} eq 'normal' || $xlog_data->{'mode'} eq 'challenge' || $xlog_data->{'mode'} eq 'solo')
   ) {
     return undef;
   }
 
   #--- death (reason)
-  my $death = $l->{'death'};
+  my $death = $xlog_data->{'death'};
   $death =~ tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;
   push(@fields, 'death');
   push(@values, substr($death, 0, 128));
 
   #--- ascended flag
-  $l->{'ascended'} = $death =~ /^(ascended|defied the gods)\b/ ? 1 : 0;
+  $xlog_data->{'ascended'} = $death =~ /^(ascended|defied the gods)\b/ ? 1 : 0;
   push(@fields, 'ascended');
-  push(@values, $l->{'ascended'} ? 'TRUE' : 'FALSE');
+  push(@values, $xlog_data->{'ascended'} ? 'TRUE' : 'FALSE');
 
   #--- dNetHack combo mangling workaround
   # please refer to comment in NetHack.pm; this is only done to two specific
   # winning games!
-  if($variant eq 'dnh' && $l->{'ascended'}) {
-    ($l->{'role'}, $l->{'race'})
-    = $nh->variant('dnh')->dnethack_map($l->{'role'}, $l->{'race'});
+  if($variant eq 'dnh' && $xlog_data->{'ascended'}) {
+    ($xlog_data->{'role'}, $xlog_data->{'race'})
+    = $nh->variant('dnh')->dnethack_map($xlog_data->{'role'}, $xlog_data->{'race'});
   }
 
   #--- regular fields
   for my $k ($nhdb->regular_fields()) {
-    if(exists $l->{$k}) {
+    if(exists $xlog_data->{$k}) {
       push(@fields, $k);
-      push(@values, $l->{$k});
+      push(@values, $xlog_data->{$k});
     }
   }
 
   #--- name (before translation)
   push(@fields, 'name_orig');
-  push(@values, $l->{'name'});
-  $l->{'name_orig'} = $l->{'name'};
+  push(@values, $xlog_data->{'name'});
+  $xlog_data->{'name_orig'} = $xlog_data->{'name'};
 
   #--- name
   push(@fields, 'name');
-  if(exists($translations{$server}{$l->{'name'}})) {
-    $l->{'name'} = $translations{$server}{$l->{'name'}};
+  if(exists($translations{$server}{$xlog_data->{'name'}})) {
+    $xlog_data->{'name'} = $translations{$server}{$xlog_data->{'name'}};
   }
-  push(@values, $l->{'name'});
+  push(@values, $xlog_data->{'name'});
 
   #--- logfiles_i
   push(@fields, 'logfiles_i');
@@ -565,47 +566,47 @@ sub sql_insert_games
   push(@values, $line_no);
 
   #--- conduct
-  if($l->{'conduct'}) {
+  if($xlog_data->{'conduct'}) {
     push(@fields, 'conduct');
-    push(@values, eval($l->{'conduct'}));
+    push(@values, eval($xlog_data->{'conduct'}));
   }
 
   #--- achieve
-  if(exists $l->{'achieve'}) {
+  if(exists $xlog_data->{'achieve'}) {
     push(@fields, 'achieve');
-    push(@values, eval($l->{'achieve'}));
+    push(@values, eval($xlog_data->{'achieve'}));
   }
 
   #--- start time
-  if(exists $l->{'starttime'}) {
+  if(exists $xlog_data->{'starttime'}) {
     push(@fields, 'starttime');
-    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $l->{'starttime'} ]) ;
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'starttime'} ]) ;
     push(@fields, 'starttime_raw');
-    push(@values, $l->{'starttime'});
+    push(@values, $xlog_data->{'starttime'});
   }
 
   #--- end time
-  if(exists $l->{'endtime'}) {
+  if(exists $xlog_data->{'endtime'}) {
     push(@fields, 'endtime');
-    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $l->{'endtime'} ]);
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'endtime'} ]);
     push(@fields, 'endtime_raw');
-    push(@values, $l->{'endtime'});
+    push(@values, $xlog_data->{'endtime'});
   }
 
   #--- birth date
-  if(exists $l->{'birthdate'} && !exists $l->{'starttime'}) {
+  if(exists $xlog_data->{'birthdate'} && !exists $xlog_data->{'starttime'}) {
     push(@fields, 'birthdate');
-    push(@values, $l->{'birthdate'});
+    push(@values, $xlog_data->{'birthdate'});
     push(@fields, 'starttime');
-    push(@values, $l->{'birthdate'});
+    push(@values, $xlog_data->{'birthdate'});
   }
 
   #--- death date
-  if(exists $l->{'deathdate'} && !exists $l->{'endtime'}) {
+  if(exists $xlog_data->{'deathdate'} && !exists $xlog_data->{'endtime'}) {
     push(@fields, 'deathdate');
-    push(@values, $l->{'deathdate'});
+    push(@values, $xlog_data->{'deathdate'});
     push(@fields, 'endtime');
-    push(@values, $l->{'deathdate'});
+    push(@values, $xlog_data->{'deathdate'});
   }
 
   #--- quit flag (escaped also counts)
@@ -617,7 +618,7 @@ sub sql_insert_games
 
   #--- scummed flag
   my $flag_scummed = 'FALSE';
-  if($flag_quit eq 'TRUE' && $l->{'points'} < 1000) {
+  if($flag_quit eq 'TRUE' && $xlog_data->{'points'} < 1000) {
     $flag_scummed = 'TRUE'
   }
   push(@fields, 'scummed');
@@ -1366,20 +1367,20 @@ for my $log (@logfiles) {
 
     $logger->info($lbl, 'Processing file ', $localfile);
 
-    while(my $l = <F>) { #<<< read loop beings here
+    while(my $xlog_line = <F>) { #<<< read loop beings here
 
-      chomp($l);
+      chomp($xlog_line);
 
     #--- devnull logfiles are slightly modified by having a server id
     #--- prepended to the usual xlogfile line
 
       if($devnull) {
-        $l =~ s/^\S+\s(.*)$/$1/;
+        $xlog_line =~ s/^\S+\s(.*)$/$1/;
       }
 
     #--- parse log
 
-      my $pl = parse_log($log, $l);
+      my $parsed_line = parse_log($log, $xlog_line);
 
     #--- insert row into database
 
@@ -1389,7 +1390,7 @@ for my $log (@logfiles) {
         $log->{'lines'} + $lc,
         $log->{'server'},
         $log->{'variant'},
-        $pl
+        $parsed_line
       );
       if($qry) {
         my $sth = $dbh->prepare($qry);
@@ -1409,7 +1410,7 @@ for my $log (@logfiles) {
     # if we want this or not.
 
         $update_variant{$log->{'variant'}} = 1;
-        $update_name{$pl->{'name'}}{$log->{'variant'}} = 1;
+        $update_name{$parsed_line->{'name'}}{$log->{'variant'}} = 1;
 
     #-------------------------------------------------------------------------
     #--- streak processing starts here ---------------------------------------
@@ -1421,27 +1422,27 @@ for my $log (@logfiles) {
     # we first encounter (logfiles_i, name) pair, it is loaded from database
     # (table "streaks")
 
-        if(!exists($streak_open{$logfiles_i}{$pl->{'name'}})) {
-          $r = sql_streak_find($logfiles_i, $pl->{'name'});
+        if(!exists($streak_open{$logfiles_i}{$parsed_line->{'name'}})) {
+          $r = sql_streak_find($logfiles_i, $parsed_line->{'name'});
           die $r if !ref($r);
-          $streak_open{$logfiles_i}{$pl->{'name'}} = $r->[0];
+          $streak_open{$logfiles_i}{$parsed_line->{'name'}} = $r->[0];
         }
 
     #--- game is ASCENDED
 
-        if($pl->{'ascended'}) {
+        if($parsed_line->{'ascended'}) {
 
     #--- game is ASCENDED / streak is NOT OPEN
 
-          if(!$streak_open{$logfiles_i}{$pl->{'name'}}) {
+          if(!$streak_open{$logfiles_i}{$parsed_line->{'name'}}) {
             my $streaks_i = sql_streak_create_new(
               $logfiles_i,
-              $pl->{'name'},
-              $pl->{'name_orig'},
+              $parsed_line->{'name'},
+              $parsed_line->{'name_orig'},
               $rowid
             );
             die $streaks_i if !ref($streaks_i);
-            $streak_open{$logfiles_i}{$pl->{'name'}} = $streaks_i->[0]
+            $streak_open{$logfiles_i}{$parsed_line->{'name'}} = $streaks_i->[0]
           }
 
     #--- game is ASCENDED / streak is OPEN
@@ -1453,39 +1454,39 @@ for my $log (@logfiles) {
 
           else {
             my $last_game = sql_streak_get_tail(
-              $streak_open{$logfiles_i}{$pl->{'name'}}
+              $streak_open{$logfiles_i}{$parsed_line->{'name'}}
             );
             if(!ref($last_game)) {
               die sprintf(
                 'sql_streak_get_tail(%s) failed with msg "%s"',
-                $streak_open{$logfiles_i}{$pl->{'name'}}, $last_game
+                $streak_open{$logfiles_i}{$parsed_line->{'name'}}, $last_game
               );
             }
             if(
               $last_game->{'endtime_raw'}
-              && $pl->{'starttime'}
-              && $last_game->{'endtime_raw'} >= $pl->{'starttime'}
+              && $parsed_line->{'starttime'}
+              && $last_game->{'endtime_raw'} >= $parsed_line->{'starttime'}
             ) {
               # close current streak
               $logger->info($lbl,
-                sprintf('Closing overlapping streak %d', $streak_open{$logfiles_i}{$pl->{'name'}})
+                sprintf('Closing overlapping streak %d', $streak_open{$logfiles_i}{$parsed_line->{'name'}})
               );
               $r = sql_streak_close(
-                $streak_open{$logfiles_i}{$pl->{'name'}}
+                $streak_open{$logfiles_i}{$parsed_line->{'name'}}
               );
               die $r if !ref($r);
               # open new
               $r = sql_streak_create_new(
                 $logfiles_i,
-                $pl->{'name'},
-                $pl->{'name_orig'},
+                $parsed_line->{'name'},
+                $parsed_line->{'name_orig'},
                 $rowid
               );
               die $r if !ref($r);
-              $streak_open{$logfiles_i}{$pl->{'name'}} = $r->[0];
+              $streak_open{$logfiles_i}{$parsed_line->{'name'}} = $r->[0];
             } else {
               $r = sql_streak_append_game(
-                $streak_open{$logfiles_i}{$pl->{'name'}},
+                $streak_open{$logfiles_i}{$parsed_line->{'name'}},
                 $rowid
               );
               die $r if !ref($r);
@@ -1499,12 +1500,12 @@ for my $log (@logfiles) {
 
     #--- game is not ASCENDED / streak is OPEN
 
-          if($streak_open{$logfiles_i}{$pl->{'name'}}) {
+          if($streak_open{$logfiles_i}{$parsed_line->{'name'}}) {
             $r = sql_streak_close(
-              $streak_open{$logfiles_i}{$pl->{'name'}}
+              $streak_open{$logfiles_i}{$parsed_line->{'name'}}
             );
             die $r if !ref($r);
-            $streak_open{$logfiles_i}{$pl->{'name'}} = undef;
+            $streak_open{$logfiles_i}{$parsed_line->{'name'}} = undef;
           }
 
         }
