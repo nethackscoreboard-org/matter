@@ -15,11 +15,13 @@
 
   	"nhdbfeeder" : {
 	    "dbname" : "nhdb",
+        "dbhost" : "localhost",
 	    "dbuser" : "nhdbfeeder"
     },
 
   	"nhdbstats" : {
 	    "dbname" : "nhdb",
+        "dbhost" : "localhost",
 	    "dbuser" : "nhdbstats"
     }
 
@@ -63,7 +65,7 @@
   #--- variants to include in the First To Ascend page
   
   "firsttoascend" : [
-    "dnh", "nhf", "dyn"
+    "gh", "dnh", "nhf", "dyn", "fh", "sh", "nh4", "unh", "xnh", "eh"
   ],
 
 }
