@@ -410,7 +410,7 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  51, 'hardfought.org (SpliceHack)', 'hdf', 'sph',
+  51, 'hardfought.org (SpliceHack)', 'hdf', 'spl',
   'https://www.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hdf.spl.log',
   'https://www.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt'
@@ -708,7 +708,7 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  65, 'au.hardfought.org (SpliceHack)', 'hfa', 'sph',
+  65, 'au.hardfought.org (SpliceHack)', 'hfa', 'spl',
   'https://au.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hfa.spl.log',
   'https://au.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt'

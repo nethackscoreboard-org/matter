@@ -98,8 +98,8 @@
   #--- ordered list of variants
 
   "nh_variants_ord" : [
-    "nh", "ace", "nh4", "unh", "sh", "gh", "dnh", "nhf", "dyn", "fh",
-    "xnh", "slx", "sph", "dns", "sle", "eh",
+    "nh", "ace", "nh4", "unh", "sp", "gh", "dnh", "nhf", "dyn", "fh",
+    "xnh", "slx", "spl", "dns", "sle", "eh",
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -896,7 +896,7 @@
     #===  |____/| .__/|_|_|\___\___|_| |_|\__,_|\___|_|\_\  ==================
     #===        |_|                                         ==================
 
-    "sph" : {
+    "spl" : {
       "name" : "SpliceHack",
       "achieve" : {
         "4096"   : "zen",
