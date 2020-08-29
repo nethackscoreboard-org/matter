@@ -1844,7 +1844,10 @@ sub gen_page_conducts
   # higher conduct counts didn't make it into the top 100 as the
   # ordering is different in the db - includes achievements)
   # so instead, request 200 from db, print 150...
-  splice(@ascs_sorted, 150, 50);
+  my $len = scalar (@ascs_sorted);
+  if ($len > 150) {
+      splice(@ascs_sorted, 150, $len - 50);
+  }
 
   # above fix also meant $$ascs_sorted{n} are no longer in correct
   # rank order, need to update those as well, mb worth having
