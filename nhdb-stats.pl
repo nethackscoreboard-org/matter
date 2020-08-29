@@ -1820,7 +1820,7 @@ sub gen_page_conducts
   } else {
     $query .= q{WHERE conduct IS NOT NULL AND turns IS NOT NULL };
   }
-  $query .= q{ORDER BY ncond DESC, turns ASC LIMIT 100};
+  $query .= q{ORDER BY ncond DESC, turns ASC LIMIT 200};
   $ascs = sql_load(
     $query, 1, 1,
     sub { row_fix($_[0]) },
@@ -1839,6 +1839,12 @@ sub gen_page_conducts
   # of results as given by the SQL query itself, reordering should
   # fix this
   my @ascs_sorted = sort {$$b{'ncond'} <=> $$a{'ncond'}} @$ascs;
+
+  # bit of a hacky fix to the cut-off problem (some ascensions with
+  # higher conduct counts didn't make it into the top 100 as the
+  # ordering is different in the db - includes achievements)
+  # so instead, request 200 from db, print 150...
+  splice(@ascs_sorted, 150, @#ascs_sorted);
 
   # above fix also meant $$ascs_sorted{n} are no longer in correct
   # rank order, need to update those as well, mb worth having
