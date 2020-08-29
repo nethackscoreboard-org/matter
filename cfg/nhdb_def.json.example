@@ -65,7 +65,7 @@
   #--- variants to include in the First To Ascend page
   
   "firsttoascend" : [
-    "gh", "dnh", "nhf", "dyn", "fh", "sh", "nh4", "unh", "xnh", "eh"
+    "gh", "dnh", "nhf", "dyn", "fh", "sh", "nh4", "unh", "xnh", "spl", "eh"
   ],
 
 }
