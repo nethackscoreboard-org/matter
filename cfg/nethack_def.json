@@ -17,6 +17,7 @@
     "car" : "cartomancer",
     "cav" : "caveman",
     "con" : "convict",
+    "dan" : "dancer",
     "dra" : "dragonmaster",
     "hea" : "healer",
 	"inf" : "infidel",
@@ -40,6 +41,7 @@
     "ang" : "angel",
     "bat" : "chiropteran",
     "cen" : "centaur",
+    "chn" : "changeling",
 	"dem" : "demon",
     "clk" : "clockwork automaton",
     "hum" : "human",
@@ -47,6 +49,7 @@
     "dwa" : "dwarf",
     "elf" : "elf",
     "gia" : "giant",
+    "gho" : "ghoul",
     "gno" : "gnome",
     "hlf" : "half-dragon",
     "hob" : "hobbit",
@@ -79,7 +82,7 @@
   "nh_genders_def" : {
     "mal" : "male",
     "fem" : "female",
-    "ntr" : "neuter"
+    "nbn" : "nonbinary"
   },
 
   #--- ordered list of all conducts
@@ -904,10 +907,11 @@
         "524288" : "illf",
       },
       "roles" : [
-        "arc", "bar", "car", "cav", "dra", "hea", "kni", "mon", "pir", "pri",
-        "ran", "rog", "sam", "tou", "val", "wiz"
+        "arc", "bar", "car", "cav", "con", "dan", "dra", "hea", "kni",
+        "mon", "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
       ],
-      "races" : [ "hum", "elf", "dwa", "gno", "orc", "ang", "mer", "inf", "wer", "dro", "gho" ],
+      "genders" : [ "fem", "mal", "nbn" ],
+      "races" : [ "ang", "chn", "dro", "dwa", "elf", "gho", "gno", "hum", "inf", "orc", "mer", "vam", "wer" ],
     },
 
     #===       _       _         _             ===============================
