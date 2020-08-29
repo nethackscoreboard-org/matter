@@ -7,7 +7,7 @@ schema/nhdb-users.txt
 TO-DO
 schema/db-reset.sql
 cfg/auth.json
-templates/about_news.tt
 nhdb.sublime-project-nms1
 cfg/nhdb_def.json
 test/
+www/
