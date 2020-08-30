@@ -5,7 +5,7 @@
 DROP TABLE IF EXISTS translations;
 
 CREATE TABLE translations (
-  server    varchar(3) NOT NULL,
+  server    varchar(8) NOT NULL,
   name_from varchar(48) NOT NULL,
   name_to   varchar(48) NOT NULL
 );
