@@ -1,4 +1,3 @@
-*~
 *.gif
 *.swp
 test/
@@ -15,3 +14,5 @@ mojo/cfg/nethackstats.json
 mojo/my-env
 postgres/env
 .env
+cfg/*
+logs/*
