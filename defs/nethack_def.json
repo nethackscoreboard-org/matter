@@ -20,7 +20,7 @@
     "dan" : "dancer",
     "dra" : "dragonmaster",
     "hea" : "healer",
-	  "inf" : "infidel",
+	"inf" : "infidel",
     "kni" : "knight",
     "mon" : "monk",
     "nob" : "noble",
@@ -42,7 +42,7 @@
     "bat" : "chiropteran",
     "cen" : "centaur",
     "chn" : "changeling",
-	  "dem" : "demon",
+	"dem" : "demon",
     "clk" : "clockwork automaton",
     "hum" : "human",
     "dro" : "drow",
@@ -98,8 +98,8 @@
   #--- ordered list of variants
 
   "nh_variants_ord" : [
-      "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fh", "4k",
-      "grunt", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh",
+    "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fh", "4k",
+    "grunt", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh",
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
