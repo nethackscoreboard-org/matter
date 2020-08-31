@@ -347,9 +347,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  30, 'hardfought.org (Fourk)', 'hdf', 'nhf',
+  30, 'hardfought.org (Fourk)', 'hdf', '4k',
   'https://www.hardfought.org/xlogfiles/4k/xlogfile',
-  'hdf.nhf.log',
+  'hdf.4k.log',
   'https://www.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d'
 );
 
@@ -468,9 +468,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  37, 'eu.hardfought.org (NetHack Fourk)', 'hfe', 'nhf',
+  37, 'eu.hardfought.org (NetHack Fourk)', 'hfe', '4k',
   'https://eu.hardfought.org/xlogfiles/4k/xlogfile',
-  'hfe.nhf.log',
+  'hfe.4k.log',
   'https://eu.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d'
 );
 
@@ -637,7 +637,7 @@ INSERT INTO logfiles (
 ) VALUES (
   57, 'au.hardfought.org (FIQHack)', 'hfa', 'fh',
   'https://au.hardfought.org/xlogfiles/fh/xlogfile',
-  'hfa.fh.log',
+  'hfa.fiq.log',
   'https://au.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
   '{"base64xlog"}'
 );
