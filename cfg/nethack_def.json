@@ -98,7 +98,7 @@
   #--- ordered list of variants
 
   "nh_variants_ord" : [
-      "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fh", "4k",
+      "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fiq", "4k",
       "grunt", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh",
   ],
 
