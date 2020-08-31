@@ -1,0 +1,4 @@
+{
+    "$FEEDER_DBUSER" : "$FEEDER_PASS",
+    "$STATS_DBUSER"  : "$STATS_PASS"
+}

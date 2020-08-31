@@ -1,4 +1,6 @@
-FROM feeder-skel:latest as small
+ARG LABEL=main
+FROM feeder-skel:$LABEL
 COPY --from=cpan-feeder /cpan-mods /cpan-mods
-WORKDIR /run/nhs
+ARG RUN=run
+WORKDIR $RUN
 CMD ./nhdb-stats.pl

@@ -7,29 +7,29 @@
 {
   #--- HTML files are generated in this place
 
-  "http_root" : "/home/httpd/nh",
+  "http_root" : "${WEBDIR}",
 
   #--- database session configuration
 
   "db" : {
 
   	"nhdbfeeder" : {
-	    "dbname" : "nhdb",
-        "dbhost" : "localhost",
-	    "dbuser" : "nhdbfeeder"
+	    "dbname" : "${DBNAME}",
+        "dbhost" : "${DBHOST}",
+	    "dbuser" : "${FEEDER_DBUSER}"
     },
 
   	"nhdbstats" : {
-	    "dbname" : "nhdb",
-        "dbhost" : "localhost",
-	    "dbuser" : "nhdbstats"
+	    "dbname" : "${DBNAME}",
+        "dbhost" : "${DBHOST}",
+	    "dbuser" : "${STATS_DBUSER}"
     }
 
   },
 
   #--- authentication info for database sessions is stored in this file
 
-  "auth" : "auth.json",
+  "auth" : "${AUTH_JSON_PATH}",
 
   #--- define wget command-line options
 

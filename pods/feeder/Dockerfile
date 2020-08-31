@@ -2,11 +2,14 @@ FROM alpine:latest as skel
 COPY ./binary-deps /tmp
 RUN apk add `cat /tmp/binary-deps`
 
-FROM cpan-env:latest as cpan-deps
+ARG LABEL=main
+FROM cpan-env:$LABEL as cpan-deps
 COPY ./cpanfile /tmp
 RUN cpanm -l /cpan-mods --installdeps /tmp --notest
 
-FROM feeder-skel:latest as small
+ARG LABEL=main
+FROM feeder-skel:$LABEL as small
 COPY --from=cpan-feeder /cpan-mods /cpan-mods
-WORKDIR /run/nhs
-CMD ./nhdb-feeder.pl --server=hdf,hfa,hfe
+ARG RUN=run
+WORKDIR $RUN
+CMD ./nhdb-feeder.pl
