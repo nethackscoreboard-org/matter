@@ -86,9 +86,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
-  3, 'eu.un.nethack.nu', 'une', 'unh',
+  3, 'eu.un.nethack.nu', 'une', 'un',
   'https://ascension.run/history/unn/eu/xlogfile',
-  'une.unh.log',
+  'une.un.log',
   'https://ascension.run/history/unn/users/%u/dumps/eu/%u.%e.txt.html',
   TRUE
 );
@@ -102,9 +102,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
-  10, 'us.un.nethack.nu', 'unu', 'unh',
+  10, 'us.un.nethack.nu', 'unu', 'un',
   'https://ascension.run/history/unn/us/xlogfile',
-  'unu.unh.log',
+  'unu.un.log',
   'https://ascension.run/history/unn/users/%u/dumps/us/%u.%e.txt.html',
   TRUE
 );
@@ -142,9 +142,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, static
 ) VALUES (
-  6, 'sporkhack.com', 'shc', 'sh',
+  6, 'sporkhack.com', 'shc', 'spork',
   'http://sporkhack.com/xlogfile',
-  'shc.sh.log',
+  'shc.spork.log',
   TRUE
 );
 
@@ -155,9 +155,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  7, 'grunthack.org', 'gho', 'gh',
+  7, 'grunthack.org', 'gho', 'grunt',
   'http://grunthack.org/xlogfile',
-  'gho.gh.log',
+  'gho.grunt.log',
   'http://grunthack.org/userdata/%U/%u/dumplog/%s.gh020.txt'
 );
 
@@ -218,9 +218,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  13, 'ascension.run (Fourk)', 'asc', 'nhf',
+  13, 'ascension.run (Fourk)', 'asc', '4k',
   'https://ascension.run/xlogfiles/nhfourk',
-  'asc.nhf.log',
+  'asc.4k.log',
   'https://ascension.run/userdata/%u/nhfourk/dumplog/%D'
 );
 
@@ -229,9 +229,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
-  14, 'ascension.run (SporkHack 2015)', 'asc', 'sh',
+  14, 'ascension.run (SporkHack 2015)', 'asc', 'spork',
   'https://ascension.run/history/junethack2015/xlogfiles/sporkhack',
-  'asc.sh.2015.log',
+  'asc.spork.2015.log',
   'https://ascension.run/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
   TRUE
 );
@@ -241,9 +241,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
-  15, 'ascension.run (GruntHack 2015)', 'asc', 'gh',
+  15, 'ascension.run (GruntHack 2015)', 'asc', 'grunt',
   'https://ascension.run/history/junethack2015/xlogfiles/grunthack',
-  'asc.gh.2015.log',
+  'asc.grunt.2015.log',
   'https://ascension.run/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
   TRUE
 );
@@ -251,9 +251,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  16, 'ascension.run (UnNetHack)', 'asc', 'unh',
+  16, 'ascension.run (UnNetHack)', 'asc', 'un',
   'https://ascension.run/xlogfiles/unnethack',
-  'asc.unh.log',
+  'asc.un.log',
   'https://ascension.run/userdata/%u/unnethack/dumplog/%s.html'
 );
 
@@ -278,9 +278,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, options
 ) VALUES (
-  19, 'ascension.run (FIQHack)', 'asc', 'fh',
+  19, 'ascension.run (FIQHack)', 'asc', 'fiq',
   'https://ascension.run/xlogfiles/fiqhack',
-  'asc.fh.log',
+  'asc.fiq.log',
   'https://ascension.run/userdata/%u/fiqhack/dumplog/%D',
   '{"base64xlog"}'
 );
@@ -301,18 +301,18 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  23, 'hardfought.org (GruntHack)', 'hdf', 'gh',
+  23, 'hardfought.org (GruntHack)', 'hdf', 'grunt',
   'https://www.hardfought.org/xlogfiles/gh/xlogfile',
-  'hdf.gh.log',
+  'hdf.grunt.log',
   'https://www.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  24, 'hardfought.org (UnNetHack)', 'hdf', 'unh',
+  24, 'hardfought.org (UnNetHack)', 'hdf', 'un',
   'https://www.hardfought.org/xlogfiles/unnethack/xlogfile',
-  'hdf.unh.log',
+  'hdf.un.log',
   'https://www.hardfought.org/userdata/%U/%u/unnethack/dumplog/%s.un.txt.html'
 );
 
@@ -337,9 +337,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, options
 ) VALUES (
-  29, 'hardfought.org (FIQHack)', 'hdf', 'fh',
+  29, 'hardfought.org (FIQHack)', 'hdf', 'fiq',
   'https://www.hardfought.org/xlogfiles/fh/xlogfile',
-  'hdf.fh.log',
+  'hdf.fiq.log',
   'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
   '{"base64xlog"}'
 );
@@ -383,9 +383,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  34, 'hardfought.org (SporkHack)', 'hdf', 'sh',
+  34, 'hardfought.org (SporkHack)', 'hdf', 'spork',
   'https://www.hardfought.org/xlogfiles/sporkhack/xlogfile',
-  'hdf.sh.log',
+  'hdf.spork.log',
   'https://www.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt'
 );
 
@@ -419,18 +419,18 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  69, 'hardfought.org (SLASH''EM)', 'hdf', 'sle',
+  69, 'hardfought.org (SLASH''EM)', 'hdf', 'slashem',
   'https://www.hardfought.org/xlogfiles/slashem/xlogfile',
-  'hdf.sle.log',
+  'hdf.slashem.log',
   'https://www.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  72, 'hardfought.org (EvilHack)', 'hdf', 'eh',
+  72, 'hardfought.org (EvilHack)', 'hdf', 'evil',
   'https://www.hardfought.org/xlogfiles/evilhack/xlogfile',
-  'hdf.eh.log',
+  'hdf.evil.log',
   'https://www.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
 );
 
@@ -486,9 +486,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, options
 ) VALUES (
-  39, 'eu.hardfought.org (FIQHack)', 'hfe', 'fh',
+  39, 'eu.hardfought.org (FIQHack)', 'hfe', 'fiq',
   'https://eu.hardfought.org/xlogfiles/fh/xlogfile',
-  'hfe.fh.log',
+  'hfe.fiq.log',
   'https://eu.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
   '{"base64xlog"}'
 );
@@ -496,9 +496,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  40, 'eu.hardfought.org (GruntHack)', 'hfe', 'gh',
+  40, 'eu.hardfought.org (GruntHack)', 'hfe', 'grunt',
   'https://eu.hardfought.org/xlogfiles/gh/xlogfile',
-  'hfe.gh.log',
+  'hfe.grunt.log',
   'https://eu.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt'
 );
 
@@ -514,18 +514,18 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  42, 'eu.hardfought.org (SporkHack)', 'hfe', 'sh',
+  42, 'eu.hardfought.org (SporkHack)', 'hfe', 'spork',
   'https://eu.hardfought.org/xlogfiles/sporkhack/xlogfile',
-  'hfe.sh.log',
+  'hfe.spork.log',
   'https://eu.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  43, 'eu.hardfought.org (UnNetHack)', 'hfe', 'unh',
+  43, 'eu.hardfought.org (UnNetHack)', 'hfe', 'un',
   'https://eu.hardfought.org/xlogfiles/unnethack/xlogfile',
-  'hfe.unh.log',
+  'hfe.un.log',
   'https://eu.hardfought.org/userdata/%U/%u/unnethack/dumplog/%s.un.txt.html'
 );
 
@@ -550,16 +550,16 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  49, 'eu.hardfought.org (SLASH''EM Extended)', 'hfe', 'slx',
+  49, 'eu.hardfought.org (SLASH''EM Extended)', 'hfe', 'slex',
   'https://eu.hardfought.org/xlogfiles/slex/xlogfile',
-  'hfe.slx.log',
+  'hfe.slex.log',
   'https://eu.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  52, 'eu.hardfought.org (SpliceHack)', 'hfe', 'sph',
+  52, 'eu.hardfought.org (SpliceHack)', 'hfe', 'spl',
   'https://eu.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hfe.spl.log',
   'https://eu.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt'
@@ -568,18 +568,18 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  70, 'eu.hardfought.org (SLASH''EM)', 'hfe', 'sle',
+  70, 'eu.hardfought.org (SLASH''EM)', 'hfe', 'slashem',
   'https://eu.hardfought.org/xlogfiles/slashem/xlogfile',
-  'hfe.sle.log',
+  'hfe.slashem.log',
   'https://eu.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  73, 'eu.hardfought.org (EvilHack)', 'hfe', 'eh',
+  73, 'eu.hardfought.org (EvilHack)', 'hfe', 'evil',
   'https://eu.hardfought.org/xlogfiles/evilhack/xlogfile',
-  'hfe.eh.log',
+  'hfe.evil.log',
   'https://eu.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
 );
 
@@ -599,18 +599,18 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  54, 'au.hardfought.org (GruntHack)', 'hfa', 'gh',
+  54, 'au.hardfought.org (GruntHack)', 'hfa', 'grunt',
   'https://au.hardfought.org/xlogfiles/gh/xlogfile',
-  'hfa.gh.log',
+  'hfa.grunt.log',
   'https://au.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  55, 'au.hardfought.org (UnNetHack)', 'hfa', 'unh',
+  55, 'au.hardfought.org (UnNetHack)', 'hfa', 'un',
   'https://au.hardfought.org/xlogfiles/unnethack/xlogfile',
-  'hfa.unh.log',
+  'hfa.un.log',
   'https://au.hardfought.org/userdata/%U/%u/unnethack/dumplog/%s.un.txt.html'
 );
 
@@ -645,9 +645,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  58, 'au.hardfought.org (Fourk)', 'hfa', 'nhf',
+  58, 'au.hardfought.org (Fourk)', 'hfa', '4k',
   'https://au.hardfought.org/xlogfiles/4k/xlogfile',
-  'hfa.nhf.log',
+  'hfa.4k.log',
   'https://au.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d'
 );
 
@@ -681,9 +681,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  62, 'au.hardfought.org (SporkHack)', 'hfa', 'sh',
+  62, 'au.hardfought.org (SporkHack)', 'hfa', 'spork',
   'https://au.hardfought.org/xlogfiles/sporkhack/xlogfile',
-  'hfa.sh.log',
+  'hfa.spork.log',
   'https://au.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt'
 );
 
@@ -699,9 +699,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  64, 'au.hardfought.org (SLASH''EM Extended)', 'hfa', 'slx',
+  64, 'au.hardfought.org (SLASH''EM Extended)', 'hfa', 'slex',
   'https://au.hardfought.org/xlogfiles/slex/xlogfile',
-  'hfa.slx.log',
+  'hfa.slex.log',
   'https://au.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt'
 );
 
@@ -717,18 +717,18 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  71, 'au.hardfought.org (SLASH''EM)', 'hfa', 'sle',
+  71, 'au.hardfought.org (SLASH''EM)', 'hfa', 'slashem',
   'https://au.hardfought.org/xlogfiles/slashem/xlogfile',
-  'hfa.sle.log',
+  'hfa.slashem.log',
   'https://au.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  74, 'au.hardfought.org (EvilHack)', 'hfa', 'eh',
+  74, 'au.hardfought.org (EvilHack)', 'hfa', 'evil',
   'https://au.hardfought.org/xlogfiles/evilhack/xlogfile',
-  'hfa.eh.log',
+  'hfa.evil.log',
   'https://au.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
 );
 
@@ -751,9 +751,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
-  27, 'em.slashem.me (GruntHack)', 'esm', 'gh',
+  27, 'em.slashem.me (GruntHack)', 'esm', 'grunt',
   'https://em.slashem.me/xlogfiles/grunthackold',
-  'esm.gh.log',
+  'esm.grunt.log',
   'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt',
   TRUE
 );
@@ -763,9 +763,9 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
-  28, 'em.slashem.me (SporkHack)', 'esm', 'sh',
+  28, 'em.slashem.me (SporkHack)', 'esm', 'spork',
   'https://em.slashem.me/xlogfiles/sporkhackold',
-  'esm.sh.log',
+  'esm.spork.log',
   'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt',
   TRUE
 );
@@ -773,36 +773,36 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  48, 'em.slash.em (SLASH''EM Extended)', 'esm', 'slx',
+  48, 'em.slash.em (SLASH''EM Extended)', 'esm', 'slex',
   'https://em.slashem.me/xlogfiles/slex',
-  'esm.slx.log',
+  'esm.slex.log',
   'https://em.slashem.me/userdata/%u/slex/dumplog/%s.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  66, 'em.slashem.me (GruntHack)', 'esm', 'gh',
+  66, 'em.slashem.me (GruntHack)', 'esm', 'grunt',
   'https://em.slashem.me/xlogfiles/grunthack',
-  'esm.gh.01.log',
+  'esm.grunt.01.log',
   'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  67, 'em.slashem.me (SporkHack)', 'esm', 'sh',
+  67, 'em.slashem.me (SporkHack)', 'esm', 'spork',
   'https://em.slashem.me/xlogfiles/sporkhackold',
-  'esm.sh.01.log',
+  'esm.spork.01.log',
   'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt'
 );
 
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  68, 'em.slashem.me (dnhslex)', 'esm', 'dns',
+  68, 'em.slashem.me (dnhslex)', 'esm', 'dnhslex',
   'https://em.slashem.me/xlogfiles/dnhslex',
-  'esm.dns.01.log',
+  'esm.dnhslex.01.log',
   'https://em.slashem.me/userdata/%u/dnhslex/dumplog/%s'
 );
 

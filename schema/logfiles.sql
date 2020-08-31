@@ -89,8 +89,8 @@ DROP TABLE IF EXISTS logfiles;
 CREATE TABLE logfiles (
   logfiles_i  int,
   descr       varchar(64),
-  server      varchar(3) NOT NULL,
-  variant     varchar(3) NOT NULL,
+  server      varchar(8) NOT NULL,
+  variant     varchar(16) NOT NULL,
   logurl      varchar(128),
   localfile   varchar(128) NOT NULL UNIQUE,
   dumpurl     varchar(128),
