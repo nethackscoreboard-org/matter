@@ -98,8 +98,8 @@
   #--- ordered list of variants
 
   "nh_variants_ord" : [
-    "nh", "ace", "nh4", "unh", "sp", "gh", "dnh", "nhf", "dyn", "fh",
-    "xnh", "slx", "spl", "dns", "sle", "eh",
+      "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fh", "4k",
+      "grunt", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh",
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -244,7 +244,7 @@
     #===  | |_| | | | | |\  |  __/ |_|  _  | (_| | (__|   <   ================
     #===   \___/|_| |_|_| \_|\___|\__|_| |_|\__,_|\___|_|\_\  ================
 
-    "unh" : {
+    "un" : {
       "name" : "UnNetHack",
       "roles" : [
         "arc", "bar", "cav", "con", "hea", "kni", "mon", "pri", "ran",
@@ -282,7 +282,7 @@
     #===  |____/| .__/ \___/|_|  |_|\_\_| |_|\__,_|\___|_|\_\  ===============
     #===        |_|                                            ===============
 
-    "sp" : {
+    "spork" : {
       "name" : "SporkHack",
       "rules" : [
         [ "$arc", "#law", "#neu"         ],
@@ -312,7 +312,7 @@
     #===  | |_| | |  | |_| | | | | |_|  _  | (_| | (__|   <   ================
     #===   \____|_|   \__,_|_| |_|\__|_| |_|\__,_|\___|_|\_\  ================
 
-    "gh" : {
+    "grunt" : {
       "name" : "GruntHack",
       "races" : [ "hum", "elf", "dwa", "gia", "gno", "kob", "ogr", "orc" ],
       "rules" : [
@@ -712,7 +712,7 @@
     #===  | |\  |  __/ |_|  _  | (_| | (__|   <  |  _| (_) | |_| | |  |   <
     #===  |_| \_|\___|\__|_| |_|\__,_|\___|_|\_\ |_|  \___/ \__,_|_|  |_|\_\
 
-    "nhf" : {
+    "4k" : {
       "name" : "NetHack Fourk",
       "races" : [ "hum", "elf", "dwa", "gia", "gno", "orc", "scu", "syl" ],
       "conduct" : {
@@ -792,7 +792,7 @@
         "2048"   : "geno",
         "4096"   : "elbe",
         "8192"   : "magi",
-        "16386"  : "nude",
+        "16384"  : "nude",
         "32768"  : "zen",
         "65536"  : "thie",
         "131072" : "bone",
@@ -807,7 +807,7 @@
     #===  |  _|  | | |_| |  _  | (_| | (__|   <   ============================
     #===  |_|   |___\__\_\_| |_|\__,_|\___|_|\_\  ============================
 
-    "fh" : {
+    "fiq" : {
       "name" : "FIQHack",
       "conduct" : {
         "1"     : "food",
@@ -866,7 +866,7 @@
     # output that would aggregate or tabelate them will be omitted. Also
     # the combo validity check is not performed on xlogfile import.
 
-    "slx" : {
+    "slex" : {
       "name" : "SLASH'EM Extended",
       "roles" : null,
       "races" : null,
@@ -968,7 +968,7 @@
 
     # For the time being we leave everything undefined.
 
-    "dns" : {
+    "dnhslex" : {
       "name" : "dnhslex",
       "roles" : null,
       "races" : null,
@@ -982,7 +982,7 @@
     #===   ___) | |___ / ___ \ ___) |  _  | | |___| |  | |  ==================
     #===  |____/|_____/_/   \_\____/|_| |_| |_____|_|  |_|  ==================
 
-    "sle" : {
+    "slashem" : {
       "name" : "SLASH'EM",
       "roles" : null,
       "races" : null,
@@ -996,7 +996,7 @@
     #===  | |___ \ V /| | |  _  | (_| | (__|   <   ===========================
     #===  |_____| \_/ |_|_|_| |_|\__,_|\___|_|\_\  ===========================
 
-    "eh" : {
+    "evil" : {
       "name" : "EvilHack",
       "roles" : [
         "arc", "bar", "cav", "con", "hea", "inf", "kni", "mon", "pri", "ran", "rog",
