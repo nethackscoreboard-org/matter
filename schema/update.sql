@@ -46,7 +46,7 @@
 DROP TABLE IF EXISTS update;
 
 CREATE TABLE update (
-  variant varchar(3),
+  variant varchar(16),
   name    varchar(48),
   upflag  boolean DEFAULT FALSE,
   UNIQUE (variant, name)

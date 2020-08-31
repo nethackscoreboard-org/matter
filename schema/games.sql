@@ -203,8 +203,8 @@ $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION first_to_ascend(_variant varchar)
 RETURNS TABLE (
-  r_server         varchar(3),
-  r_variant        varchar(3),
+  r_server         varchar(8),
+  r_variant        varchar(16),
   r_version        varchar(16),
   r_name           varchar(48),
   r_role           char(3),
