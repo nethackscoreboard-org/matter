@@ -792,6 +792,7 @@ sub row_fix
   #--- include conducts in the ascended message
 
   if($row->{'ascended'} && defined $row->{'conduct'}) {
+    print "conduct field: %X", $row->{'conduct'};
     my @c = $variant->conduct(@{$row}{'conduct', 'elbereths', 'achieve'});
     $row->{'ncond'} = scalar(@c);
     $row->{'tcond'} = join(' ', @c);

@@ -13,7 +13,7 @@ feeder-init () {
     if [[ -n "$*" ]]; then
         cmd="./nhdb-feeder.pl $*"
     else
-        cmd=""
+        cmd="./nhdb-feeder.pl --server=test"
     fi
     podman run --pod nhdb-pod --name nhdb-feeder --env $perl_lib \
        --rm -v $HOST_RUNDIR:$CONT_RUNDIR:rw -it \
