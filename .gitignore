@@ -5,3 +5,4 @@ bin
 cfg
 pods/feeder/Dockerfile
 pods/stats/Dockerfile
+defs/pginit.d/00_init_users.sh

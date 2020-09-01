@@ -11,7 +11,8 @@ pcon () {
 
 stats-init () {
     podman run --pod nhdb-pod --name nhdb-stats --env $perl_lib \
-        --rm -v $HOST_RUNDIR:$CONT_RUNDIR:rw -it \
+        -v $HOST_WEBDIR:$CONT_WEBDIR:rw \
+        --rm -v $HOST_RUNDIR:$CONT_RUNDIR:ro -it \
         nhdb-stats:$LABEL ./nhdb-stats.pl $*
 }
 
