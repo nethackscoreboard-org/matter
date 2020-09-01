@@ -401,7 +401,7 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  47, 'hardfought.org (SLASH''EM Extended)', 'hdf', 'slx',
+  47, 'hardfought.org (SLASH''EM Extended)', 'hdf', 'slex',
   'https://www.hardfought.org/xlogfiles/slex/xlogfile',
   'hdf.slx.log',
   'https://www.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt'
@@ -635,7 +635,7 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, options
 ) VALUES (
-  57, 'au.hardfought.org (FIQHack)', 'hfa', 'fh',
+  57, 'au.hardfought.org (FIQHack)', 'hfa', 'fiq',
   'https://au.hardfought.org/xlogfiles/fh/xlogfile',
   'hfa.fiq.log',
   'https://au.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
