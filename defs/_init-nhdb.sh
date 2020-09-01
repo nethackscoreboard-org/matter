@@ -39,5 +39,5 @@ if [[ "${fail:-}" == "yes" ]]; then
     exit 1
 fi
 
-pcon exists nhdb && pcon start nhdb || nhdb-init
 pcon exists nhdb-web && pcon start nhdb-web || web-init
+pcon exists nhdb && pcon start nhdb || nhdb-init
