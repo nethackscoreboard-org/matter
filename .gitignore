@@ -1,3 +1,7 @@
 pods/postgres/init.d/*.*
+defs/mounts.conf
 defs/nhdb_def.json
-bin/nhdb-init.sh
+bin
+cfg
+pods/feeder/Dockerfile
+pods/stats/Dockerfile

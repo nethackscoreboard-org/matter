@@ -3,7 +3,7 @@
 set -e
 feed_pass=`cat /run/secrets/nhdb/$FEEDER_DBUSER`
 stats_pass=`cat /run/secrets/nhdb/$STATS_DBUSER`
-postgres="psql -U ${postgres_user:-}"
+postgres="psql -U ${POSTGRES_USER:-}"
 ${postgres:-} <<-EOSQL
   CREATE ROLE $FEEDER_DBUSER WITH PASSWORD '${feed_pass:-}' LOGIN;
 EOSQL

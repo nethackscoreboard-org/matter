@@ -45,7 +45,12 @@ sub _build_config
   #--- read the file with db passwords (if defined)
 
   if(exists $nhdb_def->{'auth'}) {
-    $def_json = path($Bin, 'cfg', $nhdb_def->{'auth'})->slurp_raw();
+    # support non-relative path to auth.json file
+    if ($nhdb_def->{'auth'} =~ /^\//) {
+        $def_json = path($nhdb_def->{'auth'})->slurp_raw();
+    } else {
+        $def_json = path($Bin, 'cfg', $nhdb_def->{'auth'})->slurp_raw();
+    }
     $nhdb_def->{'auth'} = $js->decode($def_json);
   }
 

@@ -1,0 +1,4 @@
+FROM nhdb-feeder:$LABEL
+ARG RUN=run
+WORKDIR ${RUN:-}
+CMD ./nhdb-stats.pl

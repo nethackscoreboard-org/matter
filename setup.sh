@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 source defs/setup_def.sh
 skip_pass="true"
 
@@ -49,18 +50,21 @@ mkdir -pv bin
 cd defs
 cp nethack_def.json logging.conf ../cfg/
 envsubst < _nhdb_def.json > ../cfg/nhdb_def.json
-envsubst < _nhdb-init.sh  > ../bin/nhdb-init.sh
-chmod a+x ../bin/nhdb-init.sh
+envsubst < _init-nhdb.sh  > ../bin/init-nhdb
+envsubst < _nhdb-feeder.sh  > ../bin/nhdb-feeder
+envsubst < _nhdb-stats.sh  > ../bin/nhdb-stats
+chmod a+x ../bin/*
 envsubst < _mounts.conf > mounts.conf
+envsubst < _00_init_users.sh > pginit.d/00_init_users.sh
+chmod a+x pginit.d/00_init_users.sh
 cd pginit.d
-envsubst < _00_init_users.sh > 00_init_users.sh
 for i in *; do
     ln -srf $i $TOPDIR/pods/postgres/init.d/
 done
 cd $TOPDIR
 
 # copy files to install directories
-mkdir -pv $HOST_RUNDIR/
+mkdir -pv $HOST_RUNDIR/logs
 cp -r run/* $HOST_RUNDIR/
 cp -r cfg $HOST_RUNDIR/
 cp -r lib $HOST_RUNDIR/
@@ -68,13 +72,8 @@ mkdir -pv $HOST_WEBDIR
 cp -r www/* $HOST_WEBDIR/
 cp -r bin/* $HOST_BINDIR/
 
-# build container images
-podman build -t nhdb:$LABEL pods/postgres || exit $?
-podman build -t cpan-env:$LABEL pods/cpan || exit $?
-podman build -t feeder-skel:$LABEL --target skel pods/feeder || exit $?
-podman build -t cpan-feeder:$LABEL --build-arg LABEL=$LABEL \
-    --target cpan-deps --build-arg RUN=$CONT_RUNDIR pods/feeder || exit $?
-podman build -t nhdb-feeder:$LABEL --build-arg LABEL=$LABEL \
-    --target small --build-arg RUN=$CONT_RUNDIR pods/feeder || exit $?
-podman build -t nhdb-stats:$LABEL pods/stats || exit $?
-podman pull nginx:alpine || exit $?
+if [[ $# -ge 0 && $1 == "--skip-pods" ]]; then
+    exit 0
+fi
+
+pods/build.sh

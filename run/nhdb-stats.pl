@@ -1698,12 +1698,16 @@ sub gen_page_front
   #--- save the result
 
   $data{'streaks'} = $streaks_proc_2;
-  $logger->debug(
-    sprintf(
-      'Removed %d closed/old streaks',
-      scalar(@$streaks_proc_1) - scalar(@$streaks_proc_2)
-    )
-  );
+  if (ref($streaks_proc_2) && ref($streaks_proc_1)) {
+    $logger->debug(
+      sprintf(
+        'Removed %d closed/old streaks',
+        scalar(@$streaks_proc_1) - scalar(@$streaks_proc_2)
+      )
+    );
+  } else {
+    $logger->debug('could not get streak info')
+  }
 
   #----------------------------------------------------------------------------
   #--- retrieve recent ascensions ---------------------------------------------
