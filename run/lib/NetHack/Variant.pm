@@ -400,7 +400,16 @@ sub _combo_table_init
 
   #--- init the table
   # value of -1 marks unavailable combo
-
+  # we could also do a pass to mark invalid columns -2,
+  # i.e. if every role for a given race/align combo is -1
+  # then we set those to -2 - will also need a way to
+  # save the disallowed race/align combos for table header
+  # purposes. another option would be to rework/make an
+  # additional combo_valid subroutine that just checks
+  # whether a race/align combination is permitted
+  # this could end up being difficult if there are variants
+  # that allow certain roles to override typical race/alignment
+  # rules...
   my $i = 0;
   foreach my $role (@{$self->roles()}) {
     my @ary_races;

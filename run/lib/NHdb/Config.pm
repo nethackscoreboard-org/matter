@@ -7,6 +7,7 @@
 package NHdb::Config;
 
 use Moo;
+use Cwd;
 with 'MooX::Singleton';
 
 use JSON;
@@ -38,8 +39,14 @@ sub _build_config
   my $js = JSON->new()->relaxed(1);
 
   #--- read the main config file
-
-  my $def_json = path($Bin, 'cfg/nhdb_def.json')->slurp_raw();
+  my $def_json;
+  if (-e path($Bin, 'cfg/nhdb_def.json')) {
+    $def_json = path($Bin, 'cfg/nhdb_def.json')->slurp_raw();
+  } elsif (-e path(cwd(), 'cfg/nhdb_def.json')) {
+    $def_json = path(cwd(), 'cfg/nhdb_def.json')->slurp_raw();
+  } else {
+    die "couldn't find config file nhdb_def.json :(";
+  }
   my $nhdb_def = $js->decode($def_json);
 
   #--- read the file with db passwords (if defined)
