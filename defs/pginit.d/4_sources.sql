@@ -753,10 +753,10 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  84, 'eu.hardfought.org (notdNetHack)', 'hfe', 'ndnh',
-  'https://eu.hardfought.org/xlogfiles/notdnethack/xlogfile',
-  'hfe.ndnh.log',
-  'https://eu.hardfought.org/userdata/%U/%u/notdnethack/dumplog/%s.ndnh.txt'
+  84, 'eu.hardfought.org (notdNetHack)', 'hfa', 'ndnh',
+  'https://au.hardfought.org/xlogfiles/notdnethack/xlogfile',
+  'hfa.ndnh.log',
+  'https://au.hardfought.org/userdata/%U/%u/notdnethack/dumplog/%s.ndnh.txt'
 );
 
 -----------------------------------------------------------------------------
