@@ -20,7 +20,7 @@ nhdb-init () {
 
 web-init () {
     podman run --pod nhdb-pod --name nhdb-web \
-        -v $HOST_WEBDIR:/usr/share/nginx/html:ro -d nginx
+        -v $HOST_WEBDIR:/usr/share/nginx/html:rw -d nginx
 }
 
 # have them all together in an isolated pod - this means
