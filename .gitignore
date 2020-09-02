@@ -1,8 +1,9 @@
-pods/postgres/init.d/*.*
+cfg/nhdb_def.json
+bin/init-nhdb
+bin/nhdb-feeder
+bin/nhdb-mojo
+cfg/
 defs/mounts.conf
-defs/nhdb_def.json
-bin
-cfg
-pods/feeder/Dockerfile
-pods/stats/Dockerfile
 defs/pginit.d/00_init_users.sh
+pods/mojo/Dockerfile
+pods/postgres/init.d/
