@@ -1,7 +1,9 @@
 # not executable, to be sourced by setup.sh
 # general installation defs
-export HOST_RUNDIR=~/run/nhs
+export HOST_RUNDIR=~/run/nhs-feed
+export HOST_MOJDIR=~/run/nhs-mojo
 export CONT_RUNDIR=/run
+export CONT_MOJDIR=/run
 export HOST_BINDIR=~/bin
 export SETUP_MODE=podman
 
@@ -14,15 +16,17 @@ export STATS_DBUSER=nhdbstats
 export PGDATA=/var/lib/postgresql/data/pgdata
 
 # web definitions
-export HOST_WEBDIR=~/www/nhs
-export CONT_WEBDIR=${CONT_RUNDIR}/www
+# should be a subdirectory of $HOST_MOJDIR, so that
+# a single bind mount (-v flag) is sufficient
+export HOST_WEBDIR=${HOST_MOJDIR}/public
+export CONT_WEBDIR=${CONT_MOJDIR}/public
 if [[ "$SETUP_MODE" == "host" ]]; then
     export WEBDIR=$HOST_WEBDIR
 else
     export WEBDIR=$CONT_WEBDIR
 fi
 export HOST_WEBPORT=8080
-export CONT_WEBPORT=80
+export CONT_WEBPORT=8080
 
 # general defs related to containers,
 # some will be listed here as just a comment
@@ -39,7 +43,7 @@ if [[ "$SETUP_MODE" == "podman" ]]; then
     # inside containers, as a directory with root db pass,
     # and other passwords inside
     export secrets="$HOME/.secrets/containers/nhdb"
-    export LABEL="main" # tag images with branch name label
+    export LABEL="develop" # tag images with branch name label
     export AUTH_JSON_PATH="/run/secrets/nhdb/auth.json"
     export FEEDER_DEFAULT_CMD="./nhdb-feeder.pl --server=hdf,hfa,hfe"
     export auth_json_host="${secrets}/auth.json"

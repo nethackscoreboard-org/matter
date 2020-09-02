@@ -1,5 +1,0 @@
-Refactoring and testing following rebase onto main...
-we were lagging behind. Also, due to the nature of the
-web-front end project, a lot of code has moved around,
-been fixed in nhdb-stats.pl in the main branch, and
-git may not follow those super easily.

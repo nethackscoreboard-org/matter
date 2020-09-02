@@ -52,7 +52,7 @@ cp nethack_def.json logging.conf ../cfg/
 envsubst < _nhdb_def.json > ../cfg/nhdb_def.json
 envsubst < _init-nhdb.sh  > ../bin/init-nhdb
 envsubst < _nhdb-feeder.sh  > ../bin/nhdb-feeder
-envsubst < _nhdb-stats.sh  > ../bin/nhdb-stats
+envsubst < _nhdb-mojo.sh  > ../bin/nhdb-mojo
 chmod a+x ../bin/*
 envsubst < _mounts.conf > mounts.conf
 envsubst < _00_init_users.sh > pginit.d/00_init_users.sh
@@ -63,13 +63,21 @@ for i in *; do
 done
 cd $TOPDIR
 
-# copy files to install directories
+# copy files to install directories for aggregator
 mkdir -pv $HOST_RUNDIR/logs
-cp -r run/* $HOST_RUNDIR/
+cp run/nhdb-feeder.pl $HOST_RUNDIR/
 cp -r cfg $HOST_RUNDIR/
 cp -r lib $HOST_RUNDIR/
+
+# copy files to install directories for mojo front-end
+mkdir -pv $HOST_MOJDIR
+cp -r lib $HOST_MOJDIR/
+cp -r cfg $HOST_MOJDIR/
+cp -r run/templates $HOST_MOJDIR/
+cp -r run/script $HOST_MOJDIR/
 mkdir -pv $HOST_WEBDIR
 cp -r www/* $HOST_WEBDIR/
+
 cp -r bin/* $HOST_BINDIR/
 
 if [[ $# -ge 0 && $1 == "--skip-pods" ]]; then

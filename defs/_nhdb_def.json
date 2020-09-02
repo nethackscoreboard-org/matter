@@ -58,7 +58,7 @@
   #--- path to local xlogfile copies
 
   "logs" : {
-    "localpath" : "/var/log/xlogs",
+    "localpath" : "logs",
     "urlpath" : null
   },
 

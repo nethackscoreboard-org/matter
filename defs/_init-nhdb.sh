@@ -18,11 +18,6 @@ nhdb-init () {
         -c log_statement=none -c checkpoint_completion_target=0.9
 }
 
-web-init () {
-    podman run --pod nhdb-pod --name nhdb-web \
-        -v $HOST_WEBDIR:/usr/share/nginx/html:rw -d nginx
-}
-
 # have them all together in an isolated pod - this means
 # they can talk to each other as if all on the same host,
 # but we only access them via nginx on the port forwarded
@@ -39,5 +34,4 @@ if [[ "${fail:-}" == "yes" ]]; then
     exit 1
 fi
 
-pcon exists nhdb-web && pcon start nhdb-web || web-init
 pcon exists nhdb && pcon start nhdb || nhdb-init

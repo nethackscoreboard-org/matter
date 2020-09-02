@@ -261,13 +261,16 @@ sub new
 {
     my ($class, $app) = @_;
 
-    my $contents = read_file('cfg/nethackstats.json');
+    my $contents = read_file('cfg/nhdb_def.json');
     my $dbconf = from_json $contents;
+    $contents = read_file($dbconf->{'auth'});
+    my $auth = from_json $contents;
+    my $front_end = $dbconf->{'db'}->{'nhdbstats'};
 
     my $dbuser = $dbconf->{'dbuser'};
     my $dbhost = $dbconf->{'dbhost'};
-    my $dbpass = $dbconf->{'dbpass'};
     my $dbname = $dbconf->{'dbname'};
+    my $dbpass = $dbconf->{'auth'}->{$dbname};
     my $pg = Mojo::Pg->new("postgresql://$dbuser:$dbpass\@$dbhost/$dbname");
 
     my $self = {
