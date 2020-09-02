@@ -13,10 +13,10 @@ mojo-init () {
     if [[ -n "$*" ]]; then
         cmd="$*"
     else
-        cmd="morbo --listen 'http://*:8080' script/nhs"
+        cmd="morbo --listen http://*:8080 script/nhs"
     fi
     podman run --pod nhdb-pod --name nhdb-mojo --env $perl_lib \
-       --rm -v $HOST_MOJDIR:$CONT_MOJDIR:rw -it \
+       --env $path --rm -v $HOST_MOJDIR:$CONT_MOJDIR:rw -it \
        nhdb-mojo:$LABEL ${cmd:-}
 }
 

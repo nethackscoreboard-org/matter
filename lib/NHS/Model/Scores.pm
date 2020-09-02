@@ -267,10 +267,11 @@ sub new
     my $auth = from_json $contents;
     my $front_end = $dbconf->{'db'}->{'nhdbstats'};
 
-    my $dbuser = $dbconf->{'dbuser'};
-    my $dbhost = $dbconf->{'dbhost'};
-    my $dbname = $dbconf->{'dbname'};
-    my $dbpass = $dbconf->{'auth'}->{$dbname};
+    my $dbuser = $front_end->{'dbuser'};
+    my $dbhost = $front_end->{'dbhost'};
+    my $dbname = $front_end->{'dbname'};
+    my $dbpass = $auth->{$dbuser};
+    #die "$dbuser\@$dbhost database: $dbname, password $dbpass\n";
     my $pg = Mojo::Pg->new("postgresql://$dbuser:$dbpass\@$dbhost/$dbname");
 
     my $self = {

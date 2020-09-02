@@ -55,5 +55,6 @@ if [[ "$SETUP_MODE" == "podman" ]]; then
     export pgpass="POSTGRES_PASSWORD_FILE=/run/secrets/nhdb/root"
     
     # env vars for perl/cpan containers
-    export perl_lib="PERL5LIB=/cpan-mods/lib/perl5"
+    export perl_lib="PERL5LIB=/cpan/lib/perl5"
+    export path="PATH=/cpan/bin:/usr/local/bin:/usr/bin:/bin"
 fi

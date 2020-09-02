@@ -85,7 +85,7 @@ sub _build_data
   if(exists $vc->{$category} || $category eq 'achieve') {
     return $vc->{$category};
   } elsif(exists $gc->{'nh_variants'}{'nh'}{$category}) {
-    return $gc->{'nh_variants'}{'nh'}{$category}
+    return $gc->{'nh_variants'}{'nh'}{$category};
   } else {
     croak sprintf(
       'No definition for "%s" in "%s"',
@@ -165,19 +165,24 @@ sub conduct
   #--- get ordered list of conducts
 
   for my $c ($self->config()->list_conducts_ordered()) {
-
     if($c eq 'elbe' && defined $elbereths && !$elbereths) {
       push(@conducts, $c);
       last;
     }
 
     if(exists $con_to_val{$c} && $conduct_bitfield) {
+      if ($con_to_val{$c} =~ /^0x/) {
+        $con_to_val{$c} = hex $con_to_val{$c};
+      }
       if($conduct_bitfield & $con_to_val{$c}) {
         push(@conducts, $c);
       }
     }
 
     elsif(exists $ach_to_val{$c} && $achieve_bitfield) {
+      if ($ach_to_val{$c} =~ /^0x/) {
+        $ach_to_val{$c} = hex $ach_to_val{$c};
+      }
       if($achieve_bitfield & $ach_to_val{$c}) {
         push(@conducts, $c);
       }
@@ -441,7 +446,8 @@ sub combo_table_cell
   ($role, $race, $align) = map { lc } ($role, $race, $align);
 
   if(!exists $ct->{'idx'}{$role}{$race}{$align}) {
-    die sprintf('Invalid character combination %s-%s-%s', $role, $race, $align);
+    warn sprintf('Invalid character combination %s-%s-%s', $role, $race, $align);
+    return;
   }
   ($i, $j, $k) = @{$ct->{'idx'}{$role}{$race}{$align}};
 

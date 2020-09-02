@@ -1,13 +1,4 @@
-# nethack_def.json
-# """"""""""""""""
-# This file configures the NetHack.pm module. Its purpose is to describe all
-# required facts about NetHack and its variants supported by the NetHack Score-
-# board.
-#==============================================================================
-
 {
-  #--- define all roles
-
   "nh_roles_def" : {
     "ana" : "anachronaut",
     "arc" : "archeologist",
@@ -33,9 +24,6 @@
     "val" : "valkyrie",
     "wiz" : "wizard"
    },
-
-  #--- define all races
-
   "nh_races_def" : {
     "and" : "android",
     "ang" : "angel",
@@ -64,11 +52,8 @@
     "swn" : "yuki-onna",
     "syl" : "sylph",
     "vam" : "vampire",
-    "wer" : "werewolf",
+    "wer" : "werewolf"
   },
-
-  #--- define all alignments
-
   "nh_aligns_def" : {
     "law" : "lawful",
     "neu" : "neutral",
@@ -76,66 +61,23 @@
     "non" : "non-aligned",
     "una" : "unaligned"
   },
-
-  #--- define all genders
-
   "nh_genders_def" : {
     "mal" : "male",
     "fem" : "female",
     "nbn" : "nonbinary"
   },
-
-  #--- ordered list of all conducts
-
   "nh_conduct_ord" : [
     "bone", "pets", "arti", "arts", "pile", "self", "pudd", "algn",
     "soko", "geno", "wish", "unih", "scar", "pray", "athe", "vegt",
     "vegn", "weap", "elbe", "illi", "paci", "food", "acce", "cont",
     "tool", "magi", "armo", "raci", "thie", "deaf", "fumb", "hall",
-    "illf", "zen", "nude",
+    "illf", "zen", "nude"
   ],
-
-  #--- ordered list of variants
-
   "nh_variants_ord" : [
     "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fh", "4k",
-    "grunt", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh",
+    "grunt", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh"
   ],
-
-  #--- define roles/races/alingments/genders and conducts for a variant
-
-  #--- "rules" define available player character combinations by using
-  #--- rulesets; note, that this is one of the two ways to define the
-  #--- information, the other being "nh_combo_list_def"
-  #---
-  #--- the general format of each rule-line is following:
-  #---    [ trigger, require1, require2, ..., requireN ]
-  #---
-  #--- "trigger" can be a single value or multiple values as an array
-  #---
-  #--- both triggers and requires are three-letter string prepended with
-  #--- special character: $ role, % race, # alignment and ! gender
-  #---
-  #--- once the trigger(s) match(es), the requirements must be satisfied;
-  #--- if the requirements are not satisfied, the combo is rejected and
-  #--- no further matching is attempted; if the requirements are met,
-  #--- matching continues with next rule;
-  #---
-  #--- the requirements match so that for given race/gender/alignment the
-  #--- results are ORed, but between them, the matches are ANDed.
-
   "nh_variants" : {
-
-    #===   _   _      _   _   _            _      ============================
-    #===  | \ | | ___| |_| | | | __ _  ___| | __  ============================
-    #===  |  \| |/ _ \ __| |_| |/ _` |/ __| |/ /  ============================
-    #===  | |\  |  __/ |_|  _  | (_| | (__|   <   ============================
-    #===  |_| \_|\___|\__|_| |_|\__,_|\___|_|\_\  ============================
-
-    # Vanilla NetHack, this is the fallback definition; if variant definition
-    # omits some info, the code uses this instead. The 'achieve' section is
-    # an exemption as it doesn't fall back.
-
     "nh" : {
       "name" : "NetHack",
       "roles" : [
@@ -158,11 +100,11 @@
         "0x000200" : "wish",
         "0x000400" : "arti",
         "0x000800" : "geno",
-        "0x001000" : "elbe",
+        "0x001000" : "elbe"
       },
       "achieve" : {
         "0x1000" : "zen",
-        "0x2000" : "nude",
+        "0x2000" : "nude"
       },
       "rules" : [
         [ "$arc", "%hum", "%dwa", "%gno",         "#law", "#neu"         ],
@@ -182,16 +124,9 @@
         [ "%elf", "#cha" ],
         [ "%dwa", "#law" ],
         [ "%gno", "#neu" ],
-        [ "%orc", "#cha" ],
-      ],
+        [ "%orc", "#cha" ]
+      ]
     },
-
-    #===      _            _   _            _      ===========================
-    #===     / \   ___ ___| | | | __ _  ___| | __  ===========================
-    #===    / _ \ / __/ _ \ |_| |/ _` |/ __| |/ /  ===========================
-    #===   / ___ \ (_|  __/  _  | (_| | (__|   <   ===========================
-    #===  /_/   \_\___\___|_| |_|\__,_|\___|_|\_\  ===========================
-
     "ace" : {
       "name" : "AceHack",
       "conduct" : {
@@ -210,13 +145,6 @@
         "0x001000" : "elbe"
       }
     },
-
-    #===   _   _      _   _   _            _    _  _     =====================
-    #===  | \ | | ___| |_| | | | __ _  ___| | _| || |    =====================
-    #===  |  \| |/ _ \ __| |_| |/ _` |/ __| |/ / || |_   =====================
-    #===  | |\  |  __/ |_|  _  | (_| | (__|   <|__   _|  =====================
-    #===  |_| \_|\___|\__|_| |_|\__,_|\___|_|\_\  |_|    =====================
-
     "nh4" : {
       "name" : "NetHack4",
       "conduct" : {
@@ -237,13 +165,6 @@
         "0x004000" : "algn"
       }
     },
-
-    #===   _   _       _   _      _   _   _            _      ================
-    #===  | | | |_ __ | \ | | ___| |_| | | | __ _  ___| | __  ================
-    #===  | | | | '_ \|  \| |/ _ \ __| |_| |/ _` |/ __| |/ /  ================
-    #===  | |_| | | | | |\  |  __/ |_|  _  | (_| | (__|   <   ================
-    #===   \___/|_| |_|_| \_|\___|\__|_| |_|\__,_|\___|_|\_\  ================
-
     "un" : {
       "name" : "UnNetHack",
       "roles" : [
@@ -272,16 +193,8 @@
         [ "%gno", "#neu" ],
         [ "%orc", "#cha" ],
         [ "%vam", "#cha" ]
-      ],
+      ]
     },
-
-    #===   ____                   _    _   _            _      ===============
-    #===  / ___| _ __   ___  _ __| | _| | | | __ _  ___| | __  ===============
-    #===  \___ \| '_ \ / _ \| '__| |/ / |_| |/ _` |/ __| |/ /  ===============
-    #===   ___) | |_) | (_) | |  |   <|  _  | (_| | (__|   <   ===============
-    #===  |____/| .__/ \___/|_|  |_|\_\_| |_|\__,_|\___|_|\_\  ===============
-    #===        |_|                                            ===============
-
     "spork" : {
       "name" : "SporkHack",
       "rules" : [
@@ -303,15 +216,8 @@
         [ "%dwa", "#neu", "#law" ],
         [ "%gno", "#neu", "#cha" ],
         [ "%orc", "#neu", "#cha" ]
-      ],
+      ]
     },
-
-    #===    ____                  _   _   _            _      ================
-    #===   / ___|_ __ _   _ _ __ | |_| | | | __ _  ___| | __  ================
-    #===  | |  _| '__| | | | '_ \| __| |_| |/ _` |/ __| |/ /  ================
-    #===  | |_| | |  | |_| | | | | |_|  _  | (_| | (__|   <   ================
-    #===   \____|_|   \__,_|_| |_|\__|_| |_|\__,_|\___|_|\_\  ================
-
     "grunt" : {
       "name" : "GruntHack",
       "races" : [ "hum", "elf", "dwa", "gia", "gno", "kob", "ogr", "orc" ],
@@ -334,16 +240,9 @@
         [ "%gno", "#neu" ],
         [ "%orc", "#cha" ],
         [ "%kob", "#cha" ],
-        [ "%ogr", "#cha" ],
-      ],
+        [ "%ogr", "#cha" ]
+      ]
     },
-
-    #===       _ _   _      _   _   _            _      ======================
-    #===    __| | \ | | ___| |_| | | | __ _  ___| | __  ======================
-    #===   / _` |  \| |/ _ \ __| |_| |/ _` |/ __| |/ /  ======================
-    #===  | (_| | |\  |  __/ |_|  _  | (_| | (__|   <   ======================
-    #===   \__,_|_| \_|\___|\__|_| |_|\__,_|\___|_|\_\  ======================
-
     "dnh" : {
       "name" : "dNetHack",
       "roles" : [
@@ -703,15 +602,8 @@
         [ "Wiz", "Vam", "Fem", "Neu" ],
         [ "Wiz", "Vam", "Mal", "Cha" ],
         [ "Wiz", "Vam", "Mal", "Neu" ]
-      ],
+      ]
     },
-
-    #===   _   _      _   _   _            _      _____                _
-    #===  | \ | | ___| |_| | | | __ _  ___| | __ |  ___|__  _   _ _ __| | __
-    #===  |  \| |/ _ \ __| |_| |/ _` |/ __| |/ / | |_ / _ \| | | | '__| |/ /
-    #===  | |\  |  __/ |_|  _  | (_| | (__|   <  |  _| (_) | |_| | |  |   <
-    #===  |_| \_|\___|\__|_| |_|\__,_|\___|_|\_\ |_|  \___/ \__,_|_|  |_|\_\
-
     "4k" : {
       "name" : "NetHack Fourk",
       "races" : [ "hum", "elf", "dwa", "gia", "gno", "orc", "scu", "syl" ],
@@ -759,17 +651,9 @@
          [ "%gno", "#neu" ],
          [ "%orc", "#cha" ],
          [ "%scu", "#neu" ],
-         [ "%syl", "#neu", "#cha" ],
+         [ "%syl", "#neu", "#cha" ]
        ]
     },
-
-    #===   ____                    _   _            _      ===================
-    #===  |  _ \ _   _ _ __   __ _| | | | __ _  ___| | __  ===================
-    #===  | | | | | | | '_ \ / _` | |_| |/ _` |/ __| |/ /  ===================
-    #===  | |_| | |_| | | | | (_| |  _  | (_| | (__|   <   ===================
-    #===  |____/ \__, |_| |_|\__,_|_| |_|\__,_|\___|_|\_\  ===================
-    #===         |___/                                     ===================
-
     "dyn" : {
       "name" : "DynaHack",
       "roles" : [
@@ -800,13 +684,6 @@
         "0x080000" : "soko"
       }
     },
-
-    #===   _____ ___ ___  _   _            _      ============================
-    #===  |  ___|_ _/ _ \| | | | __ _  ___| | __  ============================
-    #===  | |_   | | | | | |_| |/ _` |/ __| |/ /  ============================
-    #===  |  _|  | | |_| |  _  | (_| | (__|   <   ============================
-    #===  |_|   |___\__\_\_| |_|\__,_|\___|_|\_\  ============================
-
     "fiq" : {
       "name" : "FIQHack",
       "conduct" : {
@@ -827,13 +704,6 @@
         "0x004000" : "algn"
       }
     },
-
-    #===        _   _      _   _   _            _      =======================
-    #===  __  _| \ | | ___| |_| | | | __ _  ___| | __  =======================
-    #===  \ \/ /  \| |/ _ \ __| |_| |/ _` |/ __| |/ /  =======================
-    #===   >  <| |\  |  __/ |_|  _  | (_| | (__|   <   =======================
-    #===  /_/\_\_| \_|\___|\__|_| |_|\__,_|\___|_|\_\  =======================
-
     "xnh" : {
       "name" : "xNetHack",
       "conduct" : {
@@ -851,21 +721,9 @@
         "0x000800" : "geno",
         "0x001000" : "pets",
         "0x002000" : "arts",
-        "0x004000" : "scar",
+        "0x004000" : "scar"
       }
     },
-
-    #===   ____  _        _    ____  _   _ _ _____ __  __   _____        =====
-    #===  / ___|| |      / \  / ___|| | | ( ) ____|  \/  | | ____|_  __  =====
-    #===  \___ \| |     / _ \ \___ \| |_| |/|  _| | |\/| | |  _| \ \/ /  =====
-    #===   ___) | |___ / ___ \ ___) |  _  | | |___| |  | | | |___ >  <   =====
-    #===  |____/|_____/_/   \_\____/|_| |_| |_____|_|  |_| |_____/_/\_\  =====
-
-    # SLASH'EM Extended is special in that it has massive amount of
-    # roles/races, therefore we are not listing them here at all and any
-    # output that would aggregate or tabelate them will be omitted. Also
-    # the combo validity check is not performed on xlogfile import.
-
     "slex" : {
       "name" : "SLASH'EM Extended",
       "roles" : null,
@@ -885,17 +743,9 @@
         "0x000200" : "wish",
         "0x000400" : "arti",
         "0x000800" : "geno",
-        "0x001000" : "pray",
-      },
+        "0x001000" : "pray"
+      }
     },
-
-    #===   ____        _ _          _   _            _      ==================
-    #===  / ___| _ __ | (_) ___ ___| | | | __ _  ___| | __  ==================
-    #===  \___ \| '_ \| | |/ __/ _ \ |_| |/ _` |/ __| |/ /  ==================
-    #===   ___) | |_) | | | (_|  __/  _  | (_| | (__|   <   ==================
-    #===  |____/| .__/|_|_|\___\___|_| |_|\__,_|\___|_|\_\  ==================
-    #===        |_|                                         ==================
-
     "spl" : {
       "name" : "SpliceHack",
       "achieve" : {
@@ -904,7 +754,7 @@
         "0x010000" : "deaf",
         "0x020000" : "fumb",
         "0x040000" : "hall",
-        "0x080000" : "illf",
+        "0x080000" : "illf"
       },
       "roles" : [
         "arc", "bar", "car", "cav", "con", "dan", "dra", "hea", "kni",
@@ -956,46 +806,23 @@
         [ "%mer", "#law", "#neu" ],
         [ "%orc", "#cha" ],
         [ "%vam", "#cha" ],
-        [ "%wer", "#neu", "#cha" ],
-      ],
+        [ "%wer", "#neu", "#cha" ]
+      ]
     },
-
-    #===       _       _         _             ===============================
-    #===    __| |_ __ | |__  ___| | _____  __  ===============================
-    #===   / _` | '_ \| '_ \/ __| |/ _ \ \/ /  ===============================
-    #===  | (_| | | | | | | \__ \ |  __/>  <   ===============================
-    #===   \__,_|_| |_|_| |_|___/_|\___/_/\_\  ===============================
-
-    # For the time being we leave everything undefined.
-
     "dnhslex" : {
-      "name" : "dNetHack + SLASH'EM Extended",
+      "name" : "dNetHack/Slex",
       "roles" : null,
       "races" : null,
       "genders" : null,
-      "aligns" : null,
+      "aligns" : null
     },
-
-    #===   ____  _        _    ____  _   _ _ _____ __  __   ==================
-    #===  / ___|| |      / \  / ___|| | | ( ) ____|  \/  |  ==================
-    #===  \___ \| |     / _ \ \___ \| |_| |/|  _| | |\/| |  ==================
-    #===   ___) | |___ / ___ \ ___) |  _  | | |___| |  | |  ==================
-    #===  |____/|_____/_/   \_\____/|_| |_| |_____|_|  |_|  ==================
-
     "slashem" : {
       "name" : "SLASH'EM",
       "roles" : null,
       "races" : null,
       "genders" : null,
-      "aligns" : null,
+      "aligns" : null
     },
-
-    #===   _____       _ _ _   _            _      ===========================
-    #===  | ____|_   _(_) | | | | __ _  ___| | __  ===========================
-    #===  |  _| \ \ / / | | |_| |/ _` |/ __| |/ /  ===========================
-    #===  | |___ \ V /| | |  _  | (_| | (__|   <   ===========================
-    #===  |_____| \_/ |_|_|_| |_|\__,_|\___|_|\_\  ===========================
-
     "evil" : {
       "name" : "EvilHack",
       "roles" : [
@@ -1005,99 +832,99 @@
       "races" : [ "cen", "hum", "hob", "elf", "dwa", "gia", "gno", "orc", "ith", "dem" ],
       "aligns" : [ "law", "neu", "cha", "una" ],
       "enum" : [
-        [ "Arc", "Hum", "Mal", "Law" ], [ "Arc", "Hum", "Fem", "Law" ], # 1
-        [ "Arc", "Hum", "Mal", "Neu" ], [ "Arc", "Hum", "Fem", "Neu" ], # 2
-        [ "Arc", "Dwa", "Mal", "Law" ], [ "Arc", "Dwa", "Fem", "Law" ], # 3
-        [ "Arc", "Dwa", "Mal", "Neu" ], [ "Arc", "Dwa", "Fem", "Neu" ], # 4
-        [ "Arc", "Gno", "Mal", "Neu" ], [ "Arc", "Gno", "Fem", "Neu" ], # 5
-        [ "Arc", "Hob", "Mal", "Law" ], [ "Arc", "Hob", "Fem", "Law" ], # 6
-        [ "Arc", "Hob", "Mal", "Neu" ], [ "Arc", "Hob", "Fem", "Neu" ], # 7
+        [ "Arc", "Hum", "Mal", "Law" ], [ "Arc", "Hum", "Fem", "Law" ],
+        [ "Arc", "Hum", "Mal", "Neu" ], [ "Arc", "Hum", "Fem", "Neu" ],
+        [ "Arc", "Dwa", "Mal", "Law" ], [ "Arc", "Dwa", "Fem", "Law" ],
+        [ "Arc", "Dwa", "Mal", "Neu" ], [ "Arc", "Dwa", "Fem", "Neu" ],
+        [ "Arc", "Gno", "Mal", "Neu" ], [ "Arc", "Gno", "Fem", "Neu" ],
+        [ "Arc", "Hob", "Mal", "Law" ], [ "Arc", "Hob", "Fem", "Law" ],
+        [ "Arc", "Hob", "Mal", "Neu" ], [ "Arc", "Hob", "Fem", "Neu" ],
 
-        [ "Bar", "Hum", "Mal", "Neu" ], [ "Bar", "Hum", "Fem", "Neu" ], # 1
-        [ "Bar", "Hum", "Mal", "Cha" ], [ "Bar", "Hum", "Fem", "Cha" ], # 2
-        [ "Bar", "Dwa", "Mal", "Neu" ], [ "Bar", "Dwa", "Fem", "Neu" ], # 3
-        [ "Bar", "Gia", "Mal", "Neu" ], [ "Bar", "Gia", "Fem", "Neu" ], # 4
-        [ "Bar", "Gia", "Mal", "Cha" ], [ "Bar", "Gia", "Fem", "Cha" ], # 5
-        [ "Bar", "Cen", "Mal", "Neu" ], [ "Bar", "Cen", "Fem", "Neu" ], # 6
-        [ "Bar", "Cen", "Mal", "Cha" ], [ "Bar", "Cen", "Fem", "Cha" ], # 7
-        [ "Bar", "Orc", "Mal", "Cha" ], [ "Bar", "Orc", "Fem", "Cha" ], # 8
+        [ "Bar", "Hum", "Mal", "Neu" ], [ "Bar", "Hum", "Fem", "Neu" ],
+        [ "Bar", "Hum", "Mal", "Cha" ], [ "Bar", "Hum", "Fem", "Cha" ],
+        [ "Bar", "Dwa", "Mal", "Neu" ], [ "Bar", "Dwa", "Fem", "Neu" ],
+        [ "Bar", "Gia", "Mal", "Neu" ], [ "Bar", "Gia", "Fem", "Neu" ],
+        [ "Bar", "Gia", "Mal", "Cha" ], [ "Bar", "Gia", "Fem", "Cha" ],
+        [ "Bar", "Cen", "Mal", "Neu" ], [ "Bar", "Cen", "Fem", "Neu" ],
+        [ "Bar", "Cen", "Mal", "Cha" ], [ "Bar", "Cen", "Fem", "Cha" ],
+        [ "Bar", "Orc", "Mal", "Cha" ], [ "Bar", "Orc", "Fem", "Cha" ],
 
-        [ "Cav", "Hum", "Mal", "Law" ], [ "Cav", "Hum", "Fem", "Law" ], # 1
-        [ "Cav", "Hum", "Mal", "Neu" ], [ "Cav", "Hum", "Fem", "Neu" ], # 2
-        [ "Cav", "Dwa", "Mal", "Law" ], [ "Cav", "Dwa", "Fem", "Law" ], # 3
-        [ "Cav", "Dwa", "Mal", "Neu" ], [ "Cav", "Dwa", "Fem", "Neu" ], # 4
-        [ "Cav", "Gia", "Mal", "Law" ], [ "Cav", "Gia", "Fem", "Law" ], # 5
-        [ "Cav", "Gia", "Mal", "Neu" ], [ "Cav", "Gia", "Fem", "Neu" ], # 6
-        [ "Cav", "Gno", "Mal", "Neu" ], [ "Cav", "Gno", "Fem", "Neu" ], # 7
+        [ "Cav", "Hum", "Mal", "Law" ], [ "Cav", "Hum", "Fem", "Law" ],
+        [ "Cav", "Hum", "Mal", "Neu" ], [ "Cav", "Hum", "Fem", "Neu" ],
+        [ "Cav", "Dwa", "Mal", "Law" ], [ "Cav", "Dwa", "Fem", "Law" ],
+        [ "Cav", "Dwa", "Mal", "Neu" ], [ "Cav", "Dwa", "Fem", "Neu" ],
+        [ "Cav", "Gia", "Mal", "Law" ], [ "Cav", "Gia", "Fem", "Law" ],
+        [ "Cav", "Gia", "Mal", "Neu" ], [ "Cav", "Gia", "Fem", "Neu" ],
+        [ "Cav", "Gno", "Mal", "Neu" ], [ "Cav", "Gno", "Fem", "Neu" ],
 
-        [ "Con", "Hum", "Mal", "Cha" ], [ "Con", "Hum", "Fem", "Cha" ], # 1
-        [ "Con", "Dwa", "Mal", "Cha" ], [ "Con", "Dwa", "Fem", "Cha" ], # 2
-        [ "Con", "Gia", "Mal", "Cha" ], [ "Con", "Gia", "Fem", "Cha" ], # 3
-        [ "Con", "Hob", "Mal", "Cha" ], [ "Con", "Hob", "Fem", "Cha" ], # 4
-        [ "Con", "Orc", "Mal", "Cha" ], [ "Con", "Orc", "Fem", "Cha" ], # 5
+        [ "Con", "Hum", "Mal", "Cha" ], [ "Con", "Hum", "Fem", "Cha" ],
+        [ "Con", "Dwa", "Mal", "Cha" ], [ "Con", "Dwa", "Fem", "Cha" ],
+        [ "Con", "Gia", "Mal", "Cha" ], [ "Con", "Gia", "Fem", "Cha" ],
+        [ "Con", "Hob", "Mal", "Cha" ], [ "Con", "Hob", "Fem", "Cha" ],
+        [ "Con", "Orc", "Mal", "Cha" ], [ "Con", "Orc", "Fem", "Cha" ],
         
-        [ "Hea", "Hum", "Mal", "Neu" ], [ "Hea", "Hum", "Fem", "Neu" ], # 1
-        [ "Hea", "Elf", "Mal", "Neu" ], [ "Hea", "Elf", "Fem", "Neu" ], # 2
-        [ "Hea", "Dwa", "Mal", "Neu" ], [ "Hea", "Dwa", "Fem", "Neu" ], # 3
-        [ "Hea", "Gno", "Mal", "Neu" ], [ "Hea", "Gno", "Fem", "Neu" ], # 4
-        [ "Hea", "Hob", "Mal", "Neu" ], [ "Hea", "Hob", "Fem", "Neu" ], # 5
+        [ "Hea", "Hum", "Mal", "Neu" ], [ "Hea", "Hum", "Fem", "Neu" ],
+        [ "Hea", "Elf", "Mal", "Neu" ], [ "Hea", "Elf", "Fem", "Neu" ],
+        [ "Hea", "Dwa", "Mal", "Neu" ], [ "Hea", "Dwa", "Fem", "Neu" ],
+        [ "Hea", "Gno", "Mal", "Neu" ], [ "Hea", "Gno", "Fem", "Neu" ],
+        [ "Hea", "Hob", "Mal", "Neu" ], [ "Hea", "Hob", "Fem", "Neu" ],
 
-		[ "Inf", "Hum", "Mal", "Una" ], [ "Inf", "Hum", "Fem", "Una" ], # 1
-		[ "Inf", "Orc", "Mal", "Una" ], [ "Inf", "Orc", "Fem", "Una" ], # 2
-		[ "Inf", "Ith", "Mal", "Una" ], [ "Inf", "Ith", "Fem", "Una" ], # 3
-		[ "Inf", "Dem", "Mal", "Una" ], [ "Inf", "Dem", "Fem", "Una" ], # 4
+		[ "Inf", "Hum", "Mal", "Una" ], [ "Inf", "Hum", "Fem", "Una" ],
+		[ "Inf", "Orc", "Mal", "Una" ], [ "Inf", "Orc", "Fem", "Una" ],
+		[ "Inf", "Ith", "Mal", "Una" ], [ "Inf", "Ith", "Fem", "Una" ],
+		[ "Inf", "Dem", "Mal", "Una" ], [ "Inf", "Dem", "Fem", "Una" ],
 		
-        [ "Kni", "Hum", "Mal", "Law" ], [ "Kni", "Hum", "Fem", "Law" ], # 1
-        [ "Kni", "Hum", "Mal", "Cha" ], [ "Kni", "Hum", "Fem", "Cha" ], # 2
-        [ "Kni", "Elf", "Mal", "Cha" ], [ "Kni", "Elf", "Fem", "Cha" ], # 3
+        [ "Kni", "Hum", "Mal", "Law" ], [ "Kni", "Hum", "Fem", "Law" ],
+        [ "Kni", "Hum", "Mal", "Cha" ], [ "Kni", "Hum", "Fem", "Cha" ],
+        [ "Kni", "Elf", "Mal", "Cha" ], [ "Kni", "Elf", "Fem", "Cha" ],
 
-        [ "Mon", "Hum", "Mal", "Law" ], [ "Mon", "Hum", "Fem", "Law" ], # 1
-        [ "Mon", "Hum", "Mal", "Neu" ], [ "Mon", "Hum", "Fem", "Neu" ], # 2
-        [ "Mon", "Hum", "Mal", "Cha" ], [ "Mon", "Hum", "Fem", "Cha" ], # 3
-        [ "Mon", "Elf", "Mal", "Neu" ], [ "Mon", "Elf", "Fem", "Neu" ], # 4
-        [ "Mon", "Elf", "Mal", "Cha" ], [ "Mon", "Elf", "Fem", "Cha" ], # 5
-        [ "Mon", "Dwa", "Mal", "Law" ], [ "Mon", "Dwa", "Fem", "Law" ], # 6
-        [ "Mon", "Dwa", "Mal", "Neu" ], [ "Mon", "Dwa", "Fem", "Neu" ], # 7
-        [ "Mon", "Gia", "Mal", "Law" ], [ "Mon", "Gia", "Fem", "Law" ], # 8
-        [ "Mon", "Gia", "Mal", "Neu" ], [ "Mon", "Gia", "Fem", "Neu" ], # 9
-        [ "Mon", "Gia", "Mal", "Cha" ], [ "Mon", "Gia", "Fem", "Cha" ], # 10
-        [ "Mon", "Cen", "Mal", "Neu" ], [ "Mon", "Cen", "Fem", "Neu" ], # 11
-        [ "Mon", "Cen", "Mal", "Cha" ], [ "Mon", "Cen", "Fem", "Cha" ], # 12
+        [ "Mon", "Hum", "Mal", "Law" ], [ "Mon", "Hum", "Fem", "Law" ],
+        [ "Mon", "Hum", "Mal", "Neu" ], [ "Mon", "Hum", "Fem", "Neu" ],
+        [ "Mon", "Hum", "Mal", "Cha" ], [ "Mon", "Hum", "Fem", "Cha" ],
+        [ "Mon", "Elf", "Mal", "Neu" ], [ "Mon", "Elf", "Fem", "Neu" ],
+        [ "Mon", "Elf", "Mal", "Cha" ], [ "Mon", "Elf", "Fem", "Cha" ],
+        [ "Mon", "Dwa", "Mal", "Law" ], [ "Mon", "Dwa", "Fem", "Law" ],
+        [ "Mon", "Dwa", "Mal", "Neu" ], [ "Mon", "Dwa", "Fem", "Neu" ],
+        [ "Mon", "Gia", "Mal", "Law" ], [ "Mon", "Gia", "Fem", "Law" ],
+        [ "Mon", "Gia", "Mal", "Neu" ], [ "Mon", "Gia", "Fem", "Neu" ],
+        [ "Mon", "Gia", "Mal", "Cha" ], [ "Mon", "Gia", "Fem", "Cha" ],
+        [ "Mon", "Cen", "Mal", "Neu" ], [ "Mon", "Cen", "Fem", "Neu" ],
+        [ "Mon", "Cen", "Mal", "Cha" ], [ "Mon", "Cen", "Fem", "Cha" ],
 
-        [ "Pri", "Hum", "Mal", "Law" ], [ "Pri", "Hum", "Fem", "Law" ], # 1
-        [ "Pri", "Hum", "Mal", "Neu" ], [ "Pri", "Hum", "Fem", "Neu" ], # 2
-        [ "Pri", "Hum", "Mal", "Cha" ], [ "Pri", "Hum", "Fem", "Cha" ], # 3
-        [ "Pri", "Hob", "Mal", "Law" ], [ "Pri", "Hob", "Fem", "Law" ], # 4
-        [ "Pri", "Hob", "Mal", "Neu" ], [ "Pri", "Hob", "Fem", "Neu" ], # 5
-        [ "Pri", "Elf", "Mal", "Neu" ], [ "Pri", "Elf", "Fem", "Neu" ], # 6
-        [ "Pri", "Elf", "Mal", "Cha" ], [ "Pri", "Elf", "Fem", "Cha" ], # 7
-        [ "Pri", "Dwa", "Mal", "Law" ], [ "Pri", "Dwa", "Fem", "Law" ], # 8
-        [ "Pri", "Dwa", "Mal", "Neu" ], [ "Pri", "Dwa", "Fem", "Neu" ], # 9
-        [ "Pri", "Gia", "Mal", "Law" ], [ "Pri", "Gia", "Fem", "Law" ], # 10
-        [ "Pri", "Gia", "Mal", "Neu" ], [ "Pri", "Gia", "Fem", "Neu" ], # 11
-        [ "Pri", "Gia", "Mal", "Cha" ], [ "Pri", "Gia", "Fem", "Cha" ], # 12
-        [ "Pri", "Cen", "Mal", "Neu" ], [ "Pri", "Cen", "Fem", "Neu" ], # 13
-        [ "Pri", "Cen", "Mal", "Cha" ], [ "Pri", "Cen", "Fem", "Cha" ], # 14
-        [ "Pri", "Orc", "Mal", "Cha" ], [ "Pri", "Orc", "Fem", "Cha" ], # 15
-        [ "Pri", "Ith", "Mal", "Cha" ], [ "Pri", "Ith", "Fem", "Cha" ], # 16
+        [ "Pri", "Hum", "Mal", "Law" ], [ "Pri", "Hum", "Fem", "Law" ],
+        [ "Pri", "Hum", "Mal", "Neu" ], [ "Pri", "Hum", "Fem", "Neu" ],
+        [ "Pri", "Hum", "Mal", "Cha" ], [ "Pri", "Hum", "Fem", "Cha" ],
+        [ "Pri", "Hob", "Mal", "Law" ], [ "Pri", "Hob", "Fem", "Law" ],
+        [ "Pri", "Hob", "Mal", "Neu" ], [ "Pri", "Hob", "Fem", "Neu" ],
+        [ "Pri", "Elf", "Mal", "Neu" ], [ "Pri", "Elf", "Fem", "Neu" ],
+        [ "Pri", "Elf", "Mal", "Cha" ], [ "Pri", "Elf", "Fem", "Cha" ],
+        [ "Pri", "Dwa", "Mal", "Law" ], [ "Pri", "Dwa", "Fem", "Law" ],
+        [ "Pri", "Dwa", "Mal", "Neu" ], [ "Pri", "Dwa", "Fem", "Neu" ],
+        [ "Pri", "Gia", "Mal", "Law" ], [ "Pri", "Gia", "Fem", "Law" ],
+        [ "Pri", "Gia", "Mal", "Neu" ], [ "Pri", "Gia", "Fem", "Neu" ],
+        [ "Pri", "Gia", "Mal", "Cha" ], [ "Pri", "Gia", "Fem", "Cha" ],
+        [ "Pri", "Cen", "Mal", "Neu" ], [ "Pri", "Cen", "Fem", "Neu" ],
+        [ "Pri", "Cen", "Mal", "Cha" ], [ "Pri", "Cen", "Fem", "Cha" ],
+        [ "Pri", "Orc", "Mal", "Cha" ], [ "Pri", "Orc", "Fem", "Cha" ],
+        [ "Pri", "Ith", "Mal", "Cha" ], [ "Pri", "Ith", "Fem", "Cha" ],
 
-        [ "Ran", "Hum", "Mal", "Neu" ], [ "Ran", "Hum", "Fem", "Neu" ], # 1
-        [ "Ran", "Hum", "Mal", "Cha" ], [ "Ran", "Hum", "Fem", "Cha" ], # 2
-        [ "Ran", "Elf", "Mal", "Neu" ], [ "Ran", "Elf", "Fem", "Neu" ], # 3
-        [ "Ran", "Elf", "Mal", "Cha" ], [ "Ran", "Elf", "Fem", "Cha" ], # 4
-        [ "Ran", "Gno", "Mal", "Neu" ], [ "Ran", "Gno", "Fem", "Neu" ], # 5
-        [ "Ran", "Gno", "Mal", "Cha" ], [ "Ran", "Gno", "Fem", "Cha" ], # 6
-        [ "Ran", "Hob", "Mal", "Neu" ], [ "Ran", "Hob", "Fem", "Neu" ], # 7
-        [ "Ran", "Cen", "Mal", "Neu" ], [ "Ran", "Cen", "Fem", "Neu" ], # 8
-        [ "Ran", "Cen", "Mal", "Cha" ], [ "Ran", "Cen", "Fem", "Cha" ], # 9
-        [ "Ran", "Orc", "Mal", "Cha" ], [ "Ran", "Orc", "Fem", "Cha" ], # 10
+        [ "Ran", "Hum", "Mal", "Neu" ], [ "Ran", "Hum", "Fem", "Neu" ],
+        [ "Ran", "Hum", "Mal", "Cha" ], [ "Ran", "Hum", "Fem", "Cha" ],
+        [ "Ran", "Elf", "Mal", "Neu" ], [ "Ran", "Elf", "Fem", "Neu" ],
+        [ "Ran", "Elf", "Mal", "Cha" ], [ "Ran", "Elf", "Fem", "Cha" ],
+        [ "Ran", "Gno", "Mal", "Neu" ], [ "Ran", "Gno", "Fem", "Neu" ],
+        [ "Ran", "Gno", "Mal", "Cha" ], [ "Ran", "Gno", "Fem", "Cha" ],
+        [ "Ran", "Hob", "Mal", "Neu" ], [ "Ran", "Hob", "Fem", "Neu" ],
+        [ "Ran", "Cen", "Mal", "Neu" ], [ "Ran", "Cen", "Fem", "Neu" ],
+        [ "Ran", "Cen", "Mal", "Cha" ], [ "Ran", "Cen", "Fem", "Cha" ],
+        [ "Ran", "Orc", "Mal", "Cha" ], [ "Ran", "Orc", "Fem", "Cha" ],
 
-        [ "Rog", "Hum", "Mal", "Neu" ], [ "Rog", "Hum", "Fem", "Neu" ], # 1
-        [ "Rog", "Hum", "Mal", "Cha" ], [ "Rog", "Hum", "Fem", "Cha" ], # 2
-        [ "Rog", "Elf", "Mal", "Neu" ], [ "Rog", "Elf", "Fem", "Neu" ], # 3
-        [ "Rog", "Elf", "Mal", "Cha" ], [ "Rog", "Elf", "Fem", "Cha" ], # 4
-        [ "Rog", "Hob", "Mal", "Neu" ], [ "Rog", "Hob", "Fem", "Neu" ], # 5
-        [ "Rog", "Orc", "Mal", "Cha" ], [ "Rog", "Orc", "Fem", "Cha" ], # 6
+        [ "Rog", "Hum", "Mal", "Neu" ], [ "Rog", "Hum", "Fem", "Neu" ],
+        [ "Rog", "Hum", "Mal", "Cha" ], [ "Rog", "Hum", "Fem", "Cha" ],
+        [ "Rog", "Elf", "Mal", "Neu" ], [ "Rog", "Elf", "Fem", "Neu" ],
+        [ "Rog", "Elf", "Mal", "Cha" ], [ "Rog", "Elf", "Fem", "Cha" ],
+        [ "Rog", "Hob", "Mal", "Neu" ], [ "Rog", "Hob", "Fem", "Neu" ],
+        [ "Rog", "Orc", "Mal", "Cha" ], [ "Rog", "Orc", "Fem", "Cha" ],
 
         [ "Sam", "Hum", "Mal", "Law" ], [ "Sam", "Hum", "Fem", "Law" ],
         [ "Sam", "Dwa", "Mal", "Law" ], [ "Sam", "Dwa", "Mal", "Law" ],
@@ -1105,28 +932,28 @@
         [ "Tou", "Hum", "Mal", "Neu" ], [ "Tou", "Hum", "Fem", "Neu" ],
         [ "Tou", "Hob", "Mal", "Neu" ], [ "Tou", "Hob", "Fem", "Neu" ],
 
-                                        [ "Val", "Hum", "Fem", "Law" ], # 1
-                                        [ "Val", "Hum", "Fem", "Neu" ], # 2
-                                        [ "Val", "Dwa", "Fem", "Law" ], # 3
-                                        [ "Val", "Dwa", "Fem", "Neu" ], # 4
-                                        [ "Val", "Gia", "Fem", "Law" ], # 5
-                                        [ "Val", "Gia", "Fem", "Neu" ], # 6
-                                        [ "Val", "Cen", "Fem", "Neu" ], # 7
+                                        [ "Val", "Hum", "Fem", "Law" ],
+                                        [ "Val", "Hum", "Fem", "Neu" ],
+                                        [ "Val", "Dwa", "Fem", "Law" ],
+                                        [ "Val", "Dwa", "Fem", "Neu" ],
+                                        [ "Val", "Gia", "Fem", "Law" ],
+                                        [ "Val", "Gia", "Fem", "Neu" ],
+                                        [ "Val", "Cen", "Fem", "Neu" ],
 
-        [ "Wiz", "Hum", "Mal", "Neu" ], [ "Wiz", "Hum", "Fem", "Neu" ], # 1
-        [ "Wiz", "Hum", "Mal", "Cha" ], [ "Wiz", "Hum", "Fem", "Cha" ], # 2
-        [ "Wiz", "Elf", "Mal", "Neu" ], [ "Wiz", "Elf", "Fem", "Neu" ], # 3
-        [ "Wiz", "Elf", "Mal", "Cha" ], [ "Wiz", "Elf", "Fem", "Cha" ], # 4
-        [ "Wiz", "Dwa", "Mal", "Neu" ], [ "Wiz", "Dwa", "Mal", "Neu" ], # 5
-        [ "Wiz", "Gia", "Mal", "Neu" ], [ "Wiz", "Gia", "Fem", "Neu" ], # 6
-        [ "Wiz", "Gia", "Mal", "Cha" ], [ "Wiz", "Gia", "Fem", "Cha" ], # 7
-        [ "Wiz", "Gno", "Mal", "Neu" ], [ "Wiz", "Gno", "Fem", "Neu" ], # 8
-        [ "Wiz", "Gno", "Mal", "Cha" ], [ "Wiz", "Gno", "Fem", "Cha" ], # 9
-        [ "Wiz", "Hob", "Mal", "Neu" ], [ "Wiz", "Hob", "Fem", "Neu" ], # 10
-        [ "Wiz", "Orc", "Mal", "Cha" ], [ "Wiz", "Orc", "Fem", "Cha" ], # 11
-        [ "Wiz", "Ith", "Mal", "Cha" ], [ "Wiz", "Ith", "Fem", "Cha" ], # 12
-      ],
-    },
+        [ "Wiz", "Hum", "Mal", "Neu" ], [ "Wiz", "Hum", "Fem", "Neu" ],
+        [ "Wiz", "Hum", "Mal", "Cha" ], [ "Wiz", "Hum", "Fem", "Cha" ],
+        [ "Wiz", "Elf", "Mal", "Neu" ], [ "Wiz", "Elf", "Fem", "Neu" ],
+        [ "Wiz", "Elf", "Mal", "Cha" ], [ "Wiz", "Elf", "Fem", "Cha" ],
+        [ "Wiz", "Dwa", "Mal", "Neu" ], [ "Wiz", "Dwa", "Mal", "Neu" ],
+        [ "Wiz", "Gia", "Mal", "Neu" ], [ "Wiz", "Gia", "Fem", "Neu" ],
+        [ "Wiz", "Gia", "Mal", "Cha" ], [ "Wiz", "Gia", "Fem", "Cha" ],
+        [ "Wiz", "Gno", "Mal", "Neu" ], [ "Wiz", "Gno", "Fem", "Neu" ],
+        [ "Wiz", "Gno", "Mal", "Cha" ], [ "Wiz", "Gno", "Fem", "Cha" ],
+        [ "Wiz", "Hob", "Mal", "Neu" ], [ "Wiz", "Hob", "Fem", "Neu" ],
+        [ "Wiz", "Orc", "Mal", "Cha" ], [ "Wiz", "Orc", "Fem", "Cha" ],
+        [ "Wiz", "Ith", "Mal", "Cha" ], [ "Wiz", "Ith", "Fem", "Cha" ]
+      ]
+    }
   }
 
 }
