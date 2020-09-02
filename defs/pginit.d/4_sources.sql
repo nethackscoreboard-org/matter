@@ -11,13 +11,6 @@
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles (
-    logfiles_i, descr, server, variant, logurl, localfile, dumpurl, oper, static
-) VALUES (
-  999, 'test', 'test', 'dyn',
-  'asdf.org/foo', 'test.log', '', 't', 't'
-);
-
-INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
   1, 'nethack.alt.org (3.4.3)', 'nao', 'nh',
