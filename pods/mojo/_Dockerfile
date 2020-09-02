@@ -4,6 +4,6 @@ RUN cpanm -l /cpan --installdeps /tmp --notest
 
 FROM feeder-skel:$LABEL as nhdb-mojo:$LABEL
 COPY --from=cpan-mojo:$LABEL /cpan /cpan
-ARG RUN=run
+ARG RUN=nhs
 WORKDIR ${RUN:-}
 CMD hypnotoad script/nhs

@@ -1,9 +1,12 @@
 # not executable, to be sourced by setup.sh
 # general installation defs
-export HOST_RUNDIR=~/run/nhs-feed
-export HOST_MOJDIR=~/run/nhs-mojo
-export CONT_RUNDIR=/run
-export CONT_MOJDIR=/run
+export HOST_RUNDIR=$PWD/run
+export HOST_MOJDIR=$PWD/run
+# for non-containerised setups
+export HOST_XLOGDIR=/var/log/nhdb-xlogs 
+export CONT_RUNDIR=/nhs
+export CONT_MOJDIR=/nhs
+export CONT_XLOGDIR=/var/log/xlog
 export HOST_BINDIR=~/bin
 export SETUP_MODE=podman
 
@@ -14,6 +17,12 @@ export DBHOST=localhost
 export FEEDER_DBUSER=nhdbfeeder
 export STATS_DBUSER=nhdbstats
 export PGDATA=/var/lib/postgresql/data/pgdata
+
+if [[ "$SETUP_MODE" == "host" ]]; then
+    export XLOGDIR=$HOST_XLOGDIR
+else
+    export XLOGDIR=$CONT_XLOGDIR
+fi
 
 # web definitions
 # should be a subdirectory of $HOST_MOJDIR, so that

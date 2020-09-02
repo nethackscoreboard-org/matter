@@ -58,6 +58,7 @@ envsubst < _mounts.conf > mounts.conf
 envsubst < _00_init_users.sh > pginit.d/00_init_users.sh
 chmod a+x pginit.d/00_init_users.sh
 cd pginit.d
+mkdir -pv $TOPDIR/pods/postgres/init.d
 for i in *; do
     ln -srf $i $TOPDIR/pods/postgres/init.d/
 done
@@ -71,7 +72,6 @@ cp -r lib $HOST_RUNDIR/
 
 # copy files to install directories for mojo front-end
 mkdir -pv $HOST_MOJDIR
-cp -r lib $HOST_MOJDIR/
 cp -r cfg $HOST_MOJDIR/
 cp -r run/templates $HOST_MOJDIR/
 cp -r run/script $HOST_MOJDIR/

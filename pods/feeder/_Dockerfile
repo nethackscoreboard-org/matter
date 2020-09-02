@@ -19,6 +19,6 @@ RUN cpanm -l /cpan --installdeps /tmp --notest
 
 FROM feeder-skel:$LABEL as nhdb-feeder:$LABEL
 COPY --from=cpan-feeder:$LABEL /cpan /cpan
-ARG RUN=run
+ARG RUN=nhs
 WORKDIR ${RUN:-}
 CMD ./nhdb-feeder.pl --server=hdf,hfa,hfe

@@ -23,7 +23,7 @@ nhdb-init () {
 # but we only access them via nginx on the port forwarded
 # to the pod
 podman pod exists nhdb-pod || podman pod create \
-    -n nhdb-pod -p $HOST_WEBPORT:$CONT_WEBPORT/tcp
+    -n nhdb-pod -p $HOST_WEBPORT:$CONT_WEBPORT/tcp --dns 10.0.2.3
 
 # if images don't exist, setup.sh has to be run from
 # the repository

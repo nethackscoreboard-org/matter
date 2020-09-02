@@ -23,7 +23,7 @@
     "reject_name" : [ "wizard", "paxedtest" ]
   },
   "logs" : {
-    "localpath" : "logs",
+    "localpath" : "${XLOGDIR}",
     "urlpath" : null
   },
   "firsttoascend" : [

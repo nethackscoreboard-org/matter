@@ -16,7 +16,8 @@ feeder-init () {
         cmd="./nhdb-feeder.pl --server=hfa,hfe,hdf"
     fi
     podman run --pod nhdb-pod --name nhdb-feeder --env $perl_lib \
-       --rm -v $HOST_RUNDIR:$CONT_RUNDIR:rw -it \
+       --rm -v $HOST_RUNDIR:$CONT_RUNDIR:ro -it \
+       -v nhdb-xlog:$CONT_XLOGDIR:rw \
        nhdb-feeder:$LABEL ${cmd:-$FEEDER_DEFAULT_CMD}
 }
 

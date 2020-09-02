@@ -16,7 +16,7 @@ mojo-init () {
         cmd="morbo --listen http://*:8080 script/nhs"
     fi
     podman run --pod nhdb-pod --name nhdb-mojo --env $perl_lib \
-       --env $path --rm -v $HOST_MOJDIR:$CONT_MOJDIR:rw -it \
+       --env $path --rm -v $HOST_MOJDIR:$CONT_MOJDIR:ro -it \
        nhdb-mojo:$LABEL ${cmd:-}
 }
 
