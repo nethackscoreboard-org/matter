@@ -969,7 +969,7 @@
     # For the time being we leave everything undefined.
 
     "dnhslex" : {
-      "name" : "dNetHack + SLASH'EM Extended",
+      "name" : "dNetHack/Slex",
       "roles" : null,
       "races" : null,
       "genders" : null,
