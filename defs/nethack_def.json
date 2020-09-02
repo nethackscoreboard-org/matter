@@ -75,7 +75,7 @@
   ],
   "nh_variants_ord" : [
     "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fiq", "4k",
-    "grunt", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh"
+    "grunt", "ndnh", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh"
   ],
   "nh_variants" : {
     "nh" : {
@@ -604,6 +604,20 @@
         [ "Wiz", "Vam", "Mal", "Neu" ]
       ]
     },
+
+    "ndnh" : {
+      "name" : "notdNetHack",
+      "roles" : [
+        "acu", "ana", "arc", "bar", "bin", "brd", "cav", "con", "hea", "kni",
+        "mon", "nob", "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
+      ],
+      "races" : [
+        "and", "bat", "clk", "dro", "dwa", "elf", "eth", "gno", "hlf", "hum",
+        "inc", "orc", "sal", "swn", "vam", "yuk"
+      ],
+      "aligns" : [ "law", "neu", "cha", "non" ]
+    },
+
     "4k" : {
       "name" : "NetHack Fourk",
       "races" : [ "hum", "elf", "dwa", "gia", "gno", "orc", "scu", "syl" ],
