@@ -7,3 +7,4 @@ defs/mounts.conf
 defs/pginit.d/00_init_users.sh
 pods/mojo/Dockerfile
 pods/postgres/init.d/
+pods/feeder/Dockerfile

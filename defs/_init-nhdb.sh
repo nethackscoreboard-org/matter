@@ -28,7 +28,7 @@ podman pod exists nhdb-pod || podman pod create \
 # if images don't exist, setup.sh has to be run from
 # the repository
 pimg exists nhdb:$LABEL && pimg exists nhdb-feeder:$LABEL \
-    && pimg exists nhdb-stats:$LABEL || fail=yes
+    && pimg exists nhdb-mojo:$LABEL || fail=yes
 if [[ "${fail:-}" == "yes" ]]; then
     echo "nhdb images aren't built, run setup.sh"
     exit 1

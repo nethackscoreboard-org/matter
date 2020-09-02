@@ -13,7 +13,7 @@ feeder-init () {
     if [[ -n "$*" ]]; then
         cmd="./nhdb-feeder.pl $*"
     else
-        cmd="./nhdb-feeder.pl --server=test"
+        cmd="./nhdb-feeder.pl --server=hfa,hfe,hdf"
     fi
     podman run --pod nhdb-pod --name nhdb-feeder --env $perl_lib \
        --rm -v $HOST_RUNDIR:$CONT_RUNDIR:rw -it \
@@ -30,7 +30,7 @@ fi
 # if images don't exist, setup.sh has to be run from
 # the repository
 pimg exists nhdb:$LABEL && pimg exists nhdb-feeder:$LABEL \
-    && pimg exists nhdb-stats:$LABEL || fail=yes
+    && pimg exists nhdb-mojo:$LABEL || fail=yes
 if [[ "${fail:-}" == "yes" ]]; then
     echo "nhdb images aren't built, run setup.sh" >&2
     exit 1

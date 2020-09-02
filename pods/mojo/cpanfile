@@ -13,4 +13,5 @@ requires 'Carp::Always';
 requires 'Mojolicious';
 requires 'Mojolicious::Plugin::TemplateToolkit';
 requires 'Mojo::Pg';
+requires 'Mojo::Server::Hypnotoad';
 requires 'File::Slurp';

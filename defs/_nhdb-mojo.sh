@@ -11,9 +11,9 @@ pcon () {
 
 mojo-init () {
     if [[ -n "$*" ]]; then
-        cmd="hypnotoad script/nhs $*"
+        cmd="$*"
     else
-        cmd=""
+        cmd="morbo --listen 'http://*:8080' script/nhs"
     fi
     podman run --pod nhdb-pod --name nhdb-mojo --env $perl_lib \
        --rm -v $HOST_MOJDIR:$CONT_MOJDIR:rw -it \
@@ -30,7 +30,7 @@ fi
 # if images don't exist, setup.sh has to be run from
 # the repository
 pimg exists nhdb:$LABEL && pimg exists nhdb-feeder:$LABEL \
-    && pimg exists nhdb-stats:$LABEL || fail=yes
+    && pimg exists nhdb-mojo:$LABEL || fail=yes
 if [[ "${fail:-}" == "yes" ]]; then
     echo "nhdb images aren't built, run setup.sh" >&2
     exit 1

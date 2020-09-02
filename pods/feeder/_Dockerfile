@@ -2,12 +2,23 @@ FROM alpine:latest as feeder-skel:$LABEL
 COPY ./binary-deps /tmp
 RUN apk add `cat /tmp/binary-deps`
 
+FROM alpine:latest as cpan-env:$LABEL
+RUN apk update \
+    && apk add ca-certificates wget \
+    && update-ca-certificates
+RUN apk add curl \
+    build-base \
+    make \
+    perl-dev \
+    perl-app-cpanminus \
+    postgresql-dev
+
 FROM cpan-env:$LABEL as cpan-feeder:$LABEL
 COPY ./cpanfile /tmp
-RUN cpanm -l /cpan-mods --installdeps /tmp --notest
+RUN cpanm -l /cpan --installdeps /tmp --notest
 
 FROM feeder-skel:$LABEL as nhdb-feeder:$LABEL
-COPY --from=cpan-feeder:$LABEL /cpan-mods /cpan-mods
+COPY --from=cpan-feeder:$LABEL /cpan /cpan
 ARG RUN=run
 WORKDIR ${RUN:-}
-CMD ./nhdb-feeder.pl
+CMD ./nhdb-feeder.pl --server=hdf,hfa,hfe
