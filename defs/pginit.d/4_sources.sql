@@ -434,6 +434,15 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  82, 'hardfought.org (notdNetHack)', 'hdf', 'ndnh',
+  'https://www.hardfought.org/xlogfiles/notdnethack/xlogfile',
+  'hdf.ndnh.log',
+  'https://www.hardfought.org/userdata/%U/%u/notdnethack/dumplog/%s.ndnh.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Europe/HFE ------------------------------------------------
 -----------------------------------------------------------------------------
@@ -583,6 +592,15 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  83, 'eu.hardfought.org (notdNetHack)', 'hfe', 'ndnh',
+  'https://eu.hardfought.org/xlogfiles/notdnethack/xlogfile',
+  'hfe.ndnh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/notdnethack/dumplog/%s.ndnh.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Australia/HFA ---------------------------------------------
 -----------------------------------------------------------------------------
@@ -730,6 +748,15 @@ INSERT INTO logfiles (
   'https://au.hardfought.org/xlogfiles/evilhack/xlogfile',
   'hfa.evil.log',
   'https://au.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  84, 'eu.hardfought.org (notdNetHack)', 'hfe', 'ndnh',
+  'https://eu.hardfought.org/xlogfiles/notdnethack/xlogfile',
+  'hfe.ndnh.log',
+  'https://eu.hardfought.org/userdata/%U/%u/notdnethack/dumplog/%s.ndnh.txt'
 );
 
 -----------------------------------------------------------------------------

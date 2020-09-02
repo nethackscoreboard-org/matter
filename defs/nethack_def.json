@@ -99,7 +99,7 @@
 
   "nh_variants_ord" : [
       "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fiq", "4k",
-      "grunt", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh",
+      "grunt", "ndnh", "nh4", "slashem", "slex", "spork", "spl", "un", "xnh"
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -703,7 +703,20 @@
         [ "Wiz", "Vam", "Fem", "Neu" ],
         [ "Wiz", "Vam", "Mal", "Cha" ],
         [ "Wiz", "Vam", "Mal", "Neu" ]
+      ]
+    },
+
+    "ndnh" : {
+      "name" : "notdNetHack",
+      "roles" : [
+        "acu", "ana", "arc", "bar", "bin", "brd", "cav", "con", "hea", "kni",
+        "mon", "nob", "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
       ],
+      "races" : [
+        "and", "bat", "clk", "dro", "dwa", "elf", "eth", "gno", "hlf", "hum",
+        "inc", "orc", "sal", "swn", "vam", "yuk"
+      ],
+      "aligns" : [ "law", "neu", "cha", "non" ]
     },
 
     #===   _   _      _   _   _            _      _____                _
