@@ -1,5 +1,6 @@
 # not executable, to be sourced by setup.sh
 # general installation defs
+export VM_NAME=kizul
 export HOST_PREFIX=/usr/local
 export HOST_RUNDIR=/usr/local/run
 export HOST_MOJDIR=/usr/local/run
@@ -52,9 +53,9 @@ if [[ "$SETUP_MODE" == "podman" || "$SETUP_MODE" == "docker" ]]; then
     # these secrets will be mapped to /run/secrets/nhdb
     # inside containers, as a directory with root db pass,
     # and other passwords inside
-    export secrets="$HOME/.secrets/containers/nhdb"
+    export secrets="${PREFIX}/var/secrets/"
     export LABEL="testing" # tag images with branch name label
-    export AUTH_JSON_PATH="/run/secrets/nhdb/auth.json"
+    export AUTH_JSON_PATH="/run/secrets/auth.json"
     export FEEDER_DEFAULT_CMD="./nhdb-feeder.pl"
     export auth_json_host="${secrets}/auth.json"
     
@@ -62,7 +63,7 @@ if [[ "$SETUP_MODE" == "podman" || "$SETUP_MODE" == "docker" ]]; then
     export pguser="POSTGRES_USER=$DBUSER"
     export pgdb="POSTGRES_DB=$DBNAME"
     #export pgauth_env="POSTGRES_HOST_AUTH_METHOD=password"
-    export pgpass="POSTGRES_PASSWORD_FILE=/run/secrets/nhdb/root"
+    export pgpass="POSTGRES_PASSWORD_FILE=/run/secrets/root"
     
     # env vars for perl/cpan containers
     export perl_lib="PERL5LIB=/cpan/lib/perl5"

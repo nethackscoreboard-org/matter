@@ -83,12 +83,13 @@ chmod a+x pginit.d/00_init_users.sh
 cd pginit.d
 mkdir -pv $HOST_PREFIX/pods/postgres/init.d
 for i in *; do
-    ln -srf $i $HOST_PREFIX/pods/postgres/init.d/
+    #ln -srf $i $HOST_PREFIX/pods/postgres/init.d/
+    cp $i $HOST_PREFIX/pods/postgres/init.d/
 done
-cd $TOPDIR
 
 if [[ $# -ge 0 && $1 == "--skip-pods" ]]; then
     exit 0
 fi
 
-#pods/build.sh
+cd $HOST_PREFIX
+pods/build.sh
