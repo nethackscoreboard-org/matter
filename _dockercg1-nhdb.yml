@@ -48,9 +48,9 @@ systemd:
         ExecStartPre=-/usr/bin/docker kill nhdb
         ExecStartPre=-/usr/bin/docker rm nhdb
         ExecStartPre=-/usr/bin/docker build -t nhdb:$LABEL $HOST_PREFIX/pods/postgres
-        ExecStartPre=-/usr/bin/docker pod create -n nhdb-pod -p $HOST_WEBPORT:$CONT_WEBPORT/tcp
+        ExecStartPre=-/usr/bin/docker network create nhdb-pod 
         ExecStart=/usr/bin/docker run --env $pgdb --env $pgpass --env $pguser --name nhdb \
-                                  --volume nhdb-vol:$PGDATA:rw --pod nhdb-pod \
+                                  --volume nhdb-vol:$PGDATA:rw -p 5432 --network nhdb-pod \
                                   nhdb:$LABEL postgres -c log_statement=none \
                                   -c checkpoint_completion_target=0.9
         ExecStop=/usr/bin/docker stop nhdb
@@ -68,7 +68,7 @@ systemd:
         ExecStartPre=-/usr/bin/docker rm nhdb-feeder
         ExecStartPre=-/usr/bin/docker build -t nhdb-feeder:$LABEL $HOST_PREFIX/pods/feeder
         ExecStart=/usr/bin/docker run --env $perl_lib -v $HOST_RUNDIR:$CONT_RUNDIR:ro \
-                                  --pod nhdb-pod -v xlog-vol:$XLOGDIR:rw \
+                                  --network nhdb-pod -v xlog-vol:$XLOGDIR:rw \
                                   --name nhdb-feeder nhdb-feeder:$LABEL \
                                   ./nhdb-feeder.pl
         ExecStop=/usr/bin/docker stop nhdb-feeder
@@ -98,7 +98,7 @@ systemd:
         ExecStartPre=-/usr/bin/docker rm nhdb-mojo
         ExecStartPre=-/usr/bin/docker build -t nhdb-mojo:$LABEL $HOST_PREFIX/pods/mojo
         ExecStart=/usr/bin/docker run --env $perl_lib -v $HOST_WEBDIR:$CONT_WEBDIR:ro \
-                                  --env $path --pod nhdb-pod \
+                                  --env $path --network nhdb-pod -p $HOST_WEBPORT:$CONT_WEBPORT \
                                   --name nhdb-mojo nhdb-mojo:$LABEL \
                                   morbo --listen http://*:$CONT_WEBPORT script/nhs
         ExecStop=/usr/bin/docker stop nhdb-mojo

@@ -10,3 +10,4 @@ pods/postgres/init.d/
 pods/feeder/Dockerfile
 run/cfg
 run/public
+dockercg1-nhdb.yml
