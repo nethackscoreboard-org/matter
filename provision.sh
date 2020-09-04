@@ -23,6 +23,7 @@ serial=yes
 
 export vm_name=kizul
 source defs/setup_def.sh
+SSH_PUB_KEY=`cat ~/.ssh/id_rsa.pub`
 envsubst < $yaml > $yml
 fcct --pretty --strict $yml --output $config
 
