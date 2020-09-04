@@ -37,14 +37,19 @@ fi
 # chooose passwords
 if [[ -z $skip_pass ]]; then
     mkdir -p $secrets
-    getpw root $secrets
-    getpw $FEEDER_DBUSER $secrets
-    getpw $STATS_DBUSER $secrets
-    export FEEDER_PASS=`cat $secrets/$FEEDER_DBUSER`
-    export STATS_PASS=`cat $secrets/$STATS_DBUSER`
+    cd $secrets
+    getpw root ./
+    getpw $FEEDER_DBUSER ./
+    getpw $STATS_DBUSER ./
+    export FEEDER_PASS=`cat ./$FEEDER_DBUSER`
+    export STATS_PASS=`cat ./$STATS_DBUSER`
     envsubst < defs/_auth.json > $secrets/auth.json
     unset FEEDER_PASS
     unset STATS_PASS
+    docker secret create root root
+    docker secret create $FEEDER_DBUSER $FEEDER_DBUSER
+    docker secret create $STATS_DBUSER $STATS_DBUSER
+    docker secret create auth.json auth.json
 fi
 
 # run envsubst on some files needing preprocessing
