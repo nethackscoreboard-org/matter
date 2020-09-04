@@ -16,14 +16,13 @@ alias fcct='podman run --rm --tty --interactive \
             --volume ${PWD}:/pwd --workdir /pwd \
             quay.io/coreos/fcct:release'
 yaml=_*.yml
- yml=$(echo $yaml | sed -E '/^_//')
+ yml=$(echo $yaml | sed -E 's/^_//')
 config=${vm_name}.json
 stream=next
 serial=yes
 
 export vm_name=kizul
 source defs/setup_def.sh
-echo $yml; exit
 envsubst < $yaml > $yml
 fcct --pretty --strict $yml --output $config
 
