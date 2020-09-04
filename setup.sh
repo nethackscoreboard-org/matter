@@ -1,23 +1,27 @@
 #!/usr/bin/env bash
 set -x
 source defs/setup_def.sh
-skip_pass="true"
+interactive="false"
 
 getpw () {
     user=$1
     dir=$2
-    stty_orig=`stty -g`
-    stty -echo
-    echo -n "enter password for $user: "
-    read temp; echo
+    if [[ "$interactive" == "false" ]]; then
+        temp = $(< /dev/urandom tr -dc '[:digit:]' | head -c 20)
+    else
+        stty_orig=`stty -g`
+        stty -echo
+        echo -n "enter password for $user: "
+        read temp; echo
+        stty $stty_orig
+    fi
     echo $temp > $dir/$user
-    stty $stty_orig
 }
 
 if [ -e $secrets/root ] && \
     [ -e $secrets/$FEEDER_DBUSER ] && \
     [ -e $secrets/$STATS_DBUSER ]; then
-    if [[ "$skip_pass" != "true" ]]; then
+    if [[ "$skip_pass" != "true" ]] && [[ "$interactive" == "true" ]]; then
         echo -n "use old passwords? (Y/n) "
         read temp;
         if [[ $temp == 'Y' ]]; then
@@ -56,12 +60,6 @@ envsubst < _nhdb-mojo.sh  > ../bin/nhdb-mojo
 chmod a+x ../bin/*
 envsubst < _mounts.conf > mounts.conf
 envsubst < _00_init_users.sh > pginit.d/00_init_users.sh
-chmod a+x pginit.d/00_init_users.sh
-cd pginit.d
-mkdir -pv $TOPDIR/pods/postgres/init.d
-for i in *; do
-    ln -srf $i $TOPDIR/pods/postgres/init.d/
-done
 cd $TOPDIR
 
 # copy files to install directories for aggregator
@@ -77,11 +75,20 @@ cp -r run/templates $HOST_MOJDIR/
 cp -r run/script $HOST_MOJDIR/
 mkdir -pv $HOST_WEBDIR
 cp -r www/* $HOST_WEBDIR/
-
+cp -r pods $HOST_PREFIX/
 cp -r bin/* $HOST_BINDIR/
+
+cd defs
+chmod a+x pginit.d/00_init_users.sh
+cd pginit.d
+mkdir -pv $HOST_PREFIX/pods/postgres/init.d
+for i in *; do
+    ln -srf $i $HOST_PREFIX/pods/postgres/init.d/
+done
+cd $TOPDIR
 
 if [[ $# -ge 0 && $1 == "--skip-pods" ]]; then
     exit 0
 fi
 
-pods/build.sh
+#pods/build.sh

@@ -1,0 +1,142 @@
+variant: fcos
+version: 1.1.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ${SSH_PUB_KEY}
+      groups:
+        - docker
+        - wheel
+systemd:
+  units:
+    - name: serial-getty@ttyS0.service
+      dropins:
+      - name: autologin-core.conf
+        contents: |
+          [Service]
+          # Override Execstart in main unit
+          ExecStart=
+          # Add new Execstart with `-` prefix to ignore failure
+          ExecStart=-/usr/sbin/agetty --autologin core --noclear %I ${TERM}
+          TTYVTDisallocate=no
+    - name: nhdb-setup.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Fetch git repo for everything that is NHS
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/local/bin/nhs-fetch.sh
+        RemainAfterExit=yes
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: nhdb.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Run nhdb - NHDB database in a postgres container
+        After=network-online.target
+        Wants=nhdb-setup.service
+
+        [Service]
+        User=core
+        ExecStartPre=-/usr/bin/docker kill nhdb
+        ExecStartPre=-/usr/bin/docker rm nhdb
+        ExecStartPre=-/usr/bin/docker build -t nhdb:$LABEL $HOST_PREFIX/pods/postgres
+        ExecStartPre=-/usr/bin/docker pod create -n nhdb-pod -p $HOST_WEBPORT:$CONT_WEBPORT/tcp
+        ExecStart=/usr/bin/docker run --env $pgdb --env $pgpass --env $pguser --name nhdb \
+                                  --volume nhdb-vol:$PGDATA:rw --pod nhdb-pod \
+                                  nhdb:$LABEL postgres -c log_statement=none \
+                                  -c checkpoint_completion_target=0.9
+        ExecStop=/usr/bin/docker stop nhdb
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: nhdb-feeder.service
+      contents: |
+        [Unit]
+        Description=Run nhdb-feeder - NHS database back-end xlog aggregator
+
+        [Service]
+        User=core
+        ExecStartPre=-/usr/bin/docker kill nhdb-feeder
+        ExecStartPre=-/usr/bin/docker rm nhdb-feeder
+        ExecStartPre=-/usr/bin/docker build -t nhdb-feeder:$LABEL $HOST_PREFIX/pods/feeder
+        ExecStart=/usr/bin/docker run --env $perl_lib -v $HOST_RUNDIR:$CONT_RUNDIR:ro \
+                                  --pod nhdb-pod -v xlog-vol:$XLOGDIR:rw \
+                                  --name nhdb-feeder nhdb-feeder:$LABEL \
+                                  ./nhdb-feeder.pl
+        ExecStop=/usr/bin/docker stop nhdb-feeder
+    - name: nhdb-feeder.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Timer to activate the database aggregator once per hour
+
+        [Timer]
+        OnBootSec=30min
+        OnUnitActiveSec=60min
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: nhdb-mojo.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Run nhdb-mojo - NHS database Mojolicious Web Frontend
+        After=network-online.target
+        Wants=nhdb.service
+
+        [Service]
+        User=core
+        ExecStartPre=-/usr/bin/docker kill nhdb-mojo
+        ExecStartPre=-/usr/bin/docker rm nhdb-mojo
+        ExecStartPre=-/usr/bin/docker build -t nhdb-mojo:$LABEL $HOST_PREFIX/pods/mojo
+        ExecStart=/usr/bin/docker run --env $perl_lib -v $HOST_WEBDIR:$CONT_WEBDIR:ro \
+                                  --env $path --pod nhdb-pod \
+                                  --name nhdb-mojo nhdb-mojo:$LABEL \
+                                  morbo --listen http://*:$CONT_WEBPORT script/nhs
+        ExecStop=/usr/bin/docker stop nhdb-mojo
+
+        [Install]
+        WantedBy=multi-user.target
+storage:
+  files:
+    - path: /usr/local/bin/nhs-fetch.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          mkdir -pv /usr/local/var
+          git clone -b nhs-docker-fcos --depth 1 https://github.com/aoeixsz4/nhs-fork.git /usr/local/var/nhs-git
+          cd /usr/local/var/nhs-git
+          export secrets=${secrets}
+          ./setup.sh
+    - path: /etc/containers/mounts.conf
+      mode: 0644
+      contents:
+        inline: |
+          ${secrets}:/run/secrets
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: |
+          ${VM_NAME}
+    - path: /etc/profile.d/systemd-pager.sh
+      mode: 0644
+      contents:
+        inline: |
+          # Tell systemd to not use a pager when printing information
+          export SYSTEMD_PAGER=cat
+    - path: /etc/sysctl.d/20-silence-audit.conf
+      mode: 0644
+      contents:
+        inline: |
+          # Raise console message logging level from DEBUG (7) to WARNING (4)
+          # to hide audit messages from the interactive console
+          kernel.printk=4

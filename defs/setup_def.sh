@@ -1,14 +1,15 @@
 # not executable, to be sourced by setup.sh
 # general installation defs
-export HOST_RUNDIR=$PWD/run
-export HOST_MOJDIR=$PWD/run
+export HOST_PREFIX=/usr/local
+export HOST_RUNDIR=/usr/local/run
+export HOST_MOJDIR=/usr/local/run
 # for non-containerised setups
 export HOST_XLOGDIR=/var/log/nhdb-xlogs 
 export CONT_RUNDIR=/nhs
 export CONT_MOJDIR=/nhs
 export CONT_XLOGDIR=/var/log/xlog
-export HOST_BINDIR=~/bin
-export SETUP_MODE=podman
+export HOST_BINDIR=/usr/local/bin
+export SETUP_MODE=docker
 
 # database related definitions
 export DBUSER=nhdb
@@ -47,14 +48,14 @@ export CONT_WEBPORT=8080
 # nhdb will also be the root of some other names e.g.
 # volume nhdb-vol will contain persistent db information
 # nhdb-pod will be the pod holding all the containers
-if [[ "$SETUP_MODE" == "podman" ]]; then
+if [[ "$SETUP_MODE" == "podman" || "$SETUP_MODE" == "docker" ]]; then
     # these secrets will be mapped to /run/secrets/nhdb
     # inside containers, as a directory with root db pass,
     # and other passwords inside
     export secrets="$HOME/.secrets/containers/nhdb"
-    export LABEL="develop" # tag images with branch name label
+    export LABEL="testing" # tag images with branch name label
     export AUTH_JSON_PATH="/run/secrets/nhdb/auth.json"
-    export FEEDER_DEFAULT_CMD="./nhdb-feeder.pl --server=hdf,hfa,hfe"
+    export FEEDER_DEFAULT_CMD="./nhdb-feeder.pl"
     export auth_json_host="${secrets}/auth.json"
     
     # env vars for postgres container
