@@ -8,6 +8,10 @@ set -x
 
 source defs/setup_def.sh
 
+SSH_PUB_KEY=`cat ~/.ssh/id_rsa.pub`
+envsubst < $yaml > $yml
+
+
 yaml=_*.yml
  yml=$(echo $yaml | sed -E 's/^_//')
 vm_name=kizul
@@ -25,8 +29,7 @@ alias fcct='podman run --rm --tty --interactive \
             --volume ${PWD}:/pwd --workdir /pwd \
             quay.io/coreos/fcct:release'
 
-SSH_PUB_KEY=`cat ~/.ssh/id_rsa.pub`
-envsubst < $yaml > $yml
+
 fcct --pretty --strict $yml --output $config
 
 # https://unix.stackexchange.com/questions/150957/generating-file-with-ascii-numbers-using-dev-urandom

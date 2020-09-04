@@ -114,11 +114,6 @@ storage:
           cd /usr/local/var/nhs-git
           export secrets=${secrets}
           ./setup.sh
-    - path: /etc/containers/mounts.conf
-      mode: 0644
-      contents:
-        inline: |
-          ${secrets}:/run/secrets
     - path: /etc/hostname
       mode: 0644
       contents:
