@@ -16,13 +16,13 @@ envsubst < mojo/_Dockerfile  > mojo/Dockerfile
 docker build -t nhdb:$LABEL postgres || exit $?
 
 # alpine-perl-cpanimus for building cpan deps
-docker build -t cpan-env:$LABEL --target cpan-env:$LABEL feeder || exit $?
-docker build -t cpan-feeder:$LABEL --target cpan-feeder:$LABEL feeder || exit $?
+docker build -t cpan-env:$LABEL --target cpan-env feeder || exit $?
+docker build -t cpan-feeder:$LABEL --target cpan-feeder feeder || exit $?
 
 # nhdb-feeder.pl container
-docker build -t feeder-skel:$LABEL --target feeder-skel:$LABEL feeder || exit $?
-docker build -t nhdb-feeder:$LABEL --target nhdb-feeder:$LABEL --build-arg RUN=$CONT_RUNDIR feeder || exit $?
+docker build -t feeder-skel:$LABEL --target feeder-skel feeder || exit $?
+docker build -t nhdb-feeder:$LABEL --target nhdb-feeder --build-arg RUN=$CONT_RUNDIR feeder || exit $?
 
 # mojolicious web frontend container
-docker build -t cpan-mojo:$LABEL --target cpan-mojo:$LABEL mojo || exit $?
-docker build -t nhdb-mojo:$LABEL --target nhdb-mojo:$LABEL --build-arg RUN=$CONT_RUNDIR mojo || exit $?
+docker build -t cpan-mojo:$LABEL --target cpan-mojo mojo || exit $?
+docker build -t nhdb-mojo:$LABEL --target nhdb-mojo --build-arg RUN=$CONT_RUNDIR mojo || exit $?
