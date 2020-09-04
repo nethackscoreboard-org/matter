@@ -402,7 +402,7 @@ sub _combo_table_init
   # value of -1 marks unavailable combo
   # we could also do a pass to mark invalid columns -2,
   # i.e. if every role for a given race/align combo is -1
-  # then we set those to -2 - will also need a way to
+  # then we set those to -2 - will also need a way to3
   # save the disallowed race/align combos for table header
   # purposes. another option would be to rework/make an
   # additional combo_valid subroutine that just checks
