@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 #alias coreos-installer='podman run --pull=always            \
 #                        --rm --tty --interactive            \
 #                        --security-opt label=disable        \
@@ -24,9 +24,8 @@ alias ignition-validate='podman run --rm --tty --interactive \
                          --volume ${PWD}:/pwd --workdir /pwd \
                          quay.io/coreos/ignition-validate:release'
 
-alias fcct='podman run --rm --tty --interactive \
-            --security-opt label=disable        \
-            --volume ${PWD}:/pwd --workdir /pwd \
+alias fcct='podman run --rm --tty --interactive --security-opt \
+            label=disable --volume ${PWD}:/pwd --workdir /pwd \
             quay.io/coreos/fcct:release'
 
 
