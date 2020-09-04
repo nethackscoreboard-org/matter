@@ -22,21 +22,21 @@
         "path": "/usr/local/bin/nhs-fetch.sh",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/3TMvWrFMAzF8d1PodLZFoVOhT6MP3Qjk8QyknIJffqS0KXDXc+f83t/w9IHlmwc9rV1hTifgIcpblLzhs+sYekOdZNBEAsMttikrqTxUcUgxkbTGT6A3ad9IS7d+Sipyo5ZqJ/284nX6yG6psv6z99t6R5qe1XonKIORlXJ7RtZdrptTH8bVhme+yA1HNxKSGjkx0zG4TcAAP//MhIGnOQAAAA="
+          "source": "data:;base64,H4sIAAAAAAAC/3TMS6rDMAyF4blXocsd26LQUaGL8UOJTR4ykhJCV18SOumgw8PH+f//MLUVU9Tqlqk0Ad93wE0FZ85xxj2KG5tBnnkl8AnWqr5wnkj8kFnB+0LdKtygmnV9II7N6pZC5gUjUzv0dcfzNbBM4Wx95y8bm7lcfgkdncVAKQuZPi/7DHQBlWzrQat7BwAA//8YLuNrzgAAAA=="
         },
         "mode": 493
       },
       {
         "path": "/etc/containers/mounts.conf",
         "contents": {
-          "source": "data:,%2Fhome%2Faoei%2F.secrets%2Fcontainers%2Fnhdb%3A%2Frun%2Fsecrets%0A"
+          "source": "data:,%2Fvar%2Fsecrets%2F%3A%2Frun%2Fsecrets%0A"
         },
         "mode": 420
       },
       {
         "path": "/etc/hostname",
         "contents": {
-          "source": "data:,"
+          "source": "data:,kizul%0A"
         },
         "mode": 420
       },
@@ -73,12 +73,12 @@
         "name": "nhdb-setup.service"
       },
       {
-        "contents": "[Unit]\nDescription=Run nhdb - NHDB database in a postgres container\nAfter=network-online.target\nWants=nhdb-setup.service\n\n[Service]\nUser=core\nExecStartPre=-/usr/bin/docker kill nhdb\nExecStartPre=-/usr/bin/docker rm nhdb\nExecStartPre=-/usr/bin/docker build -t nhdb:testing /usr/local/pods/postgres\nExecStartPre=-/usr/bin/docker network create nhdb-pod \nExecStart=/usr/bin/docker run --env POSTGRES_DB=nhdb --env POSTGRES_PASSWORD_FILE=/run/secrets/nhdb/root --env POSTGRES_USER=nhdb --name nhdb \\\n                          --volume nhdb-vol:/var/lib/postgresql/data/pgdata:rw -p 5432 --network nhdb-pod \\\n                          nhdb:testing postgres -c log_statement=none \\\n                          -c checkpoint_completion_target=0.9\nExecStop=/usr/bin/docker stop nhdb\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=Run nhdb - NHDB database in a postgres container\nAfter=network-online.target\nWants=nhdb-setup.service\n\n[Service]\nUser=core\nExecStartPre=-/usr/bin/docker kill nhdb\nExecStartPre=-/usr/bin/docker rm nhdb\nExecStartPre=-/usr/bin/docker network create nhdb-pod \nExecStart=/usr/bin/docker run --env POSTGRES_DB=nhdb --env POSTGRES_PASSWORD_FILE=/run/secrets/root --env POSTGRES_USER=nhdb --name nhdb \\\n                          --volume nhdb-vol:/var/lib/postgresql/data/pgdata:rw -p 5432 --network nhdb-pod \\\n                          nhdb:testing postgres -c log_statement=none \\\n                          -c checkpoint_completion_target=0.9\nExecStop=/usr/bin/docker stop nhdb\n\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "nhdb.service"
       },
       {
-        "contents": "[Unit]\nDescription=Run nhdb-feeder - NHS database back-end xlog aggregator\n\n[Service]\nUser=core\nExecStartPre=-/usr/bin/docker kill nhdb-feeder\nExecStartPre=-/usr/bin/docker rm nhdb-feeder\nExecStartPre=-/usr/bin/docker build -t nhdb-feeder:testing /usr/local/pods/feeder\nExecStart=/usr/bin/docker run --env PERL5LIB=/cpan/lib/perl5 -v /usr/local/run:/nhs:ro \\\n                          --network nhdb-pod -v xlog-vol:/var/log/xlog:rw \\\n                          --name nhdb-feeder nhdb-feeder:testing \\\n                          ./nhdb-feeder.pl\nExecStop=/usr/bin/docker stop nhdb-feeder\n",
+        "contents": "[Unit]\nDescription=Run nhdb-feeder - NHS database back-end xlog aggregator\n\n[Service]\nUser=core\nExecStartPre=-/usr/bin/docker kill nhdb-feeder\nExecStartPre=-/usr/bin/docker rm nhdb-feeder\nExecStart=/usr/bin/docker run --env PERL5LIB=/cpan/lib/perl5 -v /usr/local/run:/nhs:ro \\\n                          --network nhdb-pod -v xlog-vol:/var/log/xlog:rw \\\n                          --name nhdb-feeder nhdb-feeder:testing \\\n                          ./nhdb-feeder.pl\nExecStop=/usr/bin/docker stop nhdb-feeder\n",
         "name": "nhdb-feeder.service"
       },
       {
@@ -87,7 +87,7 @@
         "name": "nhdb-feeder.timer"
       },
       {
-        "contents": "[Unit]\nDescription=Run nhdb-mojo - NHS database Mojolicious Web Frontend\nAfter=network-online.target\nWants=nhdb.service\n\n[Service]\nUser=core\nExecStartPre=-/usr/bin/docker kill nhdb-mojo\nExecStartPre=-/usr/bin/docker rm nhdb-mojo\nExecStartPre=-/usr/bin/docker build -t nhdb-mojo:testing /usr/local/pods/mojo\nExecStart=/usr/bin/docker run --env PERL5LIB=/cpan/lib/perl5 -v /usr/local/run/public:/nhs/public:ro \\\n                          --env  --network nhdb-pod -p 8080:8080 \\\n                          --name nhdb-mojo nhdb-mojo:testing \\\n                          morbo --listen http://*:8080 script/nhs\nExecStop=/usr/bin/docker stop nhdb-mojo\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=Run nhdb-mojo - NHS database Mojolicious Web Frontend\nAfter=network-online.target\nWants=nhdb.service\n\n[Service]\nUser=core\nExecStartPre=-/usr/bin/docker kill nhdb-mojo\nExecStartPre=-/usr/bin/docker rm nhdb-mojo\nExecStart=/usr/bin/docker run --env PERL5LIB=/cpan/lib/perl5 -v /usr/local/run/public:/nhs/public:ro \\\n                          --env  --network nhdb-pod -p 8080:8080 \\\n                          --name nhdb-mojo nhdb-mojo:testing \\\n                          morbo --listen http://*:8080 script/nhs\nExecStop=/usr/bin/docker stop nhdb-mojo\n\n[Install]\nWantedBy=multi-user.target\n",
         "enabled": true,
         "name": "nhdb-mojo.service"
       }

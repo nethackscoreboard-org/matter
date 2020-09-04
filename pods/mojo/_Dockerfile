@@ -1,8 +1,8 @@
-FROM cpan-feeder:$LABEL as cpan-mojo:$LABEL
+FROM cpan-feeder:$LABEL as cpan-mojo
 COPY ./cpanfile /tmp
 RUN cpanm -l /cpan --installdeps /tmp --notest
 
-FROM feeder-skel:$LABEL as nhdb-mojo:$LABEL
+FROM feeder-skel:$LABEL as nhdb-mojo
 COPY --from=cpan-mojo:$LABEL /cpan /cpan
 ARG RUN=nhs
 WORKDIR ${RUN:-}
