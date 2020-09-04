@@ -8,16 +8,16 @@ set -x
 
 source defs/setup_def.sh
 
-SSH_PUB_KEY=`cat ~/.ssh/id_rsa.pub`
-envsubst < $yaml > $yml
+export SSH_PUB_KEY=`cat ~/.ssh/id_rsa.pub`
+export yml=_dockercg1-nhdb.yml
+export yaml=$(echo $yml | sed -E 's/^_//')
+envsubst < $yml > $yaml
 
 
-yaml=_*.yml
- yml=$(echo $yaml | sed -E 's/^_//')
-vm_name=kizul
-config=${vm_name}.json
-stream=next
-serial=yes
+export vm_name=kizul
+export config=${vm_name}.json
+export stream=next
+export serial=yes
 
 alias ignition-validate='podman run --rm --tty --interactive \
                          --security-opt label=disable        \
@@ -30,7 +30,7 @@ alias fcct='podman run --rm --tty --interactive \
             quay.io/coreos/fcct:release'
 
 
-fcct --pretty --strict $yml --output $config
+fcct --pretty --strict $yaml --output $config
 
 # https://unix.stackexchange.com/questions/150957/generating-file-with-ascii-numbers-using-dev-urandom
 gcloud compute instances create --metadata-from-file "user-data=${config:-}" --image-project "fedora-coreos-cloud" --image-family "fedora-coreos-${stream:-}" "${vm_name:-}"
