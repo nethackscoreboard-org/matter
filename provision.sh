@@ -15,14 +15,15 @@ alias fcct='podman run --rm --tty --interactive \
             --security-opt label=disable        \
             --volume ${PWD}:/pwd --workdir /pwd \
             quay.io/coreos/fcct:release'
+source defs/setup_def.sh
+
 yaml=_*.yml
  yml=$(echo $yaml | sed -E 's/^_//')
+vm_name=kizul
 config=${vm_name}.json
 stream=next
 serial=yes
 
-export vm_name=kizul
-source defs/setup_def.sh
 SSH_PUB_KEY=`cat ~/.ssh/id_rsa.pub`
 envsubst < $yaml > $yml
 fcct --pretty --strict $yml --output $config
