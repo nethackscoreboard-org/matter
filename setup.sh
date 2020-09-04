@@ -2,6 +2,7 @@
 set -x
 source defs/setup_def.sh
 interactive="false"
+export TOPDIR=$PWD
 
 getpw () {
     user=$1
@@ -43,17 +44,17 @@ if [[ -z $skip_pass ]]; then
     getpw $STATS_DBUSER ./
     export FEEDER_PASS=`cat ./$FEEDER_DBUSER`
     export STATS_PASS=`cat ./$STATS_DBUSER`
-    envsubst < defs/_auth.json > $secrets/auth.json
+    envsubst < $TOPDIR/defs/_auth.json > $secrets/auth.json
     unset FEEDER_PASS
     unset STATS_PASS
     docker secret create root root
     docker secret create $FEEDER_DBUSER $FEEDER_DBUSER
     docker secret create $STATS_DBUSER $STATS_DBUSER
     docker secret create auth.json auth.json
+    cd $TOPDIR
 fi
 
 # run envsubst on some files needing preprocessing
-export TOPDIR=$PWD
 mkdir -pv cfg
 mkdir -pv bin
 cd defs
