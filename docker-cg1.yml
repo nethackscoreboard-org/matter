@@ -116,8 +116,8 @@ storage:
           chmod -R u+rw,go-rwx $secrets
           cd /tmp
           rm -rf nhs-git
-          gpg --auto-key-locate keyserver --locate-keys jjadoyle@gmail.com
-          gpg --export --armor --output joanna.asc
+          gpg --keyserver hkps://keys.openpgp.org/ --search-keys jjadoyle@gmail.com
+          gpg --export --armor --output joanna.asc jjadoyle@gmail.com
           echo "10.156.0.20    seadog" >>/etc/hosts
           docker trust signer add joanna seadog:5000/nhdb
           docker trust signer add joanna seadog:5000/nhdb-feeder
