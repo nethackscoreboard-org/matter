@@ -31,7 +31,7 @@ fi
 fcct --pretty --strict $yaml --output $config
 
 # https://unix.stackexchange.com/questions/150957/generating-file-with-ascii-numbers-using-dev-urandom
-ip=$(gcloud compute instances create --metadata-from-file "user-data=${config:-}" --image-project "fedora-coreos-cloud" --image-family "fedora-coreos-${stream:-}" "${vm_name:-}" | grep -E "^$vm_name" | sed -E 's/[[:space:]]+//g' | cut -d' ' -f5)
+ip=$(gcloud compute instances create --metadata-from-file "user-data=${config:-}" --image-project "fedora-coreos-cloud" --image-family "fedora-coreos-${stream:-}" "${vm_name:-}" | grep -E "^$vm_name" | sed -E 's/[[:space:]]+/ /g' | cut -d' ' -f5)
 
 # update stuff
 vm_full=${vm_name}.${domain}
