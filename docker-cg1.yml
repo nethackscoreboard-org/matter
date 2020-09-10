@@ -20,13 +20,15 @@ systemd:
           # Add new Execstart with `-` prefix to ignore failure
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
           TTYVTDisallocate=no
+    - name: docker.service
+      enabled: true
     - name: nhdb-init-auth.service
       enabled: true
       contents: |
         [Unit]
         Description=Assign database passwords and fetch/trust my GPG key
-        Requires=network-online.target
-        After=network-online.target
+        Requires=network-online.target docker.service
+        After=network-online.target docker.service
         ConditionPathExists=!/var/lib/nhs-auth-gen
 
         [Service]
@@ -49,8 +51,8 @@ systemd:
         User=core
         ExecStartPre=-/usr/bin/docker kill nhdb
         ExecStartPre=-/usr/bin/docker rm nhdb
-        ExecStartPre=/usr/bin/docker network create nhdb-net
-        ExecStartPre=/usr/bin/docker pull seadog:5000/nhdb:testing
+        ExecStartPre=-/usr/bin/docker network create nhdb-net
+        ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb:testing
         ExecStart=/usr/bin/docker run --net nhdb-net -h nhdb-pghost \
                         -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb
         ExecStop=/usr/bin/docker stop nhdb
@@ -68,7 +70,7 @@ systemd:
         User=core
         ExecStartPre=-/usr/bin/docker kill nhdb-feeder
         ExecStartPre=-/usr/bin/docker rm nhdb-feeder
-        ExecStartPre=/usr/bin/docker pull seadog:5000/nhdb-feeder:testing
+        ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb-feeder:testing
         ExecStart=/usr/bin/docker run --net nhdb-net \
                   -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb-feeder
         ExecStop=/usr/bin/docker stop nhdb-feeder
@@ -96,7 +98,7 @@ systemd:
         User=core
         ExecStartPre=-/usr/bin/docker kill nhdb-mojo
         ExecStartPre=-/usr/bin/docker rm nhdb-mojo
-        ExecStartPre=/usr/bin/docker pull seadog:5000/nhdb-mojo:testing
+        ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb-mojo:testing
         ExecStart=/usr/bin/docker run --net nhdb-net -p 8080/tcp \
                   -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb-mojo
         ExecStop=/usr/bin/docker stop nhdb-mojo
@@ -134,6 +136,21 @@ storage:
       contents:
         inline: |
           kizul
+    - path: /etc/sysconfig/docker
+      mode: 0644
+      contents:
+        inline: |
+          # Gopied from currently running vm and added --insecure-registry
+          # flag. This can introduce unmanaged state if OS-provided
+          # /etc/sysconfig/docker drifts away from our list date 2020-09-11
+          OPTIONS="--selinux-enabled \
+                   --log-driver=journald \
+                   --storage-driver=overlay2 \
+                   --live-restore \
+                   --default-ulimit nofile=1024:1024 \
+                   --init-path /usr/libexec/docker/docker-init \
+                   --userland-proxy-path /usr/libexec/docker/docker-proxy \
+                   --insecure-registry seadog:5000"
     - path: /etc/profile.d/systemd-pager.sh
       mode: 0644
       contents:
