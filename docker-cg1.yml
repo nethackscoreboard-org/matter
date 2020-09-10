@@ -10,18 +10,6 @@ passwd:
         - wheel
 systemd:
   units:
-    - name: gpg-agent.socket
-      enabled: true
-    - name: dirmngr.socket
-      enabled: true
-    - name: dirmngr.service
-      dropins:
-      - name: set-keyserver.conf
-        contents: |
-          [Service]
-          # Override ExecStart in order to set own keyserver
-          ExecStart=/usr/bin/dirmngr --supervised \
-                        --options /etc/gnupg/dirmngr.conf
     - name: serial-getty@ttyS0.service
       dropins:
       - name: autologin-core.conf
@@ -37,9 +25,9 @@ systemd:
       contents: |
         [Unit]
         Description=Assign database passwords and fetch/trust my GPG key
-        Before=nhdb.service
-        After=docker.service
-        Requires=dirmngr.service
+        After=dbus.target
+        Requires=user@1000.service
+        Requires=docker.service
         ConditionPathExists=!/var/lib/nhs-auth-gen
 
         [Service]
@@ -129,12 +117,32 @@ storage:
           export secrets=/var/run/secrets/nhdb
           sudo ./setup.sh --secrets-only
           chown -R root:root $secrets
-          chmod -R u+rw,go-rwx $secrets
+          sudo chmod -R u+rw,go-rwx $secrets
           cd /tmp
           rm -rf nhs-git
-          gpg --receive-keys C014E4ECC9EC432F
+
+          systemctl --user list-unit-files >~/systemctl-units.log 2>&1
+
+          # initialise some gpg stuff, bit hacky but I can't
+          # seem to get user services to start by enabling in the yaml
+          mkdir -p ~/.gnupg
+          echo keyserver hkps://keys.openpgp.org/ >>~/.gnupg/dirmngr.conf
+          systemctl --user enable dirmngr.socket
+          systemctl --user enable gpg-agent.socket
+          systemctl --user start dirmngr.service
+          systemctl --user start gpg-agent.service
+
+          while $[[ $i -le 10 ]]; do
+                gpg --receive-keys C014E4ECC9EC432F && break
+                i=$(($i + 1))
+          done
           gpg --export --armor --output joanna.asc jjadoyle@gmail.com
-          echo "10.156.0.20    seadog" | tee -a /etc/hosts
+          if [[ $? -ne 0 ]]; then
+                echo "gpg --receive-keys failed 10 times" >&2
+                exit 1
+          fi
+          
+          echo "10.156.0.20    seadog" | sudo tee -a /etc/hosts
           docker trust signer add joanna seadog:5000/nhdb
           docker trust signer add joanna seadog:5000/nhdb-feeder
           docker trust signer add joanna seadog:5000/nhdb-mojo
@@ -143,11 +151,6 @@ storage:
       contents:
         inline: |
           kizul
-    - path: /etc/gnupg/dirmngr.conf
-      mode: 0644
-      contents:
-        inline: |
-          keyserver hkps://keys.openpgp.org/
     - path: /etc/profile.d/systemd-pager.sh
       mode: 0644
       contents:
