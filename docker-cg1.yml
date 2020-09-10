@@ -20,14 +20,25 @@ systemd:
           # Add new Execstart with `-` prefix to ignore failure
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
           TTYVTDisallocate=no
+    - name: user@core.service
+      enabled: true
+      dropins:
+      - name: core-wants.conf
+        contents: |
+          [Service]
+          # Is gpg --recv-keys worth all these dumb hacks when I could
+          # fetch the public key by HTTP ... ?
+          ExecStartPost=/usr/bin/systemctl --user enable dirmngr.socket
+          ExecStartPost=/usr/bin/systemctl --user enable gpg-agent.socket
+          ExecStartPost=/usr/bin/systemctl --user start dirmngr.service
+          ExecStartPost=/usr/bin/systemctl --user start gpg-agent.service
+
     - name: nhdb-init-auth.service
       enabled: true
       contents: |
         [Unit]
         Description=Assign database passwords and fetch/trust my GPG key
-        After=dbus.target
-        Requires=user@1000.service
-        Requires=docker.service
+        Requires=user@core.service
         ConditionPathExists=!/var/lib/nhs-auth-gen
 
         [Service]
@@ -121,19 +132,9 @@ storage:
           cd /tmp
           rm -rf nhs-git
 
-          systemctl --user list-unit-files >~/systemctl-units.log 2>&1
-
-          # initialise some gpg stuff, bit hacky but I can't
-          # seem to get user services to start by enabling in the yaml
-          mkdir -p ~/.gnupg
-          echo keyserver hkps://keys.openpgp.org/ >>~/.gnupg/dirmngr.conf
-          systemctl --user enable dirmngr.socket
-          systemctl --user enable gpg-agent.socket
-          systemctl --user start dirmngr.service
-          systemctl --user start gpg-agent.service
-
           while $[[ $i -le 10 ]]; do
-                gpg --receive-keys C014E4ECC9EC432F && break
+          gpg --keyserver hpks://keys.openpgp.org/ \
+              --receive-keys C014E4ECC9EC432F && break
                 i=$(($i + 1))
           done
           gpg --export --armor --output joanna.asc jjadoyle@gmail.com
@@ -143,9 +144,12 @@ storage:
           fi
           
           echo "10.156.0.20    seadog" | sudo tee -a /etc/hosts
-          docker trust signer add joanna seadog:5000/nhdb
-          docker trust signer add joanna seadog:5000/nhdb-feeder
-          docker trust signer add joanna seadog:5000/nhdb-mojo
+          docker trust signer add joanna \
+                  seadog:5000/nhdb --key joanna.asc
+          docker trust signer add joanna \
+                  seadog:5000/nhdb-feeder --key joanna.asc
+          docker trust signer add joanna \
+                  seadog:5000/nhdb-mojo --key joanna.asc
     - path: /etc/hostname
       mode: 0644
       contents:
