@@ -54,7 +54,7 @@ systemd:
         ExecStartPre=-/usr/bin/docker network create nhdb-net
         ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb:testing
         ExecStart=/usr/bin/docker run --net nhdb-net -h nhdb-pghost \
-                   -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb:testing
+        -v "/var/run/secrets/nhdb:/run/secrets:ro" seadog:5000/nhdb:testing
         ExecStop=/usr/bin/docker stop nhdb
 
         [Install]
@@ -72,7 +72,8 @@ systemd:
         ExecStartPre=-/usr/bin/docker rm nhdb-feeder
         ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb-feeder:testing
         ExecStart=/usr/bin/docker run --net nhdb-net \
-              -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb-feeder:testing
+              -v "/var/run/secrets/nhdb:/run/secrets:ro" \
+                    seadog:5000/nhdb-feeder:testing
         ExecStop=/usr/bin/docker stop nhdb-feeder
     - name: nhdb-feeder.timer
       enabled: true
@@ -100,7 +101,8 @@ systemd:
         ExecStartPre=-/usr/bin/docker rm nhdb-mojo
         ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb-mojo:testing
         ExecStart=/usr/bin/docker run --net nhdb-net -p 8080/tcp \
-              -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb-mojo:testing
+              -v "/var/run/secrets/nhdb:/run/secrets:ro" \
+                              seadog:5000/nhdb-mojo:testing
         ExecStop=/usr/bin/docker stop nhdb-mojo
 
         [Install]
