@@ -20,20 +20,37 @@ systemd:
           # Add new Execstart with `-` prefix to ignore failure
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
           TTYVTDisallocate=no
+    - name: nhdb-init-auth.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Assign database passwords and fetch/trust my GPG key
+        Before=nhdb.service
+        After=docker.service
+        ConditionPathExists=!/var/lib/nhs-auth-gen
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/local/bin/init-auth-tokens.sh
+        ExecStartPost=/usr/bin/touch /var/lib/nhs-auth-gen
+        RemainAfterExit=yes
+
+        [Install]
+        WantedBy=nhdb.service
     - name: nhdb.service
       enabled: true
       contents: |
         [Unit]
-        Description=Run nhdb - NHDB database in a postgres container
-        After=network-online.target
-        Wants=network-online.target
+        Description=Run NHDB database in a postgres container
+        Before=nhdb-mojo.service
+        After=nhdb-init-auth.service
 
         [Service]
         User=core
         ExecStartPre=-/usr/bin/docker kill nhdb
         ExecStartPre=-/usr/bin/docker rm nhdb
         ExecStartPre=/usr/bin/docker network create nhdb-net
-        ExecStartPre=/usr/local/bin/gen-secrets.sh
+        ExecStartPre=/usr/bin/docker pull seadog:5000/nhdb:testing
         ExecStart=/usr/bin/docker run --net nhdb-net -h nhdb-pghost \
                         -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb
         ExecStop=/usr/bin/docker stop nhdb
@@ -49,6 +66,7 @@ systemd:
         User=core
         ExecStartPre=-/usr/bin/docker kill nhdb-feeder
         ExecStartPre=-/usr/bin/docker rm nhdb-feeder
+        ExecStartPre=/usr/bin/docker pull seadog:5000/nhdb-feeder:testing
         ExecStart=/usr/bin/docker run --net nhdb-net \
                   -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb-feeder
         ExecStop=/usr/bin/docker stop nhdb-feeder
@@ -76,6 +94,7 @@ systemd:
         User=core
         ExecStartPre=-/usr/bin/docker kill nhdb-mojo
         ExecStartPre=-/usr/bin/docker rm nhdb-mojo
+        ExecStartPre=/usr/bin/docker pull seadog:5000/nhdb-mojo:testing
         ExecStart=/usr/bin/docker run --net nhdb-net -p 8080/tcp \
                   -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb-mojo
         ExecStop=/usr/bin/docker stop nhdb-mojo
@@ -84,19 +103,25 @@ systemd:
         WantedBy=multi-user.target
 storage:
   files:
-    - path: /usr/local/bin/gen-secrets.sh
+    - path: /usr/local/bin/init-auth-tokens.sh
       mode: 0755
       contents:
         inline: |
           #!/bin/bash
-          git clone -b nhs-docker-fcos --depth 1 https://github.com/aoeixsz4/nhs-fork.git /tmp/nhs-git
+          git clone -b separate-image-build --depth 1 https://github.com/aoeixsz4/nhs-fork.git /tmp/nhs-git
           cd /tmp/nhs-git
           export secrets=/var/run/secrets/nhdb
           ./setup.sh --secrets-only
           chown -R root:root $secrets
           chmod -R u+rw,go-rwx $secrets
-          cd -
-          rm -rf /tmp/nhs-git
+          cd /tmp
+          rm -rf nhs-git
+          gpg --auto-key-locate keyserver --locate-keys jjadoyle@gmail.com
+          gpg --export --armor --output joanna.asc
+          echo "10.156.0.20    seadog" >>/etc/hosts
+          docker trust signer add joanna seadog:5000/nhdb
+          docker trust signer add joanna seadog:5000/nhdb-feeder
+          docker trust signer add joanna seadog:5000/nhdb-mojo
     - path: /etc/hostname
       mode: 0644
       contents:

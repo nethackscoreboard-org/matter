@@ -30,8 +30,7 @@ ARG PERL5LIB=/cpan/lib/perl5
 # then copy program scripts and initial data
 # finally copy host aliases
 COPY --from=cpan-feeder:testing /cpan /cpan
-COPY ./run $RUNDIR
-COPY 
+COPY ./run $rundir
 
 # define runtime environment
 ENV PERL5LIB=$PERL5LIB

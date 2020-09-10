@@ -1,7 +1,13 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # now with a lot less silly environment preprocessing
-export DEBUG="true"
-set -x
+
+# flag -i is for an actual interactive bash session,
+# which normally excludes any kind of script, tho you
+# can force it on the shebang line, test [ -t 0 ] is
+# used later instead to check for tty input
+#export DEBUG="true"
+#set -v
+
 
 do_cleanup () {
     [[ -z "$TOPDIR" ]] && exit 1
@@ -15,8 +21,8 @@ do_cleanup () {
 getpw () {
     user=$1
     dir=$2
-    if [[ "$interactive" == "false" ]]; then
-        temp = $(< /dev/urandom tr -dc '[:digit:]' | head -c 20)
+    if [[ "$tty_in" == "false" ]]; then
+        temp=$(< /dev/urandom tr -dc '[:digit:]' | head -c 20)
     else
         stty_orig=`stty -g`
         stty -echo
@@ -32,10 +38,50 @@ read_env () {
         exit 1
     fi
 
-    # for within-file substitution to work, we have to import first
-    # once without substitution, bootstrap-like
-    export $(grep -v '^#' $1 | xargs -0)
-    export $(echo $(grep -v '^#' $1 | xargs -0) | envsubst)
+    file=$1
+
+    while IFS= read -r line; do
+        # skip empty line or full-line comment
+        if [[ -z $line ]] || [[ $line = \#* ]]; then
+            continue
+        fi
+
+        # attempt to strip inline comments
+        if echo $line | grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*=".*"[[:space:]]*#'; then
+            line=$(echo $line | sed -E 's/^([a-zA-Z_][a-zA-Z0-9_]*=".*")[[:space:]]*#.*$/\1/')
+
+        # having the quotes make pattern-matching cleaner in this case
+        elif echo $line | grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*=".*"[[:space:]]*#'; then
+            line=$(echo $line | sed -E "s/^([a-zA-Z_][a-zA-Z0-9_]*='.*')[[:space:]]*#.*\$/\1/")
+        
+        # for unquoted case, we look for some whitespace after value and before #
+        elif echo $line | grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*=.*[[:space:]]+#'; then
+            line=$(echo $line | sed -E 's/^([a-zA-Z_][a-zA-Z0-9_]*=.*)[[:space:]]+#.*$/\1/')
+        elif echo $line | grep -vqE '^[a-zA-Z_][a-zA-Z0-9_]*='; then
+            echo "bad key: $line" >&2
+            continue
+        fi
+
+        if echo $line | grep -qE "^[a-zA-Z_][a-zA-Z0-9_]*='.*'\$"; then
+            # just strip the quotes - don't envsubst on single-quote delimited key
+            key=$(echo $line | sed -E "s/^([a-zA-Z_][a-zA-Z0-9_]*)='(.*)'\$/\1/")
+            value=$(echo $line | sed -E "s/^([a-zA-Z_][a-zA-Z0-9_]*)='(.*)'\$/\2/")
+            export "$key=$value"
+        elif echo $line | grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*=".*"$'; then
+            # strip quotes and envsubst on value
+            key=$(echo $line | sed -E 's/^([a-zA-Z_][a-zA-Z0-9_]*)="(.*)"$/\1/')
+            value=$(echo $line | sed -E 's/^([a-zA-Z_][a-zA-Z0-9_]*)="(.*)"$/\2/' | envsubst)
+            export "$key=$value"
+        elif echo $line | grep -qE '^[a-zA-Z_][a-zA-Z0-9_]*=.*[[:space:]]*$'; then
+            # no quotes to strip, just envsubst the stuff
+            key=$(echo $line | sed -E 's/^([a-zA-Z_][a-zA-Z0-9_]*)=(.*)[[:space:]]*$/\1/')
+            value=$(echo $line | sed -E 's/^([a-zA-Z_][a-zA-Z0-9_]*)=(.*)[[:space:]]*$/\2/' | envsubst)
+            export "$key=$value"
+        else
+            # somethink funky happened
+            echo "bad key/value pair: $line - did not export" >&2
+        fi
+    done < "$file"
 }
 
 usage_msg () {
@@ -92,7 +138,7 @@ three main tasks:
                   for the services. Some authentication is needed so
                   the containers can interact with each-other, but you
                   may not care what passwords are used. This behaviour
-                  is also the default when run without interactive shell.
+                  is also the default when run without tty input.
 
  --clean        - Remove defs/cfg.out and symbolic links generated for
                   container build process. Do nothing else. Use --rm to
@@ -166,21 +212,18 @@ if [[ "$DEBUG" == "true" ]]; then
     alias ln='ln -v'
 fi
 
-# check for interactive terminal session
-case $- in
-    *i*)
-        interactive="true"
-        ;;
-    *)
-        interactive="false"
-        ;;
-esac
+# check for terminal input
+if [ -t 0 ]; then
+    tty_in="true"
+else
+    tty_in="false"
+fi
 
 # get some clip options
 while [ $# -gt 0 ]; do
     case "$1" in 
         "--auto-gen")
-            interactive="false"
+            tty_in="false"
             ;;
         "--clean")
             do_cleanup
@@ -213,7 +256,7 @@ if [ -e $secrets/root ] \
   && [ -e $secrets/$FEEDER_DBUSER ] \
   && [ -e $secrets/$STATS_DBUSER ] \
   && [[ "$skip_pass" != "true" ]] \
-  && [[ "$interactive" == "true" ]]; then
+  && [[ "$tty_in" == "true" ]]; then
     echo -n "use old passwords (detected)? (Y/n) "
     read temp;
     if [[ $temp == 'Y' ]]; then
@@ -249,7 +292,7 @@ fi
 # but that's handled above in the secrets bit
 # also symlink all configs to defs/cfg
 cd $TOPDIR/defs
-mkdir cfg cfg.out
+mkdir -p cfg cfg.out
 envsubst < envsubst.in/nhdb_def.json > cfg.out/nhdb_def.json
 
 # of course ln can be invoked with multiple targets followed by dir/
@@ -276,8 +319,9 @@ feeder_libs="NetHack NHdb"
 stage="$TOPDIR/pods/feeder/run"
 mkdir -p $stage/{cfg,lib}
 ln -srf nhdb-feeder.pl $stage/
-cd defs/cfg; ln -srf $feeder_cfgs $stage/cfg/; cd -
-cd lib;      ln -srf $feeder_libs $stage/lib/; cd -
+cd $TOPDIR/defs/cfg && ln -srf $feeder_cfgs $stage/cfg/
+cd $TOPDIR/lib      && ln -srf $feeder_libs $stage/lib/
+cd $TOPDIR
 
 # files for "mojo" frontend
 mojo_cfgs="nhdb_def.json nethack_def.json mojo-log.conf"
@@ -287,8 +331,9 @@ mkdir -p $stage/{cfg,lib,script}
 ln -srf mojo-stub.pl   $stage/script/nhs
 ln -srf www/static     $stage/public
 ln -srf www/templates  $stage/templates
-cd defs/cfg; ln -srf $mojo_cfgs $stage/cfg/; cd -
-cd lib;      ln -srf $mojo_libs $stage/lib/; cd -
+cd $TOPDIR/defs/cfg && ln -srf $mojo_cfgs $stage/cfg/
+cd $TOPDIR/lib      && ln -srf $mojo_libs $stage/lib/
+cd $TOPDIR
 
 # start building
 pods/build.sh

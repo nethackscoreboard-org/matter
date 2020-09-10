@@ -8,8 +8,6 @@ else
     exit 1
 fi
 
-exit 0; #skip build regardless of options, for a few test runs
-
 # build container images
 # database
 # optional --build-args are POSTGRES_USER, POSTGRES_DB,

@@ -20,7 +20,7 @@ COPY ./run $rundir
 
 # then define runtime environment
 ENV PERL5LIB=$PERL5LIB PATH=$PATH
-WORKDIR $RUNDIR
+WORKDIR $rundir
 EXPOSE 8080/tcp
 ENTRYPOINT ["hypnotoad"]
 CMD ["script/nhs"]
