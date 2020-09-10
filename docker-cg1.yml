@@ -137,6 +137,7 @@ storage:
         inline: |
           kizul
     - path: /etc/sysconfig/docker
+      overwrite: true
       mode: 0644
       contents:
         inline: |
