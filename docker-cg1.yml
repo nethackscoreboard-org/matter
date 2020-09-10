@@ -20,29 +20,16 @@ systemd:
           # Add new Execstart with `-` prefix to ignore failure
           ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
           TTYVTDisallocate=no
-    - name: user@core.service
-      enabled: true
-      dropins:
-      - name: core-wants.conf
-        contents: |
-          [Service]
-          # Is gpg --recv-keys worth all these dumb hacks when I could
-          # fetch the public key by HTTP ... ?
-          ExecStartPost=/usr/bin/systemctl --user enable dirmngr.socket
-          ExecStartPost=/usr/bin/systemctl --user enable gpg-agent.socket
-          ExecStartPost=/usr/bin/systemctl --user start dirmngr.service
-          ExecStartPost=/usr/bin/systemctl --user start gpg-agent.service
-
     - name: nhdb-init-auth.service
       enabled: true
       contents: |
         [Unit]
         Description=Assign database passwords and fetch/trust my GPG key
-        Requires=user@core.service
+        Requires=network-online.target
+        After=network-online.target
         ConditionPathExists=!/var/lib/nhs-auth-gen
 
         [Service]
-        User=core
         Type=oneshot
         ExecStart=/usr/local/bin/init-auth-tokens.sh
         ExecStartPost=/usr/bin/touch /var/lib/nhs-auth-gen
@@ -126,30 +113,22 @@ storage:
           git clone -b separate-image-build --depth 1 https://github.com/aoeixsz4/nhs-fork.git /tmp/nhs-git
           cd /tmp/nhs-git
           export secrets=/var/run/secrets/nhdb
-          sudo ./setup.sh --secrets-only
+          ./setup.sh --secrets-only
           chown -R root:root $secrets
           sudo chmod -R u+rw,go-rwx $secrets
           cd /tmp
           rm -rf nhs-git
 
-          while $[[ $i -le 10 ]]; do
-          gpg --keyserver hpks://keys.openpgp.org/ \
-              --receive-keys C014E4ECC9EC432F && break
-                i=$(($i + 1))
-          done
-          gpg --export --armor --output joanna.asc jjadoyle@gmail.com
-          if [[ $? -ne 0 ]]; then
-                echo "gpg --receive-keys failed 10 times" >&2
-                exit 1
-          fi
-          
-          echo "10.156.0.20    seadog" | sudo tee -a /etc/hosts
+          curl https://keys.openpgp.org/vks/v1/by-fingerprint/649026653C90812A294EAF9AC014E4ECC9EC432F > joanna.pub
+
+          echo "10.156.0.20    seadog" >> /etc/hosts
           docker trust signer add joanna \
-                  seadog:5000/nhdb --key joanna.asc
+                  seadog:5000/nhdb --key joanna.pub
           docker trust signer add joanna \
-                  seadog:5000/nhdb-feeder --key joanna.asc
+                  seadog:5000/nhdb-feeder --key joanna.pub
           docker trust signer add joanna \
-                  seadog:5000/nhdb-mojo --key joanna.asc
+                  seadog:5000/nhdb-mojo --key joanna.pub
+          rm joanna.pub
     - path: /etc/hostname
       mode: 0644
       contents:
