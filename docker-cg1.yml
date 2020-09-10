@@ -1,0 +1,124 @@
+variant: fcos
+version: 1.1.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDD1boyNeRqsAttjgkCmIgu87YpuYG/sr0CLoVq4Ou4gK4P/jZFCiHFZdz+RE+0ZjqRdSrcLIz8MZZre6DvPLNSyvX30duSv4rXWd+9IRRWrDbneJ3jbQbLUnM8gZclSVCYc55r/rSjM3M4IlET1x4+rZ1+ochpLT9emA9AtFUgUxxBG3ee43O07uGwUHigUOb1AiXqnaYdo9vqte1U4IUwiZIVseTszmyDaP4Uz/VCw6Vl9+OaZPvZvE6/hBwWOrv8sklBYdqZUJSI3zpy4ZvHnW7wVqqMRUh1hpf1+NVNyUDtdYzxKuOxs2sjUC+nc6qOcnythKnbcHbgbA6y8mFEp+JkfrGBx4PcnrFpOSGLeiSQiEM51yOJ+qocWA2OxO7pA+o1AGm+WjURl1Ni2THMtpzahcECJXzi9+jibSt9cJEr8oxjVfG59+/E8q9zJHdN4eqrfpanyL0fofi1kfZUPkG+LelRxfUZSbEtM5pL+Rk1g+aAaFlAdhDyNQvg8zM= aoei@djanseriy
+      groups:
+        - docker
+        - wheel
+systemd:
+  units:
+    - name: serial-getty@ttyS0.service
+      dropins:
+      - name: autologin-core.conf
+        contents: |
+          [Service]
+          # Override Execstart in main unit
+          ExecStart=
+          # Add new Execstart with `-` prefix to ignore failure
+          ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
+          TTYVTDisallocate=no
+    - name: nhdb.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Run nhdb - NHDB database in a postgres container
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        User=core
+        ExecStartPre=-/usr/bin/docker kill nhdb
+        ExecStartPre=-/usr/bin/docker rm nhdb
+        ExecStartPre=/usr/bin/docker network create nhdb-net
+        ExecStartPre=/usr/local/bin/gen-secrets.sh
+        ExecStart=/usr/bin/docker run --net nhdb-net -h nhdb-pghost \
+                        -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb
+        ExecStop=/usr/bin/docker stop nhdb
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: nhdb-feeder.service
+      contents: |
+        [Unit]
+        Description=Run nhdb-feeder - NHS database back-end xlog aggregator
+
+        [Service]
+        User=core
+        ExecStartPre=-/usr/bin/docker kill nhdb-feeder
+        ExecStartPre=-/usr/bin/docker rm nhdb-feeder
+        ExecStart=/usr/bin/docker run --net nhdb-net \
+                  -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb-feeder
+        ExecStop=/usr/bin/docker stop nhdb-feeder
+    - name: nhdb-feeder.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Timer to activate the database aggregator once per hour
+
+        [Timer]
+        OnBootSec=30min
+        OnUnitActiveSec=60min
+
+        [Install]
+        WantedBy=multi-user.target
+    - name: nhdb-mojo.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Run nhdb-mojo - NHS database Mojolicious Web Frontend
+        After=network-online.target
+        Wants=nhdb.service
+
+        [Service]
+        User=core
+        ExecStartPre=-/usr/bin/docker kill nhdb-mojo
+        ExecStartPre=-/usr/bin/docker rm nhdb-mojo
+        ExecStart=/usr/bin/docker run --net nhdb-net -p 8080/tcp \
+                  -v "/var/run/secrets/nhdb:/run/secrets:ro" nhdb-mojo
+        ExecStop=/usr/bin/docker stop nhdb-mojo
+
+        [Install]
+        WantedBy=multi-user.target
+storage:
+  files:
+    - path: /usr/local/bin/gen-secrets.sh
+      mode: 0755
+      contents:
+        inline: |
+          #!/bin/bash
+          git clone -b nhs-docker-fcos --depth 1 https://github.com/aoeixsz4/nhs-fork.git /tmp/nhs-git
+          cd /tmp/nhs-git
+          export secrets=/var/run/secrets/nhdb
+          ./setup.sh --secrets-only
+          chown -R root:root $secrets
+          chmod -R u+rw,go-rwx $secrets
+          cd -
+          rm -rf /tmp/nhs-git
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: |
+          kizul
+    - path: /etc/profile.d/systemd-pager.sh
+      mode: 0644
+      contents:
+        inline: |
+          # Tell systemd to not use a pager when printing information
+          export SYSTEMD_PAGER=cat
+    - path: /etc/sysctl.d/20-silence-audit.conf
+      mode: 0644
+      contents:
+        inline: |
+          # Raise console message logging level from DEBUG (7) to WARNING (4)
+          # to hide audit messages from the interactive console
+          kernel.printk=4
+    - path: /etc/sysctl.d/30-docker-bridge.conf
+      mode: 0644
+      contents:
+        inline: |
+          # in order for docker containers in a bridge network to
+          # forward ports to the host system, we need this on
+          net.ipv4.conf.all.forwarding=1

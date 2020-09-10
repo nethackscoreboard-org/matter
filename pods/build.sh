@@ -1,28 +1,36 @@
 #!/usr/bin/env bash
-export LABEL=${LABEL:-latest}
+export LABEL=${LABEL:-testing}
 
 if [ -d pods ]; then
     cd pods
 else
-    echo "run from pods directory"
+    echo "run from repository toplevel"
     exit 1
 fi
 
-envsubst < feeder/_Dockerfile > feeder/Dockerfile
-envsubst < mojo/_Dockerfile  > mojo/Dockerfile
+exit 0; #skip build regardless of options, for a few test runs
 
 # build container images
 # database
-docker build -t nhdb:$LABEL postgres || exit $?
+# optional --build-args are POSTGRES_USER, POSTGRES_DB,
+# POSTGRES_PASSWORD_FILE, PGDATA, FEEDER_DBUSER and STATS_DBUSER
+# defaults are in pods/postgres/Dockerfile
+podman build -t nhdb:$LABEL postgres || exit $?
 
 # alpine-perl-cpanimus for building cpan deps
-docker build -t cpan-env:$LABEL --target cpan-env feeder || exit $?
-docker build -t cpan-feeder:$LABEL --target cpan-feeder feeder || exit $?
+podman build -t cpan-env:$LABEL --target cpan-env feeder || exit $?
+podman build -t cpan-feeder:$LABEL --target cpan-feeder feeder || exit $?
 
 # nhdb-feeder.pl container
-docker build -t feeder-skel:$LABEL --target feeder-skel feeder || exit $?
-docker build -t nhdb-feeder:$LABEL --target nhdb-feeder --build-arg RUN=$CONT_RUNDIR feeder || exit $?
+# possible --build-args for final target are listed below with defaults
+# rundir, PERL5LIB, XLOGDIR
+podman build -t feeder-skel:$LABEL --target feeder-skel feeder || exit $?
+podman build -t nhdb-feeder:$LABEL --target nhdb-feeder feeder || exit $?
 
 # mojolicious web frontend container
-docker build -t cpan-mojo:$LABEL --target cpan-mojo mojo || exit $?
-docker build -t nhdb-mojo:$LABEL --target nhdb-mojo --build-arg RUN=$CONT_RUNDIR mojo || exit $?
+# possible --build-args for final target are listed below with defaults
+# --build-arg rundir=/nhs/run 
+# --build-arg perl_lib=/cpan/lib/perl5
+# --build-arg path=/cpan/bin:/usr/local/bin:/usr/bin:/bin
+podman build -t cpan-mojo:$LABEL --target cpan-mojo mojo || exit $?
+podman build -t nhdb-mojo:$LABEL --target nhdb-mojo mojo || exit $?

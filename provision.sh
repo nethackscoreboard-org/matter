@@ -6,14 +6,7 @@
 #                        quay.io/coreos/coreos-installer:release'
 set -x
 
-source defs/setup_def.sh
-
-export SSH_PUB_KEY=`cat ~/.ssh/id_rsa.pub`
-export yml=_dockercg1-nhdb.yml
-export yaml=$(echo $yml | sed -E 's/^_//')
-envsubst < $yml > $yaml
-
-
+export yaml=docker-cg1.yml
 export vm_name=kizul
 export config=${vm_name}.json
 export stream=next
