@@ -1,0 +1,1 @@
+kizul          europe-west3-c  n1-standard-1               10.156.0.48  35.246.228.48   RUNNING

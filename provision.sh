@@ -24,7 +24,7 @@ alias fcct='podman run --rm --tty --interactive --security-opt \
 if [[ $# -eq 1 ]] && [[ "$1" == "--kill" ]]; then
     gcloud compute instances delete $vm_name
     grep -v "^$vm_name" ~/.ssh/known_hosts >~/.ssh/known_hosts-
-    grep -v "^$vm_name" /etc/hosts >~/.ssh/hosts
+    grep -v "$vm_name" /etc/hosts >~/.ssh/hosts
 fi
 
 
