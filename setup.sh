@@ -14,8 +14,8 @@ do_cleanup () {
     rm -rf $TOPDIR/defs/cfg.out
     rm -rf $TOPDIR/defs/cfg
     rm -rf $TOPDIR/pods/postgres/init.d
-    rm -rf $TOPDIR/pods/feeder/run
-    rm -rf $TOPDIR/pods/mojo/run
+    rm -rf $TOPDIR/pods/feeder/{run,stage}
+    rm -rf $TOPDIR/pods/mojo/{run,stage}
 }
 
 getpw () {
@@ -206,7 +206,7 @@ if [[ "$cwd_fail" == "true" ]]; then
 fi
 
 read_env defs/preproc.env
-export secrets=${secrets:-$HOME/.secrets/nhdb}
+export secrets=${secrets:-/tmp/nhdb-secrets}
 if [[ "$DEBUG" == "true" ]]; then
     alias mkdir='mkdir -v'
     alias ln='ln -v'
@@ -278,6 +278,7 @@ if [[ "$skip_pass" != "true" ]]; then
     envsubst < $TOPDIR/defs/envsubst.in/auth.json > $secrets/auth.json
     unset FEEDER_PASS
     unset STATS_PASS
+    chmod -R a+r $secrets # security issue somewhat
     cd $TOPDIR
 fi
 
@@ -308,32 +309,39 @@ fi
 
 # files for postgres (still workdir defs)
 chmod a+x pginit.d/00_init_users.sh
+rm -rf $TOPDIR/pods/postgres/init.d 
 mkdir -p $TOPDIR/pods/postgres/init.d
-ln -srf pginit.d/* $TOPDIR/pods/postgres/init.d/
+ln -sr pginit.d/* $TOPDIR/pods/postgres/init.d/
 
 
 cd $TOPDIR
 # files for "feeder"
 feeder_cfgs="nhdb_def.json nethack_def.json logging.conf"
 feeder_libs="NetHack NHdb"
-stage="$TOPDIR/pods/feeder/run"
-mkdir -p $stage/{cfg,lib}
-ln -srf nhdb-feeder.pl $stage/
-cd $TOPDIR/defs/cfg && ln -srf $feeder_cfgs $stage/cfg/
-cd $TOPDIR/lib      && ln -srf $feeder_libs $stage/lib/
+rundir="$TOPDIR/pods/feeder/run"
+stage="$TOPDIR/pods/feeder/stage"
+rm -rf $stage $rundir		# always clean before staging
+mkdir -p $stage/{cfg,lib} $rundir
+ln -sr nhdb-feeder.pl $stage/
+cd $TOPDIR/defs/cfg && ln -sr $feeder_cfgs $stage/cfg/
+cd $TOPDIR/lib      && ln -sr $feeder_libs $stage/lib/
 cd $TOPDIR
+cp -rL $stage/* $rundir/
 
 # files for "mojo" frontend
 mojo_cfgs="nhdb_def.json nethack_def.json mojo-log.conf"
 mojo_libs="$feeder_libs NHS NHS.pm"
-stage="$TOPDIR/pods/mojo/run"
-mkdir -p $stage/{cfg,lib,script}
-ln -srf mojo-stub.pl   $stage/script/nhs
-ln -srf www/static     $stage/public
-ln -srf www/templates  $stage/templates
-cd $TOPDIR/defs/cfg && ln -srf $mojo_cfgs $stage/cfg/
-cd $TOPDIR/lib      && ln -srf $mojo_libs $stage/lib/
+stage="$TOPDIR/pods/mojo/stage"
+rundir="$TOPDIR/pods/mojo/run"
+rm -rf $stage $rundir
+mkdir -p $stage/{cfg,lib,script} $rundir
+ln -sr mojo-stub.pl   $stage/script/nhs
+ln -sr www/static     $stage/public
+ln -sr www/templates  $stage/templates
+cd $TOPDIR/defs/cfg && ln -sr $mojo_cfgs $stage/cfg/
+cd $TOPDIR/lib      && ln -sr $mojo_libs $stage/lib/
 cd $TOPDIR
+cp -rL $stage/* $rundir/
 
 # start building
 pods/build.sh

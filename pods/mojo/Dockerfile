@@ -12,14 +12,16 @@ FROM feeder-skel:testing as nhdb-mojo
 # lowercase= buildtime only, uppercase= intended as runtime ENV var
 ARG rundir=/run/nhs
 ARG PERL5LIB=/cpan/lib/perl5
-ARG PATH=/cpan/bin:/usr/local/bin:/usr/bin:/bin
+ARG PATH=/usr/local/bin:/usr/bin:/bin
+ARG my_path=/cpan/bin
 
 # copy the deps first
 COPY --from=cpan-mojo:testing /cpan /cpan
-COPY ./run $rundir
+RUN mkdir -pv $rundir
+COPY ./run/ $rundir/
 
 # then define runtime environment
-ENV PERL5LIB=$PERL5LIB PATH=$PATH
+ENV PERL5LIB=$PERL5LIB PATH=$my_path:$PATH
 WORKDIR $rundir
 EXPOSE 8080/tcp
 ENTRYPOINT ["hypnotoad"]
