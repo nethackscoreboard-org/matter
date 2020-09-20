@@ -7,7 +7,7 @@
 export yaml=docker-cg1.yml
 export vm_name=kizul
 export config=${vm_name}.json
-export stream=next
+export stream=stable
 export serial=yes
 export domain=gcloud.ext
 
