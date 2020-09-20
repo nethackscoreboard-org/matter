@@ -114,10 +114,10 @@ storage:
           #!/bin/bash
           git clone -b separate-image-build --depth 1 https://github.com/aoeixsz4/nhs-fork.git /tmp/nhs-git
           cd /tmp/nhs-git
-          export secrets=/var/run/secrets/nhdb
+          export secrets=/tmp/nhdb-secrets
           ./setup.sh --secrets-only
           chown -R root:root $secrets
-          sudo chmod -R u+rw,go-rwx $secrets
+          sudo chmod -R u+rw,go+r $secrets
           cd /tmp
           rm -rf nhs-git
 
