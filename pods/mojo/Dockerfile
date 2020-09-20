@@ -25,4 +25,4 @@ ENV PERL5LIB=$PERL5LIB PATH=$my_path:$PATH
 WORKDIR $rundir
 EXPOSE 8080/tcp
 ENTRYPOINT ["hypnotoad"]
-CMD ["script/nhs"]
+CMD ["-f", "script/nhs"]
