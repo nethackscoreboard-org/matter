@@ -1121,6 +1121,7 @@
 
         [ "Sam", "Hum", "Mal", "Law" ], [ "Sam", "Hum", "Fem", "Law" ],
         [ "Sam", "Dwa", "Mal", "Law" ], [ "Sam", "Dwa", "Mal", "Law" ],
+        [ "Sam", "Gia", "Mal", "Law" ], [ "Sam", "Gia", "Mal", "Law" ],
 
         [ "Tou", "Hum", "Mal", "Neu" ], [ "Tou", "Hum", "Fem", "Neu" ],
         [ "Tou", "Hob", "Mal", "Neu" ], [ "Tou", "Hob", "Fem", "Neu" ],
