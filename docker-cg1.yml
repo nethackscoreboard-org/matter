@@ -51,9 +51,10 @@ systemd:
         User=core
         ExecStartPre=-/usr/bin/docker kill nhdb
         ExecStartPre=-/usr/bin/docker rm nhdb
-        ExecStartPre=-/usr/bin/docker network create nhdb-net
+        ExecStartPre=-/usr/bin/docker network create --subnet 172.18.0.0/16 --gateway 172.18.0.1 nhdb-net
         ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb:testing
         ExecStart=/usr/bin/docker run --net nhdb-net -h nhdb-pghost --name nhdb \
+                  --ip 172.18.0.2 \
                   -v "/tmp/nhdb-secrets:/run/secrets:ro" seadog:5000/nhdb:testing
         ExecStop=/usr/bin/docker stop nhdb
 
@@ -72,6 +73,7 @@ systemd:
         ExecStartPre=-/usr/bin/docker rm nhdb-feeder
         ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb-feeder:testing
         ExecStart=/usr/bin/docker run --net nhdb-net --name nhdb-feeder \
+                  --add-host nhdb-pghost:172.18.0.2 \
                   -v "/tmp/nhdb-secrets:/run/secrets:ro" seadog:5000/nhdb-feeder:testing
         ExecStop=/usr/bin/docker stop nhdb-feeder
     - name: nhdb-feeder.timer
@@ -99,7 +101,8 @@ systemd:
         ExecStartPre=-/usr/bin/docker kill nhdb-mojo
         ExecStartPre=-/usr/bin/docker rm nhdb-mojo
         ExecStartPre=-/usr/bin/docker pull seadog:5000/nhdb-mojo:testing
-        ExecStart=/usr/bin/docker run --net nhdb-net -p 8080/tcp --name nhdb-mojo \
+        ExecStart=/usr/bin/docker run --net nhdb-net -p 8080:8080/tcp --name nhdb-mojo \
+                  --add-host nhdb-pghost:172.18.0.2 \
                   -v "/tmp/nhdb-secrets:/run/secrets:ro" seadog:5000/nhdb-mojo:testing
         ExecStop=/usr/bin/docker stop nhdb-mojo
 

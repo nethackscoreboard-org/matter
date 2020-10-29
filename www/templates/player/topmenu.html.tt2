@@ -7,7 +7,7 @@
   devlink - add link to devnull pages
 ============================================================================%]
 
-[%- IF lvl == 2; SET path = "../../"; END -%]
+[%- IF lvl == 2; SET path = "../"; END -%]
 
 <div class="toplinks">
 

@@ -8,13 +8,11 @@
 
 <head>
   <meta charset="utf-8" />
-  <link rel="stylesheet" type="text/css" href="../../default.css">
+  <link rel="stylesheet" type="text/css" href="../default.css">
 [% IF result_ascended.size -%]  
-  <script type="text/javascript" src="../../js/jquery.js"></script>
-  <script type="text/javascript" src="../../js/tablesorter.js"></script>
-  <script type="text/javascript" src="../../js/tabsort.js"></script>
+  <script type="text/javascript" src="../js/tabsort.js"></script>
 [% END -%]
-  <link rel="icon" type="image/png" href="../../favicon.png">
+  <link rel="icon" type="image/png" href="../favicon.png">
   <title>[% name %]</title>
 </head>
 
