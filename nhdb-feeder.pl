@@ -560,6 +560,15 @@ sub sql_insert_games
   #--- logfiles_i
   push(@fields, 'logfiles_i');
   push(@values, $logfiles_i);
+  
+  #-- this next bit is important for TNNT dumplogs--
+  # another option, which may be nicer long-term, was suggested by Mandevil:
+  # have a single misc field in the games DB, which would contain a JSON formated
+  # list of any optional or extra xlog fields we weren't considering in particular
+  if ($xlog_data->{'src'}) {
+    push(@fields, 'src');
+    push(@values, $xlog_data->{'src'});
+  }
 
   #--- line number
   push(@fields, 'line');

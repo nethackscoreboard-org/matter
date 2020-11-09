@@ -72,7 +72,7 @@ sub format_duration
 # %d - dumpfile (content of the 'dumpfile' xlogfile field)
 # %D - dumpfile processed for NH4 (_ replaced with :)
 # %S - contents of the src field (workaround for TNNT, FIXME: this needs
-#      a better solution
+#      a better solution - format is either hdf-us, hdf-eu or hdf-au
 #===============================================================================
 
 sub url_substitute
@@ -88,7 +88,14 @@ sub url_substitute
   my $r_version = $data->{'version'};
   my $r_version_dotless = $data->{'version'} =~ s/\.//gr;
   my $r_dumpfile = uri_escape($data->{'dumplog'});
+  
+  # this needs additional processing, as src is hdf-eu, hdf-us or hdf-au
   my $r_src = $data->{'src'} // '';
+  if ($r_src =~ /^hdf-us$/) {
+    $r_src = 'www';
+  } else {
+    $r_src =~ s/^hdf-(\w+)$/$1/;
+  }
 
   my @et = gmtime($data->{'endtime_raw'});
   my $r_endtime2 = sprintf(

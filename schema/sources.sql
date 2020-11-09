@@ -684,7 +684,7 @@ INSERT INTO logfiles (
   60, 'au.hardfought.org (NetHack 4)', 'hfa', 'nh4',
   'https://au.hardfought.org/xlogfiles/nethack4/xlogfile',
   'hfa.nh4.log',
-  'https://hfa.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D'
+  'https://au.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D'
 );
 
 INSERT INTO logfiles (
@@ -971,9 +971,9 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   2018, 'The November NetHack Tournament 2018', 'nnt', 'nh',
-  'https://www.hardfought.org/xlogfiles/tnnt/xlogfile-tnnt-merged',
+  'https://www.hardfought.org/tnnt/archives/2018/xlogfiles/xlogfile.tnnt.2018',
   'tnnt-2018.log',
-  'https://www.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.txt',
+  'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.txt',
   TRUE
 );
 
@@ -981,8 +981,18 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   2019, 'The November NetHack Tournament 2019', 'nnt', 'nh',
-  'https://www.hardfought.org/tnnt/xlogfiles/xlogfile.tnnt',
+  'https://www.hardfought.org/tnnt/archives/2019/xlogfiles/xlogfile.tnnt.2019',
   'tnnt-2019.log',
+  'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.html',
+  TRUE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2020, 'The November NetHack Tournament 2020', 'nnt', 'nh',
+  'https://www.hardfought.org/xlogfiles/tnnt/xlogfile-tnnt-merged',
+  'tnnt-2020.log',
   'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.html',
   TRUE
 );
