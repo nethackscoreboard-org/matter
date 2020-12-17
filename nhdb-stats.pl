@@ -12,8 +12,8 @@ use bignum;
 use feature 'state';
 use utf8;
 
-use FindBin qw($Bin);
-use lib "$Bin/lib";
+#use FindBin qw($Bin);
+use lib "$ENV{HOME}/lib";
 
 use Moo;
 use DBI;
@@ -47,7 +47,7 @@ my $logger;              # log4perl primary instance
 #--- NetHack::Config instance
 
 my $nh = new NetHack::Config(
-  config_file => "$Bin/cfg/nethack_def.json"
+  config_file => "$ENV{HOME}/cfg/nethack_def.json"
 );
 
 #--- NHdb::Config instance

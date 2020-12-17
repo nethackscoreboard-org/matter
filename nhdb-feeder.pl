@@ -24,8 +24,8 @@ use Try::Tiny;
 
 #--- internal modules -------------------------------------------------------
 
-use FindBin qw($Bin);
-use lib "$Bin/lib";
+#use FindBin qw($Bin);
+use lib "$ENV{HOME}/lib";
 use NetHack::Config;
 use NetHack::Variant;
 use NHdb::Config;

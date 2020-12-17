@@ -55,3 +55,5 @@ INSERT INTO translations VALUES ( 'aeu', 'Ykstort', 'aoei' );
 INSERT INTO translations VALUES ( 'shc', 'Ykstort', 'aoei' );
 INSERT INTO translations VALUES ( 'shc', 'Ykstort', 'aoei' );
 INSERT INTO translations VALUES ( 'nao', 'luxidream2', 'Luxidream' );
+INSERT INTO translations VALUES ( 'hdf', 'flump', 'spicycat' );
+INSERT INTO translations VALUES ( 'hdf', 'flumpraxxadabIQ2', 'spicycat' );
