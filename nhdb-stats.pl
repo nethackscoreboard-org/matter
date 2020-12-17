@@ -16,6 +16,7 @@ use lib "$Bin/lib";
 
 use Moo;
 use DBI;
+use JSON;
 use Getopt::Long;
 use Try::Tiny;
 use NetHack::Config;
@@ -777,6 +778,23 @@ sub row_fix
   my $logfiles_i = $row->{'logfiles_i'};
   my $logfile = $logfiles->{$logfiles_i};
   my $variant = $nh->variant($row->{'variant'});
+
+  #--- extract extra fields from misc_json
+  my $json = JSON->new;
+  if($row->{'misc'}) {
+    my $data = $json->decode($row->{'misc'});
+    foreach my $key (keys %$data)
+    {
+      if (!defined $row->{$key})
+      {
+        $row->{$key} = $data->{$key};
+      }
+      else
+      {
+        $row->{"_$key"} = $data->{$key};
+      }
+    }
+  }
 
   #--- convert realtime to human-readable form
 

@@ -489,6 +489,10 @@ sub sql_insert_games
     $xlog_data         # 5. parsed xlog data to be transformed into SQL
   ) = @_;
 
+  # by deleting keys from $xlog_data as each one is explicitly processed,
+  # any remaining fields in the xlog entry not explicitly recognised can
+  # be converted to json, and added to the "misc" field
+
   #--- other variables
   # @fields is just a list of database fields in table 'games'; values
   # is an array whose elements can appear in two forms: a) simple scalar
@@ -508,14 +512,31 @@ sub sql_insert_games
   #--- check if a name was defined, this bug is now fixed
   if(!$xlog_data->{'name'} || $nhdb->reject_name($xlog_data->{'name'})) { return undef; }
 
+  if (exists $xlog_data->{'flags'})
+  {
+    if($xlog_data->{'flags'} =~ s/^0x//)
+    {
+      $xlog_data->{'flags'} = hex $xlog_data->{'flags'};
+    }
+
+    # 0x1 is the flag for WIZARD MODE, 0x2 is EXPLORE
+    # 0x4 is the polylinit flag in xNetHack
+    if($xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2
+      || ($variant eq 'xnh' && $xlog_data->{'flags'} & 0x4)
+    {
+      return undef;
+    }
+  }
+
   #--- reject "special" modes of NH4 and its kin
   #--- Fourk challenge mode is okay, though
   #--- AceHack solo mode is also absolutely *fine*, allow
-  if(
-    exists $xlog_data->{'mode'} &&
-    !($xlog_data->{'mode'} eq 'normal' || $xlog_data->{'mode'} eq 'challenge' || $xlog_data->{'mode'} eq 'solo')
-  ) {
-    return undef;
+  if(exists $xlog_data->{'mode'})
+  {
+    if(!($xlog_data->{'mode'} eq 'normal' || $xlog_data->{'mode'} eq 'challenge' || $xlog_data->{'mode'} eq 'solo')) {
+      return undef;
+    }
+    delete($xlog_data->{'mode'});
   }
 
   #--- death (reason)
@@ -523,11 +544,13 @@ sub sql_insert_games
   $death =~ tr[\x{9}\x{A}\x{D}\x{20}-\x{D7FF}\x{E000}-\x{FFFD}\x{10000}-\x{10FFFF}][]cd;
   push(@fields, 'death');
   push(@values, substr($death, 0, 128));
+  delete($xlog_data->{'death'});
 
   #--- ascended flag
   $xlog_data->{'ascended'} = $death =~ /^(ascended|defied the gods)\b/ ? 1 : 0;
   push(@fields, 'ascended');
   push(@values, $xlog_data->{'ascended'} ? 'TRUE' : 'FALSE');
+  delete($xlog_data->{'ascended'});
 
   #--- dNetHack combo mangling workaround
   # please refer to comment in NetHack.pm; this is only done to two specific
@@ -535,87 +558,6 @@ sub sql_insert_games
   if($variant eq 'dnh' && $xlog_data->{'ascended'}) {
     ($xlog_data->{'role'}, $xlog_data->{'race'})
     = $nh->variant('dnh')->dnethack_map($xlog_data->{'role'}, $xlog_data->{'race'});
-  }
-
-  #--- regular fields
-  for my $k ($nhdb->regular_fields()) {
-    if(exists $xlog_data->{$k}) {
-      push(@fields, $k);
-      push(@values, $xlog_data->{$k});
-    }
-  }
-
-  #--- name (before translation)
-  push(@fields, 'name_orig');
-  push(@values, $xlog_data->{'name'});
-  $xlog_data->{'name_orig'} = $xlog_data->{'name'};
-
-  #--- name
-  push(@fields, 'name');
-  if(exists($translations{$server}{$xlog_data->{'name'}})) {
-    $xlog_data->{'name'} = $translations{$server}{$xlog_data->{'name'}};
-  }
-  push(@values, $xlog_data->{'name'});
-
-  #--- logfiles_i
-  push(@fields, 'logfiles_i');
-  push(@values, $logfiles_i);
-  
-  #-- this next bit is important for TNNT dumplogs--
-  # another option, which may be nicer long-term, was suggested by Mandevil:
-  # have a single misc field in the games DB, which would contain a JSON formated
-  # list of any optional or extra xlog fields we weren't considering in particular
-  if ($xlog_data->{'src'}) {
-    push(@fields, 'src');
-    push(@values, $xlog_data->{'src'});
-  }
-
-  #--- line number
-  push(@fields, 'line');
-  push(@values, $line_no);
-
-  #--- conduct
-  if($xlog_data->{'conduct'}) {
-    push(@fields, 'conduct');
-    push(@values, eval($xlog_data->{'conduct'}));
-  }
-
-  #--- achieve
-  if(exists $xlog_data->{'achieve'}) {
-    push(@fields, 'achieve');
-    push(@values, eval($xlog_data->{'achieve'}));
-  }
-
-  #--- start time
-  if(exists $xlog_data->{'starttime'}) {
-    push(@fields, 'starttime');
-    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'starttime'} ]) ;
-    push(@fields, 'starttime_raw');
-    push(@values, $xlog_data->{'starttime'});
-  }
-
-  #--- end time
-  if(exists $xlog_data->{'endtime'}) {
-    push(@fields, 'endtime');
-    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'endtime'} ]);
-    push(@fields, 'endtime_raw');
-    push(@values, $xlog_data->{'endtime'});
-  }
-
-  #--- birth date
-  if(exists $xlog_data->{'birthdate'} && !exists $xlog_data->{'starttime'}) {
-    push(@fields, 'birthdate');
-    push(@values, $xlog_data->{'birthdate'});
-    push(@fields, 'starttime');
-    push(@values, $xlog_data->{'birthdate'});
-  }
-
-  #--- death date
-  if(exists $xlog_data->{'deathdate'} && !exists $xlog_data->{'endtime'}) {
-    push(@fields, 'deathdate');
-    push(@values, $xlog_data->{'deathdate'});
-    push(@fields, 'endtime');
-    push(@values, $xlog_data->{'deathdate'});
   }
 
   #--- quit flag (escaped also counts)
@@ -626,12 +568,114 @@ sub sql_insert_games
   push(@values, $flag_quit);
 
   #--- scummed flag
+  # need to do this before going through regular fields,
+  # otherwise $xlog_data->{'points'} will be deleted
   my $flag_scummed = 'FALSE';
   if($flag_quit eq 'TRUE' && $xlog_data->{'points'} < 1000) {
     $flag_scummed = 'TRUE'
   }
   push(@fields, 'scummed');
   push(@values, $flag_scummed);
+
+  #--- regular fields
+  for my $k ($nhdb->regular_fields()) {
+    if(exists $xlog_data->{$k}) {
+      push(@fields, $k);
+      push(@values, $xlog_data->{$k});
+      delete($xlog_data->{$k});
+    }
+  }
+
+  #--- name (before translation)
+  push(@fields, 'name_orig');
+  push(@values, $xlog_data->{'name'});
+
+  #--- name
+  push(@fields, 'name');
+  if(exists($translations{$server}{$xlog_data->{'name'}})) {
+    $xlog_data->{'name'} = $translations{$server}{$xlog_data->{'name'}};
+  }
+  push(@values, $xlog_data->{'name'});
+  delete($xlog_data->{'name'});
+
+  #--- logfiles_i
+  push(@fields, 'logfiles_i');
+  push(@values, $logfiles_i);
+
+  #--- line number
+  push(@fields, 'line');
+  push(@values, $line_no);
+
+  #--- conduct
+  if($xlog_data->{'conduct'}) {
+    push(@fields, 'conduct');
+    push(@values, eval($xlog_data->{'conduct'}));
+    delete($xlog_data->{'conduct'});
+  }
+
+  #--- achieve
+  if(exists $xlog_data->{'achieve'}) {
+    push(@fields, 'achieve');
+    push(@values, eval($xlog_data->{'achieve'}));
+    delete($xlog_data->{'achieve'});
+  }
+
+  #--- start time
+  if(exists $xlog_data->{'starttime'})
+  {
+    push(@fields, 'starttime');
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'starttime'} ]) ;
+    push(@fields, 'starttime_raw');
+    push(@values, $xlog_data->{'starttime'});
+    delete($xlog_data->{'starttime'});
+  }
+  #--- birth date
+  elsif(exists $xlog_data->{'birthdate'}) {
+    push(@fields, 'birthdate');
+    push(@values, $xlog_data->{'birthdate'});
+    push(@fields, 'starttime');
+    push(@values, $xlog_data->{'birthdate'});
+    delete($xlog_data->{'birthdate'});
+  }
+  # clumsy looking logic, but this ensures we sitll
+  # save the birthdate when start time is included too
+  if(exists $xlog_data->{'birthdate'}) {
+    push(@fields, 'birthdate');
+    push(@values, $xlog_data->{'birthdate'});
+    delete($xlog_data->{'birthdate'});
+  }
+
+  #--- end time
+  if(exists $xlog_data->{'endtime'}) {
+    push(@fields, 'endtime');
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'endtime'} ]);
+    push(@fields, 'endtime_raw');
+    push(@values, $xlog_data->{'endtime'});
+    delete($xlog_data->{'endtime'});
+  }
+  #--- death date
+  elsif(exists $xlog_data->{'deathdate'}) {
+    push(@fields, 'deathdate');
+    push(@values, $xlog_data->{'deathdate'});
+    push(@fields, 'endtime');
+    push(@values, $xlog_data->{'deathdate'});
+    delete($xlog_data->{'deathdate'});
+  }
+  if(exists $xlog_data->{'deathdate'}) {
+    push(@fields, 'deathdate');
+    push(@values, $xlog_data->{'deathdate'});
+    delete($xlog_data->{'deathdate'});
+  }
+  
+  
+
+  # encode misc fields as JSON
+  # uid is irrelevant however
+  delete($xlog_data->{'uid'});
+  my $json = JSON->new;
+  my $json_text = $json->encode($xlog_data);
+  push(@fields, 'misc');
+  push(@values, $json_text);
 
   #--- finish
 
