@@ -87,9 +87,10 @@ my $lockfile = '/tmp/nhdb-stats.lock';
 my $http_root = $nhdb->config()->{'http_root'};
 my $tt = Template->new(
   'OUTPUT_PATH' => $http_root,
-  'INCLUDE_PATH' => 'templates',
+  'INCLUDE_PATH' => "$ENV{HOME}/templates",
   'RELATIVE' => 1
 );
+
 
 
 

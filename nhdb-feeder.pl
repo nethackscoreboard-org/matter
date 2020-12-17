@@ -486,8 +486,14 @@ sub sql_insert_games
     $line_no,          # 2. line number
     $server,           # 3. server id
     $variant,          # 4. variant id
-    $xlog_data         # 5. parsed xlog data to be transformed into SQL
+    $xlog_ref         # 5. parsed xlog data to be transformed into SQL
   ) = @_;
+
+  # make a working copy so we can remove some keys, so that we know
+  # not to include them as JSON under misc. We do however need to be
+  # causing side-effects in the original ref that other parts of code expect
+  my %data_hash = %{$xlog_ref};
+  my $xlog_data = \%data_hash;
 
   # by deleting keys from $xlog_data as each one is explicitly processed,
   # any remaining fields in the xlog entry not explicitly recognised can
@@ -589,11 +595,13 @@ sub sql_insert_games
   #--- name (before translation)
   push(@fields, 'name_orig');
   push(@values, $xlog_data->{'name'});
+  $xlog_ref->{'name_orig'} = $xlog_data->{'name'};
 
   #--- name
   push(@fields, 'name');
   if(exists($translations{$server}{$xlog_data->{'name'}})) {
     $xlog_data->{'name'} = $translations{$server}{$xlog_data->{'name'}};
+    $xlog_ref->{'name'} = $xlog_data->{'name'};
   }
   push(@values, $xlog_data->{'name'});
   delete($xlog_data->{'name'});
