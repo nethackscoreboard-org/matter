@@ -8,6 +8,7 @@
 
 use strict;
 use warnings;
+use bignum;
 use feature 'state';
 use utf8;
 
@@ -752,10 +753,10 @@ sub process_streaks
 
     #--- truncate time for games without endtime field
 
-    if($game_first->{'deathdate'}) {
+    if(!$game_first->{'endtime'}) {
       $row->{'start'} =~ s/\s.*$//;
     }
-    if($game_last->{'deathdate'}) {
+    if(!$game_last->{'endtime'}) {
       $row->{'end'} =~ s/\s.*$//;
     }
 
@@ -1685,7 +1686,7 @@ sub gen_page_front
   #----------------------------------------------------------------------------
 
   my $streaks_proc_1;
-  my $streaks_proc_2;
+  my $streaks_proc_2 = [];
   my ($streaks_ord, $streaks) = sql_load_streaks(
     'all', undef, undef, 2, 1
   );
@@ -1697,6 +1698,9 @@ sub gen_page_front
     sprintf(q{Loaded %d streaks}, scalar(@$streaks_ord))
   );
   $streaks_proc_1 = process_streaks($streaks_ord, $streaks);
+  if (!$streaks_proc_1) {
+    die "first stage streak processing failed";
+  }
 
   #--- streak reprocessing
   # 1. streak older than cutoff age (to prevent old streaks littering the page)
