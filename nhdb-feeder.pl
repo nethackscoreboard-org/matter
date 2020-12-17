@@ -522,7 +522,7 @@ sub sql_insert_games
     # 0x1 is the flag for WIZARD MODE, 0x2 is EXPLORE
     # 0x4 is the polylinit flag in xNetHack
     if($xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2
-      || ($variant eq 'xnh' && $xlog_data->{'flags'} & 0x4)
+      || ($variant eq 'xnh' && $xlog_data->{'flags'} & 0x4))
     {
       return undef;
     }
