@@ -2201,7 +2201,7 @@ sub gen_page_gametime
 
 #--- initialize logging
 
-Log::Log4perl->init('cfg/logging.conf');
+Log::Log4perl->init("$ENV{HOME}/cfg/logging.conf");
 $logger = get_logger('Stats');
 
 #--- title

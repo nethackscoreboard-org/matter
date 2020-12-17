@@ -1108,7 +1108,7 @@ sub sql_player_name_map
 
 #--- initialize logging
 
-Log::Log4perl->init('cfg/logging.conf');
+Log::Log4perl->init("$ENV{HOME}/cfg/logging.conf");
 $logger = get_logger('Feeder');
 
 #--- title
