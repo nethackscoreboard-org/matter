@@ -74,7 +74,7 @@ sub parse_log
   my %parsed_line;
   my (@a1, @a2, $a0);
 
-  #--- there are two field separators in use: comma and horizontal tab;
+  #--- there are two field separators in use: colon and horizontal tab;
   #--- we use simple heuristics to find out the one that is used for given
   #--- xlogfile row
 
