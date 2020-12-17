@@ -991,7 +991,7 @@ INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   2020, 'The November NetHack Tournament 2020', 'nnt', 'nh',
-  'https://www.hardfought.org/xlogfiles/tnnt/xlogfile-tnnt-merged',
+  'https://www.hardfought.org/tnnt/archives/2020/xlogfiles/xlogfile.tnnt.2020',
   'tnnt-2020.log',
   'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.html',
   TRUE
