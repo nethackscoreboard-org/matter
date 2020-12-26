@@ -21,6 +21,16 @@
 
 [% INCLUDE varmenu.tt page="realtime" %]
 
+<hr>
+
+[% FOR vers IN versions %]
+  [%- IF vers != version -%]
+  <a href="[% path %]realtime.[% variant %][% vers %].html">[% vers %]</a> |
+  [%- ELSE -%]
+  [% vers %] |
+  [%- END -%]
+[% END %]
+
 [% IF result.size %]
 
 [%# ------ %]

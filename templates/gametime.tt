@@ -21,6 +21,16 @@
 
 [% INCLUDE varmenu.tt page="gametime" %]
 
+<hr>
+
+[% FOR vers IN versions %]
+  [%- IF vers != version -%]
+  <a href="[% path %]gametime.[% variant %][% vers %].html">[% vers %]</a> |
+  [%- ELSE -%]
+  [% vers %] |
+  [%- END -%]
+[% END %]
+
 [% IF result.size %]
 
 [%# ------ %]

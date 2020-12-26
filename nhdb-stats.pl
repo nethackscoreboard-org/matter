@@ -19,6 +19,7 @@ use Moo;
 use DBI;
 use JSON;
 use Getopt::Long;
+use List::MoreUtils qw(uniq);
 use Try::Tiny;
 use NetHack::Config;
 use NetHack::Variant;
@@ -2147,6 +2148,7 @@ sub gen_page_gametime
   my $sub_games = sub {
 
     my $turns = shift;
+    my $version = shift;
     my $qry;
     my @cond = ('turns > 0');
     my @arg;
@@ -2160,6 +2162,11 @@ sub gen_page_gametime
       push(@arg, $variant);
     }
 
+    if($version) {
+      push(@cond, 'version LIKE ?');
+      push(@arg, $version);
+    }
+
     $qry = sprintf(
       'SELECT name, count(*), sum(turns), round(avg(turns)) as avg ' .
       'FROM v_ascended ' .
@@ -2170,9 +2177,9 @@ sub gen_page_gametime
     return sql_load($qry, 1, 1, undef, @arg);
   };
 
-  $data{'sub20'} = &$sub_games(20000);
-  $data{'sub10'} = &$sub_games(10000);
-  $data{'sub5'} = &$sub_games(5000);
+  $data{'sub20'} = &$sub_games(20000, undef);
+  $data{'sub10'} = &$sub_games(10000, undef);
+  $data{'sub5'} = &$sub_games(5000, undef);
 
   #--- auxiliary data
 
@@ -2182,11 +2189,45 @@ sub gen_page_gametime
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
 
-  #--- render template
+  if($variant eq 'nh') {
+    # get available versions
+    my $qry = 'SELECT distinct(version) FROM v_ascended WHERE variant = ?';
+    my @arg = ($variant);
+    my %version_query_map = %{ create_version_map(sql_load($qry, 1, 1, undef, @arg)) };
+    # just doing $data{'versions'} = keys %hash gives me the number of keys (scalar context),
+    # so I have to do this crap... fuck perl :|
+    $data{'versions'} = [];
+    foreach my $version (sort keys %version_query_map) {
+      push @{ $data{'versions'} }, $version;
+    }
 
-  if(!$tt->process('gametime.tt', \%data, "gametime.$variant.html")) {
-    $logger->error(q{Failed to render page gametime.tt'}, $tt->error());
-    die $tt->error();
+    #--- render template
+    if(!$tt->process('gametime.tt', \%data, "gametime.$variant.html")) {
+      $logger->error(q{Failed to render page gametime.tt'}, $tt->error());
+      die $tt->error();
+    }
+
+    # cycle through version queries and produce separate pages
+    $qry = 'SELECT * FROM v_ascended WHERE turns > 0 AND variant = ? AND version LIKE ? ORDER BY turns ASC LIMIT 100';
+    foreach my $version (keys %version_query_map) {
+      @arg = ($variant, $version_query_map{$version});
+      $data{'version'} = $version;
+      $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+      my $page = "gametime.${variant}${version}.html";
+      $data{'sub20'} = &$sub_games(20000, $version_query_map{$version});
+      $data{'sub10'} = &$sub_games(10000, $version_query_map{$version});
+      $data{'sub5'} = &$sub_games(5000, $version_query_map{$version});
+      if(!$tt->process('gametime.tt', \%data, $page)) {
+        $logger->error("Failed to render page $page", $tt->error());
+        die $tt->error();
+      }
+    }
+  } else {
+    #--- render template
+    if(!$tt->process('gametime.tt', \%data, "gametime.$variant.html")) {
+      $logger->error(q{Failed to render page gametime.tt'}, $tt->error());
+      die $tt->error();
+    }
   }
 }
 
@@ -2238,35 +2279,64 @@ sub gen_page_realtime
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
 
-  #--- render template
-
-  if(!$tt->process('realtime.tt', \%data, "realtime.$variant.html")) {
-    $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
-    die $tt->error();
-  }
-
-  # make additional version separated pages for vanilla
   if($variant eq 'nh') {
-    my $qry = 'SELECT * FROM v_ascended WHERE realtime > 0 AND variant = ? AND version LIKE ? ORDER BY realtime ASC LIMIT 100';
-    my @arg = ('nh', '3.4.%');
-    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
-    if(!$tt->process('realtime.tt', \%data, "realtime.nh34x.html")) {
+    # get available versions
+    my $qry = 'SELECT distinct(version) FROM v_ascended WHERE variant = ?';
+    my @arg = ($variant);
+    my %version_query_map = %{ create_version_map(sql_load($qry, 1, 1, undef, @arg)) };
+    # just doing $data{'versions'} = keys %hash gives me the number of keys (scalar context),
+    # so I have to do this crap... fuck perl :|
+    $data{'versions'} = [];
+    foreach my $version (sort keys %version_query_map) {
+      push @{ $data{'versions'} }, $version;
+    }
+
+    #--- render template
+    if(!$tt->process('realtime.tt', \%data, "realtime.$variant.html")) {
       $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
       die $tt->error();
     }
-    @arg = ('nh', '3.6.%');
-    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
-    if(!$tt->process('realtime.tt', \%data, "realtime.nh36x.html")) {
-      $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
-      die $tt->error();
+
+    # cycle through version queries and produce separate pages
+    $qry = 'SELECT * FROM v_ascended WHERE realtime > 0 AND variant = ? AND version LIKE ? ORDER BY realtime ASC LIMIT 100';
+    foreach my $version (keys %version_query_map) {
+      @arg = ($variant, $version_query_map{$version});
+      $data{'version'} = $version;
+      $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+      my $page = "realtime.${variant}${version}.html";
+      if(!$tt->process('realtime.tt', \%data, $page)) {
+        $logger->error("Failed to render page $page", $tt->error());
+        die $tt->error();
+      }
     }
-    @arg = ('nh', '3.7.%');
-    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
-    if(!$tt->process('realtime.tt', \%data, "realtime.nh37x.html")) {
+  } else {
+    #--- render template
+    if(!$tt->process('realtime.tt', \%data, "realtime.$variant.html")) {
       $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
       die $tt->error();
     }
   }
+}
+
+# return a mapping of short version strings -> version query strings
+sub create_version_map
+{
+  my ($versions_ref) = @_;
+  my @versions = map { my $foo = $_->{version}; $foo =~ s/^\w+-//; $foo } @$versions_ref;
+  my @minor_versions = @versions;
+  map { $_ =~ s/^(\d+)\.(\d+)\.\d+$/$1\.$2\.%/ } @minor_versions; #NB this modifies the array in-place!!
+  push @versions, uniq @minor_versions;
+  my @major_versions = @minor_versions;
+  map { $_ =~ s/^(\d+)\.\d+\.%$/$1\.%\.%/ } @major_versions;
+  push @versions, uniq @major_versions;
+  my %version_map = ();
+  foreach my $version_query (@versions) {
+    my $version_short = $version_query;
+    $version_short =~ s/\.//g;
+    $version_short =~ s/%/x/g;
+    $version_map{$version_short} = $version_query;
+  }
+  return \%version_map;
 }
 
 #============================================================================
