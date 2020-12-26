@@ -51,6 +51,10 @@
   <a href="[% path %]gametime.[% var %].html">Low Turncount</a> |
 [%- END %]
 
+[%- IF mnu != "realtime" -%]
+  <a href="[% path %]realtime.[% var %].html">Fastest Realtime</a> |
+[%- END %]
+
 [%- IF mnu != "firstasc" -%]
   [% IF var == "all"; SET var2 = "dnh"; END %]
   [% IF var == "dnh" || var == "nhf" || var == "dyn"; SET var2 = var; END %]

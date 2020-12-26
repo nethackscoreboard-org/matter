@@ -71,6 +71,7 @@ my %aggr_pages = (
   'lowscore' => \&gen_page_lowscore,
   'firstasc' => \&gen_page_first_to_ascend,
   'gametime' => \&gen_page_gametime,
+  'realtime' => \&gen_page_realtime
 );
 
 my %summ_pages = (
@@ -2189,7 +2190,61 @@ sub gen_page_gametime
   }
 }
 
+#============================================================================
+# Generate Realtime Speedrun Leaderboard
+#============================================================================
 
+sub gen_page_realtime
+{
+  #--- arguments
+
+  my $variant = shift;
+  if(!$variant) { $variant = 'all'; }
+
+  #--- other variables
+
+  my %data;
+
+  #--- init
+
+  $logger->info('Creating page: Realtime/', $variant);
+
+  #----------------------------------------------------------------------------
+  #--- top 100 lowest turncount games -----------------------------------------
+  #----------------------------------------------------------------------------
+
+  {
+    my $qry;
+    my @cond = ('realtime > 0');
+    my @arg;
+
+    if($variant ne 'all') {
+      push(@cond, 'variant = ?');
+      push(@arg, $variant);
+    }
+    $qry = sprintf(
+      'SELECT * FROM v_ascended WHERE %s ORDER BY realtime ASC LIMIT 100',
+      join(' AND ', @cond)
+    );
+
+    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+  }
+
+  #--- auxiliary data
+
+  $data{'variant'}  = $variant;
+  $data{'cur_time'} = scalar(localtime());
+  $data{'variants'} = [ 'all', $nh->variants() ];
+  $data{'vardef'}   = $nh->variant_names();
+  $data{'variant'}  = $variant;
+
+  #--- render template
+
+  if(!$tt->process('realtime.tt', \%data, "realtime.$variant.html")) {
+    $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
+    die $tt->error();
+  }
+}
 
 #============================================================================
 #===================  _  ====================================================

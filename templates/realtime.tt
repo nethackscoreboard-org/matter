@@ -1,0 +1,37 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="default.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>Fastest Realtime Games</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.tt mnu="realtime" lvl=0 var=variant %]
+
+<div class="page_content">
+<h1>Fastest Realtime Games</h1>
+
+[% INCLUDE varmenu.tt page="realtime" %]
+
+[% IF result.size %]
+
+[%# ------ %]
+
+<hr>
+
+<h3>100 Fastest Realtime Games</h3>
+[% INCLUDE tab_ascended.tt %]
+
+[% ELSE %]
+<p>No ascensions for this variant.</p>
+[% END %]
+
+[% INCLUDE footer.tt %]
