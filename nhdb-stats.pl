@@ -2244,6 +2244,29 @@ sub gen_page_realtime
     $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
     die $tt->error();
   }
+
+  # make additional version separated pages for vanilla
+  if($variant eq 'nh') {
+    my $qry = 'SELECT * FROM v_ascended WHERE realtime > 0 AND variant = ? AND version LIKE ? ORDER BY realtime ASC LIMIT 100';
+    my @arg = ('nh', '3.4.%');
+    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+    if(!$tt->process('realtime.tt', \%data, "realtime.nh34x.html")) {
+      $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
+      die $tt->error();
+    }
+    @arg = ('nh', '3.6.%');
+    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+    if(!$tt->process('realtime.tt', \%data, "realtime.nh36x.html")) {
+      $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
+      die $tt->error();
+    }
+    @arg = ('nh', '3.7.%');
+    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+    if(!$tt->process('realtime.tt', \%data, "realtime.nh37x.html")) {
+      $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
+      die $tt->error();
+    }
+  }
 }
 
 #============================================================================
