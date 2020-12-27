@@ -2196,10 +2196,7 @@ sub gen_page_gametime
     my %version_query_map = %{ create_version_map(sql_load($qry, 1, 1, undef, @arg)) };
     # just doing $data{'versions'} = keys %hash gives me the number of keys (scalar context),
     # so I have to do this crap... fuck perl :|
-    $data{'versions'} = [];
-    foreach my $version (sort keys %version_query_map) {
-      push @{ $data{'versions'} }, $version;
-    }
+    $data{'versions'} = [sort keys %version_query_map];
 
     #--- render template
     if(!$tt->process('gametime.tt', \%data, "gametime.$variant.html")) {
@@ -2286,10 +2283,7 @@ sub gen_page_realtime
     my %version_query_map = %{ create_version_map(sql_load($qry, 1, 1, undef, @arg)) };
     # just doing $data{'versions'} = keys %hash gives me the number of keys (scalar context),
     # so I have to do this crap... fuck perl :|
-    $data{'versions'} = [];
-    foreach my $version (sort keys %version_query_map) {
-      push @{ $data{'versions'} }, $version;
-    }
+    $data{'versions'} = [sort keys %version_query_map];
 
     #--- render template
     if(!$tt->process('realtime.tt', \%data, "realtime.$variant.html")) {
