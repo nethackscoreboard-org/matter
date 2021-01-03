@@ -85,6 +85,8 @@ sub url_substitute
   my $r_starttime = $data->{'starttime_raw'};
   my $r_endtime = $data->{'endtime_raw'};
   my $r_username_orig = $data->{'name_orig'};
+  my $r_uinitial_orig = $r_username_orig;
+  $r_uinitial_orig =~ s/^(\w).*$/$1/;
   my $r_version = $data->{'version'};
   my $r_version_dotless = $data->{'version'} =~ s/\.//gr;
   my $r_dumpfile = uri_escape($data->{'dumplog'});
@@ -124,6 +126,7 @@ sub url_substitute
   $strg =~ s/%e/$r_endtime/g;
   $strg =~ s/%E/$r_endtime2/g;
   $strg =~ s/%x/$r_username_orig/g;
+  $strg =~ s/%X/$r_uinitial_orig/g;
   $strg =~ s/%v/$r_version/g;
   $strg =~ s/%V/$r_version_dotless/g;
   $strg =~ s/%d/$r_dumpfile/g;

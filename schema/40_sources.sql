@@ -16,7 +16,7 @@ INSERT INTO logfiles (
   1, 'nethack.alt.org (3.4.3)', 'nao', 'nh',
   'http://alt.org/nethack/xlogfile.full.txt',
   'nao.nh.343.log',
-  'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh343.txt'
+  'https://s3.amazonaws.com/altorg/dumplog/%x/%s.nh343.txt'
 );
 
 INSERT INTO logfiles (
@@ -42,7 +42,7 @@ INSERT INTO logfiles (
   50, 'nethack.alt.org (3.6.1)', 'nao', 'nh',
   'https://alt.org/nethack/xlogfile.nh361',
   'nao.nh.361.log',
-  'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh361.txt'
+  'https://s3.amazonaws.com/altorg/dumplog/%x/%s.nh361.txt'
 );
 
 INSERT INTO logfiles (
@@ -51,7 +51,7 @@ INSERT INTO logfiles (
   75, 'nethack.alt.org (3.6.2)', 'nao', 'nh',
   'https://alt.org/nethack/xlogfile.nh362',
   'nao.nh.362.log',
-  'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh362.txt'
+  'https://s3.amazonaws.com/altorg/dumplog/%x/%s.nh362.txt'
 );
 
 INSERT INTO logfiles (
@@ -60,7 +60,7 @@ INSERT INTO logfiles (
   79, 'nethack.alt.org (3.6.3-3.6.6)', 'nao', 'nh',
   'https://alt.org/nethack/xlogfile.nh363+',
   'nao.nh.363-6.log',
-  'https://s3.amazonaws.com/altorg/dumplog/%u/%s.nh%V.txt'
+  'https://s3.amazonaws.com/altorg/dumplog/%x/%s.nh%V.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -73,7 +73,7 @@ INSERT INTO logfiles (
   5, 'acehack.de', 'ade', 'ace',
   'https://ascension.run/history/ade/xlogfiles/acehack',
   'ade.ace.log',
-  'https://ascension.run/history/ade/userdata/%u/acehack/dumplog/%s',
+  'https://ascension.run/history/ade/userdata/%x/acehack/dumplog/%s',
   TRUE
 );
 
@@ -89,7 +89,7 @@ INSERT INTO logfiles (
   3, 'eu.un.nethack.nu', 'une', 'un',
   'https://ascension.run/history/unn/eu/xlogfile',
   'une.un.log',
-  'https://ascension.run/history/unn/users/%u/dumps/eu/%u.%e.txt.html',
+  'https://ascension.run/history/unn/users/%x/dumps/eu/%x.%e.txt.html',
   TRUE
 );
 
@@ -105,7 +105,7 @@ INSERT INTO logfiles (
   10, 'us.un.nethack.nu', 'unu', 'un',
   'https://ascension.run/history/unn/us/xlogfile',
   'unu.un.log',
-  'https://ascension.run/history/unn/users/%u/dumps/us/%u.%e.txt.html',
+  'https://ascension.run/history/unn/users/%x/dumps/us/%x.%e.txt.html',
   TRUE
 );
 
@@ -158,7 +158,7 @@ INSERT INTO logfiles (
   7, 'grunthack.org', 'gho', 'grunt',
   'http://grunthack.org/xlogfile',
   'gho.grunt.log',
-  'http://grunthack.org/userdata/%U/%u/dumplog/%s.gh020.txt'
+  'http://grunthack.org/userdata/%X/%x/dumplog/%s.gh020.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -173,7 +173,7 @@ INSERT INTO logfiles (
   9, 'dnethack.ilbelkyr.de', 'did', 'dnh',
   'http://dnethack.ilbelkyr.de/xlogfile.txt',
   'did.dnh.log',
-  'https://ascension.run/history/ilbelkyr/userdata/%u/dnethack/dumplog/%s',
+  'https://ascension.run/history/ilbelkyr/userdata/%x/dnethack/dumplog/%s',
   TRUE
 );
 
@@ -189,7 +189,7 @@ INSERT INTO logfiles (
  11, 'acehack.eu', 'aeu', 'ace',
  'https://ascension.run/history/aeu/xlogfiles/acehack',
  'aeu.ace.log',
- 'https://ascension.run/history/aeu/userdata/%u/acehack/dumplog/%s',
+ 'https://ascension.run/history/aeu/userdata/%x/acehack/dumplog/%s',
  TRUE
 );
 
@@ -203,7 +203,7 @@ INSERT INTO logfiles (
   2, 'ascension.run (NetHack 3.4.3)', 'asc', 'nh',
   'https://ascension.run/xlogfiles/nethack',
   'asc.nh.log',
-  'https://ascension.run/userdata/%u/nethack/dumplog/%s'
+  'https://ascension.run/userdata/%x/nethack/dumplog/%s'
 );
 
 INSERT INTO logfiles (
@@ -212,7 +212,7 @@ INSERT INTO logfiles (
   12, 'ascension.run (dNetHack)', 'asc', 'dnh',
   'https://ascension.run/xlogfiles/dnethack',
   'asc.dnh.log',
-  'https://ascension.run/userdata/%u/dnethack/dumplog/%s'
+  'https://ascension.run/userdata/%x/dnethack/dumplog/%s'
 );
 
 INSERT INTO logfiles (
@@ -221,7 +221,7 @@ INSERT INTO logfiles (
   13, 'ascension.run (Fourk)', 'asc', '4k',
   'https://ascension.run/xlogfiles/nhfourk',
   'asc.4k.log',
-  'https://ascension.run/userdata/%u/nhfourk/dumplog/%D'
+  'https://ascension.run/userdata/%x/nhfourk/dumplog/%D'
 );
 
 --- Junethack 2015 SporkHack
@@ -232,7 +232,7 @@ INSERT INTO logfiles (
   14, 'ascension.run (SporkHack 2015)', 'asc', 'spork',
   'https://ascension.run/history/junethack2015/xlogfiles/sporkhack',
   'asc.spork.2015.log',
-  'https://ascension.run/history/junethack2015/userdata/%u/sporkhack/dumplog/%s',
+  'https://ascension.run/history/junethack2015/userdata/%x/sporkhack/dumplog/%s',
   TRUE
 );
 
@@ -244,7 +244,7 @@ INSERT INTO logfiles (
   15, 'ascension.run (GruntHack 2015)', 'asc', 'grunt',
   'https://ascension.run/history/junethack2015/xlogfiles/grunthack',
   'asc.grunt.2015.log',
-  'https://ascension.run/history/junethack2015/userdata/%u/grunthack/dumplog/%s',
+  'https://ascension.run/history/junethack2015/userdata/%x/grunthack/dumplog/%s',
   TRUE
 );
 
@@ -254,7 +254,7 @@ INSERT INTO logfiles (
   16, 'ascension.run (UnNetHack)', 'asc', 'un',
   'https://ascension.run/xlogfiles/unnethack',
   'asc.un.log',
-  'https://ascension.run/userdata/%u/unnethack/dumplog/%s.html'
+  'https://ascension.run/userdata/%x/unnethack/dumplog/%s.html'
 );
 
 INSERT INTO logfiles (
@@ -263,7 +263,7 @@ INSERT INTO logfiles (
   17, 'ascension.run (DynaHack)', 'asc', 'dyn',
   'https://ascension.run/xlogfiles/dynahack',
   'asc.dyn.log',
-  'https://ascension.run/userdata/%u/dynahack/dumplog/%d'
+  'https://ascension.run/userdata/%x/dynahack/dumplog/%d'
 );
 
 INSERT INTO logfiles (
@@ -272,7 +272,7 @@ INSERT INTO logfiles (
   18, 'ascension.run (NetHack4)', 'asc', 'nh4',
   'https://ascension.run/xlogfiles/nethack4',
   'asc.nh4.log',
-  'https://ascension.run/userdata/%u/nethack4/dumplog/%D'
+  'https://ascension.run/userdata/%x/nethack4/dumplog/%D'
 );
 
 INSERT INTO logfiles (
@@ -281,7 +281,7 @@ INSERT INTO logfiles (
   19, 'ascension.run (FIQHack)', 'asc', 'fiq',
   'https://ascension.run/xlogfiles/fiqhack',
   'asc.fiq.log',
-  'https://ascension.run/userdata/%u/fiqhack/dumplog/%D',
+  'https://ascension.run/userdata/%x/fiqhack/dumplog/%D',
   '{"base64xlog"}'
 );
 
@@ -295,7 +295,7 @@ INSERT INTO logfiles (
   22, 'hardfought.org (NetHack 3.4.3)', 'hdf', 'nh',
   'https://www.hardfought.org/xlogfiles/nh343/xlogfile',
   'hdf.nh.343.log',
-  'https://www.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt'
+  'https://www.hardfought.org/userdata/%X/%x/nh343/dumplog/%s.nh343.txt'
 );
 
 INSERT INTO logfiles (
@@ -304,7 +304,7 @@ INSERT INTO logfiles (
   23, 'hardfought.org (GruntHack)', 'hdf', 'grunt',
   'https://www.hardfought.org/xlogfiles/gh/xlogfile',
   'hdf.grunt.log',
-  'https://www.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt'
+  'https://www.hardfought.org/userdata/%X/%x/gh/dumplog/%s.gh.txt'
 );
 
 INSERT INTO logfiles (
@@ -313,7 +313,7 @@ INSERT INTO logfiles (
   24, 'hardfought.org (UnNetHack)', 'hdf', 'un',
   'https://www.hardfought.org/xlogfiles/unnethack/xlogfile',
   'hdf.un.log',
-  'https://www.hardfought.org/userdata/%U/%u/unnethack/dumplog/%s.un.txt.html'
+  'https://www.hardfought.org/userdata/%X/%x/unnethack/dumplog/%s.un.txt.html'
 );
 
 INSERT INTO logfiles (
@@ -322,7 +322,7 @@ INSERT INTO logfiles (
   25, 'hardfought.org (NetHack)', 'hdf', 'nh',
   'https://www.hardfought.org/xlogfiles/nethack/xlogfile',
   'hdf.nh.log',
-  'https://www.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+  'https://www.hardfought.org/userdata/%X/%x/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
@@ -331,7 +331,7 @@ INSERT INTO logfiles (
   76, 'hardfought.org (NetHack 3.7.x)', 'hdf', 'nh',
   'https://www.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
   'hdf.nh.37x.log',
-  'https://www.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+  'https://www.hardfought.org/userdata/%X/%x/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
@@ -340,7 +340,7 @@ INSERT INTO logfiles (
   29, 'hardfought.org (FIQHack)', 'hdf', 'fiq',
   'https://www.hardfought.org/xlogfiles/fh/xlogfile',
   'hdf.fiq.log',
-  'https://www.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
+  'https://www.hardfought.org/userdata/%X/%x/fiqhack/dumplog/%D',
   '{"base64xlog"}'
 );
 
@@ -350,7 +350,7 @@ INSERT INTO logfiles (
   30, 'hardfought.org (Fourk)', 'hdf', '4k',
   'https://www.hardfought.org/xlogfiles/4k/xlogfile',
   'hdf.4k.log',
-  'https://www.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d'
+  'https://www.hardfought.org/userdata/%X/%x/nhfourk/dumps/%d'
 );
 
 INSERT INTO logfiles (
@@ -359,7 +359,7 @@ INSERT INTO logfiles (
   31, 'hardfought.org (dNetHack)', 'hdf', 'dnh',
   'https://www.hardfought.org/xlogfiles/dnethack/xlogfile',
   'hdf.dnh.log',
-  'https://www.hardfought.org/userdata/%U/%u/dnethack/dumplog/%s.dnh.txt'
+  'https://www.hardfought.org/userdata/%X/%x/dnethack/dumplog/%s.dnh.txt'
 );
 
 INSERT INTO logfiles (
@@ -368,7 +368,7 @@ INSERT INTO logfiles (
   32, 'hardfought.org (NetHack 4)', 'hdf', 'nh4',
   'https://www.hardfought.org/xlogfiles/nethack4/xlogfile',
   'hdf.nh4.log',
-  'https://www.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D'
+  'https://www.hardfought.org/userdata/%X/%x/nethack4/dumplog/%D'
 );
 
 INSERT INTO logfiles (
@@ -377,7 +377,7 @@ INSERT INTO logfiles (
   33, 'hardfought.org (DynaHack)', 'hdf', 'dyn',
   'https://www.hardfought.org/xlogfiles/dynahack/xlogfile',
   'hdf.dyn.log',
-  'https://www.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d'
+  'https://www.hardfought.org/userdata/%X/%x/dynahack/dumplog/%d'
 );
 
 INSERT INTO logfiles (
@@ -386,7 +386,7 @@ INSERT INTO logfiles (
   34, 'hardfought.org (SporkHack)', 'hdf', 'spork',
   'https://www.hardfought.org/xlogfiles/sporkhack/xlogfile',
   'hdf.spork.log',
-  'https://www.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt'
+  'https://www.hardfought.org/userdata/%X/%x/sporkhack/dumplog/%s.sp.txt'
 );
 
 INSERT INTO logfiles (
@@ -395,7 +395,7 @@ INSERT INTO logfiles (
   45, 'hardfought.org (xNetHack)', 'hdf', 'xnh',
   'https://www.hardfought.org/xlogfiles/xnethack/xlogfile',
   'hdf.xnh.log',
-  'https://www.hardfought.org/userdata/%U/%u/xnethack/dumplog/%s.xnh.txt'
+  'https://www.hardfought.org/userdata/%X/%x/xnethack/dumplog/%s.xnh.txt'
 );
 
 INSERT INTO logfiles (
@@ -404,7 +404,7 @@ INSERT INTO logfiles (
   47, 'hardfought.org (SLASH''EM Extended)', 'hdf', 'slex',
   'https://www.hardfought.org/xlogfiles/slex/xlogfile',
   'hdf.slex.log',
-  'https://www.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt'
+  'https://www.hardfought.org/userdata/%X/%x/slex/dumplog/%s.slex.txt'
 );
 
 INSERT INTO logfiles (
@@ -413,7 +413,7 @@ INSERT INTO logfiles (
   51, 'hardfought.org (SpliceHack)', 'hdf', 'spl',
   'https://www.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hdf.spl.log',
-  'https://www.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt'
+  'https://www.hardfought.org/userdata/%X/%x/splicehack/dumplog/%s.splice.txt'
 );
 
 INSERT INTO logfiles (
@@ -422,7 +422,7 @@ INSERT INTO logfiles (
   69, 'hardfought.org (SLASH''EM)', 'hdf', 'slashem',
   'https://www.hardfought.org/xlogfiles/slashem/xlogfile',
   'hdf.slashem.log',
-  'https://www.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
+  'https://www.hardfought.org/userdata/%X/%x/slashem/dumplog/%s.slashem.txt'
 );
 
 INSERT INTO logfiles (
@@ -431,7 +431,7 @@ INSERT INTO logfiles (
   72, 'hardfought.org (EvilHack)', 'hdf', 'evil',
   'https://www.hardfought.org/xlogfiles/evilhack/xlogfile',
   'hdf.evil.log',
-  'https://www.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
+  'https://www.hardfought.org/userdata/%X/%x/evilhack/dumplog/%s.evil.txt'
 );
 
 INSERT INTO logfiles (
@@ -440,7 +440,7 @@ INSERT INTO logfiles (
   82, 'hardfought.org (notdNetHack)', 'hdf', 'ndnh',
   'https://www.hardfought.org/xlogfiles/notdnethack/xlogfile',
   'hdf.ndnh.log',
-  'https://www.hardfought.org/userdata/%U/%u/notdnethack/dumplog/%s.ndnh.txt'
+  'https://www.hardfought.org/userdata/%X/%x/notdnethack/dumplog/%s.ndnh.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -453,7 +453,7 @@ INSERT INTO logfiles (
   35, 'eu.hardfought.org (NetHack 3.4.3)', 'hfe', 'nh',
   'https://eu.hardfought.org/xlogfiles/nh343/xlogfile',
   'hfe.nh.343.log',
-  'https://eu.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/nh343/dumplog/%s.nh343.txt'
 );
 
 INSERT INTO logfiles (
@@ -462,7 +462,7 @@ INSERT INTO logfiles (
   36, 'eu.hardfought.org (NetHack)', 'hfe', 'nh',
   'https://eu.hardfought.org/xlogfiles/nethack/xlogfile',
   'hfe.nh.log',
-  'https://eu.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
@@ -471,7 +471,7 @@ INSERT INTO logfiles (
   77, 'eu.hardfought.org (NetHack 3.7.x)', 'hfe', 'nh',
   'https://eu.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
   'hfe.nh.37x.log',
-  'https://eu.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
@@ -480,7 +480,7 @@ INSERT INTO logfiles (
   37, 'eu.hardfought.org (NetHack Fourk)', 'hfe', '4k',
   'https://eu.hardfought.org/xlogfiles/4k/xlogfile',
   'hfe.4k.log',
-  'https://eu.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d'
+  'https://eu.hardfought.org/userdata/%X/%x/nhfourk/dumps/%d'
 );
 
 INSERT INTO logfiles (
@@ -489,7 +489,7 @@ INSERT INTO logfiles (
   38, 'eu.hardfought.org (dNetHack)', 'hfe', 'dnh',
   'https://eu.hardfought.org/xlogfiles/dnethack/xlogfile',
   'hfe.dnh.log',
-  'https://eu.hardfought.org/userdata/%U/%u/dnethack/dumplog/%s.dnh.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/dnethack/dumplog/%s.dnh.txt'
 );
 
 INSERT INTO logfiles (
@@ -498,7 +498,7 @@ INSERT INTO logfiles (
   39, 'eu.hardfought.org (FIQHack)', 'hfe', 'fiq',
   'https://eu.hardfought.org/xlogfiles/fh/xlogfile',
   'hfe.fiq.log',
-  'https://eu.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
+  'https://eu.hardfought.org/userdata/%X/%x/fiqhack/dumplog/%D',
   '{"base64xlog"}'
 );
 
@@ -508,7 +508,7 @@ INSERT INTO logfiles (
   40, 'eu.hardfought.org (GruntHack)', 'hfe', 'grunt',
   'https://eu.hardfought.org/xlogfiles/gh/xlogfile',
   'hfe.grunt.log',
-  'https://eu.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/gh/dumplog/%s.gh.txt'
 );
 
 INSERT INTO logfiles (
@@ -517,7 +517,7 @@ INSERT INTO logfiles (
   41, 'eu.hardfought.org (NetHack 4)', 'hfe', 'nh4',
   'https://eu.hardfought.org/xlogfiles/nethack4/xlogfile',
   'hfe.nh4.log',
-  'https://eu.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D'
+  'https://eu.hardfought.org/userdata/%X/%x/nethack4/dumplog/%D'
 );
 
 INSERT INTO logfiles (
@@ -526,7 +526,7 @@ INSERT INTO logfiles (
   42, 'eu.hardfought.org (SporkHack)', 'hfe', 'spork',
   'https://eu.hardfought.org/xlogfiles/sporkhack/xlogfile',
   'hfe.spork.log',
-  'https://eu.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/sporkhack/dumplog/%s.sp.txt'
 );
 
 INSERT INTO logfiles (
@@ -535,7 +535,7 @@ INSERT INTO logfiles (
   43, 'eu.hardfought.org (UnNetHack)', 'hfe', 'un',
   'https://eu.hardfought.org/xlogfiles/unnethack/xlogfile',
   'hfe.un.log',
-  'https://eu.hardfought.org/userdata/%U/%u/unnethack/dumplog/%s.un.txt.html'
+  'https://eu.hardfought.org/userdata/%X/%x/unnethack/dumplog/%s.un.txt.html'
 );
 
 INSERT INTO logfiles (
@@ -544,7 +544,7 @@ INSERT INTO logfiles (
   44, 'eu.hardfought.org (DynaHack)', 'hfe', 'dyn',
   'https://eu.hardfought.org/xlogfiles/dynahack/xlogfile',
   'hfe.dyn.log',
-  'https://eu.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d'
+  'https://eu.hardfought.org/userdata/%X/%x/dynahack/dumplog/%d'
 );
 
 INSERT INTO logfiles (
@@ -553,7 +553,7 @@ INSERT INTO logfiles (
   46, 'eu.hardfought.org (xNetHack)', 'hfe', 'xnh',
   'https://eu.hardfought.org/xlogfiles/xnethack/xlogfile',
   'hfe.xnh.log',
-  'https://eu.hardfought.org/userdata/%U/%u/xnethack/dumplog/%s.xnh.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/xnethack/dumplog/%s.xnh.txt'
 );
 
 INSERT INTO logfiles (
@@ -562,7 +562,7 @@ INSERT INTO logfiles (
   49, 'eu.hardfought.org (SLASH''EM Extended)', 'hfe', 'slex',
   'https://eu.hardfought.org/xlogfiles/slex/xlogfile',
   'hfe.slex.log',
-  'https://eu.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/slex/dumplog/%s.slex.txt'
 );
 
 INSERT INTO logfiles (
@@ -571,7 +571,7 @@ INSERT INTO logfiles (
   52, 'eu.hardfought.org (SpliceHack)', 'hfe', 'spl',
   'https://eu.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hfe.spl.log',
-  'https://eu.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/splicehack/dumplog/%s.splice.txt'
 );
 
 INSERT INTO logfiles (
@@ -580,7 +580,7 @@ INSERT INTO logfiles (
   70, 'eu.hardfought.org (SLASH''EM)', 'hfe', 'slashem',
   'https://eu.hardfought.org/xlogfiles/slashem/xlogfile',
   'hfe.slashem.log',
-  'https://eu.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/slashem/dumplog/%s.slashem.txt'
 );
 
 INSERT INTO logfiles (
@@ -589,7 +589,7 @@ INSERT INTO logfiles (
   73, 'eu.hardfought.org (EvilHack)', 'hfe', 'evil',
   'https://eu.hardfought.org/xlogfiles/evilhack/xlogfile',
   'hfe.evil.log',
-  'https://eu.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/evilhack/dumplog/%s.evil.txt'
 );
 
 INSERT INTO logfiles (
@@ -598,7 +598,7 @@ INSERT INTO logfiles (
   83, 'eu.hardfought.org (notdNetHack)', 'hfe', 'ndnh',
   'https://eu.hardfought.org/xlogfiles/notdnethack/xlogfile',
   'hfe.ndnh.log',
-  'https://eu.hardfought.org/userdata/%U/%u/notdnethack/dumplog/%s.ndnh.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/notdnethack/dumplog/%s.ndnh.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -611,7 +611,7 @@ INSERT INTO logfiles (
   53, 'au.hardfought.org (NetHack 3.4.3)', 'hfa', 'nh',
   'https://au.hardfought.org/xlogfiles/nh343/xlogfile',
   'hfa.nh.343.log',
-  'https://au.hardfought.org/userdata/%U/%u/nh343/dumplog/%s.nh343.txt'
+  'https://au.hardfought.org/userdata/%X/%x/nh343/dumplog/%s.nh343.txt'
 );
 
 INSERT INTO logfiles (
@@ -620,7 +620,7 @@ INSERT INTO logfiles (
   54, 'au.hardfought.org (GruntHack)', 'hfa', 'grunt',
   'https://au.hardfought.org/xlogfiles/gh/xlogfile',
   'hfa.grunt.log',
-  'https://au.hardfought.org/userdata/%U/%u/gh/dumplog/%s.gh.txt'
+  'https://au.hardfought.org/userdata/%X/%x/gh/dumplog/%s.gh.txt'
 );
 
 INSERT INTO logfiles (
@@ -629,7 +629,7 @@ INSERT INTO logfiles (
   55, 'au.hardfought.org (UnNetHack)', 'hfa', 'un',
   'https://au.hardfought.org/xlogfiles/unnethack/xlogfile',
   'hfa.un.log',
-  'https://au.hardfought.org/userdata/%U/%u/unnethack/dumplog/%s.un.txt.html'
+  'https://au.hardfought.org/userdata/%X/%x/unnethack/dumplog/%s.un.txt.html'
 );
 
 INSERT INTO logfiles (
@@ -638,7 +638,7 @@ INSERT INTO logfiles (
   56, 'au.hardfought.org (NetHack)', 'hfa', 'nh',
   'https://au.hardfought.org/xlogfiles/nethack/xlogfile',
   'hfa.nh.log',
-  'https://au.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+  'https://au.hardfought.org/userdata/%X/%x/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
@@ -647,7 +647,7 @@ INSERT INTO logfiles (
   78, 'au.hardfought.org (NetHack 3.7.x)', 'hfa', 'nh',
   'https://au.hardfought.org/xlogfiles/nethack/xlogfile-370-hdf',
   'hfa.nh.37x.log',
-  'https://au.hardfought.org/userdata/%U/%u/nethack/dumplog/%s.nh.txt'
+  'https://au.hardfought.org/userdata/%X/%x/nethack/dumplog/%s.nh.txt'
 );
 
 INSERT INTO logfiles (
@@ -656,7 +656,7 @@ INSERT INTO logfiles (
   57, 'au.hardfought.org (FIQHack)', 'hfa', 'fiq',
   'https://au.hardfought.org/xlogfiles/fh/xlogfile',
   'hfa.fiq.log',
-  'https://au.hardfought.org/userdata/%U/%u/fiqhack/dumplog/%D',
+  'https://au.hardfought.org/userdata/%X/%x/fiqhack/dumplog/%D',
   '{"base64xlog"}'
 );
 
@@ -666,7 +666,7 @@ INSERT INTO logfiles (
   58, 'au.hardfought.org (Fourk)', 'hfa', '4k',
   'https://au.hardfought.org/xlogfiles/4k/xlogfile',
   'hfa.4k.log',
-  'https://au.hardfought.org/userdata/%U/%u/nhfourk/dumps/%d'
+  'https://au.hardfought.org/userdata/%X/%x/nhfourk/dumps/%d'
 );
 
 INSERT INTO logfiles (
@@ -675,7 +675,7 @@ INSERT INTO logfiles (
   59, 'au.hardfought.org (dNetHack)', 'hfa', 'dnh',
   'https://au.hardfought.org/xlogfiles/dnethack/xlogfile',
   'hfa.dnh.log',
-  'https://au.hardfought.org/userdata/%U/%u/dnethack/dumplog/%s.dnh.txt'
+  'https://au.hardfought.org/userdata/%X/%x/dnethack/dumplog/%s.dnh.txt'
 );
 
 INSERT INTO logfiles (
@@ -684,7 +684,7 @@ INSERT INTO logfiles (
   60, 'au.hardfought.org (NetHack 4)', 'hfa', 'nh4',
   'https://au.hardfought.org/xlogfiles/nethack4/xlogfile',
   'hfa.nh4.log',
-  'https://au.hardfought.org/userdata/%U/%u/nethack4/dumplog/%D'
+  'https://au.hardfought.org/userdata/%X/%x/nethack4/dumplog/%D'
 );
 
 INSERT INTO logfiles (
@@ -693,7 +693,7 @@ INSERT INTO logfiles (
   61, 'au.hardfought.org (DynaHack)', 'hfa', 'dyn',
   'https://au.hardfought.org/xlogfiles/dynahack/xlogfile',
   'hfa.dyn.log',
-  'https://au.hardfought.org/userdata/%U/%u/dynahack/dumplog/%d'
+  'https://au.hardfought.org/userdata/%X/%x/dynahack/dumplog/%d'
 );
 
 INSERT INTO logfiles (
@@ -702,7 +702,7 @@ INSERT INTO logfiles (
   62, 'au.hardfought.org (SporkHack)', 'hfa', 'spork',
   'https://au.hardfought.org/xlogfiles/sporkhack/xlogfile',
   'hfa.spork.log',
-  'https://au.hardfought.org/userdata/%U/%u/sporkhack/dumplog/%s.sp.txt'
+  'https://au.hardfought.org/userdata/%X/%x/sporkhack/dumplog/%s.sp.txt'
 );
 
 INSERT INTO logfiles (
@@ -711,7 +711,7 @@ INSERT INTO logfiles (
   63, 'au.hardfought.org (xNetHack)', 'hfa', 'xnh',
   'https://au.hardfought.org/xlogfiles/xnethack/xlogfile',
   'hfa.xnh.log',
-  'https://au.hardfought.org/userdata/%U/%u/xnethack/dumplog/%s.xnh.txt'
+  'https://au.hardfought.org/userdata/%X/%x/xnethack/dumplog/%s.xnh.txt'
 );
 
 INSERT INTO logfiles (
@@ -720,7 +720,7 @@ INSERT INTO logfiles (
   64, 'au.hardfought.org (SLASH''EM Extended)', 'hfa', 'slex',
   'https://au.hardfought.org/xlogfiles/slex/xlogfile',
   'hfa.slex.log',
-  'https://au.hardfought.org/userdata/%U/%u/slex/dumplog/%s.slex.txt'
+  'https://au.hardfought.org/userdata/%X/%x/slex/dumplog/%s.slex.txt'
 );
 
 INSERT INTO logfiles (
@@ -729,7 +729,7 @@ INSERT INTO logfiles (
   65, 'au.hardfought.org (SpliceHack)', 'hfa', 'spl',
   'https://au.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hfa.spl.log',
-  'https://au.hardfought.org/userdata/%U/%u/splicehack/dumplog/%s.splice.txt'
+  'https://au.hardfought.org/userdata/%X/%x/splicehack/dumplog/%s.splice.txt'
 );
 
 INSERT INTO logfiles (
@@ -738,7 +738,7 @@ INSERT INTO logfiles (
   71, 'au.hardfought.org (SLASH''EM)', 'hfa', 'slashem',
   'https://au.hardfought.org/xlogfiles/slashem/xlogfile',
   'hfa.slashem.log',
-  'https://au.hardfought.org/userdata/%U/%u/slashem/dumplog/%s.slashem.txt'
+  'https://au.hardfought.org/userdata/%X/%x/slashem/dumplog/%s.slashem.txt'
 );
 
 INSERT INTO logfiles (
@@ -747,7 +747,7 @@ INSERT INTO logfiles (
   74, 'au.hardfought.org (EvilHack)', 'hfa', 'evil',
   'https://au.hardfought.org/xlogfiles/evilhack/xlogfile',
   'hfa.evil.log',
-  'https://au.hardfought.org/userdata/%U/%u/evilhack/dumplog/%s.evil.txt'
+  'https://au.hardfought.org/userdata/%X/%x/evilhack/dumplog/%s.evil.txt'
 );
 
 INSERT INTO logfiles (
@@ -756,7 +756,7 @@ INSERT INTO logfiles (
   84, 'au.hardfought.org (notdNetHack)', 'hfa', 'ndnh',
   'https://au.hardfought.org/xlogfiles/notdnethack/xlogfile',
   'hfa.ndnh.log',
-  'https://au.hardfought.org/userdata/%U/%u/notdnethack/dumplog/%s.ndnh.txt'
+  'https://au.hardfought.org/userdata/%X/%x/notdnethack/dumplog/%s.ndnh.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -769,7 +769,7 @@ INSERT INTO logfiles (
   26, 'em.slashem.me (NetHack 3.6.0)', 'esm', 'nh',
   'https://em.slashem.me/xlogfiles/nethack',
   'esm.nh.360.log',
-  'https://em.slashem.me/userdata/%u/nethack/dumplog/%E.txt',
+  'https://em.slashem.me/userdata/%x/nethack/dumplog/%E.txt',
   '{"bug360duration"}'
 );
 
@@ -781,7 +781,7 @@ INSERT INTO logfiles (
   27, 'em.slashem.me (GruntHack)', 'esm', 'grunt',
   'https://em.slashem.me/xlogfiles/grunthackold',
   'esm.grunt.log',
-  'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt',
+  'https://em.slashem.me/userdata/%x/grunthack/dumplog/%s.txt',
   TRUE
 );
 
@@ -793,7 +793,7 @@ INSERT INTO logfiles (
   28, 'em.slashem.me (SporkHack)', 'esm', 'spork',
   'https://em.slashem.me/xlogfiles/sporkhackold',
   'esm.spork.log',
-  'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt',
+  'https://em.slashem.me/userdata/%x/sporkhack/dumplog/%s.txt',
   TRUE
 );
 
@@ -803,7 +803,7 @@ INSERT INTO logfiles (
   48, 'em.slash.em (SLASH''EM Extended)', 'esm', 'slex',
   'https://em.slashem.me/xlogfiles/slex',
   'esm.slex.log',
-  'https://em.slashem.me/userdata/%u/slex/dumplog/%s.txt'
+  'https://em.slashem.me/userdata/%x/slex/dumplog/%s.txt'
 );
 
 INSERT INTO logfiles (
@@ -812,7 +812,7 @@ INSERT INTO logfiles (
   66, 'em.slashem.me (GruntHack)', 'esm', 'grunt',
   'https://em.slashem.me/xlogfiles/grunthack',
   'esm.grunt.01.log',
-  'https://em.slashem.me/userdata/%u/grunthack/dumplog/%s.txt'
+  'https://em.slashem.me/userdata/%x/grunthack/dumplog/%s.txt'
 );
 
 INSERT INTO logfiles (
@@ -821,7 +821,7 @@ INSERT INTO logfiles (
   67, 'em.slashem.me (SporkHack)', 'esm', 'spork',
   'https://em.slashem.me/xlogfiles/sporkhackold',
   'esm.spork.01.log',
-  'https://em.slashem.me/userdata/%u/sporkhack/dumplog/%s.txt'
+  'https://em.slashem.me/userdata/%x/sporkhack/dumplog/%s.txt'
 );
 
 INSERT INTO logfiles (
@@ -830,7 +830,7 @@ INSERT INTO logfiles (
   68, 'em.slashem.me (dnhslex)', 'esm', 'dnhslex',
   'https://em.slashem.me/xlogfiles/dnhslex',
   'esm.dnhslex.01.log',
-  'https://em.slashem.me/userdata/%u/dnhslex/dumplog/%s'
+  'https://em.slashem.me/userdata/%x/dnhslex/dumplog/%s'
 );
 
 -----------------------------------------------------------------------------
@@ -843,7 +843,7 @@ INSERT INTO logfiles (
   81, 'nethack.eu (nh343)', 'neu', 'nh',
   'https://lilith.gnuffy.net/neu/xlogfile',
   'neu.nh343.02.log',
-  'https://nethackscoreboard.org/neu_dumplogs/%u/nethack/dumplog/%s'
+  'https://nethackscoreboard.org/neu_dumplogs/%x/nethack/dumplog/%s'
 );
 
 -----------------------------------------------------------------------------
@@ -959,7 +959,7 @@ INSERT INTO logfiles (
   2017, '/dev/null Tribute 2017', 'dnt', 'nh',
   'https://hardfought.org/devnull/xlogfiles.dnt',
   'devnull-2017.log',
-  'https://www.hardfought.org/userdata/%U/%u/dn36/dumplog/%s.dn36.txt',
+  'https://www.hardfought.org/userdata/%X/%x/dn36/dumplog/%s.dn36.txt',
   TRUE
 );
 
@@ -973,7 +973,7 @@ INSERT INTO logfiles (
   2018, 'The November NetHack Tournament 2018', 'nnt', 'nh',
   'https://www.hardfought.org/tnnt/archives/2018/xlogfiles/xlogfile.tnnt.2018',
   'tnnt-2018.log',
-  'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.txt',
+  'https://%S.hardfought.org/userdata/%X/%x/tnnt/dumplog/%s.tnnt.txt',
   TRUE
 );
 
@@ -983,7 +983,7 @@ INSERT INTO logfiles (
   2019, 'The November NetHack Tournament 2019', 'nnt', 'nh',
   'https://www.hardfought.org/tnnt/archives/2019/xlogfiles/xlogfile.tnnt.2019',
   'tnnt-2019.log',
-  'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.html',
+  'https://%S.hardfought.org/userdata/%X/%x/tnnt/dumplog/%s.tnnt.html',
   TRUE
 );
 
@@ -993,6 +993,6 @@ INSERT INTO logfiles (
   2020, 'The November NetHack Tournament 2020', 'nnt', 'nh',
   'https://www.hardfought.org/tnnt/archives/2020/xlogfiles/xlogfile.tnnt.2020',
   'tnnt-2020.log',
-  'https://%S.hardfought.org/userdata/%U/%u/tnnt/dumplog/%s.tnnt.html',
+  'https://%S.hardfought.org/userdata/%X/%x/tnnt/dumplog/%s.tnnt.html',
   TRUE
 );
