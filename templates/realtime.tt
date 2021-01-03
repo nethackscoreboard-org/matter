@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="default.css">
   <link rel="icon" type="image/png" href="favicon.png">
-  <title>Fastest Realtime Games</title>
+  <title>Realtime Speedrun Leaderboard</title>
 </head>
 
 <body class="page_back">
@@ -17,7 +17,7 @@
 [% INCLUDE topmenu.tt mnu="realtime" lvl=0 var=variant %]
 
 <div class="page_content">
-<h1>Fastest Realtime Games</h1>
+<h1>Realtime Speedrun Leaderboard</h1>
 
 [% INCLUDE varmenu.tt page="realtime" %]
 
@@ -37,7 +37,7 @@
 
 <hr>
 
-<h3>100 Fastest Realtime Games</h3>
+<h3>Top 100 Players</h3>
 [% INCLUDE tab_ascended.tt %]
 
 [% ELSE %]

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="default.css">
   <link rel="icon" type="image/png" href="favicon.png">
-  <title>Lowest Turncount Games</title>
+  <title>Gametime Speedrun Leaderboard</title>
 </head>
 
 <body class="page_back">
@@ -17,7 +17,7 @@
 [% INCLUDE topmenu.tt mnu="gametime" lvl=0 var=variant %]
 
 <div class="page_content">
-<h1>Lowest Turncount Games</h1>
+<h1>Gametime Speedrun Leaderboard</h1>
 
 [% INCLUDE varmenu.tt page="gametime" %]
 
@@ -37,14 +37,14 @@
 
 <hr>
 
-<h3>100 Lowest Turncount Games</h3>
+<h3>Top 100 Players</h3>
 [% INCLUDE tab_ascended.tt %]
 
 [%# ------ %]
 
 <div style="display : inline-block; margin-right : 2em;">
-[% IF sub20.size %]
-<h3>Sub-20K Wins</h3>
+[% IF sub15.size %]
+<h3>Sub-15K Wins</h3>
 
 <table class="bordered">
 <tr>
@@ -53,7 +53,7 @@
   <th>cnt</th>
   <th>avg turns</th>
 </tr>
-[% FOR row IN sub20 %]
+[% FOR row IN sub15 %]
 <tr>
 <td class="numeric">[% row.n %]</td>
 <td>[% row.name %]</td>

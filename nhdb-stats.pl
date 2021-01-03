@@ -2134,7 +2134,7 @@ sub gen_page_gametime
       push(@arg, $variant);
     }
     $qry = sprintf(
-      'SELECT * FROM v_ascended WHERE %s ORDER BY turns ASC LIMIT 100',
+      'SELECT * FROM ( SELECT DISTINCT ON (name) * FROM v_ascended WHERE %s ORDER BY name, turns ASC ) t ORDER BY turns ASC LIMIT 100',
       join(' AND ', @cond)
     );
 
@@ -2177,7 +2177,7 @@ sub gen_page_gametime
     return sql_load($qry, 1, 1, undef, @arg);
   };
 
-  $data{'sub20'} = &$sub_games(20000, undef);
+  $data{'sub15'} = &$sub_games(15000, undef);
   $data{'sub10'} = &$sub_games(10000, undef);
   $data{'sub5'} = &$sub_games(5000, undef);
 
@@ -2205,13 +2205,13 @@ sub gen_page_gametime
     }
 
     # cycle through version queries and produce separate pages
-    $qry = 'SELECT * FROM v_ascended WHERE turns > 0 AND variant = ? AND version LIKE ? ORDER BY turns ASC LIMIT 100';
+    $qry = 'SELECT * FROM (SELECT DISTINCT ON (name) * FROM v_ascended WHERE turns > 0 AND variant = ? AND version LIKE ? ORDER BY name, turns ASC) t ORDER BY turns LIMIT 100';
     foreach my $version (keys %version_query_map) {
       @arg = ($variant, $version_query_map{$version});
       $data{'version'} = $version;
       $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
       my $page = "gametime.${variant}${version}.html";
-      $data{'sub20'} = &$sub_games(20000, $version_query_map{$version});
+      $data{'sub15'} = &$sub_games(15000, $version_query_map{$version});
       $data{'sub10'} = &$sub_games(10000, $version_query_map{$version});
       $data{'sub5'} = &$sub_games(5000, $version_query_map{$version});
       if(!$tt->process('gametime.tt', \%data, $page)) {
@@ -2261,7 +2261,7 @@ sub gen_page_realtime
       push(@arg, $variant);
     }
     $qry = sprintf(
-      'SELECT * FROM v_ascended WHERE %s ORDER BY realtime ASC LIMIT 100',
+      'SELECT * FROM (SELECT DISTINCT ON (name) * FROM v_ascended WHERE %s ORDER BY name, realtime ASC) t ORDER BY realtime ASC LIMIT 100',
       join(' AND ', @cond)
     );
 
@@ -2292,7 +2292,7 @@ sub gen_page_realtime
     }
 
     # cycle through version queries and produce separate pages
-    $qry = 'SELECT * FROM v_ascended WHERE realtime > 0 AND variant = ? AND version LIKE ? ORDER BY realtime ASC LIMIT 100';
+    $qry = 'SELECT * FROM (SELECT DISTINCT ON (name) * FROM v_ascended WHERE realtime > 0 AND variant = ? AND version LIKE ? ORDER BY name, realtime ASC) t ORDER BY realtime ASC LIMIT 100';
     foreach my $version (keys %version_query_map) {
       @arg = ($variant, $version_query_map{$version});
       $data{'version'} = $version;
@@ -2318,6 +2318,7 @@ sub create_version_map
   my ($versions_ref) = @_;
   my @versions = map { my $foo = $_->{version}; $foo =~ s/^\w+-//; $foo } @$versions_ref;
   my @minor_versions = @versions;
+  @versions = ();
   map { $_ =~ s/^(\d+)\.(\d+)\.\d+$/$1\.$2\.%/ } @minor_versions; #NB this modifies the array in-place!!
   push @versions, uniq @minor_versions;
   my @major_versions = @minor_versions;
@@ -2328,7 +2329,9 @@ sub create_version_map
     my $version_short = $version_query;
     $version_short =~ s/\.//g;
     $version_short =~ s/%/x/g;
-    $version_map{$version_short} = $version_query;
+    if ($version_short ne '3xx') {
+      $version_map{$version_short} = $version_query;
+    }
   }
   return \%version_map;
 }
