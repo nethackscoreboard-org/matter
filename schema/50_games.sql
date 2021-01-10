@@ -49,7 +49,7 @@ CREATE TABLE games (
   quit          boolean NOT NULL,
   scummed       boolean NOT NULL,
   dumplog       varchar(128),
-  misc          varchar(4096),
+  misc          json,
   PRIMARY KEY ( rowid )
 );
 

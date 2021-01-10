@@ -525,10 +525,10 @@ sub sql_insert_games
       $xlog_data->{'flags'} = hex $xlog_data->{'flags'};
     }
 
-    # 0x1 is the flag for WIZARD MODE, 0x2 is EXPLORE
+    # 0x1 is the flag for WIZARD MODE, 0x2 is EXPLORE (vanilla nethack)
     # 0x4 is the polylinit flag in xNetHack
-    if($xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2
-      || ($variant eq 'xnh' && $xlog_data->{'flags'} & 0x4))
+    if(($variant eq 'nh' && ($xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2))
+      || ($variant eq 'xnh' && ($xlog_data->{'flags'} & 0x4 || $xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2)))
     {
       return undef;
     }
@@ -553,7 +553,10 @@ sub sql_insert_games
   delete($xlog_data->{'death'});
 
   #--- ascended flag
+  # this one needs to go to the outer function as a side-effect in order
+  # for streaks to work correctly. sweet.
   $xlog_data->{'ascended'} = $death =~ /^(ascended|defied the gods)\b/ ? 1 : 0;
+  $xlog_ref->{'ascended'} = $xlog_data->{'ascended'};
   push(@fields, 'ascended');
   push(@values, $xlog_data->{'ascended'} ? 'TRUE' : 'FALSE');
   delete($xlog_data->{'ascended'});
