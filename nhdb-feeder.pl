@@ -525,13 +525,13 @@ sub sql_insert_games
       $xlog_data->{'flags'} = hex $xlog_data->{'flags'};
     }
 
-    # 0x1 is the flag for WIZARD MODE, 0x2 is EXPLORE (vanilla nethack)
-    # 0x4 is the polylinit flag in xNetHack
-    if(($variant eq 'nh' && ($xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2))
-      || ($variant eq 'xnh' && ($xlog_data->{'flags'} & 0x4 || $xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2)))
-    {
-      return undef;
-    }
+#    # 0x1 is the flag for WIZARD MODE, 0x2 is EXPLORE (vanilla nethack)
+#    # 0x4 is the polylinit flag in xNetHack
+#    if(($variant eq 'nh' && ($xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2))
+#      || ($variant eq 'xnh' && ($xlog_data->{'flags'} & 0x4 || $xlog_data->{'flags'} & 0x1 || $xlog_data->{'flags'} & 0x2)))
+#    {
+#      return undef;
+#    }
   }
 
   #--- reject "special" modes of NH4 and its kin
@@ -542,7 +542,6 @@ sub sql_insert_games
     if(!($xlog_data->{'mode'} eq 'normal' || $xlog_data->{'mode'} eq 'challenge' || $xlog_data->{'mode'} eq 'solo')) {
       return undef;
     }
-    delete($xlog_data->{'mode'});
   }
 
   #--- death (reason)
