@@ -843,7 +843,7 @@ INSERT INTO logfiles (
   81, 'nethack.eu (nh343)', 'neu', 'nh',
   'https://lilith.gnuffy.net/neu/xlogfile',
   'neu.nh343.02.log',
-  'https://nethackscoreboard.org/neu_dumplogs/%x/nethack/dumplog/%s'
+  'https://nethackscoreboard.org/neu_dumplogs/nhdump-%x-%e.txt'
 );
 
 -----------------------------------------------------------------------------
