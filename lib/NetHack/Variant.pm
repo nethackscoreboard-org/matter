@@ -157,6 +157,10 @@ sub conduct
 
   my @conducts;
 
+  #--- convert conduct_bitfield and achieve_bitfield from hex to a number if necessary
+  if ($conduct_bitfield =~ m/^0x/) { $conduct_bitfield = hex $conduct_bitfield }
+  if ($achieve_bitfield =~ m/^0x/) { $achieve_bitfield = hex $achieve_bitfield }
+
   #--- get reverse code-to-value mapping for conducts
 
   my %con_to_val = reverse %{$self->conducts()};
@@ -165,7 +169,13 @@ sub conduct
   #--- get ordered list of conducts
 
   for my $c ($self->config()->list_conducts_ordered()) {
+    # this might still be needed if some versions of the patch
+    # don't do the bitfield *and* the count
     if($c eq 'elbe' && defined $elbereths && !$elbereths) {
+      if ($self->name eq 'NetHack') {
+        # not an official conduct in vanilla NetHack
+        $c = '/elbe/';
+      }
       push(@conducts, $c);
       last;
     }
@@ -175,6 +185,10 @@ sub conduct
         $con_to_val{$c} = hex $con_to_val{$c};
       }
       if($conduct_bitfield & $con_to_val{$c}) {
+        if ($c eq 'elbe' && $self->name eq 'NetHack') {
+          # not an official conduct in vanilla NetHack
+          $c = '/elbe/';
+        }
         push(@conducts, $c);
       }
     }

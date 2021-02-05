@@ -40,6 +40,8 @@ CREATE TABLE games (
   maxlvl        int NOT NULL,
   points        bigint NOT NULL,
   conduct       integer,
+  conducts      varchar(32)[],
+  conduct_cnt   int,
   elbereths     integer,
   turns         bigint,
   achieve       integer,
@@ -49,6 +51,7 @@ CREATE TABLE games (
   quit          boolean NOT NULL,
   scummed       boolean NOT NULL,
   dumplog       varchar(128),
+  dumpurl       varchar(256),
   misc          json,
   PRIMARY KEY ( rowid )
 );
@@ -74,9 +77,9 @@ CREATE OR REPLACE VIEW v_games_recent AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
-    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
-    games.version, ascended, misc
+    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, games.dumpurl,
+    deathlev, hp, maxhp, maxlvl, points, conduct, conduct_cnt, conducts, elbereths,
+    achieve, turns, realtime, games.version, ascended, misc
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
@@ -91,9 +94,9 @@ CREATE OR REPLACE VIEW v_games AS
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
-    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
-    games.version, ascended, misc
+    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, games.dumpurl,
+    deathlev, hp, maxhp, maxlvl, points, conduct, conduct_cnt, conducts elbereths,
+    achieve, turns, realtime, games.version, ascended, misc
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
@@ -108,9 +111,9 @@ CREATE OR REPLACE VIEW v_games_all AS
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
-    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
-    games.version, ascended, scummed, misc
+    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, games.dumpurl,
+    deathlev, hp, maxhp, maxlvl, points, conduct, conduct_cnt, conducts, elbereths,
+    achieve, turns, realtime, games.version, ascended, scummed, misc
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
@@ -125,9 +128,9 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
-    endtime_raw, starttime_raw, birthdate, deathdate, death, deathlev,
+    endtime_raw, starttime_raw, birthdate, deathdate, death, games.dumpurl, deathlev,
     hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
-    games.version, ascended, dumplog, misc,
+    games.version, ascended, dumplog, misc, conduct_cnt, conducts,
     extract('year'  from age(
       current_timestamp AT TIME ZONE 'UTC',
       endtime AT TIME ZONE 'UTC')
@@ -162,9 +165,9 @@ CREATE OR REPLACE VIEW v_ascended AS
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
-    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct, achieve, turns, realtime,
-    games.version, ascended, misc
+    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, games.dumpurl,
+    deathlev, hp, maxhp, maxlvl, points, conduct, conduct_cnt, conducts, achieve,
+    turns, realtime, games.version, ascended, misc
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )

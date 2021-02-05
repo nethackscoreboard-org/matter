@@ -53,6 +53,7 @@ my $lockfile = '/tmp/nhdb-feeder.lock';
 my %translations;               # name-to-name translations
 my $translations_cnt = 0;       # number of name translation
 my $logger;                     # log4perl instance
+my $xlogfiles;
 my $nh = new NetHack::Config(config_file => 'cfg/nethack_def.json');
 my $nhdb = NHdb::Config->instance;
 my $db;                         # NHdb::Db instance
@@ -61,6 +62,24 @@ my $db;                         # NHdb::Db instance
 #============================================================================
 #=== functions =============================================================
 #============================================================================
+
+#============================================================================
+# Load logfiles configuration info from db
+#============================================================================
+
+sub sql_load_logfiles
+{
+  my $dbh = $db->handle();
+  my $sth = $dbh->prepare('SELECT * FROM logfiles');
+  my $r = $sth->execute();
+  if(!$r) {
+    return sprintf('Failed to query database (%s)', $sth->errstr());
+  }
+  while(my $row = $sth->fetchrow_hashref()) {
+    my $logfiles_i  = $row->{'logfiles_i'};
+    $xlogfiles->{$logfiles_i} = $row;
+  }
+}
 
 #============================================================================
 # Split a line along field separator, parse it into hash and return it as
@@ -489,6 +508,9 @@ sub sql_insert_games
     $xlog_ref         # 5. parsed xlog data to be transformed into SQL
   ) = @_;
 
+  # need variant data
+  my $variant_data = $nh->variant($variant);
+
   # make a working copy so we can remove some keys, so that we know
   # not to include them as JSON under misc. We do however need to be
   # causing side-effects in the original ref that other parts of code expect
@@ -564,7 +586,7 @@ sub sql_insert_games
   #--- dNetHack combo mangling workaround
   # please refer to comment in NetHack.pm; this is only done to two specific
   # winning games!
-  if($variant eq 'dnh' && $xlog_data->{'ascended'}) {
+  if($variant eq 'dnh' && $xlog_ref->{'ascended'}) {
     ($xlog_data->{'role'}, $xlog_data->{'race'})
     = $nh->variant('dnh')->dnethack_map($xlog_data->{'role'}, $xlog_data->{'race'});
   }
@@ -617,7 +639,25 @@ sub sql_insert_games
   push(@fields, 'line');
   push(@values, $line_no);
 
-  #--- conduct
+  ## store conducts in human-readable format,
+  ## to make the job of the front-end easier
+  if($xlog_data->{'conductX'}) {
+    my @conducts = split(',', $xlog_data->{'conductX'});
+    push(@fields, 'conducts');
+    # annoying hack necessary because of the way timestamps are handled
+    push(@values, [ '?', \@conducts ]);
+    delete($xlog_data->{'conductX'});
+  } elsif ($xlog_data->{'conduct'}) {
+    my @conducts = $variant_data->conduct($xlog_data->{'conduct'}, $xlog_data->{'elbereths'}, $xlog_data->{'achieve'});
+    my $count = scalar(@conducts);
+    foreach my $c (@conducts) { if ($c =~ m@^/.*/$@) { $count-- } }
+    push(@fields, 'conduct_cnt');
+    push(@values, $count);
+    push(@fields, 'conducts');
+    push(@values, [ '?', \@conducts ]);
+  }
+
+  #--- conduct bitfield (keep for back-compat with old site)
   if($xlog_data->{'conduct'}) {
     push(@fields, 'conduct');
     push(@values, eval($xlog_data->{'conduct'}));
@@ -637,6 +677,7 @@ sub sql_insert_games
     push(@fields, 'starttime');
     push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'starttime'} ]) ;
     push(@fields, 'starttime_raw');
+    $xlog_ref->{'starttime_raw'} = $xlog_data->{'starttime'};
     push(@values, $xlog_data->{'starttime'});
     delete($xlog_data->{'starttime'});
   }
@@ -661,6 +702,7 @@ sub sql_insert_games
     push(@fields, 'endtime');
     push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'endtime'} ]);
     push(@fields, 'endtime_raw');
+    $xlog_ref->{'endtime_raw'} = $xlog_data->{'endtime'};
     push(@values, $xlog_data->{'endtime'});
     delete($xlog_data->{'endtime'});
   }
@@ -677,8 +719,19 @@ sub sql_insert_games
     push(@values, $xlog_data->{'deathdate'});
     delete($xlog_data->{'deathdate'});
   }
-  
-  
+
+  ## store dumplog url on insert instead of making the
+  ## REST API have to piece it together for every query
+  # this relies on various things being set like endtime_raw, which are
+  # calculated above in this function and saved in $xlog_ref
+  if($xlogfiles->{$logfiles_i}->{'dumpurl'} && $xlog_ref->{'endtime_raw'}) {
+    my $dumpurl = url_substitute(
+      $xlogfiles->{$logfiles_i}->{'dumpurl'},
+      $xlog_ref
+    );
+    push(@fields, 'dumpurl');
+    push(@values, $dumpurl);
+  }
 
   # encode misc fields as JSON
   # uid is irrelevant however
@@ -688,8 +741,32 @@ sub sql_insert_games
   push(@fields, 'misc');
   push(@values, $json_text);
 
-  #--- finish
+##  #--- sanity check
+##  #if (scalar(@fields) != scalar(@values)) {
+##  if (grep {/killed by Mr. Angmagssalik/} @values ) {
+##    print(sprintf(
+##      'INSERT INTO games ( %s ) VALUES ( %s ) RETURNING rowid',
+##      join(', ', @fields),
+##      join(',', map { ref() ? $_->[0] : '?' } @values)
+##    ) . "\n");
+##    my $foo = [ map { ref() ? $_->[1] : $_ } @values ];
+##    print(join(", ", @$foo) . "\n");
+##    while (scalar(@fields) || scalar(@values)) {
+##      if (scalar(@fields)) {
+##        print(shift(@fields) . " = ");
+##      } else {
+##        print("<...> = ");
+##      }
+##      if (scalar(@values)) {
+##        print(shift(@values) . "\n");
+##      } else {
+##        print("<...>\n");
+##      }
+##    }
+##    exit(1);
+##  }
 
+  #--- finish
   return (
     sprintf(
       'INSERT INTO games ( %s ) VALUES ( %s ) RETURNING rowid',
@@ -1148,6 +1225,11 @@ $db = NHdb::Db->new(id => 'nhdbfeeder', config => $nhdb);
 my $dbh = $db->handle();
 die "Undefined database handle" if !$dbh;
 
+#--- load list of logfiles
+
+sql_load_logfiles();
+$logger->info('Loaded list of logfiles');
+
 #--- process --oper and --static options
 
 if(defined($cmd->operational()) || defined($cmd->static())) {
@@ -1320,6 +1402,7 @@ for my $log (@logfiles) {
 
   my $transaction_in_progress = 0;
   my $logfiles_i = $log->{'logfiles_i'};
+  my $dumpurl = 
   my $lbl = sprintf('[%s/%s] ', $log->{'variant'}, $log->{'server'});
 
   #--- user selection processing

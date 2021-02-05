@@ -23,12 +23,12 @@ const GAME_COLUMNS: [GameColumn; 21] = [
     GameColumn { name: "gender", f_type: pgT::VARCHAR, nullable: false},
     GameColumn { name: "align", f_type: pgT::VARCHAR, nullable: false},
     GameColumn { name: "points", f_type: pgT::INT8, nullable: false},
-    GameColumn { name: "dumplog", f_type: pgT::VARCHAR, nullable: true},
+    GameColumn { name: "dumpurl", f_type: pgT::VARCHAR, nullable: true},
     GameColumn { name: "turns", f_type: pgT::INT8, nullable: false},
     GameColumn { name: "realtime", f_type: pgT::INT8, nullable: true},
     GameColumn { name: "starttime_raw", f_type: pgT::INT8, nullable: true},
     GameColumn { name: "endtime_raw", f_type: pgT::INT8, nullable: true},
-    GameColumn { name: "endtime", f_type: pgT::TIMESTAMPTZ, nullable: false},
+    GameColumn { name: "endtime_fmt", f_type: pgT::VARCHAR, nullable: false},
     GameColumn { name: "deathlev", f_type: pgT::INT4, nullable: false},
     GameColumn { name: "maxlvl", f_type: pgT::INT4, nullable: false},
     GameColumn { name: "hp", f_type: pgT::INT4, nullable: false},
@@ -62,7 +62,7 @@ fn compose_field(row: &Row, column: &GameColumn) -> Value {
             }
         },
         pgT::INT4 => {
-            match row.get::<&str, Option<i64>>(column.name) {
+            match row.get::<&str, Option<i32>>(column.name) {
                 Some(number) => Value::Number(Number::from(number)),
                 None => Value::Null
             }
