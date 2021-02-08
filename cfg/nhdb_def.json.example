@@ -41,7 +41,7 @@
 
   #--- following fields must be present in the xlogfile or the line is rejected
 
-    "require_fields" : [ "conduct", "starttime", "endtime" ],
+    "require_fields" : [ "name", "deathdate", "death" ],
   
   #--- regular xlogfile fields; do not change unless you know what you're doing
 
