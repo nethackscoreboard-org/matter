@@ -1002,6 +1002,28 @@
       ],
       "races" : [ "cen", "hum", "hob", "elf", "dwa", "gia", "gno", "orc", "ith", "dem" ],
       "aligns" : [ "law", "neu", "cha", "una" ],
+      "conduct" : {
+        "0x000001" : "food",
+        "0x000002" : "vegn",
+        "0x000004" : "vegt",
+        "0x000008" : "athe",
+        "0x000010" : "weap",
+        "0x000020" : "paci",
+        "0x000040" : "illi",
+        "0x000080" : "pile",
+        "0x000100" : "self",
+        "0x000200" : "wish",
+        "0x000400" : "arti",
+        "0x000800" : "geno",
+        "0x001000" : "pets",
+        "0x002000" : "arts",
+        "0x004000" : "elbe",
+        "0x008000" : "zen",
+        "0x010000" : "nude",
+        "0x020000" : "hall",
+        "0x040000" : "deaf",
+        "0x080000" : "surv",
+      },
       "enum" : [
         [ "Arc", "Hum", "Mal", "Law" ], [ "Arc", "Hum", "Fem", "Law" ], # 1
         [ "Arc", "Hum", "Mal", "Neu" ], [ "Arc", "Hum", "Fem", "Neu" ], # 2
