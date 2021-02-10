@@ -12,3 +12,4 @@ cfg/nhdb_def.json
 test/
 www/
 target/
+node_modules/

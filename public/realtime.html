@@ -1,0 +1,45 @@
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="default.css">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>Realtime Speedrun Leaderboard</title>
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+</head>
+
+<body class="page_back">
+
+  <div class="page">
+    <div class="toplinks">
+      <a href="./">Overview</a> |  <a href="recent.nh.html">Recent Games</a> |
+      <a href="ascended.nh.html">Ascended Games</a> |
+      <a href="streaks.nh.html">Streaks</a> |
+      <a href="zscore.nh.html">Z-scores</a> |
+      <a href="conduct.nh.html">Conducts</a> |
+      <a href="lowscore.nh.html">Low Score</a> |
+      <a href="gametime.nh.html">Low Turncount</a> |
+      <a href="about.html">About</a>
+    </div>
+    
+    <div class="page_content">
+      <h1>Realtime Speedrun Leaderboard</h1>
+
+      <p id="varmenu">
+        <a href="realtime.all.html"><span class="unselected">All</span></a>
+        <span class="selected">NetHack</span>
+      </p>
+
+      <h3>Top 100 Players</h3>
+      <script src="realtime.js"></script>
+    </div>
+    
+  </div>
+
+</body>
+
+</html>
+
