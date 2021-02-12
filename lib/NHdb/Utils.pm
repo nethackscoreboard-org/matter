@@ -105,7 +105,7 @@ sub url_substitute
     '%04d%02d%02d%02d%02d%02d',
     $et[5]+1900, $et[4]+1, $et[3], $et[2], $et[1], $et[0]
   );
-  my @st = gmtime($data->{'endtime_raw'});
+  my @st = gmtime($data->{'starttime_raw'});
   my $r_starttime2 = sprintf(
     '%04d%02d%02d%02d%02d%02d',
     $st[5]+1900, $st[4]+1, $st[3], $st[2], $st[1], $st[0]
