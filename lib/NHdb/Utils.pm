@@ -64,6 +64,7 @@ sub format_duration
 # %u - username
 # %U - first letter of username
 # %s - start time (unix epoch)
+# %F - start time (as YYYYMMDDHHMMSS)
 # %e - end time (unix epoch)
 # %E - end time (as YYYYMMDDHHMMSS)
 # %x - username before translation (as it appears in xlogfile)
@@ -104,6 +105,11 @@ sub url_substitute
     '%04d%02d%02d%02d%02d%02d',
     $et[5]+1900, $et[4]+1, $et[3], $et[2], $et[1], $et[0]
   );
+  my @st = gmtime($data->{'endtime_raw'});
+  my $r_starttime2 = sprintf(
+    '%04d%02d%02d%02d%02d%02d',
+    $st[5]+1900, $st[4]+1, $st[3], $st[2], $st[1], $st[0]
+  );
 
   # NetHack4 dumplogs work differently than the rest of the variants,
   # this is what ais523 has to say about it (note, that "three underscores"
@@ -123,6 +129,7 @@ sub url_substitute
   $strg =~ s/%u/$r_username/g;
   $strg =~ s/%U/$r_uinitial/g;
   $strg =~ s/%s/$r_starttime/g;
+  $strg =~ s/%F/$r_starttime2/g;
   $strg =~ s/%e/$r_endtime/g;
   $strg =~ s/%E/$r_endtime2/g;
   $strg =~ s/%x/$r_username_orig/g;

@@ -856,7 +856,7 @@ INSERT INTO logfiles (
   85, 'nethack.live (nh366)', 'nhl', 'nh',
   'archive.nethack.live/gamelogs/xlogfile',
   'nhl.nh366.log',
-  ''
+  'https://archive.nethack.live/dumplogs/nh366/%x/nethack.%x.%F.log'
 );
 
 -----------------------------------------------------------------------------
