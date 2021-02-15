@@ -17,15 +17,15 @@
 [% INCLUDE topmenu.tt mnu="gametime" lvl=0 var=variant %]
 
 <div class="page_content">
-<h1>Gametime Speedrun Leaderboard</h1>
+<h1>Turncount Speedrun Leaderboard</h1>
 
-[% INCLUDE varmenu.tt page="gametime" %]
+[% INCLUDE varmenu.tt page="turncount" %]
 
 <hr>
 
 [% FOR vers IN versions %]
   [%- IF vers != version -%]
-  <a href="[% path %]gametime.[% variant %][% vers %].html">[% vers %]</a> |
+  <a href="[% path %]turncount.[% variant %][% vers %].html">[% vers %]</a> |
   [%- ELSE -%]
   [% vers %] |
   [%- END -%]

@@ -71,7 +71,7 @@ my %aggr_pages = (
   'conducts' => \&gen_page_conducts,
   'lowscore' => \&gen_page_lowscore,
   'firstasc' => \&gen_page_first_to_ascend,
-  'gametime' => \&gen_page_gametime,
+  'turncount' => \&gen_page_turncount,
   'realtime' => \&gen_page_realtime
 );
 
@@ -2105,7 +2105,7 @@ sub gen_page_first_to_ascend
 # Generate Fastest Game-time page.
 #============================================================================
 
-sub gen_page_gametime
+sub gen_page_turncount
 {
   #--- arguments
 
@@ -2199,8 +2199,8 @@ sub gen_page_gametime
     $data{'versions'} = [sort keys %version_query_map];
 
     #--- render template
-    if(!$tt->process('gametime.tt', \%data, "gametime.$variant.html")) {
-      $logger->error(q{Failed to render page gametime.tt'}, $tt->error());
+    if(!$tt->process('turncount.tt', \%data, "turncount.$variant.html")) {
+      $logger->error(q{Failed to render page turncount.tt'}, $tt->error());
       die $tt->error();
     }
 
@@ -2210,19 +2210,19 @@ sub gen_page_gametime
       @arg = ($variant, $version_query_map{$version});
       $data{'version'} = $version;
       $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
-      my $page = "gametime.${variant}${version}.html";
+      my $page = "turncount.${variant}${version}.html";
       $data{'sub15'} = &$sub_games(15000, $version_query_map{$version});
       $data{'sub10'} = &$sub_games(10000, $version_query_map{$version});
       $data{'sub5'} = &$sub_games(5000, $version_query_map{$version});
-      if(!$tt->process('gametime.tt', \%data, $page)) {
+      if(!$tt->process('turncount.tt', \%data, $page)) {
         $logger->error("Failed to render page $page", $tt->error());
         die $tt->error();
       }
     }
   } else {
     #--- render template
-    if(!$tt->process('gametime.tt', \%data, "gametime.$variant.html")) {
-      $logger->error(q{Failed to render page gametime.tt'}, $tt->error());
+    if(!$tt->process('turncount.tt', \%data, "turncount.$variant.html")) {
+      $logger->error(q{Failed to render page turncount.tt'}, $tt->error());
       die $tt->error();
     }
   }

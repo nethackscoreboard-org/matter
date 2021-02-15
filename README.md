@@ -38,7 +38,7 @@ This list is an implementation plan for the near future. Feel free to submit you
 * **Searching By Player Name** //
 Interactive searching for player name (req. *stenno*).
 
-* **Add Average Realtime And Average Gametime To Per-Variant Stats** // Can't be done for aggregates since realtime is measured differently or completely unavailable in some variants and gametime depends on variant (some variants have too different gameplay to be comparable)
+* **Add Average Realtime And Average Gametime To Per-Variant Stats** // Can't be done for aggregates since realtime is measured differently or completely unavailable in some variants and (min) turncount depends on variant (some variants have too different gameplay to be comparable)
 
 * **Pseudovariant 'var'** // This would be pseudo-variant that would aggregate all variants but vanilla NetHack.
 

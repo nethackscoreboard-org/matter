@@ -47,8 +47,8 @@
   <a href="[% path %]lowscore.[% var %].html">Low Score</a> |
 [%- END %]
 
-[%- IF mnu != "gametime" -%]
-  <a href="[% path %]gametime.[% var %].html">Low Turncount</a> |
+[%- IF mnu != "turncount" -%]
+  <a href="[% path %]turncount.[% var %].html">Low Turncount</a> |
 [%- END %]
 
 [%- IF mnu != "realtime" -%]
