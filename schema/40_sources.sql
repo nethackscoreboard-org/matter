@@ -449,7 +449,7 @@ INSERT INTO logfiles (
   86, 'hardfought.org (SlashTHEM)', 'hdf', 'slashthem',
   'https://www.hardfought.org/xlogfiles/slashthem/xlogfile',
   'hdf.slashthem.log',
-  'https://www.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slashthem.txt'
+  'https://www.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slth.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -616,7 +616,7 @@ INSERT INTO logfiles (
   87, 'eu.hardfought.org (SlashTHEM)', 'hfe', 'slashthem',
   'https://eu.hardfought.org/xlogfiles/slashthem/xlogfile',
   'hfe.slashthem.log',
-  'https://eu.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slashthem.txt'
+  'https://eu.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slth.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -783,7 +783,7 @@ INSERT INTO logfiles (
   88, 'au.hardfought.org (SlashTHEM)', 'hfa', 'slashthem',
   'https://au.hardfought.org/xlogfiles/slashthem/xlogfile',
   'hfa.slashthem.log',
-  'https://au.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slashthem.txt'
+  'https://au.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slth.txt'
 );
 
 -----------------------------------------------------------------------------
