@@ -39,7 +39,7 @@ CREATE TABLE games (
   maxhp         int NOT NULL,
   maxlvl        int NOT NULL,
   points        bigint NOT NULL,
-  conduct       integer,
+  conduct       bigint,
   elbereths     integer,
   turns         bigint,
   achieve       integer,
@@ -178,15 +178,21 @@ GRANT SELECT ON v_ascended TO nhdbstats;
 --- functions
 ----------------------------------------------------------------------------
 
--- Function that counts bit in an integer. Used to get number of conducts
--- as these are represented by bitfield.
+-- Function that counts bit in a 64-bit signed integer. Used to get number
+-- of conducts as these are represented by bitfield.
+-- Previously this only counted up to 16, but aosdict added some high-bit
+-- flags to xnh conducts in version 6.0 and I'm unsure what the other variants
+-- have done. Plus, as postgres has no unsigned int and xnh now uses the top
+-- bit, it was necessary to change conduct from integer to bigint, so now
+-- bitcount also counts up to bit 63.
+-- TODO: increment if conduct is a negative number (bit 64 is ignored rn.)
 
-CREATE OR REPLACE FUNCTION bitcount(i integer) RETURNS integer AS $$
+CREATE OR REPLACE FUNCTION bitcount(i bigint) RETURNS integer AS $$
 DECLARE n integer;
 DECLARE amount integer;
   BEGIN
     amount := 0;
-    FOR n IN 1..16 LOOP
+    FOR n IN 1..63 LOOP
       amount := amount + ((i >> (n-1)) & 1);
     END LOOP;
     RETURN amount;
@@ -224,7 +230,7 @@ RETURNS TABLE (
   r_maxhp          int,
   r_maxlvl         int,
   r_points         bigint,
-  r_conduct        int,
+  r_conduct        bigint,
   r_turns          bigint,
   r_logfiles_i     int,
   r_dumplog        varchar(128),
