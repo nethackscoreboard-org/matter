@@ -452,6 +452,16 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slth.txt'
 );
 
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  89, 'hardfought.org (NH37-setseed)', 'hdf', 'nh',
+  'https://www.hardfought.org/xlogfiles/setseed/xlogfile',
+  'hdf.seed.log',
+  'https://www.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Europe/HFE ------------------------------------------------
 -----------------------------------------------------------------------------
@@ -619,6 +629,16 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slth.txt'
 );
 
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  90, 'eu.hardfought.org (NH37-setseed)', 'hfe', 'nh',
+  'https://eu.hardfought.org/xlogfiles/setseed/xlogfile',
+  'hfe.seed.log',
+  'https://eu.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Australia/HFA ---------------------------------------------
 -----------------------------------------------------------------------------
@@ -784,6 +804,16 @@ INSERT INTO logfiles (
   'https://au.hardfought.org/xlogfiles/slashthem/xlogfile',
   'hfa.slashthem.log',
   'https://au.hardfought.org/userdata/%X/%x/slashthem/dumplog/%s.slth.txt'
+);
+
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  91, 'au.hardfought.org (NH37-setseed)', 'hfa', 'nh',
+  'https://au.hardfought.org/xlogfiles/setseed/xlogfile',
+  'hfa.seed.log',
+  'https://au.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
 );
 
 -----------------------------------------------------------------------------

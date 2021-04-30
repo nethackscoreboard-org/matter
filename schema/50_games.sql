@@ -48,6 +48,7 @@ CREATE TABLE games (
   ascended      boolean NOT NULL,
   quit          boolean NOT NULL,
   scummed       boolean NOT NULL,
+  user_seed     boolean NOT NULL,
   dumplog       varchar(128),
   misc          json,
   PRIMARY KEY ( rowid )
@@ -80,7 +81,7 @@ CREATE OR REPLACE VIEW v_games_recent AS
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
-  WHERE scummed = FALSE
+  WHERE scummed = FALSE AND user_seed = FALSE
   ORDER BY endtime AT TIME ZONE 'UTC' DESC, line DESC;
 
 GRANT SELECT ON v_games_recent TO nhdbstats;
@@ -97,7 +98,7 @@ CREATE OR REPLACE VIEW v_games AS
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
-  WHERE scummed = FALSE
+  WHERE scummed = FALSE AND user_seed = FALSE
   ORDER BY endtime AT TIME ZONE 'UTC' ASC, line ASC;
 
 GRANT SELECT ON v_games TO nhdbstats;
@@ -151,7 +152,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
-  WHERE ascended = TRUE
+  WHERE ascended = TRUE AND user_seed = FALSE
   ORDER BY endtime AT TIME ZONE 'UTC' DESC, line DESC;
 
 GRANT SELECT ON v_ascended_recent TO nhdbstats;
@@ -168,7 +169,7 @@ CREATE OR REPLACE VIEW v_ascended AS
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
-  WHERE ascended = TRUE
+  WHERE ascended = TRUE AND user_seed = FALSE
   ORDER BY endtime AT TIME ZONE 'UTC' ASC, line ASC;
 
 GRANT SELECT ON v_ascended TO nhdbstats;

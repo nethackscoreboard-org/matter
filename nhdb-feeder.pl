@@ -584,6 +584,21 @@ sub sql_insert_games
   push(@fields, 'scummed');
   push(@values, $flag_scummed);
 
+  #--- user-set seed flag
+  push(@fields, 'user_seed');
+  if(exists $xlog_data->{'user_seed'}) {
+    # afaik variants with setseed set this field to either 1 or 0
+    # TODO: double-check this for UnNetHack
+    if ($xlog_data->{'user_seed'} eq '0') {
+      push(@values, 'FALSE');
+    } else {
+      push(@values, 'TRUE');
+    }
+    delete($xlog_data->{'user_seed'});
+  } else {
+    push(@values, 'FALSE');
+  }
+
   #--- regular fields
   for my $k ($nhdb->regular_fields()) {
     if(exists $xlog_data->{$k}) {
