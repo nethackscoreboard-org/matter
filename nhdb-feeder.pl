@@ -657,7 +657,7 @@ sub sql_insert_games
   }
   #--- birth date
   elsif(exists $xlog_data->{'birthdate'} && $xlog_data->{'birthdate'} =~ /^(\d{4})(\d{2})(\d{2})$/) {
-    my $timestamp = mktime(0, 0, 0, $3, $2, $1);
+    my $timestamp = mktime(0, 0, 0, int($3), int($2) - 1, int($1) - 1900);
     push(@fields, 'starttime');
     push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $timestamp ]);
     push(@fields, 'starttime_raw');
@@ -677,7 +677,7 @@ sub sql_insert_games
   }
   #--- death date
   elsif(exists $xlog_data->{'deathdate'} && $xlog_data->{'deathdate'} =~ /^(\d{4})(\d{2})(\d{2})$/) {
-    my $timestamp = mktime(59, 59, 23, $3, $2, $1);
+    my $timestamp = mktime(59, 59, 23, int($3), int($2) - 1, int($1) - 1900);
     push(@fields, 'endtime');
     push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $timestamp ]);
     push(@fields, 'endtime_raw');
