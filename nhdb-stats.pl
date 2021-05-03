@@ -871,7 +871,7 @@ sub row_fix
   my @st = gmtime($row->{'starttime_raw'});
   my @et = gmtime($row->{'endtime_raw'});
   my $st_hhmmss = strftime("%H:%M:%S", @st);
-  my $et_hhmmss = strftime("%H:%M:%S", @st);
+  my $et_hhmmss = strftime("%H:%M:%S", @et);
   if($st_hhmmss eq '00:00:00' && $et_hhmmss eq '23:59:59') {
     $row->{'endtime_fmt'} =~ s/\s.*$//;
   }
