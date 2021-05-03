@@ -657,9 +657,9 @@ sub sql_insert_games
   #--- birth date
   elsif(exists $xlog_data->{'birthdate'}) {
     push(@fields, 'starttime');
-    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'birthdate'} . "2359" ]);
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'birthdate'} . "0000" ]);
     push(@fields, 'starttime_raw');
-    push(@values, $xlog_data->{'birthdate'} . "2359");
+    push(@values, $xlog_data->{'birthdate'} . "0000");
     delete($xlog_data->{'birthdate'});
   }
   #--- else impossible/panic/error?
