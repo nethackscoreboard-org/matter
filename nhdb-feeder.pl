@@ -676,7 +676,7 @@ sub sql_insert_games
     delete($xlog_data->{'deathdate'});
   }
   #--- death date
-  elsif(exists $xlog_data->{'deathdate'} && $xlog_data->{'birthdate'} =~ /^(\d{4})(\d{2})(\d{2})$/) {
+  elsif(exists $xlog_data->{'deathdate'} && $xlog_data->{'deathdate'} =~ /^(\d{4})(\d{2})(\d{2})$/) {
     my $timestamp = mktime(59, 59, 23, $3, $2, $1);
     push(@fields, 'endtime');
     push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $timestamp ]);
