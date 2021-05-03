@@ -18,6 +18,7 @@ use utf8;
 
 use DBI;
 use Getopt::Long;
+use POSIX qw(mktime);
 use Log::Log4perl qw(get_logger);
 use MIME::Base64 qw(decode_base64);
 use Try::Tiny;
@@ -655,11 +656,12 @@ sub sql_insert_games
     delete($xlog_data->{'birthdate'});
   }
   #--- birth date
-  elsif(exists $xlog_data->{'birthdate'}) {
+  elsif(exists $xlog_data->{'birthdate'} && $xlog_data->{'birthdate'} =~ /^(\d{4})(\d{2})(\d{2})$/) {
+    my $timestamp = mktime($1, $2, $3, '00', '00');
     push(@fields, 'starttime');
-    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'birthdate'} . "0000" ]);
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $timestamp ]);
     push(@fields, 'starttime_raw');
-    push(@values, $xlog_data->{'birthdate'} . "0000");
+    push(@values, $timestamp);
     delete($xlog_data->{'birthdate'});
   }
   #--- else impossible/panic/error?
@@ -674,11 +676,12 @@ sub sql_insert_games
     delete($xlog_data->{'deathdate'});
   }
   #--- death date
-  elsif(exists $xlog_data->{'deathdate'}) {
+  elsif(exists $xlog_data->{'deathdate'} && $xlog_data->{'birthdate'} =~ /^(\d{4})(\d{2})(\d{2})$/) {
+    my $timestamp = mktime($1, $2, $3, '23', '59');
     push(@fields, 'endtime');
-    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'deathdate'} . "2359" ]);
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $timestamp ]);
     push(@fields, 'endtime_raw');
-    push(@values, $xlog_data->{'deathdate'} . "2359");
+    push(@values, $timestamp);
     delete($xlog_data->{'deathdate'});
   }
   #--- else impossible/panic/error?
