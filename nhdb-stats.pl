@@ -622,7 +622,7 @@ sub sql_load_streaks
   q{role, race, gender, gender0, align, align0, server, variant, } .
   q{g.version, elbereths, scummed, conduct, achieve, dumplog, turns, hp, } .
   q{maxhp, realtime, rowid, starttime_raw, endtime_raw, g.logfiles_i, } .
-  q{streaks_i, deathdate, } .
+  q{streaks_i, } .
 
   # computed fields
   q{to_char(starttime,'YYYY-MM-DD HH24:MI') AS starttime_fmt, } .

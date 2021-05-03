@@ -648,26 +648,21 @@ sub sql_insert_games
   if(exists $xlog_data->{'starttime'})
   {
     push(@fields, 'starttime');
-    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'starttime'} ]) ;
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'starttime'} ]);
     push(@fields, 'starttime_raw');
     push(@values, $xlog_data->{'starttime'});
     delete($xlog_data->{'starttime'});
+    delete($xlog_data->{'birthdate'});
   }
   #--- birth date
   elsif(exists $xlog_data->{'birthdate'}) {
-    push(@fields, 'birthdate');
-    push(@values, $xlog_data->{'birthdate'});
     push(@fields, 'starttime');
-    push(@values, $xlog_data->{'birthdate'});
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'birthdate'} . "2359" ]);
+    push(@fields, 'starttime_raw');
+    push(@values, $xlog_data->{'birthdate'} . "2359");
     delete($xlog_data->{'birthdate'});
   }
-  # clumsy looking logic, but this ensures we sitll
-  # save the birthdate when start time is included too
-  if(exists $xlog_data->{'birthdate'}) {
-    push(@fields, 'birthdate');
-    push(@values, $xlog_data->{'birthdate'});
-    delete($xlog_data->{'birthdate'});
-  }
+  #--- else impossible/panic/error?
 
   #--- end time
   if(exists $xlog_data->{'endtime'}) {
@@ -676,21 +671,17 @@ sub sql_insert_games
     push(@fields, 'endtime_raw');
     push(@values, $xlog_data->{'endtime'});
     delete($xlog_data->{'endtime'});
+    delete($xlog_data->{'deathdate'});
   }
   #--- death date
   elsif(exists $xlog_data->{'deathdate'}) {
-    push(@fields, 'deathdate');
-    push(@values, $xlog_data->{'deathdate'});
     push(@fields, 'endtime');
-    push(@values, $xlog_data->{'deathdate'});
+    push(@values, [ q{timestamp with time zone 'epoch' + ? * interval '1 second'}, $xlog_data->{'deathdate'} . "2359" ]);
+    push(@fields, 'endtime_raw');
+    push(@values, $xlog_data->{'deathdate'} . "2359");
     delete($xlog_data->{'deathdate'});
   }
-  if(exists $xlog_data->{'deathdate'}) {
-    push(@fields, 'deathdate');
-    push(@values, $xlog_data->{'deathdate'});
-    delete($xlog_data->{'deathdate'});
-  }
-  
+  #--- else impossible/panic/error?
   
 
   # encode misc fields as JSON
@@ -1138,7 +1129,8 @@ $logger = get_logger('Feeder');
 #--- title
 
 $logger->info('NetHack Scoreboard / Feeder');
-$logger->info('(c) 2013-17 Borek Lupomesky');
+$logger->info('(c) 2013-2020 Borek Lupomesky');
+$logger->info('(c) 2020-2100 Dr. Joanna Irina Zaitseva-Kinneberg');
 $logger->info('---');
 
 #--- process commandline options
