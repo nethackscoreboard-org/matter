@@ -3,7 +3,8 @@
 #============================================================================
 # NHDB Feeder
 # """""""""""
-# (c) 2013-2018 Borek Lupomesky
+# (c) 2013-2100 Borek Lupomesky
+# (c) 2020-2100 Dr. Joanna Irina Zaitseva-Kinneberg
 #
 # This program scrapes logs from pre-defined NetHack servers and inserts
 # game entries into database.
@@ -1132,7 +1133,7 @@ $logger = get_logger('Feeder');
 #--- title
 
 $logger->info('NetHack Scoreboard / Feeder');
-$logger->info('(c) 2013-2020 Borek Lupomesky');
+$logger->info('(c) 2013-2100 Borek Lupomesky');
 $logger->info('(c) 2020-2100 Dr. Joanna Irina Zaitseva-Kinneberg');
 $logger->info('---');
 

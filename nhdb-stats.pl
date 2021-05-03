@@ -3,7 +3,8 @@
 #============================================================================
 # NHDB Stat Generator
 # """""""""""""""""""
-# (c) 2013-2017 Borek Lupomesky
+# (c) 2013-2100 Borek Lupomesky
+# (c) 2020-2100 Dr. Joanna Irina Zaitseva-Kinneberg
 #============================================================================
 
 use strict;
@@ -29,6 +30,7 @@ use NHdb::Stats::Cmdline;
 use NHdb::Utils;
 use Template;
 use Log::Log4perl qw(get_logger);
+use POSIX qw(strftime);
 
 $| = 1;
 
@@ -863,8 +865,14 @@ sub row_fix
   );
 
   #--- truncate time if needed
-
-  if($row->{'birthdate'}) {
+  #--- this is not a perfect test, but if the start time and end time match
+  #--- $date 00:00:00 and $date 23:59:59 (respectively), they were probably
+  #--- upgraded from old xlogs with only birthdate and deathdate
+  my @st = gmtime($row->{'starttime_raw'});
+  my @et = gmtime($row->{'endtime_raw'});
+  my $st_hhmmss = strftime("%H:%M:%S", @st);
+  my $et_hhmmss = strftime("%H:%M:%S", @st);
+  if($st_hhmmss eq '00:00:00' && $et_hhmmss eq '23:59:59') {
     $row->{'endtime_fmt'} =~ s/\s.*$//;
   }
 }
@@ -2353,7 +2361,8 @@ $logger = get_logger('Stats');
 #--- title
 
 $logger->info('NetHack Scoreboard / Stats');
-$logger->info('(c) 2013-17 Borek Lupomesky');
+$logger->info('(c) 2013-2100 Borek Lupomesky');
+$logger->info('(c) 2020-2100 Dr. Joanna Irina Zaitseva-Kinneberg');
 $logger->info('---');
 
 #--- process command-line
