@@ -1144,7 +1144,7 @@ sub gen_page_recent
     $query_lst .= ' ';
   }
   $query_cnt = $query_lst;
-  $query_lst .= 'LIMIT 100' unless ($page eq 'ascended' && $logfiles_i);
+  $query_lst .= 'LIMIT 1000' unless ($page eq 'ascended' && $logfiles_i);
   $query_cnt =~ s/\*/count(*)/;
 
   #--- pull data from database
