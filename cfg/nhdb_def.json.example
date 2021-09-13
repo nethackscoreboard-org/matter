@@ -65,8 +65,8 @@
   #--- variants to include in the First To Ascend page
   
   "firsttoascend" : [
-    "dnh", "dyn", "evil", "fiq", "4k", "grunt", "nh4",
-    "spork", "spl", "un", "xnh"
+    "dnh", "dnhslex", "dyn", "evil", "fiq", "4k", "grunt", "ndnh", "nh4",
+    "slashem", "spork", "spl", "un", "xnh"
   ],
 
 }
