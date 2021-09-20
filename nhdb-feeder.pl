@@ -564,7 +564,7 @@ sub sql_insert_games
   #--- dNetHack combo mangling workaround
   # please refer to comment in NetHack.pm; this is only done to two specific
   # winning games!
-  if($variant eq 'dnh' && $xlog_data->{'ascended'}) {
+  if($variant =~ /dnh/ && $xlog_data->{'ascended'}) {
     ($xlog_data->{'role'}, $xlog_data->{'race'})
     = $nh->variant('dnh')->dnethack_map($xlog_data->{'role'}, $xlog_data->{'race'});
   }
