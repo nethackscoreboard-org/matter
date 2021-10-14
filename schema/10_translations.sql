@@ -90,6 +90,12 @@ INSERT INTO translations VALUES ('hdf', 'Demo3', 'Demo');
 INSERT INTO translations VALUES ('hdf', 'Demo4', 'Demo');
 INSERT INTO translations VALUES ('hdf', 'Demo5', 'Demo');
 INSERT INTO translations VALUES ('hdf', 'Demo6', 'Demo');
+INSERT INTO translations VALUES ('hdf', 'malor2', 'malor');
+INSERT INTO translations VALUES ('hdf', 'malor3', 'malor');
+INSERT INTO translations VALUES ('hdf', 'malor4', 'malor');
+INSERT INTO translations VALUES ('hdf', 'malor5', 'malor');
+INSERT INTO translations VALUES ('hdf', 'malor6', 'malor');
+INSERT INTO translations VALUES ('hdf', 'Twomunora', 'Tarmunora');
 
 INSERT INTO translations VALUES ('nao', 'tjr1', 'tjr');
 INSERT INTO translations VALUES ('nao', 'tjr2', 'tjr');
