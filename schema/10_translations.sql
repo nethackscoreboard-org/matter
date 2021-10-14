@@ -82,6 +82,14 @@ INSERT INTO translations VALUES ('nao', 'stenno360', 'stenno');
 INSERT INTO translations VALUES ('nao', '23', 'stenno');
 INSERT INTO translations VALUES ('nao', 'PogChamp', 'stenno');
 INSERT INTO translations VALUES ('asc', 'PogChamp', 'stenno');
+INSERT INTO translations VALUES ('hdf', 'rikersan', 'rikerw');
+INSERT INTO translations VALUES ('hdf', 'lynnwashere', 'rikerw');
+INSERT INTO translations VALUES ('hdf', 'imsofuckingfast', 'rikerw');
+INSERT INTO translations VALUES ('hdf', 'Demo2', 'Demo');
+INSERT INTO translations VALUES ('hdf', 'Demo3', 'Demo');
+INSERT INTO translations VALUES ('hdf', 'Demo4', 'Demo');
+INSERT INTO translations VALUES ('hdf', 'Demo5', 'Demo');
+INSERT INTO translations VALUES ('hdf', 'Demo6', 'Demo');
 
 INSERT INTO translations VALUES ('nao', 'tjr1', 'tjr');
 INSERT INTO translations VALUES ('nao', 'tjr2', 'tjr');
