@@ -110,7 +110,7 @@
   #--- ordered list of variants
 
   "nh_variants_ord" : [
-      "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fiq", "4k", "grunt",
+      "nh", "ace", "dnh", "dyn", "evil", "fiq", "4k", "grunt",
       "ndnh", "nh4", "slashem", "slashthem", "slex", "spork", "spl", "un", "xnh"
   ],
 
@@ -1189,28 +1189,6 @@
         [ "%vam", "#cha" ],
         [ "%wer", "#neu", "#cha" ],
       ],
-    },
-
-    #===       _       _         _             ===============================
-    #===    __| |_ __ | |__  ___| | _____  __  ===============================
-    #===   / _` | '_ \| '_ \/ __| |/ _ \ \/ /  ===============================
-    #===  | (_| | | | | | | \__ \ |  __/>  <   ===============================
-    #===   \__,_|_| |_|_| |_|___/_|\___/_/\_\  ===============================
-
-    # For the time being we leave everything undefined.
-
-    "dnhslex" : {
-      "name" : "dNetHack/Slex",
-      "roles" : [
-        "ana", "arc", "bar", "bin", "cav", "con", "hea", "kni", "mon",
-        "nob", "pir", "pri", "ran", "rog", "sam", "tou", "brd", "val", "wiz"
-      ],
-      "races" : [
-        "bat", "clk", "dro", "dwa", "elf", "gno", "hlf", "hum", "inc",
-        "orc", "swn", "vam"
-      ],
-      "genders" : null,
-      "aligns" : [ "law", "neu", "cha", "non" ],
     },
 
     #===   ____  _        _    ____  _   _ _ _____ __  __   ==================
