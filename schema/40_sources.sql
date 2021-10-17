@@ -401,15 +401,6 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  47, 'hardfought.org (SLASH''EM Extended)', 'hdf', 'slex',
-  'https://www.hardfought.org/xlogfiles/slex/xlogfile',
-  'hdf.slex.log',
-  'https://www.hardfought.org/userdata/%X/%x/slex/dumplog/%s.slex.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
   51, 'hardfought.org (SpliceHack)', 'hdf', 'spl',
   'https://www.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hdf.spl.log',
@@ -573,15 +564,6 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/xlogfiles/xnethack/xlogfile',
   'hfe.xnh.log',
   'https://eu.hardfought.org/userdata/%X/%x/xnethack/dumplog/%s.xnh.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  49, 'eu.hardfought.org (SLASH''EM Extended)', 'hfe', 'slex',
-  'https://eu.hardfought.org/xlogfiles/slex/xlogfile',
-  'hfe.slex.log',
-  'https://eu.hardfought.org/userdata/%X/%x/slex/dumplog/%s.slex.txt'
 );
 
 INSERT INTO logfiles (
@@ -755,15 +737,6 @@ INSERT INTO logfiles (
 INSERT INTO logfiles (
   logfiles_i, descr, server, variant, logurl, localfile, dumpurl
 ) VALUES (
-  64, 'au.hardfought.org (SLASH''EM Extended)', 'hfa', 'slex',
-  'https://au.hardfought.org/xlogfiles/slex/xlogfile',
-  'hfa.slex.log',
-  'https://au.hardfought.org/userdata/%X/%x/slex/dumplog/%s.slex.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
   65, 'au.hardfought.org (SpliceHack)', 'hfa', 'spl',
   'https://au.hardfought.org/xlogfiles/splicehack/xlogfile',
   'hfa.spl.log',
@@ -852,15 +825,6 @@ INSERT INTO logfiles (
   'esm.spork.log',
   'https://em.slashem.me/userdata/%x/sporkhack/dumplog/%s.txt',
   TRUE
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  48, 'em.slash.em (SLASH''EM Extended)', 'esm', 'slex',
-  'https://em.slashem.me/xlogfiles/slex',
-  'esm.slex.log',
-  'https://em.slashem.me/userdata/%x/slex/dumplog/%s.txt'
 );
 
 INSERT INTO logfiles (

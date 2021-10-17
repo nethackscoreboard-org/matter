@@ -111,7 +111,7 @@
 
   "nh_variants_ord" : [
       "nh", "ace", "dnh", "dnhslex", "dyn", "evil", "fiq", "4k", "grunt",
-      "ndnh", "nh4", "slashem", "slashthem", "slex", "spork", "spl", "un", "xnh"
+      "ndnh", "nh4", "slashem", "slashthem", "spork", "spl", "un", "xnh"
   ],
 
   #--- define roles/races/alingments/genders and conducts for a variant
@@ -1084,40 +1084,6 @@
         "0x100000" : "celi",
         "0x200000" : "calm"
       }
-    },
-
-    #===   ____  _        _    ____  _   _ _ _____ __  __   _____        =====
-    #===  / ___|| |      / \  / ___|| | | ( ) ____|  \/  | | ____|_  __  =====
-    #===  \___ \| |     / _ \ \___ \| |_| |/|  _| | |\/| | |  _| \ \/ /  =====
-    #===   ___) | |___ / ___ \ ___) |  _  | | |___| |  | | | |___ >  <   =====
-    #===  |____/|_____/_/   \_\____/|_| |_| |_____|_|  |_| |_____/_/\_\  =====
-
-    # SLASH'EM Extended is special in that it has massive amount of
-    # roles/races, therefore we are not listing them here at all and any
-    # output that would aggregate or tabelate them will be omitted. Also
-    # the combo validity check is not performed on xlogfile import.
-
-    "slex" : {
-      "name" : "SLASH'EM Extended",
-      "roles" : null,
-      "races" : null,
-      "genders" : null,
-      "aligns" : null,
-      "conduct" : {
-        "0x000001" : "food",
-        "0x000002" : "vegn",
-        "0x000004" : "vegt",
-        "0x000008" : "athe",
-        "0x000010" : "weap",
-        "0x000020" : "paci",
-        "0x000040" : "illi",
-        "0x000080" : "pile",
-        "0x000100" : "self",
-        "0x000200" : "wish",
-        "0x000400" : "arti",
-        "0x000800" : "geno",
-        "0x001000" : "pray",
-      },
     },
 
     #===   ____        _ _          _   _            _      ==================
