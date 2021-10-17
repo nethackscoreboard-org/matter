@@ -924,9 +924,10 @@
         "mon", "nob", "pir", "pri", "ran", "rog", "sam", "tou", "val", "wiz"
       ],
       "races" : [
-        "and", "bat", "clk", "dro", "dwa", "elf", "eth", "gno", "hlf", "hum",
-        "inc", "orc", "sal", "swn", "sym", "vam", "yuk"
+        "bat", "clk", "dro", "dwa", "elf", "eth", "gno", "hlf", "hum",
+        "inc", "orc", "sal", "swn", "sym", "vam"
       ],
+      "genders" : [ "fem", "mal", "nbn" ],
       "aligns" : [ "law", "neu", "cha", "non" ]
     },
 
@@ -1173,7 +1174,7 @@
         "dop", "dro", "dwa", "elf", "gno", "hob", "hum", "lyc", "orc",
 		"vam"
       ],
-      "genders" : null,
+      "genders" : [ "fem", "mal", "nbn" ],
       "aligns" : [ "law", "neu", "cha" ],
     },
 
@@ -1181,7 +1182,7 @@
       "name" : "SlashTHEM",
       "roles" : null,
       "races" : null,
-      "genders" : null,
+      "genders" : [ "fem", "mal", "nbn" ],
       "aligns" : null,
     },
 
