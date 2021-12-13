@@ -1024,3 +1024,13 @@ INSERT INTO logfiles (
   'https://%S.hardfought.org/userdata/%X/%x/tnnt/dumplog/%s.tnnt.html',
   TRUE
 );
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2021, 'The November NetHack Tournament 2021', 'nnt', 'nh',
+  'https://www.hardfought.org/tnnt/archives/2021/xlogfiles/xlogfile.tnnt.2021',
+  'tnnt-2021.log',
+  'https://%S.hardfought.org/userdata/%X/%x/tnnt/dumplog/%s.tnnt.html',
+  TRUE
+);
