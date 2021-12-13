@@ -114,12 +114,13 @@ INSERT INTO logfiles (
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   4, 'nethack4.org (4.3)', 'n4o', 'nh4',
   'http://nethack4.org/xlogfile.txt',
   'n4o.nh4-3.log',
-  'http://nethack4.org/dumps/%D'
+  'http://nethack4.org/dumps/%D',
+  TRUE
 );
 
 -- Discontinued sometime in 2014, apparently no game dumps available
@@ -153,12 +154,13 @@ INSERT INTO logfiles (
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   7, 'grunthack.org', 'gho', 'grunt',
   'http://grunthack.org/xlogfile',
   'gho.grunt.log',
-  'http://grunthack.org/userdata/%X/%x/dumplog/%s.gh020.txt'
+  'http://grunthack.org/userdata/%X/%x/dumplog/%s.gh020.txt',
+  TRUE
 );
 
 -----------------------------------------------------------------------------
@@ -850,12 +852,13 @@ INSERT INTO logfiles (
 -----------------------------------------------------------------------------
 
 INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
 ) VALUES (
   81, 'nethack.eu (nh343)', 'neu', 'nh',
   'https://lilith.gnuffy.net/neu/xlogfile',
   'neu.nh343.02.log',
-  'https://nethackscoreboard.org/neu_dumplogs/nhdump-%x-%e.txt'
+  'https://nethackscoreboard.org/neu_dumplogs/nhdump-%x-%e.txt',
+  TRUE
 );
 
 -----------------------------------------------------------------------------
