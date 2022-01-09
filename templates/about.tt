@@ -50,7 +50,7 @@ Additional contributors to acknowledge are stenno and spicycat, and Keith Simpso
 <th>var</th>
 <th>description</th>
 <th>logfile</th>
-<th>size</th>
+<th>recorded games</th>
 <th>lastchk</th>
 <th>lastentry</th>
 </tr>
@@ -73,9 +73,9 @@ Additional contributors to acknowledge are stenno and spicycat, and Keith Simpso
 <td>[% row.descr %]</td>
 <td>[% row.logurl %]</td>
 [% IF urlpath %]
-<td class="numeric"><a href="[% urlpath %]/[% row.localfile %]">[% number(row.fpos) %]</a></td>
+<td class="numeric"><a href="[% urlpath %]/[% row.localfile %]">[% number(row.game_count) %]</a></td>
 [% ELSE %]
-<td class="numeric">[% number(row.fpos) %]</td>
+<td class="numeric">[% number(row.game_count) %]</td>
 [% END %]
 <td><span class="[% GET stale %]">&nbsp;</span>&nbsp;[% row.lastchk_trunc %]</td>
 <td><span class="[% GET entryage %]">&nbsp;</span>&nbsp;[% row.lastentry_trunc %]</td>

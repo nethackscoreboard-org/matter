@@ -13,7 +13,8 @@ CREATE OR REPLACE VIEW v_sources AS
     to_char(max(endtime), 'YYYY-MM-DD HH24:MI') AS lastentry_trunc,
     current_timestamp - max(endtime) < interval '1 hour' AS lastentry_1h,
     current_timestamp - max(endtime) < interval '1 day' AS lastentry_1d,
-    current_timestamp - max(endtime) < interval '30 days' AS lastentry_30d
+    current_timestamp - max(endtime) < interval '30 days' AS lastentry_30d,
+    count(*) AS game_count
   FROM
     logfiles
     LEFT JOIN games USING ( logfiles_i )
