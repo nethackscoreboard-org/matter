@@ -17,7 +17,11 @@
   <th data-sorter="true">character</th>
   <th data-sorter="custkey">points</th>
   <th data-sorter="true">turns&nbsp;&nbsp;</th>
+[% IF wallclock -%]
+  <th data-sorter="custkey">wallclock</th>
+[%- ELSE -%]
   <th data-sorter="custkey">duration</th>
+[%- END %]
   <th data-sorter="custkey">dlvl&nbsp;</th>
   <th data-sorter="custkey">HP</th>
   <th data-sorter="custkey">time</th>
@@ -51,7 +55,11 @@
   <td class="numeric" data-sortkey="[% row.points %]">[% number(row.points) %]</td>
 [%- END %]
   <td class="numeric">[% row.turns %]</td>
+[% IF wallclock -%]
+  <td class="numeric" data-sortkey="[% row.wallclock_raw %]">[% row.wallclock %]</td>
+[%- ELSE -%]
   <td class="numeric" data-sortkey="[% row.realtime_raw %]">[% row.realtime %]</td>
+[%- END %]
   <td class="numeric" data-sortkey="[%row.maxlvl %]">[% row.deathlev %]/[% row.maxlvl %]</td>
   <td class="numeric" data-sortkey="[% row.maxhp %]">[% row.hp %]/[% row.maxhp %]</td>
   <td>[% row.endtime_fmt %]</td>

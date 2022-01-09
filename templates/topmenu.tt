@@ -55,6 +55,10 @@
   <a href="[% path %]realtime.[% var %].html">Fastest Realtime</a> |
 [%- END %]
 
+[%- IF mnu != "wallclock" -%]
+  <a href="[% path %]wallclock.[% var %].html">Fastest Wallclock</a> |
+[%- END %]
+
 [%- IF mnu != "firstasc" -%]
   [% IF var == "all"; SET var2 = "dnh"; END %]
   [% IF var == "dnh" || var == "nhf" || var == "dyn"; SET var2 = var; END %]

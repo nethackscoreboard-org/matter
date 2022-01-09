@@ -161,7 +161,7 @@ sub conduct
   if (defined $conductX) {
     my @conducts_long = split /,/, $conductX;
     my %map = $self->config()->get_extended_conducts();
-    @conducts = map { %map{$_} } @conducts_long;
+    @conducts = map { $map{$_} } @conducts_long;
 
     return wantarray ? @conducts : scalar(@conducts);
   }

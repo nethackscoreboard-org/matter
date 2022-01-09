@@ -163,9 +163,9 @@ CREATE OR REPLACE VIEW v_ascended AS
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
-    endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog,
-    deathlev, hp, maxhp, maxlvl, points, conduct, achieve, turns, realtime,
-    games.version, ascended, misc
+    endtime_raw, starttime_raw, endtime_raw - starttime_raw AS wallclock,
+    birthdate, deathdate, death, dumplog, deathlev, hp, maxhp, maxlvl, points,
+    conduct, achieve, turns, realtime, games.version, ascended, misc
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
@@ -248,6 +248,7 @@ SELECT
   starttime_raw, endtime,
   to_char(g.endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
   endtime_raw,
+  endtime_raw - starttime_raw AS wallclock,
   g.deathlev, g.hp, g.maxhp, g.maxlvl, g.points, g.conduct, g.turns,
   l.logfiles_i, g.dumplog, g.ascended, g.realtime, g.elbereths, g.achieve
 FROM (

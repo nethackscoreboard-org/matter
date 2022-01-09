@@ -79,7 +79,8 @@ my %aggr_pages = (
   'lowscore' => \&gen_page_lowscore,
   'firstasc' => \&gen_page_first_to_ascend,
   'turncount' => \&gen_page_turncount,
-  'realtime' => \&gen_page_realtime
+  'realtime' => \&gen_page_realtime,
+  'wallclock' => \&gen_page_wallclock
 );
 
 my %summ_pages = (
@@ -825,6 +826,13 @@ sub row_fix
   if($row->{'realtime'}) {
     $row->{'realtime_raw'} = defined $row->{'realtime'} ? $row->{'realtime'} : 0;
     $row->{'realtime'} = format_duration($row->{'realtime'});
+  }
+
+  #--- convert wallclock to human-readable form
+
+  if($row->{'wallclock'}) {
+    $row->{'wallclock_raw'} = defined $row->{'wallclock'} ? $row->{'wallclock'} : 0;
+    $row->{'wallclock'} = format_duration($row->{'wallclock'});
   }
 
   #--- format version string
@@ -2335,6 +2343,90 @@ sub gen_page_realtime
     #--- render template
     if(!$tt->process('realtime.tt', \%data, "realtime.$variant.html")) {
       $logger->error(q{Failed to render page realtime.tt'}, $tt->error());
+      die $tt->error();
+    }
+  }
+}
+
+#============================================================================
+# Generate Wallclock-rt Speedrun Leaderboard
+#============================================================================
+
+sub gen_page_wallclock
+{
+  #--- arguments
+
+  my $variant = shift;
+  if(!$variant) { $variant = 'all'; }
+
+  #--- other variables
+
+  my %data;
+
+  #--- init
+
+  $logger->info('Creating page: Wallclock/', $variant);
+
+  #----------------------------------------------------------------------------
+  #--- top 100 lowest turncount games -----------------------------------------
+  #----------------------------------------------------------------------------
+
+  {
+    my $qry;
+    my @cond = ('wallclock > 0');
+    my @arg;
+
+    if($variant ne 'all') {
+      push(@cond, 'variant = ?');
+      push(@arg, $variant);
+    }
+    $qry = sprintf(
+      'SELECT * FROM (SELECT DISTINCT ON (name) * FROM v_ascended WHERE %s ORDER BY name, wallclock ASC) t ORDER BY wallclock ASC LIMIT 100',
+      join(' AND ', @cond)
+    );
+
+    $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+  }
+
+  #--- auxiliary data
+
+  $data{'variant'}  = $variant;
+  $data{'cur_time'} = scalar(localtime());
+  $data{'variants'} = [ 'all', $nh->variants() ];
+  $data{'vardef'}   = $nh->variant_names();
+  $data{'variant'}  = $variant;
+
+  if($variant eq 'nh') {
+    # get available versions
+    my $qry = 'SELECT distinct(version) FROM v_ascended WHERE variant = ?';
+    my @arg = ($variant);
+    my %version_query_map = %{ create_version_map(sql_load($qry, 1, 1, undef, @arg)) };
+    # just doing $data{'versions'} = keys %hash gives me the number of keys (scalar context),
+    # so I have to do this crap... fuck perl :|
+    $data{'versions'} = [sort keys %version_query_map];
+
+    #--- render template
+    if(!$tt->process('wallclock.tt', \%data, "wallclock.$variant.html")) {
+      $logger->error(q{Failed to render page wallclock.tt'}, $tt->error());
+      die $tt->error();
+    }
+
+    # cycle through version queries and produce separate pages
+    $qry = 'SELECT * FROM (SELECT DISTINCT ON (name) * FROM v_ascended WHERE wallclock > 0 AND variant = ? AND version LIKE ? ORDER BY name, wallclock ASC) t ORDER BY wallclock ASC LIMIT 100';
+    foreach my $version (keys %version_query_map) {
+      @arg = ($variant, $version_query_map{$version});
+      $data{'version'} = $version;
+      $data{'result'} = sql_load($qry, 1, 1, sub { row_fix($_[0]) }, @arg);
+      my $page = "wallclock.${variant}${version}.html";
+      if(!$tt->process('wallclock.tt', \%data, $page)) {
+        $logger->error("Failed to render page $page", $tt->error());
+        die $tt->error();
+      }
+    }
+  } else {
+    #--- render template
+    if(!$tt->process('wallclock.tt', \%data, "wallclock.$variant.html")) {
+      $logger->error(q{Failed to render page wallclock.tt'}, $tt->error());
       die $tt->error();
     }
   }

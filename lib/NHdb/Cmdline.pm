@@ -113,8 +113,8 @@ sub lock
   #--- register handler incase we error out or get killed
   $lock_global = $lockfile;
   $SIG{__DIE__} = \&die_handler;
-  $SIG{INT} = \&die_handler;
-  $SIG{TERM} = \&die_handler;
+  $SIG{INT} = \&int_handler;
+  $SIG{TERM} = \&term_handler;
 }
 
 sub unlock
@@ -126,7 +126,16 @@ sub unlock
 
 sub die_handler() {
   unlink($lock_global);
+}
+
+sub int_handler() {
+  unlink($lock_global);
   exit(1);
+}
+
+sub term_handler() {
+  unlink($lock_global);
+  exit(0);
 }
 
 
