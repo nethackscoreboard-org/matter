@@ -174,7 +174,7 @@ sub conduct
   #--- get ordered list of conducts
 
   for my $c ($self->config()->list_conducts_ordered()) {
-    if($c eq 'elbe' && defined $elbereths && !$elbereths) {
+    if($c eq '(elbe)' && defined $elbereths && !$elbereths) {
       push(@conducts, $c);
       last;
     }
@@ -197,6 +197,10 @@ sub conduct
       }
     }
 
+  }
+
+  if (grep { $_ eq '(elbe)' } @conducts && grep { $_ eq 'elbe' } @conducts) {
+    @conducts = grep { $_ ne '(elbe)' } @conducts;
   }
 
   #--- return depending on context

@@ -102,7 +102,7 @@
   "nh_conduct_ord" : [
     "bone", "pets", "arti", "arts", "pile", "self", "pudd", "algn",
     "soko", "geno", "wish", "unih", "scar", "pray", "athe", "vegt",
-    "vegn", "weap", "elbe", "illi", "paci", "food", "acce", "cont",
+    "vegn", "weap", "elbe", "!elbe", "(elbe)", "illi", "paci", "food", "acce", "cont",
     "tool", "magi", "armo", "raci", "thie", "deaf", "fumb", "hall",
     "illf", "zen", "nude", "surv", "celi", "calm", "noShkID", "noID"
   ],
