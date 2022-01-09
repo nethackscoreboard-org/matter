@@ -153,9 +153,18 @@ sub conduct
     $conduct_bitfield,    # 1. 'conduct' field from xlogfile
     $elbereths,           # 2. 'elbereths' field from xlogfile
     $achieve_bitfield,    # 3. 'achieve' field from xlogfile
+    $conductX             # 4. 'conductX' if available will take precedence
   ) = @_;
 
   my @conducts;
+
+  if (defined $conductX) {
+    my @conducts_long = split /,/, $conductX;
+    my %map = $self->config()->get_extended_conducts();
+    @conducts = map { %map{$_} } @conducts_long;
+
+    return wantarray ? @conducts : scalar(@conducts);
+  }
 
   #--- get reverse code-to-value mapping for conducts
 

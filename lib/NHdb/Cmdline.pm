@@ -15,7 +15,7 @@ use Moo;
 # lockfile
 
 has lockfile => (
-  is => 'ro',
+  is => 'rwp',
 );
 
 # do not create lock file flag
@@ -23,6 +23,10 @@ has lockfile => (
 has no_lockfile => (
   is => 'rwp',
 );
+
+
+
+my $lock_global;
 
 
 #=============================================================================
@@ -105,6 +109,12 @@ sub lock
   open(F, '>', $lockfile) or die "Cannot open lock file $lockfile\n";
   print F $$, "\n";
   close(F);
+
+  #--- register handler incase we error out or get killed
+  $lock_global = $lockfile;
+  $SIG{__DIE__} = \&die_handler;
+  $SIG{INT} = \&die_handler;
+  $SIG{TERM} = \&die_handler;
 }
 
 sub unlock
@@ -112,6 +122,11 @@ sub unlock
   my ($self) = @_;
 
   unlink($self->lockfile);
+}
+
+sub die_handler() {
+  unlink($lock_global);
+  exit(1);
 }
 
 

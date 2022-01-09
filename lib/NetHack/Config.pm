@@ -85,6 +85,17 @@ sub list_conducts_ordered
 
 
 #===========================================================================
+# Get mappings from extended to short conducts
+#===========================================================================
+
+sub get_extended_conducts
+{
+  my $self = shift;
+  return %{$self->config()->{'nh_extended_conducts'}};
+}
+
+
+#===========================================================================
 # Return instance of the NetHack::Variant object with the 'config' attribute
 # set to reference self (ie. this NetHack::Config object)
 #===========================================================================

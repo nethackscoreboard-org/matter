@@ -51,6 +51,10 @@ has process_aggregate => (
   default => 1,
 );
 
+has webdir => (
+  is => 'rwp',
+);
+
 has pages => (
   is => 'rwp',
   default => sub { [] },
@@ -74,6 +78,10 @@ sub BUILD {
     'player=s'  => sub { $self->_add_to('players', $_[1]); },
     'players!'  => sub { $self->_set_process_players($_[1]); },
     'aggr!'     => sub { $self->_set_process_aggregate($_[1]); },
+    'webdir=s'  => sub {
+      $self->_set_webdir($_[1]);
+      $self->_set_lockfile($_[1] =~ /blue/ ? $self->lockfile().'.blue' : $self->lockfile().'.green');
+    },
     'pages=s'   => sub { $self->_add_to('pages', $_[1]); },
     'help'      => sub { $self->help(); exit(0); },
   )) {
@@ -112,6 +120,7 @@ sub help
   print "  --player=NAME  update only given player\n";
   print "  --noplayers    disable generating player pages\n";
   print "  --noaggr       disable generating aggregate pages\n";
+  print "  --webdir=PATH  generate files in an alternative webroot\n";
   print "  --pages=PAGES  limit processing to specified pages (";
   print join(',', sort @pages);
   print ")\n";

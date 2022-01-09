@@ -2,6 +2,8 @@
 
 This is the code used to run [NetHack Scoreboard](https://scoreboard.xd.cm/) web site. The code consists of two main components: *feeder* and *stats generator*. The feeder retrieves [xlogfiles](http://nethackwiki.com/wiki/Xlogfile) from public NetHack servers, parses them and stores the parsed log entries in a back-end database. The stats generator then uses this data to generate static HTML pages with various statistics, including personal pages.
 
+The original author (Mandevil) is no longer maintaining nhs, the fork has since been maintained by elenmirië, aoei & mobileuser with Mandevil's blessing.
+
 The NetHack Scoreboard is written using:
 
 * **perl** as the programming language
@@ -10,26 +12,58 @@ The NetHack Scoreboard is written using:
 * **Log4Perl** as logging system
 * **Moo** as OOP framework
 
------
-other deps as either cpan modules or distro packages where available:
-Moo
-Template
-Log::Log4perl
-DBI
-JSON (perl-JSON on fedora/dnf)
-Path::Tiny (perl-Path-Tiny dnf)
-MooX::Singleton (complete the pattern)
-Ref::Util
-Log::Dispatch::Screen (cpan)
-DBD::Pg
-[also Carp::Always is helpful for traceback]
+## Installation and Setup
+### macOS / dev with brew
+```shell
+brew install perl && brew link perl
+brew install cpanminus && brew link cpanminus
+brew install postgresql
+```
+Add /opt/local/bin to PATH.
 
------
-Mandevil is no longer maintaining nhs, the fork is now being maintained by elenmirië, aoei & mobileuser,
-with hosting for the new site at https://nethackscoreboard.org/ provided by K2 & with Mandevil's blessing.
+#### Install CPAN dependencies
+```shell
+cpanm Moo Template Log::Log4perl DBI JSON  Path::Tiny MooX::Singleton Ref::Util Log::Dispatch::Screen DBD::Pg URI::Escape List::MoreUtils
+```
 
-Currently work is ongoing to set up a Mojo Front-End, instead of generating static HTML pages.
------
+#### Install PostgreSQL
+##### FreeBSD
+```shell
+cd /usr/ports/distfiles/postgresql
+make install clean
+```
+
+#### Create NHS database and users
+Enter psql shell with `sudo -u postgres psql` on FreeBSD.
+```postgresql
+CREATE DATABASE nhdb;
+CREATE ROLE nhdbfeeder WITH PASSWORD '<password>' LOGIN;
+CREATE ROLE nhdbstats WITH PASSWORD '<password>' LOGIN;
+GRANT ALL ON DATABASE nhdb TO nhdbfeeder;
+GRANT CONNECT ON DATABASE nhdb TO nhdbstats;
+```
+
+##### Load initial schema
+```shell
+cat schema/*.sql | sudo -u postgres psql -d nhdb
+```
+
+##### Configure NHS
+Create cfg/auth.json with the following contents:
+```json
+{
+    "nhdbfeeder": "<password>",
+    "nhdbstats": "<password>"
+}
+```
+Copy cfg/nhdb_def.json.example to cfg/nhdb_def and edit HTTP root, DB, and log path.
+If setting up for development, disable most sources and enable only a few.
+```
+./nhdb-feeder.pl --static
+./nhdb-feeder.pl --nooper
+./nhdb-feeder.pl --server=hfa --nostatic
+./nhdb-feeder.pl --server=hfa --oper
+```
 
 ## To Do
 
@@ -143,3 +177,5 @@ Disable generating player pages.
 
 **--player**=*player*  
 Use this to limit processing player pages to specific player or players.
+
+

@@ -10,6 +10,11 @@
 # game entries into database.
 #============================================================================
 
+BEGIN {
+  my $srv = $ENV{NHS_SRV_HOME} // ".";
+  unshift @INC, "$srv/lib";
+}
+
 #--- pragmas ----------------------------------------------------------------
 
 use strict;
@@ -26,8 +31,6 @@ use Try::Tiny;
 
 #--- internal modules -------------------------------------------------------
 
-#use FindBin qw($Bin);
-use lib "$ENV{HOME}/lib";
 use NetHack::Config;
 use NetHack::Variant;
 use NHdb::Config;
@@ -35,27 +38,23 @@ use NHdb::Db;
 use NHdb::Utils;
 use NHdb::Feeder::Cmdline;
 
-
-#--- additional perl runtime setup ------------------------------------------
+BEGIN {
+  my $srv = $ENV{NHS_SRV_HOME} // ".";
+  unshift @INC, "$srv/lib";
+}
 
 $| = 1;
-
-
-#============================================================================
-#=== definitions ============================================================
-#============================================================================
-
-my $lockfile = '/tmp/nhdb-feeder.lock';
-
 
 #============================================================================
 #=== globals ================================================================
 #============================================================================
 
+my $lockfile = "/tmp/nhdb-feeder.lock";
+my $prefix = $ENV{NHS_SRV_HOME} // ".";
 my %translations;               # name-to-name translations
 my $translations_cnt = 0;       # number of name translation
 my $logger;                     # log4perl instance
-my $nh = new NetHack::Config(config_file => 'cfg/nethack_def.json');
+my $nh = new NetHack::Config(config_file => "$prefix/cfg/nethack_def.json");
 my $nhdb = NHdb::Config->instance;
 my $db;                         # NHdb::Db instance
 
@@ -1127,7 +1126,7 @@ sub sql_player_name_map
 
 #--- initialize logging
 
-Log::Log4perl->init("$ENV{HOME}/cfg/logging.conf");
+Log::Log4perl->init("$prefix/cfg/logging.conf");
 $logger = get_logger('Feeder');
 
 #--- title

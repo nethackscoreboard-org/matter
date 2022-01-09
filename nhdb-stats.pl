@@ -7,14 +7,16 @@
 # (c) 2020-2100 Dr. Joanna Irina Zaitseva-Kinneberg
 #============================================================================
 
+BEGIN {
+  my $srv = $ENV{NHS_SRV_HOME} // ".";
+  unshift @INC, "$srv/lib";
+}
+
 use strict;
 use warnings;
 use bignum;
 use feature 'state';
 use utf8;
-
-#use FindBin qw($Bin);
-use lib "$ENV{HOME}/lib";
 
 use Moo;
 use DBI;
@@ -32,12 +34,15 @@ use Template;
 use Log::Log4perl qw(get_logger);
 use POSIX qw(strftime);
 
+
 $| = 1;
 
 
 #============================================================================
 #=== globals ================================================================
 #============================================================================
+
+my $prefix = $ENV{NHS_SRV_HOME} // ".";
 
 #--- list of sources ('logfiles') loaded from database
 
@@ -50,7 +55,7 @@ my $logger;              # log4perl primary instance
 #--- NetHack::Config instance
 
 my $nh = new NetHack::Config(
-  config_file => "$ENV{HOME}/cfg/nethack_def.json"
+  config_file => "$prefix/cfg/nethack_def.json"
 );
 
 #--- NHdb::Config instance
@@ -87,14 +92,27 @@ my %summ_pages = (
 #=== definitions ============================================================
 #============================================================================
 
-my $lockfile = '/tmp/nhdb-stats.lock';
-my $http_root = $nhdb->config()->{'http_root'};
-my $tt = Template->new(
-  'OUTPUT_PATH' => $http_root,
-  'INCLUDE_PATH' => "$ENV{HOME}/templates",
-  'RELATIVE' => 1
+
+my $lockfile = "/tmp/nhdb-stats.lock";
+
+
+#--- process command-line
+
+my $logger_cmd = get_logger("Stats::Cmdline");
+
+my $cmd = NHdb::Stats::Cmdline->instance(
+  aggr_pages => \%aggr_pages,
+  summ_pages => \%summ_pages,
+  lockfile => $lockfile,
 );
 
+my $http_root = $cmd->webdir() ? $cmd->webdir() : $nhdb->config()->{'http_root'};
+
+my $tt = Template->new(
+  'OUTPUT_PATH' => $http_root,
+  'INCLUDE_PATH' => "$prefix/templates",
+  'RELATIVE' => 1
+);
 
 
 
@@ -815,17 +833,19 @@ sub row_fix
 
   #--- include conducts in the ascended message
 
-  if($row->{'ascended'} && defined $row->{'conduct'}) {
-    my @c = $variant->conduct(@{$row}{'conduct', 'elbereths', 'achieve'});
-    $row->{'ncond'} = scalar(@c);
-    $row->{'tcond'} = join(' ', @c);
-    if(scalar(@c) == 0) {
-      $row->{'death'} = 'ascended with all conducts broken';
-    } else {
-      $row->{'death'} = sprintf(
-        qq{ascended with %d conduct%s intact (%s)},
-        scalar(@c), (scalar(@c) == 1 ? '' : 's'), $row->{'tcond'}
-      );
+  if($row->{'ascended'}) {
+    if (defined $row->{'conduct'}) {
+      my @c = $variant->conduct(@{$row}{'conduct', 'elbereths', 'achieve', 'conductX'});
+      $row->{'ncond'} = scalar(@c);
+      $row->{'tcond'} = join(' ', @c);
+      if(scalar(@c) == 0) {
+        $row->{'death'} = 'ascended with all conducts broken';
+      } else {
+        $row->{'death'} = sprintf(
+          qq{ascended with %d conduct%s intact (%s)},
+          scalar(@c), (scalar(@c) == 1 ? '' : 's'), $row->{'tcond'}
+        );
+      }
     }
   }
 
@@ -2355,7 +2375,7 @@ sub create_version_map
 
 #--- initialize logging
 
-Log::Log4perl->init("$ENV{HOME}/cfg/logging.conf");
+Log::Log4perl->init("$prefix/cfg/logging.conf");
 $logger = get_logger('Stats');
 
 #--- title
@@ -2364,16 +2384,6 @@ $logger->info('NetHack Scoreboard / Stats');
 $logger->info('(c) 2013-2100 Borek Lupomesky');
 $logger->info('(c) 2020-2100 Dr. Joanna Irina Zaitseva-Kinneberg');
 $logger->info('---');
-
-#--- process command-line
-
-my $logger_cmd = get_logger("Stats::Cmdline");
-
-my $cmd = NHdb::Stats::Cmdline->instance(
-  aggr_pages => \%aggr_pages,
-  summ_pages => \%summ_pages,
-  lockfile => $lockfile,
-);
 
 # debugging log of command-lines options as we parsed them
 

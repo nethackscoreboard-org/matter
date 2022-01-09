@@ -104,8 +104,44 @@
     "soko", "geno", "wish", "unih", "scar", "pray", "athe", "vegt",
     "vegn", "weap", "elbe", "illi", "paci", "food", "acce", "cont",
     "tool", "magi", "armo", "raci", "thie", "deaf", "fumb", "hall",
-    "illf", "zen", "nude", "surv", "celi", "calm"
+    "illf", "zen", "nude", "surv", "celi", "calm", "noShkID", "noID"
   ],
+
+  #--- conductX and achieveX mappings
+  "nh_extended_conducts": {
+    "foodless": "food",
+    "vegan": "vegn",
+    "vegetarian": "vege",
+    "atheist": "athe",
+    "weaponless": "weap",  
+    "pacifist": "paci",    
+    "illiterate": "illi",  
+    "polyless": "self",
+    "polyselfless": "pile",
+    "wishless": "wish",
+    "artiwishless": "arti",
+    "genocideless": "geno",
+    "sokoban": "soko",
+    "blind": "zen",
+    "blindfolded": "zen",
+    "nudist": "nude",
+    "bonesless": "bone",
+    "petless": "pets",
+    "never_had_a_pet": "pets",
+    "artifactless": "arts",
+    "never_touched_an_artifact": "arts",
+    "permahallu": "hall",
+    "hallucinating": "hall",
+    "permadeaf": "deaf",
+    "survivor": "surv",
+    "never_died": "surv",
+    "celibate": "celi",
+    "conflictless": "calm",
+    "unfairscareless": "scar",
+    "elberethless": "elbe",
+    "deactivated_elbereth": "!elbe",
+    "never_abused_alignment": "algn"
+  },
 
   #--- ordered list of variants
 
@@ -367,6 +403,22 @@
         "orc", "swn", "vam"
       ],
       "aligns" : [ "law", "neu", "cha", "non" ],
+      "conduct" : {
+        "0x000001" : "food",
+        "0x000002" : "vegn",
+        "0x000004" : "vegt",
+        "0x000008" : "athe",
+        "0x000010" : "weap",
+        "0x000020" : "paci",
+        "0x000040" : "illi",
+        "0x000080" : "pile",
+        "0x000100" : "self",
+        "0x000200" : "wish",
+        "0x000400" : "arti",
+        "0x000800" : "geno",
+        "0x001000" : "noShkID",
+        "0x002000" : "noID",
+      },
       "enum_disabled" : [
         [ "Ana", "Hum", "Fem", "Law" ],
         [ "Ana", "Hum", "Fem", "Neu" ],

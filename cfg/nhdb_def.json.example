@@ -7,66 +7,91 @@
 {
   #--- HTML files are generated in this place
 
-  "http_root" : "/home/httpd/nh",
+  "http_root": "/path/to/nhs/www",
 
   #--- database session configuration
 
-  "db" : {
-
-  	"nhdbfeeder" : {
-	    "dbname" : "nhdb",
-        "dbhost" : "localhost",
-	    "dbuser" : "nhdbfeeder"
+  "db": {
+    "nhdbfeeder": {
+      "dbname": "nhdb",
+      "dbuser": "nhdbfeeder"
     },
-
-  	"nhdbstats" : {
-	    "dbname" : "nhdb",
-        "dbhost" : "localhost",
-	    "dbuser" : "nhdbstats"
+    "nhdbstats": {
+      "dbname": "nhdb",
+      "dbuser": "nhdbstats"
     }
-
   },
 
   #--- authentication info for database sessions is stored in this file
 
-  "auth" : "auth.json",
+  "auth": "auth.json",
 
   #--- define wget command-line options
 
-  "wget" : "wget --connect-timeout=10 --dns-timeout=5 --read-timeout=60 -t 1 -c -q -O %s %s",
+  "wget": "wget --connect-timeout=10 --dns-timeout=5 --read-timeout=60 -t 1 -c -q -O %s %s",
 
   #--- feeder configuration
 
-  "feeder" : {
+  "feeder": {
 
   #--- following fields must be present in the xlogfile or the line is rejected
 
-    "require_fields" : [ "name", "deathdate", "death" ],
-  
+    "require_fields": [
+      "name",
+      "death"
+    ],
+
   #--- regular xlogfile fields; do not change unless you know what you're doing
 
-    "regular_fields" : [
-      "role", "race", "gender", "gender0", "align", "align0", "deathdnum", "deathlev", "deaths", "hp", "maxhp",
-      "maxlvl", "points", "turns", "realtime", "version", "dumplog", "elbereths"
+    "regular_fields": [
+      "role",
+      "race",
+      "gender",
+      "gender0",
+      "align",
+      "align0",
+      "deathdnum",
+      "deathlev",
+      "deaths",
+      "hp",
+      "maxhp",
+      "maxlvl",
+      "points",
+      "turns",
+      "realtime",
+      "version",
+      "dumplog",
+      "elbereths"
     ],
 
   #--- xlogfile lines with following names are dropped
 
-    "reject_name" : [ "wizard", "paxedtest" ]
+    "reject_name": [
+      "wizard",
+      "paxedtest"
+    ]
   },
 
   #--- path to local xlogfile copies
 
-  "logs" : {
-    "localpath" : "logs",
-    "urlpath" : null
+  "logs": {
+    "localpath": "/path/to/nhs/xlog",
+    "urlpath": null
   },
 
   #--- variants to include in the First To Ascend page
-  
-  "firsttoascend" : [
-    "dnh", "dyn", "evil", "fiq", "4k", "grunt", "ndnh", "nh4",
-    "slashem", "spork", "spl", "un", "xnh"
-  ],
 
+  "firsttoascend": [
+    "dnh",
+    "dyn",
+    "evil",
+    "fiq",
+    "4k",
+    "grunt",
+    "nh4",
+    "spork",
+    "spl",
+    "un",
+    "xnh"
+  ],
 }
