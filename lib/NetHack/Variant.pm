@@ -162,41 +162,35 @@ sub conduct
     my @conducts_long = split /,/, $conductX;
     my %map = $self->config()->get_extended_conducts();
     @conducts = map { $map{$_} } @conducts_long;
+  } else {
+    #--- get reverse code-to-value mapping for conducts
 
-    return wantarray ? @conducts : scalar(@conducts);
+    my %con_to_val = reverse %{$self->conducts()};
+    my %ach_to_val = reverse %{$self->achievements() // {}};
+
+    #--- get ordered list of conducts
+
+    for my $c ($self->config()->list_conducts_ordered()) {
+      if(exists $con_to_val{$c} && $conduct_bitfield) {
+        if ($con_to_val{$c} =~ /^0x/) {
+          $con_to_val{$c} = hex $con_to_val{$c};
+        }
+        if($conduct_bitfield & $con_to_val{$c}) {
+          push(@conducts, $c);
+        }
+      } elsif(exists $ach_to_val{$c} && $achieve_bitfield) {
+        if ($ach_to_val{$c} =~ /^0x/) {
+          $ach_to_val{$c} = hex $ach_to_val{$c};
+        }
+        if($achieve_bitfield & $ach_to_val{$c}) {
+          push(@conducts, $c);
+        }
+      }
+    }
   }
 
-  #--- get reverse code-to-value mapping for conducts
-
-  my %con_to_val = reverse %{$self->conducts()};
-  my %ach_to_val = reverse %{$self->achievements() // {}};
-
-  #--- get ordered list of conducts
-
-  for my $c ($self->config()->list_conducts_ordered()) {
-    if($c eq '(elbe)' && defined $elbereths && !$elbereths) {
-      push(@conducts, $c);
-      last;
-    }
-
-    if(exists $con_to_val{$c} && $conduct_bitfield) {
-      if ($con_to_val{$c} =~ /^0x/) {
-        $con_to_val{$c} = hex $con_to_val{$c};
-      }
-      if($conduct_bitfield & $con_to_val{$c}) {
-        push(@conducts, $c);
-      }
-    }
-
-    elsif(exists $ach_to_val{$c} && $achieve_bitfield) {
-      if ($ach_to_val{$c} =~ /^0x/) {
-        $ach_to_val{$c} = hex $ach_to_val{$c};
-      }
-      if($achieve_bitfield & $ach_to_val{$c}) {
-        push(@conducts, $c);
-      }
-    }
-
+  if (!grep { $_ eq 'elbe' } @conducts && defined $elbereths && !$elbereths) {
+    push(@conducts, '(elbe)');
   }
 
   if (grep { $_ eq '(elbe)' } @conducts && grep { $_ eq 'elbe' } @conducts) {
