@@ -845,6 +845,7 @@ sub row_fix
     if (defined $row->{'conduct'}) {
       my @c = $variant->conduct(@{$row}{'conduct', 'elbereths', 'achieve', 'conductX'});
       $row->{'ncond'} = scalar(@c);
+      if (grep {$_ eq '(elbe)'} @c) { $row->{'ncond'} -= 1; }
       $row->{'tcond'} = join(' ', @c);
       if(scalar(@c) == 0) {
         $row->{'death'} = 'ascended with all conducts broken';
