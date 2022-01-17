@@ -189,7 +189,8 @@ sub conduct
     }
   }
 
-  if (!grep { $_ eq 'elbe' } @conducts && defined $elbereths && !$elbereths) {
+  if (!(grep { $_ eq 'elbe' } @conducts) && defined $elbereths && $elbereths == 0) {
+    print "elbereths: $elbereths\n";
     push(@conducts, '(elbe)');
   }
 
