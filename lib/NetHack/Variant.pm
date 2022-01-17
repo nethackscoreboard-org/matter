@@ -162,6 +162,16 @@ sub conduct
     my @conducts_long = split /,/, $conductX;
     my %map = $self->config()->get_extended_conducts();
     @conducts = map { $map{$_} } @conducts_long;
+
+    # annoying workaround for K2's annoying unofficial nh37-hdf elberethless conduct,
+    # which has a bitfield but no conductX string >:(
+    my %con_to_val = reverse %{$self->conducts()};
+    if (defined $con_to_val{'elbe'}) {
+      my $bitmask = hex $con_to_val{'elbe'};
+      if ($conduct_bitfield & $bitmask) {
+        push(@conducts, 'elbe');
+      }
+    }
   } else {
     #--- get reverse code-to-value mapping for conducts
 
@@ -189,9 +199,9 @@ sub conduct
     }
   }
 
-  if (!(grep { $_ eq 'elbe' } @conducts) && defined $elbereths && $elbereths == 0) {
-    print "elbereths: $elbereths\n";
+  if (!(grep { $_ eq 'elbe' } @conducts) && !(grep { $_ eq '(elbe)' } @conducts) && defined $elbereths && $elbereths == 0) {  
     push(@conducts, '(elbe)');
+  } else {
   }
 
   if (grep { $_ eq '(elbe)' } @conducts && grep { $_ eq 'elbe' } @conducts) {
