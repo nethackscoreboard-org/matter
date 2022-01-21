@@ -165,11 +165,13 @@ sub conduct
 
     # annoying workaround for K2's annoying unofficial nh37-hdf elberethless conduct,
     # which has a bitfield but no conductX string >:(
-    my %con_to_val = reverse %{$self->conducts()};
-    if (defined $con_to_val{'elbe'}) {
-      my $bitmask = hex $con_to_val{'elbe'};
-      if ($conduct_bitfield & $bitmask) {
-        push(@conducts, 'elbe');
+    if (!grep { $_ eq 'elbe' } @conducts) {
+      my %con_to_val = reverse %{$self->conducts()};
+      if (defined $con_to_val{'elbe'}) {
+        my $bitmask = hex $con_to_val{'elbe'};
+        if ($conduct_bitfield & $bitmask) {
+          push(@conducts, 'elbe');
+        }
       }
     }
   } else {
