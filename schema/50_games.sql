@@ -40,6 +40,7 @@ CREATE TABLE games (
   maxlvl        int NOT NULL,
   points        bigint NOT NULL,
   conduct       bigint,
+  conductX      varchar(4096),
   elbereths     integer,
   turns         bigint,
   achieve       integer,
@@ -76,7 +77,7 @@ CREATE OR REPLACE VIEW v_games_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, conductX, elbereths, achieve, turns, realtime,
     games.version, ascended, misc
   FROM
     games
@@ -93,7 +94,7 @@ CREATE OR REPLACE VIEW v_games AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, conductX, elbereths, achieve, turns, realtime,
     games.version, ascended, misc
   FROM
     games
@@ -110,7 +111,7 @@ CREATE OR REPLACE VIEW v_games_all AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, conductX, elbereths, achieve, turns, realtime,
     games.version, ascended, scummed, misc
   FROM
     games
@@ -127,7 +128,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, birthdate, deathdate, death, deathlev,
-    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, conductX, elbereths, achieve, turns, realtime,
     games.version, ascended, dumplog, misc,
     extract('year'  from age(
       current_timestamp AT TIME ZONE 'UTC',
@@ -165,7 +166,7 @@ CREATE OR REPLACE VIEW v_ascended AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, endtime_raw - starttime_raw AS wallclock,
     birthdate, deathdate, death, dumplog, deathlev, hp, maxhp, maxlvl, points,
-    conduct, achieve, turns, realtime, games.version, ascended, misc
+    conduct, conductX, achieve, turns, realtime, games.version, ascended, misc
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )

@@ -842,7 +842,7 @@ sub row_fix
   #--- include conducts in the ascended message
 
   if($row->{'ascended'}) {
-    if (defined $row->{'conduct'}) {
+    if (defined ($row->{'conduct'}) || defined ($row->{'conductX'})) {
       my @c = $variant->conduct(@{$row}{'conduct', 'elbereths', 'achieve', 'conductX'});
       $row->{'ncond'} = scalar(@c);
       if (grep {$_ eq '(elbe)'} @c) { $row->{'ncond'} -= 1; }
