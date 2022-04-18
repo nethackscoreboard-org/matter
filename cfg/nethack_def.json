@@ -1276,7 +1276,7 @@
         "0x020000" : "hall",
         "0x040000" : "deaf",
         "0x080000" : "surv",
-        "0x100000" : "abus",
+        "0x100000" : "algn",
       },
       "enum" : [
         [ "Arc", "Hum", "Mal", "Law" ], [ "Arc", "Hum", "Fem", "Law" ], # 1
