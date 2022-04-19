@@ -104,6 +104,8 @@ ELSIF variant == 'ndnh';
 SET break_cols = 5;
 ELSIF variant == 'dnhslex'; 
 SET break_cols = 5;
+ELSIF variant == 'evil';
+SET break_cols = 5;
 END
 %]
 
