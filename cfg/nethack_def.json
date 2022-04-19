@@ -1252,7 +1252,7 @@
         "sam", "tou", "val", "wiz"
       ],
       "races" : [
-        "cen", "dem", "dwa", "elf", "gia", "gno", "hob", "hum", "ith", "orc", "trt"
+        "cen", "dwa", "elf", "gia", "gno", "hob", "hum", "ith", "orc", "trt", "dem"
       ],
       "aligns" : [ "law", "neu", "cha", "una" ],
       "conduct" : {
