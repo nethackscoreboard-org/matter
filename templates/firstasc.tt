@@ -106,6 +106,12 @@ ELSIF variant == 'dnhslex';
 SET break_cols = 5;
 ELSIF variant == 'evil';
 SET break_cols = 5;
+ELSIF variant == 'spl';
+SET break_cols = 5;
+ELSIF variant == 'slashem';
+SET break_cols = 5;
+ELSIF variant == 'slashthem';
+SET break_cols = 5;
 END
 %]
 
