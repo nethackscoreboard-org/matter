@@ -455,6 +455,15 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  92, 'hardfought.org (AceHack)', 'hdf', 'ace',
+  'https://www.hardfought.org/xlogfiles/acehack/xlogfile',
+  'hdf.ace.log',
+  'https://www.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Europe/HFE ------------------------------------------------
 -----------------------------------------------------------------------------
@@ -623,6 +632,15 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  93, 'eu.hardfought.org (AceHack)', 'hfe', 'ace',
+  'https://eu.hardfought.org/xlogfiles/acehack/xlogfile',
+  'hfe.ace.log',
+  'https://eu.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Australia/HFA ---------------------------------------------
 -----------------------------------------------------------------------------
@@ -789,6 +807,15 @@ INSERT INTO logfiles (
   'https://au.hardfought.org/xlogfiles/setseed/xlogfile',
   'hfa.seed.log',
   'https://au.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  94, 'au.hardfought.org (AceHack)', 'hfa', 'ace',
+  'https://au.hardfought.org/xlogfiles/acehack/xlogfile',
+  'hfa.ace.log',
+  'https://au.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
 );
 
 -----------------------------------------------------------------------------
