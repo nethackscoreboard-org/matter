@@ -1189,7 +1189,7 @@ sub gen_page_recent
   #--- supply additional data
 
   $data{'result'}   = $result;
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
@@ -1529,7 +1529,7 @@ sub gen_page_player
   $data{'nh_roles'} = $nv->roles();
   $data{'nh_races'} = $nv->races();
   $data{'nh_aligns'} = $nv->alignments();
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'name'} = $name;
   $data{'variant'} = $variant;
   $data{'variants'} = array_sort_by_reference(
@@ -1609,7 +1609,7 @@ sub gen_page_streaks
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
 
   #--- process template
 
@@ -1656,7 +1656,7 @@ sub gen_page_about
 
   #--- generate page
 
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   if(!$tt->process('about.tt', \%data, 'about.html')) {
     $logger->error(q{Failed to create page 'About', }, $tt->error());
     die $tt->error();
@@ -1789,7 +1789,7 @@ sub gen_page_front
 
   $data{'variants'} = \@variants_ordered;
   $data{'vardef'} = $nh->variant_names();
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   if(!$tt->process('front.tt', \%data, 'index.html')) {
     $logger->error(q{Failed to create page 'Front' (3), }, $tt->error());
     die $tt->error();
@@ -1823,7 +1823,7 @@ sub gen_page_zscores
 
   #--- supply additional data
 
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'vardef'}   = $nh->variant_names();
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'variant'}  = $variant;
@@ -1923,7 +1923,7 @@ sub gen_page_conducts
 
   #--- supply additional data
 
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
@@ -1981,7 +1981,7 @@ sub gen_page_lowscore
 
   #--- supply additional data
 
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
@@ -2124,7 +2124,7 @@ sub gen_page_first_to_ascend
   #--- auxiliary data
 
   $data{'variant'}  = $variant;
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'variants'} = [ $nhdb->first_to_ascend() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
@@ -2221,7 +2221,7 @@ sub gen_page_turncount
   #--- auxiliary data
 
   $data{'variant'}  = $variant;
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
@@ -2308,7 +2308,7 @@ sub gen_page_realtime
   #--- auxiliary data
 
   $data{'variant'}  = $variant;
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
@@ -2392,7 +2392,7 @@ sub gen_page_wallclock
   #--- auxiliary data
 
   $data{'variant'}  = $variant;
-  $data{'cur_time'} = scalar(localtime());
+  $data{'cur_time'} = scalar(gmtime());
   $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
