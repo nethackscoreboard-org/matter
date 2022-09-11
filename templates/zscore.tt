@@ -44,10 +44,10 @@
   </thead>
 
   <tbody>
-    [% SET n = 0; SET prev = -1 %]
+    [% SET n = 0; SET prev = -1; SET ties = 0 %]
     [% FOR plr IN zscore.item('ord').item(variant) %]
       [% SET next = (zscore.item('val').item(plr).item(variant).item("all") ? zscore.item('val').item(plr).item(variant).item("all") : 0) %]
-      [% IF prev != next; SET n = n + 1; SET prev = next; END %]
+      [% IF prev != next; SET n = n + ties + 1; SET ties = 0; SET prev = next; ELSE; SET ties = ties + 1; END %]
       <tr>
       <td class="numeric">[% n %]</td>
       <td><a href="players/[% plr.substr(0,1) %]/[% plr %].[% variant %].html">[% plr %]</a></td>
