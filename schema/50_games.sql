@@ -227,6 +227,7 @@ RETURNS TABLE (
   r_endtime        timestamp with time zone,
   r_endtime_fmt    text,
   r_endtime_raw    bigint,
+  r_wallclock      bigint,
   r_deathlev       int,
   r_hp             int,
   r_maxhp          int,
