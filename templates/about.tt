@@ -30,9 +30,19 @@ also have their personal statistics put together into one summary view.
 </p>
 
 <p>
-The current NetHack Scoreboard team is Joanna Doyle (aka aoei), Tamara Petroff (aka elenmirie) and mobileuser.
+The current NetHack Scoreboard team is Irisha/stella, Tamara/elenmirie and mobileuser.
 Mandevil created the scoreboard in 2013 and retired in 2020.
-Additional contributors to acknowledge are stenno and spicycat, and Keith Simpson (aka K2) is our sysadmin.
+Additional contributors to acknowledge are stenno and spicycat, K2 for hosting this previously.
+Powered by <a href="https://liberta.casa/">libcasa</a>.
+</p>
+
+<p>
+If you have any questions, suggestions, feature requests or bug reports,
+contact stella, elenmirie or mobileuser on IRC: irc.libera.chat/#nethackscoreboard,
+or submit an issue at
+<a href="https://github.com/nethackscoreboard-org">github/nethackscoreboard-org</a>.
+Note, the live site is running the project titled
+<a href="https://github.com/nethackscoreboard-org/matter">matter</a>.
 </p>
 
 <hr>

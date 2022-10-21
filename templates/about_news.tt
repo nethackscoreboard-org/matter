@@ -1,0 +1,14 @@
+<h3>2021-12-18 - Moved hosting</h3>
+<p>K2's server is retiring and we've moved to a new home, hosted by the nice boys at
+<a href="https://liberta.casa">Liberta Casa</a>.</p>
+
+
+<h3>2021-02-13 - Added nethack.live</h3>
+<p>Korean based server nethack.live (nhl) has been added to the scoreboard.
+The admin is ASCIIPhilia and the server offers a webtiles implementation for NetHack.</p>
+
+<h3>2021-01-03 - Happy New Year</h3>
+<p>Made some changes to the Gametime top 100 - it is now a leaderboard showing
+the top 100 players, rather than the top 100 games. Version filtering is now
+implemented on this and the new Realtime Leadeboard, which similarly gives the
+top 100 players.</p>
