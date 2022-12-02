@@ -1061,3 +1061,33 @@ INSERT INTO logfiles (
   'https://%S.hardfought.org/userdata/%X/%x/tnnt/dumplog/%s.tnnt.html',
   TRUE
 );
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2022, 'gnollhack.org', 'hdf', 'gnoll',
+  'https://www.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hdf.gnoll.log',
+  'https://www.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt',
+  TRUE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2023, 'gnollhack.org', 'hfe', 'gnoll',
+  'https://eu.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hfe.gnoll.log',
+  'https://eu.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt',
+  TRUE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2024, 'gnollhack.org', 'hfa', 'gnoll',
+  'https://au.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hfa.gnoll.log',
+  'https://au.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
+  TRUE
+);

@@ -1453,6 +1453,11 @@ for my $log (@logfiles) {
     #--- parse log
 
       my $parsed_line = parse_log($log, $xlog_line);
+      if ($log->{'variant'} eq 'gnoll') {
+        if ($parsed_line->{'difficulty'} < 0) {
+          next;
+        }
+      }
 
     #--- insert row into database
 
