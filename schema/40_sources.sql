@@ -464,6 +464,15 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  95, 'gnollhack.org', 'hdf', 'gnoll',
+  'https://www.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hdf.gnoll.log',
+  'https://www.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Europe/HFE ------------------------------------------------
 -----------------------------------------------------------------------------
@@ -641,6 +650,15 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  96, 'gnollhack.org', 'hfe', 'gnoll',
+  'https://eu.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hfe.gnoll.log',
+  'https://eu.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Australia/HFA ---------------------------------------------
 -----------------------------------------------------------------------------
@@ -816,6 +834,15 @@ INSERT INTO logfiles (
   'https://au.hardfought.org/xlogfiles/acehack/xlogfile',
   'hfa.ace.log',
   'https://au.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  97, 'gnollhack.org', 'hfa', 'gnoll',
+  'https://au.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hfa.gnoll.log',
+  'https://au.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -1059,35 +1086,5 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/tnnt/archives/2021/xlogfiles/xlogfile.tnnt.2021',
   'tnnt-2021.log',
   'https://%S.hardfought.org/userdata/%X/%x/tnnt/dumplog/%s.tnnt.html',
-  TRUE
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
-) VALUES (
-  2022, 'gnollhack.org', 'hdf', 'gnoll',
-  'https://www.hardfought.org/xlogfiles/gnollhack/xlogfile',
-  'hdf.gnoll.log',
-  'https://www.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt',
-  TRUE
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
-) VALUES (
-  2023, 'gnollhack.org', 'hfe', 'gnoll',
-  'https://eu.hardfought.org/xlogfiles/gnollhack/xlogfile',
-  'hfe.gnoll.log',
-  'https://eu.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt',
-  TRUE
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
-) VALUES (
-  2024, 'gnollhack.org', 'hfa', 'gnoll',
-  'https://au.hardfought.org/xlogfiles/gnollhack/xlogfile',
-  'hfa.gnoll.log',
-  'https://au.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
   TRUE
 );
