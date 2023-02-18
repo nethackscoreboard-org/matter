@@ -88,12 +88,16 @@
     "evil",
     "fiq",
     "4k",
+	"gnoll",
     "grunt",
+	"hackem",
     "nh4",
     "spork",
     "spl",
     "un",
     "xnh",
-    "ndnh"
+    "ndnh",
+	"slashem",
+	"slashthem"
   ],
 }

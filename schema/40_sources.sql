@@ -473,6 +473,15 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  2022, 'HackEm', 'hdf', 'hackem',
+  'https://www.hardfought.org/xlogfiles/hackem/xlogfile',
+  'hdf.hackem.log',
+  'https://www.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.hackem.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Europe/HFE ------------------------------------------------
 -----------------------------------------------------------------------------
@@ -659,6 +668,15 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
 );
 
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  2023, 'HackEm', 'hfe', 'hackem',
+  'https://eu.hardfought.org/xlogfiles/hackem/xlogfile',
+  'hfe.hackem.log',
+  'https://eu.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.hackem.txt'
+);
+
 -----------------------------------------------------------------------------
 -- hardfought.org Australia/HFA ---------------------------------------------
 -----------------------------------------------------------------------------
@@ -843,6 +861,15 @@ INSERT INTO logfiles (
   'https://au.hardfought.org/xlogfiles/gnollhack/xlogfile',
   'hfa.gnoll.log',
   'https://au.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
+) VALUES (
+  2023, 'HackEm', 'hfa', 'hackem',
+  'https://au.hardfought.org/xlogfiles/hackem/xlogfile',
+  'hfa.hackem.log',
+  'https://au.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.hackem.txt'
 );
 
 -----------------------------------------------------------------------------
