@@ -1,33 +1,52 @@
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+[%- USE percent = format("%0.1f%%") -%]
 <!doctype html>
 
 <html>
 
 <head>
   <meta charset="utf-8" />
-  <link rel="stylesheet" type="text/css" href="default.css" />
-[% IF result_ascended.size -%]
-  <script type="text/javascript" src="js/jquery.js" />
-  <script type="text/javascript" src="js/tablesorter.js" />
-  <script type="text/javascript" src="js/tabsort.js" />
-[% END -%]
+  <link rel="stylesheet" type="text/css" href="/default.css" />
   <link rel="icon" type="image/png" href="favicon.png">
-  <title>Recent Games</title>
+  <title>Overall First Ascensions</title>
 </head>
 
 <body class="page_back">
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="recent" lvl=0 var=variant %]
+[% INCLUDE topmenu.tt mnu="deathreason" lvl=0 var='all' %]
 
 <div class="page_content">
-<h1>Recent Games</h1>
 
-[% INCLUDE varmenu.tt page="recent" %]
+<h1>Death Reasons</h1>
 
-[% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
-[% INCLUDE tab_recent.tt datetick=dt_ena %]
+[% INCLUDE varmenu.tt page="deathreason" %]
+
+<table id="g-u-table-deathreason" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
+
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th data-sortable="true">Death</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Count</th>
+    </tr>
+  </thead>
+
+  <tbody>
+	[% SET n = 0; SET prev = -1 %]
+	[% FOREACH row IN result %]
+	  [% SET next = (row.cnt ? row.cnt : 0) %]
+      [% IF prev != next; SET n = n + 1; SET prev = next; END %]
+      <tr>
+      <td>[% n %]</td>
+      <td>[% row.death %]</td>
+      <td>[% number(row.cnt) %]</td>
+      </tr>
+    [% END %]
+  </tbody>
+
+</table>
 
 <link rel="stylesheet" href="/chewtextim/mbo_assets/css/bootstrap.css?ver=3" id="bscss">
 
@@ -62,23 +81,14 @@ $.extend($.fn.bootstrapTable.columnDefaults, {
 });
 </script>
 <script>
-$('#g-u-table-recent').bootstrapTable({
+$('#g-u-table-deathreason').bootstrapTable({
                 striped: true,
                 search: true,
                 pagination: true,
                 showColumns: true,
                 showToggle: true,
                 pageSize: 200,
-                pageList: [50, 100, 200, 500]
-});
-$('#g-u-table-recentgames').bootstrapTable({
-                striped: true,
-                search: true,
-                pagination: true,
-                showColumns: true,
-                showToggle: true,
-                pageSize: 200,
-                pageList: [50, 100, 200, 500]
+                pageList: [50, 100, 200, 500, 1000]
 });
 </script>
 <script>

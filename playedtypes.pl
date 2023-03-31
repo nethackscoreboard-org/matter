@@ -19,6 +19,7 @@ use feature 'state';
 use utf8;
 
 use Moo;
+use Data::Dumper;
 use DBI;
 use JSON;
 use Getopt::Long;
@@ -34,12 +35,10 @@ use Template;
 use Log::Log4perl qw(get_logger);
 use POSIX qw(strftime);
 
-use Carp;
-$SIG{__DIE__} = \&Carp::croak;
-
 
 $| = 1;
 
+my $tot = 0;
 
 #============================================================================
 #=== globals ================================================================
@@ -69,10 +68,6 @@ my $nhdb = NHdb::Config->instance;
 
 my $db;
 
-my %translationlist = (); #pre-load translations
-my %translationlistq = (); #pre-load translations ?
-
-my %overallfirstasc = (); #data for overall first asc
 
 #--- aggregate and summary pages generators
 
@@ -88,9 +83,7 @@ my %aggr_pages = (
   'firstasc' => \&gen_page_first_to_ascend,
   'turncount' => \&gen_page_turncount,
   'realtime' => \&gen_page_realtime,
-  'wallclock' => \&gen_page_wallclock,
-  'deathreason' => \&gen_deathreason,
-  'rolestats' => \&gen_rolestats,
+  'wallclock' => \&gen_page_wallclock
 );
 
 my %summ_pages = (
@@ -103,9 +96,7 @@ my %summ_pages = (
 #=== definitions ============================================================
 #============================================================================
 
-
-my $lockfile = "/tmp/nhdb-stats.lock";
-
+my $lockfile = "/tmp/nhdb-combo.lock";
 
 #--- process command-line
 
@@ -175,9 +166,9 @@ sub format_duration_plr
   $t %= 60;
   my $seconds = $t;
 
-  push(@a, sprintf('%d years', $years)) if $years >= 1;
-  push(@a, sprintf('%d months', $months)) if $months >= 1;
-  push(@a, sprintf('%d days', $days)) if $days >= 1;
+  push(@a, sprintf('%d years', $years)) if $years;
+  push(@a, sprintf('%d months', $months)) if $months;
+  push(@a, sprintf('%d days', $days)) if $days;
   push(@a, sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds));
 
   return join(', ', @a);
@@ -411,7 +402,6 @@ sub update_schedule_players
     if(scalar(@$cmd_player)) {
       if(!grep { lc($plr) eq lc($_) } @$cmd_player) { next; }
     }
-	&gen_deathreason($var, $plr);
     #
     push(@pages_updated, [$plr, $var]);
   }
@@ -512,6 +502,7 @@ sub update_schedule_variants
 
 sub sql_load_logfiles
 {
+	print "loading log files\n";
   my $dbh = $db->handle();
   my $sth = $dbh->prepare('SELECT * FROM logfiles');
   my $r = $sth->execute();
@@ -684,15 +675,8 @@ sub sql_load_streaks
   }
 
   if($name) {
-	my $streakin = "streaks.name in (?";
-	if ($translationlistq{$name}) {
-		$streakin .= $translationlistq{$name};
-	}
-    push(@conds,  $streakin . ")");
+    push(@conds, 'streaks.name = ?');
     push(@args, $name);
-    if ($translationlist{$name}) {
-	    push(@args, split(/\,/, $translationlist{$name}));
-    }
   }
 
   if($open_only) {
@@ -822,6 +806,10 @@ sub row_fix
   my $logfile = $logfiles->{$logfiles_i};
   my $variant = $nh->variant($row->{'variant'});
 
+  $tot++;
+  if ($tot =~ /000$/) {
+	  print "t $tot\n";
+  }
   #--- extract extra fields from misc_json
   my $json = JSON->new;
   if($row->{'misc'}) {
@@ -830,10 +818,12 @@ sub row_fix
     {
       if (!defined $row->{$key})
       {
+	      print $key . "\t" . $data->{$key} . "\n";
         $row->{$key} = $data->{$key};
       }
       else
       {
+	      print $key . "\t" . $data->{$key} . "\tSB\n";
         $row->{"_$key"} = $data->{$key};
       }
     }
@@ -890,18 +880,6 @@ sub row_fix
     );
   }
 
-  #--- realtime (aka duration)
-
-  if(
-    $row->{'variant'} eq 'ace' ||
-    $row->{'variant'} eq 'nh4' ||
-    $row->{'variant'} eq 'nhf' ||
-    $row->{'variant'} eq 'dyn' ||
-    $row->{'variant'} eq 'fh'  ||
-    grep(/^bug360duration$/, @{$logfile->{'options'}})
-  ) {
-    $row->{'realtime'} = '';
-  }
 
   #--- player page
 
@@ -1067,19 +1045,11 @@ sub zscore
   for my $plr (keys %counts) {
     for my $var (keys %{$counts{$plr}}) {
       for my $role (keys %{$counts{$plr}{$var}}) {
-		my $cnts = $counts{$plr}{$var}{$role};
-        my $v = harmonic_number($cnts);
+        my $v = harmonic_number($counts{$plr}{$var}{$role});
         $zval->{$plr}{'all'}{'all'} += $v;
         $zval->{$plr}{$var}{$role}  += $v;
         $zval->{$plr}{$var}{'all'}  += $v;
         $zval->{$plr}{'all'}{$role} += $v;
-
-        $zval->{$plr}{'countall'}{'all'} += $cnts;
-		if (!$zval->{$plr}{$var}{'count'}) {
-			$zval->{$plr}{'different'}{'all'}++;
-		}
-        $zval->{$plr}{$var}{'count'}  += $cnts;
-        $zval->{$plr}{'countall'}{$role} += $cnts;
       }
     }
   }
@@ -1090,30 +1060,18 @@ sub zscore
   for my $plr (keys %$zval) {
     for my $var (keys %{$zval->{$plr}}) {
       next if $var eq 'all';
-	  if ($var eq 'different' || $var eq 'countall') {
-          if (!defined($zmax->{$var}{'all'}) || ($zmax->{$var}{'all'} < $zval->{$plr}{$var}{'all'})) {
-				$zmax->{$var}{'all'} = $zval->{$plr}{$var}{'all'};
-		}
-	  } else {
       for my $role (keys %{$zval->{$plr}{$var}}) {
         next if $role eq 'all';
-		if ($role eq 'count') {
-          if (!defined($zmax->{$var}{$role}) || ($zmax->{$var}{$role} < $zval->{$plr}{$var}{$role})) {
-				$zmax->{$var}{$role} = $zval->{$plr}{$var}{$role}
-		}
-		} else {
         # per-variant per-role max values
         $zmax->{$var}{$role} = $zval->{$plr}{$var}{$role}
           if ($zmax->{$var}{$role} // 0) < $zval->{$plr}{$var}{$role};
         # per-role all-variant max values
         $zmax->{'all'}{$role} = $zval->{$plr}{$var}{$role}
           if ($zmax->{'all'}{$role} // 0) < $zval->{$plr}{$var}{$role};
-		}
       }
       # per-variant max values
       $zmax->{$var}{'all'} = $zval->{$plr}{$var}{'all'}
         if ($zmax->{$var}{'all'} // 0) < $zval->{$plr}{$var}{'all'};
-		}
     }
     # multivariant max values
     $zmax->{'all'}{'all'} = $zval->{$plr}{'all'}{'all'}
@@ -1634,7 +1592,7 @@ sub gen_page_streaks
 
   #--- load streak list
 
-  my ($streaks_ord, $streaks) = sql_load_streaks($variant, undef, 200, 2); #raised to 200 so more 2021 and old streaks appear
+  my ($streaks_ord, $streaks) = sql_load_streaks($variant, undef, 100, 2);
   return $streaks_ord if !ref($streaks_ord);
 
   #--- reprocessing for TT2
@@ -2106,14 +2064,6 @@ sub gen_page_first_to_ascend
 
   for(my $i = 0; $i < scalar(@$re); $i++) {
     my $row = $re->[$i];
-	$overallfirstasc{$row->{'name'}}{$variant}++;
-	$overallfirstasc{$row->{'name'}}{'all'}++;
-
-    if (!$row->{'isfirst'}) {
-	    my $stmt = "update games set isfirst='t' where rowid=" . $row->{'rowid'};
-		my $dbh = $db->handle();
-	    $dbh->do($stmt);
-    }
 
     #--- add the entries to combo table
 
@@ -2178,83 +2128,6 @@ sub gen_page_first_to_ascend
 
   if(!$tt->process('firstasc.tt', \%data, "firstasc.$variant.html")) {
     $logger->error(q{Failed to render page firstasc.tt'}, $tt->error());
-    die $tt->error();
-  }
-}
-
-#============================================================================
-# Generate Overall First to Ascend page.
-#============================================================================
-
-sub genoverallfirstasc
-{
-
-
-  #--- other variables
-
-  my (
-    $ct,
-    %data,
-    $process,
-    $query,
-    $re
-  );
-
-  $process = sub {
-    my $row = shift;
-    for my $k (keys %$row) {
-      $k =~ /^r_(.*)$/ && do {
-        $row->{$1} = $row->{$k};
-        delete $row->{$k};
-      };
-    }
-    row_fix($row);
-  };
-
-	my @variants = $nh->variants();
-	my %lvariant = ();
-	foreach my $v1 (@variants) {
-		$lvariant{$v1} = 1;
-	}
-
-  $data{'cur_time'} = scalar(localtime());
-  $data{'vardef'}   = $nh->variant_names();
-
-	my @slist = ();
-	my $zord = $overallfirstasc{'ord'} = {};
-	my $zval = $overallfirstasc{'val'} = {};
-	my @gvariants = ();
-	my %ivariant = ();
-	foreach my $name (keys %overallfirstasc) {
-		foreach my $var (keys %{$overallfirstasc{$name}}) {
-			if ($var ne 'all' && !$ivariant{$var} && $lvariant{$var}) {
-				push(@gvariants, $var);
-				$ivariant{$var} = 1;
-			}
-			$zval->{$name}{$var}{'all'} = $overallfirstasc{$name}{$var};
-			if (!defined($zval->{'_max'}{$var}{'all'}) || ($zval->{'_max'}{$var}{'all'} < $zval->{$name}{$var}{'all'})) {
-				$zval->{'_max'}{$var}{'all'} = $zval->{$name}{$var}{'all'};
-			}
-			if ($var eq 'all') {
-				my $all = $overallfirstasc{$name}{$var};
-
-				while (length($all) < 4) {
-					$all = '0' . $all;
-				}
-				push(@slist, $all . $name);
-			}
-		}
-	}
-  $data{'variants'} = [ 'all', @gvariants ];
-	@slist = sort {$b cmp $a} @slist;
-	foreach my $s1 (@slist) {
-	  my $plr = substr($s1, 4);
-      push(@{$zord->{'all'}}, $plr);
-	}
-  $data{'firsts'} = \%overallfirstasc;
-
-  if(!$tt->process('overallfirstasc.txt', \%data, "overallfirstasc.html")) {
-    $logger->error(q{Failed to render page overallfirstasc.txt'}, $tt->error());
     die $tt->error();
   }
 }
@@ -2555,382 +2428,6 @@ sub gen_page_wallclock
   }
 }
 
-sub gen_deathreason
-{
-  #--- arguments
-
-  my $variant = shift;
-  my ($player, $allyears) = @_;
-  if(!$variant) { $variant = 'all'; }
-
-  #--- other variables
-
-  my %data;
-
-  #--- init
-
-	if (!$player) {
-		$logger->info('Creating page: Deathreason/', $variant);
-	}
-
-	my $dte = localtime(time());
-	my $yr = substr($dte, -4);
-	my @doyears = ('life', $yr);
-	my $dotouch = 0;
-	if ((!$player && !-f "$http_root/deathreasonfull.$variant.txt")) {
-		$dotouch = 1;
-		my $created = 0;
-		my $stmt = "select distinct name from deathreason where name != '-'";
-		my @opts;
-		if ($variant ne 'all') {
-			$stmt .= " and variant=?";
-			@opts = ($variant);
-		}
-		my $reall = sql_load($stmt, 1, 1, undef, @opts);
-		my $tot = scalar(@$reall);
-		for (my $i = 0; $i < $tot; $i++) {
-		    my $row = $reall->[$i];
-			$created++;
-			my $plr = $row->{'name'};
-			if ($created =~ /000$/ || $created < 5) {
-				print "death reason full for $plr - $created of $tot\n";
-			}
-			&gen_deathreason($variant, $plr, 'y');
-		}
-		for (my $ii = 2001; $ii < $yr; $ii++) {
-			push(@doyears, $ii);
-		}
-	} elsif ($allyears && $allyears eq 'y') {
-		for (my $ii = 2001; $ii < $yr; $ii++) {
-			push(@doyears, $ii);
-		}
-	} else {
-		if ($dte =~ /Jan/) {
-			push(@doyears, $yr - 1);
-		}
-	}
-	foreach my $year (@doyears) {
-		my $stmt = "select death, cnt from deathreason where name=?";
-		my @arg = ();
-		if ($player) {
-			push(@arg, $player);
-		} else {
-			push(@arg, '-');
-		}
-		my $addyear = '';
-		if ($year ne 'life') {
-			$addyear = '-' . $year;
-			$stmt .= " and year=?";
-			push(@arg, $year);
-		}
-		if ($variant ne 'all') {
-			$stmt .= " and variant=?";
-			push(@arg, $variant);
-		}
-		my $re = sql_load($stmt, 1, 1, undef, @arg);
-		if (scalar(@$re)) {
-		my %totals = ();
-		for(my $i = 0; $i < scalar(@$re); $i++) {
-		    my $row = $re->[$i];
-			$totals{$row->{'death'}} += $row->{'cnt'};
-		}
-		my @sorttotal = ();
-		foreach my $death (keys %totals) {
-			my $cnt = $totals{$death};
-			while (length($cnt) < 8) {
-				$cnt = '0' . $cnt;
-			}
-			push(@sorttotal, $cnt . $death);
-		}
-		@sorttotal = sort {$b cmp $a} @sorttotal;
-		my @ftotal = ();
-		my $showrows = @sorttotal;
-		if ($showrows > 1000) {
-			$showrows = 1000;
-		}
-		for (my $ii = 0; $ii < $showrows; $ii++) {
-			my $death = substr($sorttotal[$ii], 8);
-			my %hsh = ('death', $death, 'cnt', $totals{$death});
-			push(@ftotal, \%hsh);
-		}
-		$data{'result'} = \@ftotal;
-
-  $data{'variant'}  = $variant;
-  $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ 'all', $nh->variants() ];
-  $data{'vardef'}   = $nh->variant_names();
-  $data{'variant'}  = $variant;
-	if ($player) {
-  my $initial = substr($player, 0, 1);
-  my $file = sprintf("deathreasons/%s/%s.%s%s.html", $initial, $player, $variant, $addyear);
-		if(!$tt->process('deathreason.tt', \%data, $file)) {
-			$logger->error(q{Failed to render page deathreason.tt'}, $tt->error());
-			die $tt->error();
-		}
-	} else {
-		if(!$tt->process('deathreason.tt', \%data, "deathreason.$variant$addyear.html")) {
-			$logger->error(q{Failed to render page deathreason.tt'}, $tt->error());
-			die $tt->error();
-		}
-	}
-		}
-	}
-	if ($dotouch) {
-		system("touch", "$http_root/deathreasonfull.$variant.txt");
-	}
-}
-
-sub gen_rolestats
-{
-  #--- arguments
-
-  my $variant = shift;
-  my ($player) = @_;
-  if(!$variant) { $variant = 'all'; }
-
-  #--- other variables
-
-
-  #--- init
-
-	if (!$player) {
-		$logger->info('Creating page: Role Stats/', $variant);
-	}
-
-	#support for yearly but only using "life"
-	my $stmt = "select * from frillstats where name=?";
-	my @arg = ();
-	if ($player) {
-		push(@arg, $player);
-	} else {
-		push(@arg, '-');
-	}
-	if ($variant ne 'all') {
-		$stmt .= " and variant=?";
-		push(@arg, $variant);
-	}
-	my $re = sql_load($stmt, 1, 1, undef, @arg);
-	if (scalar(@$re)) {
-		my %totals = ();
-		for(my $i = 0; $i < scalar(@$re); $i++) {
-		    my $row = $re->[$i];
-			my $role = $row->{'role'};
-			my $race = $row->{'race'};
-			my $align = $row->{'align'};
-			my $games = $row->{'games'};
-			my $ascended = $row->{'ascended'};
-			my $points = $row->{'points'};
-			my $turns = $row->{'turns'};
-			my $duration = $row->{'duration'};
-			my $hp = $row->{'hp'};
-			my $pointhigh = $row->{'pointhigh'};
-			my $pointlow = $row->{'pointlow'};
-			my $turnlow = $row->{'turnlow'};
-			my $durationlow = $row->{'durationlow'};
-			my $hplow = $row->{'hplow'};
-			my $hphigh = $row->{'hphigh'};
-			my $conductnum = $row->{'conductnum'};
-			my $conducts = $row->{'conducts'};
-			my @conductsort = ();
-			if ($conductnum) {
-				push(@conductsort, split(/ /, $conducts));
-			}
-
-			my @types = ('', $role, $role . '-' . $race, $role . '-' . $race . '-' . $align);
-
-			foreach my $typ (@types) {
-			$totals{$typ}{'games'} += $games;
-			$totals{$typ}{'ascended'} += $ascended;
-			$totals{$typ}{'points'} += $points;
-			$totals{$typ}{'turns'} += $turns;
-			$totals{$typ}{'duration'} += $duration;
-			$totals{$typ}{'hp'} += $hp;
-			if ($pointhigh && (!defined($totals{$typ}{'pointhigh'}) || !$totals{$typ}{'pointhigh'} || $pointhigh > $totals{$typ}{'pointhigh'})) {
-				$totals{$typ}{'pointhigh'} = $pointhigh;
-			}
-			if ($pointlow && (!defined($totals{$typ}{'pointlow'}) || !$totals{$typ}{'pointlow'} || $pointlow < $totals{$typ}{'pointlow'})) {
-				$totals{$typ}{'pointlow'} = $pointlow;
-			}
-			if ($turnlow && (!defined($totals{$typ}{'turnlow'}) || !$totals{$typ}{'turnlow'} || $turnlow < $totals{$typ}{'turnlow'})) {
-				$totals{$typ}{'turnlow'} = $turnlow;
-			}
-			if ($durationlow && (!defined($totals{$typ}{'durationlow'}) || !$totals{$typ}{'durationlow'} || $durationlow < $totals{$typ}{'durationlow'})) {
-				$totals{$typ}{'durationlow'} = $durationlow;
-			}
-			if ($hplow && (!defined($totals{$typ}{'hplow'}) || !$totals{$typ}{'hplow'} || $hplow < $totals{$typ}{'hplow'})) {
-				$totals{$typ}{'hplow'} = $hplow;
-			}
-			if ($hphigh && (!defined($totals{$typ}{'hphigh'}) || !$totals{$typ}{'hphigh'} || $hphigh > $totals{$typ}{'hphigh'})) {
-				$totals{$typ}{'hphigh'} = $hphigh;
-			}
-			if ($conductnum) {
-				if (defined($totals{$typ}{'conducts'} && length($totals{$typ}{'conducts'}) > 1)) {
-					my @rconducts = (@conductsort, split(/ /, $totals{$typ}{'conducts'}));
-					@rconducts = sort(@rconducts);
-					my %iscon = ();
-				    my $fullconducts = '';
-				    foreach my $c1 (@rconducts) {
-					    if (!$iscon{$c1}) {
-							$iscon{$c1} = 1;
-							$fullconducts .= ' ' . $c1;
-						}
-					}
-					$totals{$typ}{'conducts'} = substr($fullconducts, 1);
-				} else {
-					$totals{$typ}{'conducts'} = $conducts;
-				}
-            }
-			}
-		}
-
-		my $rolesdef = $nh->config()->{'nh_roles_def'};
-		my $racesdef = $nh->config()->{'nh_races_def'};
-
-		my @roledata = ();
-		my @roleracedata = ();
-		my @roleracealigndata = ();
-		foreach my $typ (keys %totals) {
-			my ($role, $race, $align) = split(/\-/, $typ);
-			my $conducts = '';
-			my $conductnum = 0;
-			if (defined($totals{$typ}{'conducts'}) && $totals{$typ}{'conducts'}) {
-				$conducts = $totals{$typ}{'conducts'};
-				$conductnum = split(/ /, $conducts);
-			}
-			my $ntyp = $typ;
-			if (!$typ) {
-				$ntyp = 'All';
-			} else {
-				$ntyp = $rolesdef->{lc($role)};
-				if (!$ntyp) {
-					next;
-				}
-				$ntyp = uc(substr($ntyp, 0, 1)) . lc(substr($ntyp, 1));
-				if ($race) {
-					my $rc = $racesdef->{lc($race)};
-					$ntyp .= '-' . substr($rc, 0, 1) . lc(substr($rc, 1)); 
-				}
-				if ($align) {
-					$ntyp = uc(substr($role, 0, 1)) . lc(substr($role, 1)) . '-' . uc(substr($race, 0, 1)) . lc(substr($race, 1));
-					if ($align eq 'L') {
-						$ntyp .= '-Law';
-					} elsif ($align eq 'N') {
-						$ntyp .= '-Neu';
-					} elsif ($align eq 'C') {
-						$ntyp .= '-Cha';
-					} elsif ($align eq 'M') {
-						$ntyp .= '-Non';
-					} elsif ($align eq 'U') {
-						$ntyp .= '-Unaligned';
-					}
-				}
-			}
-			my $durationdisplay = '';
-			my $durationaverage = '';
-			my $ascended = $totals{$typ}{'ascended'};
-			if (defined($totals{$typ}{'duration'}) && $totals{$typ}{'duration'}) {
-				$durationdisplay = &format_duration_plr($totals{$typ}{'duration'});
-				if ($ascended) {
-					$durationaverage = &format_duration_plr($totals{$typ}{'duration'} / $ascended);
-				}
-			}
-			my $durationlowdisplay = '';
-			if (defined($totals{$typ}{'durationlow'}) && $totals{$typ}{'durationlow'}) {
-				$durationlowdisplay = &format_duration_plr($totals{$typ}{'durationlow'});
-			}
-
-			my %hsh = ('role', $ntyp,
-			'games', $totals{$typ}{'games'},
-			'ascended', $ascended,
-			'points', $totals{$typ}{'points'},
-			'turns', $totals{$typ}{'turns'},
-			'durationdisplay', $durationdisplay,
-			'durationaverage', $durationaverage,
-			'hp', $totals{$typ}{'hp'},
-			'pointhigh', $totals{$typ}{'pointhigh'},
-			'pointlow', $totals{$typ}{'pointlow'},
-			'turnlow', $totals{$typ}{'turnlow'},
-			'durationlowdisplay', $durationlowdisplay,
-			'hplow', $totals{$typ}{'hplow'},
-			'hphigh', $totals{$typ}{'hphigh'},
-			'conducts', $conducts,
-			'conductnum', $conductnum
-			);
-			if ($align) {
-				push(@roleracealigndata, \%hsh);
-			} elsif ($race) {
-				push(@roleracedata, \%hsh);
-			} else {
-				push(@roledata, \%hsh);
-			}
-		}
-
-	my %data;
-		$data{'variant'}  = $variant;
-	  $data{'cur_time'} = scalar(localtime());
-	  $data{'variants'} = [ 'all', $nh->variants() ];
-	  $data{'vardef'}   = $nh->variant_names();
-	  $data{'variant'}  = $variant;
-
-		if (@roleracealigndata) {
-		$data{'result'} = \@roleracealigndata;
-		$data{'racetitle'}  = 'Role-Race-Align';
-
-	if ($player) {
-  my $initial = substr($player, 0, 1);
-  my $file = sprintf("rolestats/%s/%s.%s%s.html", $initial, $player, $variant, "roleracealign");
-		if (!$tt->process('rolestats.tt', \%data, $file)) {
-			$logger->error(q{Failed to render page rolestats.tt'}, $tt->error());
-			die $tt->error();
-		}
-	} else {
-		if (!$tt->process('rolestats.tt', \%data, "rolestats.$variant" . "-roleracealign.html")) {
-			$logger->error(q{Failed to render page rolestats.tt'}, $tt->error());
-			die $tt->error();
-		}
-	}
-			}
-
-		if (@roleracedata) {
-		$data{'result'} = \@roleracedata;
-		$data{'racetitle'}  = 'Role-Race';
-
-	if ($player) {
-  my $initial = substr($player, 0, 1);
-  my $file = sprintf("rolestats/%s/%s.%s%s.html", $initial, $player, $variant, "rolerace");
-		if (!$tt->process('rolestats.tt', \%data, $file)) {
-			$logger->error(q{Failed to render page rolestats.tt'}, $tt->error());
-			die $tt->error();
-		}
-	} else {
-		if (!$tt->process('rolestats.tt', \%data, "rolestats.$variant" . "-rolerace.html")) {
-			$logger->error(q{Failed to render page rolestats.tt'}, $tt->error());
-			die $tt->error();
-		}
-	}
-			}
-
-		if (@roledata) {
-		$data{'result'} = \@roledata;
-		$data{'racetitle'}  = 'Role';
-
-	if ($player) {
-  my $initial = substr($player, 0, 1);
-  my $file = sprintf("rolestats/%s/%s.%s%s.html", $initial, $player, $variant, "role");
-		if (!$tt->process('rolestats.tt', \%data, $file)) {
-			$logger->error(q{Failed to render page rolestats.tt'}, $tt->error());
-			die $tt->error();
-		}
-	} else {
-		if (!$tt->process('rolestats.tt', \%data, "rolestats.$variant" . "-role.html")) {
-			$logger->error(q{Failed to render page rolestats.tt'}, $tt->error());
-			die $tt->error();
-		}
-	}
-			}
-		}
-}
-
 # return a mapping of short version strings -> version query strings
 sub create_version_map
 {
@@ -2998,21 +2495,9 @@ try {
 
 #--- connect to database
 
-$db = NHdb::Db->new(id => 'nhdbstats', config => $nhdb);
+$db = NHdb::Db->new(id => 'nhdbfeeder', config => $nhdb);
 my $dbh = $db->handle();
 $logger->info('Connected to database');
-
-	  my $stmt = "select name_to, name_from from translations";
-  my $sth2 = $dbh->prepare($stmt);
-  my $r2 = $sth2->execute();
-  if(!$r2) { return $sth2->errstr(); }
-  while(my $row = $sth2->fetchrow_hashref()) {
-	  if ($translationlist{$row->{'name_to'}}) {
-		$translationlist{$row->{'name_to'}} .= ',';
-	}
-	  $translationlist{$row->{'name_to'}} .= $row->{'name_from'};
-	  $translationlistq{$row->{'name_to'}} .= ', ?';
-  }
 
 #--- load list of logfiles
 
@@ -3020,6 +2505,598 @@ sql_load_logfiles();
 $logger->info('Loaded list of logfiles');
 
 #--- read what is to be updated
+#
+my $process;
+
+  $process = sub {
+    my $row = shift;
+    for my $k (keys %$row) {
+      $k =~ /^r_(.*)$/ && do {
+        $row->{$1} = $row->{$k};
+        delete $row->{$k};
+      };
+    }
+    row_fix($row);
+  };
+
+	print "BEGIN\n";
+	my $time1 = time();
+$db = NHdb::Db->new(id => 'nhdbfeeder', config => $nhdb);
+  my $dbhup = $db->handle();
+
+my %varianti = ();
+my %serveri = ();
+  my $query = "select variant, server, logfiles_i from logfiles";
+  print $query . "\n";
+  my $re = sql_load($query, 1, 1);
+  for(my $i = 0; $i < scalar(@$re); $i++) {
+    my $row = $re->[$i];
+	$varianti{$row->{'logfiles_i'}} = $row->{'variant'};
+	$serveri{$row->{'logfiles_i'}} = $row->{'server'};
+	}
+
+	my %doneasc = ();
+	my $stmt = "select name, logfiles_i, role, race, align from games where ascended='t' and name='malor'";
+	$re = sql_load($stmt, 1, 1);
+	for(my $i = 0; $i < scalar(@$re); $i++) {
+		my $row = $re->[$i];
+		my $var = $varianti{$row->{'logfiles_i'}};
+		next if (lc($var) ne 'dnh');
+		my $name = $row->{'name'};
+		my $role = lc($row->{'role'});
+		my $race = lc($row->{'race'});
+		my $align = lc($row->{'align'});
+		$doneasc{$name}{$role}{$race}{$align} = 1;
+	}
+
+	my @variants_known = $nh->variants();
+	foreach my $variant (@variants_known) {
+		next if $variant eq 'nh';
+		if ($variant eq 'dnh') {
+		my $nv = $nh->variant($variant);
+
+my %data;
+  $data{'table'} = $nv->combo_table()->{'table'};
+
+  $data{'roles'} = $nv->roles();
+  $data{'races'} = $nv->races();
+  $data{'genders'} = $nv->genders();
+  $data{'aligns'} = $nv->alignments();
+
+  $data{'roles_def'} = $nh->config()->{'nh_roles_def'};
+  $data{'races_def'} = $nh->config()->{'nh_races_def'};
+
+  $data{'unascend'} = [];
+  $data{'byplayer'} = {};
+  $nv->combo_table_iterate(sub {
+    my ($val, $role, $race, $align) = @_;
+
+	if(!defined($val)) {
+		if ($doneasc{'malor'}{$role}{$race}{$align}) {
+			print $role . "\t" . $race . "\t" . $align . "\t$variant\n";
+		}
+	}
+  });
+	}
+  }
+
+exit;
+
+
+
+
+	my %excludenames = (
+'post163', 1,
+'post164', 1,
+);
+
+my $finding = 1;
+my $rotations = 0;
+my %instreak = ();
+my @streakrows = ();
+my %streaknum = ();
+my %streaktypes = ();
+
+$query = "select multikey, name_orig from multistreak where open='t'";
+$re = sql_load($query, 1, 1);
+for(my $i = 0; $i < scalar(@$re); $i++) {
+    my $row = $re->[$i];
+	my $multikey = $row->{'multikey'};
+	my $name_orig = $row->{'name_orig'};
+	$streaknum{$name_orig} = $multikey;
+	my $query = "select variant from multi_row where multikey=$multikey";
+	my $re2 = sql_load($query, 1, 1);
+	for(my $j = 0; $j < scalar(@$re2); $j++) {
+		my $row2 = $re2->[$i];
+		my $variant = $row2->{'variant'};
+		$streaktypes{$name_orig}{$variant} = 1;
+	}
+}
+
+while ($finding) {
+	$rotations++;
+	$finding = 0;
+	my %countlist = ();
+	my %gamelist = ();
+	my %asclist = ();
+	my %pointlist = ();
+	my %turnlist = ();
+	my %timelist = ();
+	my %hplist = ();
+	my $uplist = '';
+	my %pointhigh = ();
+	my %pointlow = ();
+	my %turnlow = ();
+	my %timelow = ();
+	my %hphigh = ();
+	my %hplow = ();
+	my %conductlist = ();
+  my $query = "SELECT games.rowid, games.logfiles_i, games.death, games.name, games.endtime, games.points, games.realtime, games.ascended, games.turns, games.maxhp, games.role, games.race, games.align0, games.align, games.conduct, games.elbereths, games.achieve, games.name_orig from games where combo is null order by endtime limit 10000";
+  print $rotations . "\t" . $query . "\n";
+  my %streakcount = ();
+  my $re = sql_load($query, 1, 1);
+  for(my $i = 0; $i < scalar(@$re); $i++) {
+    my $row = $re->[$i];
+    my $yr = substr($row->{'endtime'}, 0, 4);
+	my $rowid = $row->{'rowid'};
+	$uplist .= $rowid . ',';
+	if (length($yr) ne 4) {
+		next;
+	}
+	my $name = $row->{'name'};
+	if ($excludenames{$name}) {
+		next;
+	}
+	my $ascended = $row->{'ascended'};
+	my $turns = $row->{'turns'};
+	my $name_orig = $row->{'name_orig'};
+    my $variant = $varianti{$row->{'logfiles_i'}};
+    my $server = $serveri{$row->{'logfiles_i'}};
+    my $death = $row->{'death'};
+	my $role = uc($row->{'role'});
+	my $race = uc($row->{'race'});
+	my $basealign = $row->{'align0'} || $row->{'align'} || 'E';
+	my $align = uc(substr($basealign, 0, 1));
+	if ($basealign eq 'Non') {
+		$align = 'M';
+	}
+	if (!$align) {
+		$align = 'E';
+	}
+    if ($death =~ / called /) {
+	    	my @parts = split(/ called /, $death);
+		my $plen = @parts;
+		if ($plen eq 2) {
+			$death = $parts[0];
+		}
+    }
+	$countlist{$name}{$yr}{$variant}{$death}++;
+	$countlist{'-'}{$yr}{$variant}{$death}++;
+
+	$gamelist{$name}{$yr}{$variant}{$role}{$race}{$align}++;
+	$gamelist{'-'}{$yr}{$variant}{$role}{$race}{$align}++;
+	if ($ascended) {
+			  if ($row->{'conduct'}) {
+			  	my $variant1 = $nh->variant($variant);
+			  	my @c = $variant1->conduct(@{$row}{'conduct', 'elbereths', 'achieve', 'conductX'});
+				foreach my $c1 (@c) {
+					$conductlist{$name}{$yr}{$variant}{$role}{$race}{$align}{$c1} = 1;
+					$conductlist{'-'}{$yr}{$variant}{$role}{$race}{$align}{$c1} = 1;
+				}
+			}
+		$asclist{$name}{$yr}{$variant}{$role}{$race}{$align}++;
+		$asclist{'-'}{$yr}{$variant}{$role}{$race}{$align}++;
+
+		my $points = $row->{'points'};
+		if ($points > 1) {
+			$pointlist{$name}{$yr}{$variant}{$role}{$race}{$align} += $points;
+			$pointlist{'-'}{$yr}{$variant}{$role}{$race}{$align} += $points;
+			if (!$pointhigh{$name}{$yr}{$variant}{$role}{$race}{$align} || $points > $pointhigh{$name}{$yr}{$variant}{$role}{$race}{$align}) {
+				$pointhigh{$name}{$yr}{$variant}{$role}{$race}{$align} = $points;
+			}
+			if (!$pointhigh{'-'}{$yr}{$variant}{$role}{$race}{$align} || $points > $pointhigh{'-'}{$yr}{$variant}{$role}{$race}{$align}) {
+				$pointhigh{'-'}{$yr}{$variant}{$role}{$race}{$align} = $points;
+			}
+			if (!$pointlow{$name}{$yr}{$variant}{$role}{$race}{$align} || $points < $pointlow{$name}{$yr}{$variant}{$role}{$race}{$align}) {
+				$pointlow{$name}{$yr}{$variant}{$role}{$race}{$align} = $points;
+			}
+			if (!$pointlow{'-'}{$yr}{$variant}{$role}{$race}{$align} || $points < $pointlow{'-'}{$yr}{$variant}{$role}{$race}{$align}) {
+				$pointlow{'-'}{$yr}{$variant}{$role}{$race}{$align} = $points;
+			}
+		}
+
+		if ($turns > 1) {
+			#possible multi streak also
+			if (!$streaktypes{$name_orig}{$variant}) {
+				if (!$streaknum{$name_orig}) {
+					$streaknum{$name_orig} = 'pending' . $rowid;
+				} else {
+					if ($streaknum{$name_orig} =~ /^pending/) {
+						my $wasst = $streaknum{$name_orig};
+						my $newcount = @streakrows;
+						$streaknum{$name_orig} = "new" . $newcount;
+						push(@streakrows, $wasst . '|' . $variant . '|' . $server . '|' . $streaknum{$name_orig});
+					}
+					push(@streakrows, $rowid . '|' . $variant . '|' . $server . '|' . $streaknum{$name_orig});
+				}
+				$streaktypes{$name_orig}{$variant} = 1;
+				$instreak{$name_orig}++;
+			}
+			#end multi streak logic
+			if (!$turnlow{$name}{$yr}{$variant}{$role}{$race}{$align} || $turns < $turnlow{$name}{$yr}{$variant}{$role}{$race}{$align}) {
+				$turnlow{$name}{$yr}{$variant}{$role}{$race}{$align} = $turns;
+			}
+			if (!$turnlow{'-'}{$yr}{$variant}{$role}{$race}{$align} || $turns < $turnlow{'-'}{$yr}{$variant}{$role}{$race}{$align}) {
+				$turnlow{'-'}{$yr}{$variant}{$role}{$race}{$align} = $turns;
+			}
+			$turnlist{$name}{$yr}{$variant}{$role}{$race}{$align} += $turns;
+			$turnlist{'-'}{$yr}{$variant}{$role}{$race}{$align} += $turns;
+		}
+
+		my $maxhp = $row->{'maxhp'};
+		if ($maxhp > 1) {
+			if (!$hphigh{$name}{$yr}{$variant}{$role}{$race}{$align} || $maxhp > $hphigh{$name}{$yr}{$variant}{$role}{$race}{$align}) {
+				$hphigh{$name}{$yr}{$variant}{$role}{$race}{$align} = $maxhp;
+			}
+			if (!$hphigh{'-'}{$yr}{$variant}{$role}{$race}{$align} || $maxhp > $hphigh{'-'}{$yr}{$variant}{$role}{$race}{$align}) {
+				$hphigh{'-'}{$yr}{$variant}{$role}{$race}{$align} = $maxhp;
+			}
+			if (!$hplow{$name}{$yr}{$variant}{$role}{$race}{$align} || $maxhp < $hplow{$name}{$yr}{$variant}{$role}{$race}{$align}) {
+				$hplow{$name}{$yr}{$variant}{$role}{$race}{$align} = $maxhp;
+			}
+			if (!$hplow{'-'}{$yr}{$variant}{$role}{$race}{$align} || $maxhp < $hplow{'-'}{$yr}{$variant}{$role}{$race}{$align}) {
+				$hplow{'-'}{$yr}{$variant}{$role}{$race}{$align} = $maxhp;
+			}
+			$hplist{$name}{$yr}{$variant}{$role}{$race}{$align} += $maxhp;
+			$hplist{'-'}{$yr}{$variant}{$role}{$race}{$align} += $maxhp;
+		}
+
+		my $realtime = $row->{'realtime'};
+		if ($realtime > 1) {
+			if (!$timelow{$name}{$yr}{$variant}{$role}{$race}{$align} || $realtime < $timelow{$name}{$yr}{$variant}{$role}{$race}{$align}) {
+				$timelow{$name}{$yr}{$variant}{$role}{$race}{$align} = $realtime;
+			}
+			if (!$timelow{'-'}{$yr}{$variant}{$role}{$race}{$align} || $realtime < $timelow{'-'}{$yr}{$variant}{$role}{$race}{$align}) {
+				$timelow{'-'}{$yr}{$variant}{$role}{$race}{$align} = $realtime;
+			}
+			$timelist{$name}{$yr}{$variant}{$role}{$race}{$align} += $realtime;
+			$timelist{'-'}{$yr}{$variant}{$role}{$race}{$align} += $realtime;
+		}
+	} else { #end multistreak
+		if ($instreak{$name_orig}) {
+			if ($instreak{$name_orig} > 1) {
+				push(@streakrows, 'OUT|||' . $streaknum{$name_orig});
+			}
+			$instreak{$name_orig} = 0;
+			delete $streaktypes{$name_orig};
+		}
+	}
+  }
+
+	if (-f $lockfile) {
+		system("rm", $lockfile);
+	}
+
+  if ($uplist) {
+	  $finding = 1;
+
+  #--- eval begin
+
+    eval {
+
+  #--- start transaction
+
+      my $r = $dbh->begin_work();
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            "Transaction begin failed (%s), aborting batch",
+            , $dbh->errstr()
+          )
+        );
+        die "TRFAIL\n";
+      }
+
+  #--- run updates
+  my $upstmt = "update games set combo='t' WHERE rowid in (" . substr($uplist, 0, -1) . ")";
+  $r = $dbh->do($upstmt, undef);
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            'Failed to update combo in games',
+          )
+        );
+        die "ABORT\n";
+      }
+
+	my %multikey1 = ();
+	foreach my $st (@streakrows) {
+		my ($vari, $variant, $server, $stnum) = split(/\|/, $st);
+		if ($vari =~ /^pending/) {
+			my $rowid = substr($vari, 7);
+			my $query = "select name, name_orig, starttime, endtime from games where rowid=$rowid";
+			my $re = sql_load($query, 1, 1);
+			my $row = $re->[0];
+			my $name = $row->{'name'};
+			my $name_orig = $row->{'name_orig'};
+			my $starttime = $row->{'starttime'};
+			my $endtime = $row->{'endtime'};
+			my $upstmt = "insert into multistreak (name, name_orig, starttime, endtime, open) values (?, ?, ?, ?, 't')  RETURNING multikey";
+			my $r = $dbh->do($upstmt, undef, $name, $name_orig, $starttime, $endtime);
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            'Failed to update/insert into deathreason',
+          )
+        );
+        die "ABORT\n";
+      }
+		print "multi row: $r\n";
+		$multikey1{$stnum} = $r;
+			$upstmt = "insert into multi_row (multikey, variant, server, rowid) values (?, ?, ?, ?)";
+			my $r2 = $dbh->do($upstmt, undef, $r, $variant, $server, $rowid);
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            'Failed to update/insert into deathreason',
+          )
+        );
+        die "ABORT\n";
+      }
+		} elsif ($vari eq 'OUT') {
+			my $upstmt = "update multistreak set open='f' where multikey=?";
+			my $r = $dbh->do($upstmt, undef, $multikey1{$stnum});
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            'Failed to update/insert into deathreason',
+          )
+        );
+        die "ABORT\n";
+      }
+		} else {
+			my $multikey = $multikey1{$stnum} || $stnum;
+			$upstmt = "insert into multi_row (multikey, variant, server, rowid) values (?, ?, ?, ?)";
+			my $r2 = $dbh->do($upstmt, undef, $multikey, $variant, $server, $vari);
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            'Failed to update/insert into deathreason',
+          )
+        );
+        die "ABORT\n";
+      }
+		}
+	}
+
+  foreach my $name (keys %countlist) {
+	foreach my $yr (keys %{$countlist{$name}}) {
+		foreach my $variant (keys %{$countlist{$name}{$yr}}) {
+			foreach my $death (keys %{$countlist{$name}{$yr}{$variant}}) {
+  my $query = "SELECT name from deathreason where name=? and year=? and variant=? and death=?";
+  my $re = sql_load($query, 1, 1, undef, $name, $yr, $variant, $death);
+  my $upstmt = '';
+  if (scalar(@$re)) {
+	$upstmt = "update deathreason set cnt=cnt+? where name=? and year=? and variant=? and death=?";
+} else {
+	$upstmt = "insert into deathreason (cnt, name, year, variant, death) values (?, ?, ?, ?, ?)";
+  }
+  $r = $dbh->do($upstmt, undef, $countlist{$name}{$yr}{$variant}{$death}, $name, $yr, $variant, $death);
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            'Failed to update/insert into deathreason',
+          )
+        );
+        die "ABORT\n";
+      }
+  }
+  }
+  }
+  }
+
+#	$gamelist{'-'}{$yr}{$variant}{$role}{$race}{$align}++;
+  foreach my $name (keys %gamelist) {
+	foreach my $yr (keys %{$gamelist{$name}}) {
+		foreach my $variant (keys %{$gamelist{$name}{$yr}}) {
+			foreach my $role (keys %{$gamelist{$name}{$yr}{$variant}}) {
+				foreach my $race (keys %{$gamelist{$name}{$yr}{$variant}{$role}}) {
+					foreach my $align (keys %{$gamelist{$name}{$yr}{$variant}{$role}{$race}}) {
+		my $ascended = $asclist{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $points = $pointlist{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		if ($points > 10000000000) {
+			$points = 0;
+		}
+		my $turns = $turnlist{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $duration = $timelist{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $hp = $hplist{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $pointhigh1 = $pointhigh{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $pointlow1 = $pointlow{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $turnlow1 = $turnlow{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $durationlow1 = $timelow{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $hplow1 = $hplow{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+		my $hphigh1 = $hphigh{$name}{$yr}{$variant}{$role}{$race}{$align} || 0;
+						my @conductsort = ();
+						foreach my $cond (keys %{$conductlist{$name}{$yr}{$variant}{$role}{$race}{$align}}) {
+							push(@conductsort, $cond);
+						}
+
+  my $query = "SELECT name, pointhigh, pointlow, turnlow, durationlow, hplow, hphigh, conducts from frillstats where name=? and year=? and variant=? and role=? and race=? and align=?";
+  my $re = sql_load($query, 1, 1, undef, $name, $yr, $variant, $role, $race, $align);
+  my $upstmt = '';
+  my @addup = ($gamelist{$name}{$yr}{$variant}{$role}{$race}{$align}, $ascended, $points, $turns, $duration, $hp);
+  if (scalar(@$re)) {
+    my $row = $re->[0];
+	my $pointhigh2 = $row->{'pointhigh'};
+	my $pointlow2 = $row->{'pointlow'};
+	my $turnlow2 = $row->{'turnlow'};
+	my $durationlow2 = $row->{'durationlow'};
+	my $hplow2 = $row->{'hplow'};
+	my $hphigh2 = $row->{'hphigh'};
+	my $moreup = '';
+	if ($pointhigh1 && $pointhigh1 > $pointhigh2) {
+		$moreup .= ", pointhigh=?";
+		push(@addup, $pointhigh1);
+	}
+	if ($pointlow1 && ($pointlow1 < $pointlow2 || !$pointlow2)) {
+		$moreup .= ", pointlow=?";
+		push(@addup, $pointlow1);
+	}
+	if ($turnlow1 && ($turnlow1 < $turnlow2 || !$turnlow2)) {
+		$moreup .= ", turnlow=?";
+		push(@addup, $turnlow1);
+	}
+	if ($durationlow1 && ($durationlow1 < $durationlow2 || !$durationlow2)) {
+		$moreup .= ", durationlow=?";
+		push(@addup, $durationlow1);
+	}
+	if ($hplow1 && ($hplow1 < $hplow2 || !$hplow2)) {
+		$moreup .= ", hplow=?";
+		push(@addup, $hplow1);
+	}
+	if ($hphigh1 && $hphigh1 > $hphigh2) {
+		$moreup .= ", hphigh=?";
+		push(@addup, $hphigh1);
+	}
+	if (@conductsort) {
+		my $conductnum = 0;
+		if ($row->{'conducts'}) {
+			push(@conductsort, split(/ /, $row->{'conducts'}));
+		}
+		@conductsort = sort(@conductsort);
+		my %iscon = ();
+		my $fullconducts = '';
+		foreach my $c1 (@conductsort) {
+			if (!$iscon{$c1}) {
+				$iscon{$c1} = 1;
+				$fullconducts .= ' ' . $c1;
+				$conductnum++;
+			}
+		}
+		$moreup .= ", conducts=?, conductnum=?";
+		push(@addup, substr($fullconducts, 1), $conductnum);
+		#print $fullconducts . "\n";
+	}
+
+	$upstmt = "update frillstats set games=games+?, ascended=ascended+?, points=points+?, turns=turns+?, duration=duration+?, hp=hp+?$moreup where name=? and year=? and variant=? and role=? and race=? and align=?";
+	push(@addup, $name, $yr, $variant, $role, $race, $align);
+} else {
+	push(@addup, $name, $yr, $variant, $role, $race, $align);
+	my $moreup = '';
+		$moreup .= ", pointhigh";
+		$moreup .= ", pointlow";
+		$moreup .= ", turnlow";
+		$moreup .= ", durationlow";
+		$moreup .= ", hplow";
+		$moreup .= ", hphigh";
+	if ($pointhigh1) {
+		push(@addup, $pointhigh1);
+	} else {
+		push(@addup, 0);
+	}
+	if ($pointlow1) {
+		push(@addup, $pointlow1);
+	} else {
+		push(@addup, 0);
+	}
+	if ($turnlow1) {
+		push(@addup, $turnlow1);
+	} else {
+		push(@addup, 0);
+	}
+	if ($durationlow1) {
+		push(@addup, $durationlow1);
+	} else {
+		push(@addup, 0);
+	}
+	if ($hplow1) {
+		push(@addup, $hplow1);
+	} else {
+		push(@addup, 0);
+	}
+	if ($hphigh1) {
+		push(@addup, $hphigh1);
+	} else {
+		push(@addup, 0);
+	}
+	my $hasconduct = '';
+	my $conductnum = 0;
+	if (@conductsort) {
+		@conductsort = sort(@conductsort);
+		my %iscon = ();
+		my $fullconducts = '';
+		foreach my $c1 (@conductsort) {
+			if (!$iscon{$c1}) {
+				$conductnum++;
+				$iscon{$c1} = 1;
+				$fullconducts .= ' ' . $c1;
+			}
+		}
+		$hasconduct = ', ?';
+		$moreup .= ", conducts";
+		push(@addup, substr($fullconducts, 1));
+		#print $fullconducts . "\n";
+	}
+	$moreup .= ", conductnum";
+	push(@addup, $conductnum);
+	$upstmt = "insert into frillstats (games, ascended, points, turns, duration, hp, name, year, variant, role, race, align$moreup) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?$hasconduct)";
+  }
+  #print $upstmt . "\n";
+  #foreach my $ad (@addup) {
+  #	  	print $ad . "\t,";
+  #	}
+ #print "\n";
+  $r = $dbh->do($upstmt, undef, @addup);
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            'Failed to update/insert into frillstats',
+          )
+        );
+        die "ABORT\n";
+		exit;
+      }
+  }
+  }
+  }
+  }
+  }
+  }
+
+
+  #--- eval end
+
+    };
+    chomp $@;
+    if(!$@) {
+      my $r = $dbh->commit();
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            "Failed to commit transaction (%s)",
+            $dbh->errstr()
+          )
+        );
+      } else {
+        $logger->info("Transaction commited");
+      }
+    } elsif($@ eq 'ABORT') {
+      my $r = $dbh->rollback();
+      if(!$r) {
+        $logger->fatal(
+          sprintf(
+            "Failed to abort transaction (%s)",
+            $dbh->errstr()
+          )
+        );
+      } else {
+        $logger->info("Transaction aborted");
+      }
+    }
+	}
+}
+
+exit;
 
 if($cmd->process_aggregate()) {
   my $update_variants = update_schedule_variants(
@@ -3037,9 +3114,7 @@ if($cmd->process_aggregate()) {
 
 #--- generate aggregate pages
 
-  my %updatedvar = ();
   for my $var (@$update_variants) {
-	$updatedvar{$var} = 1;
 
     #--- regular stats
     foreach my $page (sort keys %aggr_pages) {
@@ -3052,18 +3127,6 @@ if($cmd->process_aggregate()) {
       q{UPDATE update SET upflag = FALSE WHERE variant = ? AND name = ''},
       undef, $var
     );
-  }
-  if (%overallfirstasc) {
-	#must generate all first to ascend
-	my @vlist = $nh->variants();
-	for my $var (@vlist) {
-		if (!$updatedvar{$var}) {
-			$logger->info('Generating first to ascend (late) for $var');
-			&gen_page_first_to_ascend($var);
-		}
-	}
-	#end: must generate all first to ascend
-	&genoverallfirstasc();
   }
 }
 

@@ -1233,7 +1233,6 @@ push(@qry, q{SELECT * FROM logfiles});
 push(@qry, q{WHERE oper = 't'}) unless $cmd->show_logfiles();
 push(@qry, q{ORDER BY logfiles_i ASC});
 my $qry = join(' ', @qry);
-print "q: $qry\n";
 my $sth = $dbh->prepare($qry);
 my $r = $sth->execute();
 if(!$r) {
@@ -1366,14 +1365,13 @@ for my $log (@logfiles) {
   next if
     @{$cmd->variants()} &&
     !grep { $log->{'variant'} eq lc($_) } @{$cmd->variants()};
-#  next if
-#    scalar(@{$cmd->servers()}) &&
-#    !grep { $log->{'server'} eq lc($_) } @{$cmd->servers()};
+  next if
+    scalar(@{$cmd->servers()}) &&
+    !grep { $log->{'server'} eq lc($_) } @{$cmd->servers()};
   next if
     $cmd->logid() &&
     $log->{'logfiles_i'} != $cmd->logid();
 
-print "about to run $logfiles_i\n";
   eval { # <--- eval starts here -------------------------------------------
 
     #--- prepare, print info
@@ -1485,12 +1483,6 @@ print "about to run $logfiles_i\n";
     #--- parse log
 
       my $parsed_line = parse_log($log, $xlog_line);
-
-	  if ($log->{'variant'} eq 'gnoll') {
-		if ($parsed_line->{'difficulty'} < 0) {
-			next;
-		}
-	}
 
     #--- insert row into database
 

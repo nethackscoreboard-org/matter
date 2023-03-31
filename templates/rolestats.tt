@@ -1,0 +1,132 @@
+[%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+[%- USE percent = format("%0.3f%%") -%]
+[%- USE zstat = format("%0.0f") -%]
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" type="text/css" href="/default.css" />
+  <link rel="icon" type="image/png" href="favicon.png">
+  <title>Overall First Ascensions</title>
+</head>
+
+<body class="page_back">
+
+<div class="page">
+
+[% INCLUDE topmenu.tt mnu="rolestats" lvl=0 var='all' %]
+
+<div class="page_content">
+
+<h1>Role Stats</h1>
+
+[% INCLUDE varmenu.tt page="rolestats" %]
+
+<table id="g-u-table-rolestats" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
+
+  <thead>
+    <tr>
+      <th data-sortable="true">[% racetitle %]</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Games</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Ascended</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Ascended %</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Num Conduts</th>
+      <th data-sortable="true">Conducts</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Highest Points</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Lowest Points</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Lowest Turns</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Highest Max HP</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Lowest Max HP</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Lowest Duration</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Total Points</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Ave. Points</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Total Turns</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Ave. Turns</th>
+      <th data-sortable="true" data-sorter="universal_durationsorter">Total Duration</th>
+      <th data-sortable="true" data-sorter="universal_durationsorter">Ave. Duration</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Total Max HP</th>
+      <th data-sortable="true" data-sorter="universal_sorter">Ave. Max HP</th>
+    </tr>
+  </thead>
+
+  <tbody>
+	[% FOREACH row IN result %]
+	  <tr>
+      <td>[% row.role %]</td>
+      <td>[% number(row.games) %]</td>
+      <td>[% number(row.ascended) %]</td>
+      <td>[% IF row.ascended > 0 %][% percent(row.ascended / row.games) %][% ELSE %]0%[% END %]</td>
+      <td>[% number(row.conductnum) %]</td>
+      <td>[% number(row.conducts) %]</td>
+      <td>[% number(row.pointhigh) %]</td>
+      <td>[% number(row.pointlow) %]</td>
+      <td>[% number(row.turnlow) %]</td>
+      <td>[% number(row.hphigh) %]</td>
+      <td>[% number(row.hplow) %]</td>
+      <td>[% row.durationlowdisplay %]</td>
+      <td>[% number(row.points) %]</td>
+      <td>[% IF row.ascended > 0 %][% number(zstat(row.points / row.ascended)) %][% ELSE %]0[% END %]</td>
+      <td>[% number(row.turns) %]</td>
+      <td>[% IF row.ascended > 0 %][% number(zstat(row.turns / row.ascended)) %][% ELSE %]0[% END %]</td>
+      <td>[% row.durationdisplay %]</td>
+      <td>[% row.durationaverage %]</td>
+      <td>[% number(row.hp) %]</td>
+      <td>[% IF row.ascended > 0 %][% number(zstat(row.hp / row.ascended)) %][% ELSE %]0[% END %]</td>
+      </tr>
+    [% END %]
+  </tbody>
+
+</table>
+
+<link rel="stylesheet" href="/chewtextim/mbo_assets/css/bootstrap.css?ver=3" id="bscss">
+
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+
+<script src="/web/mbo/includes/jquery/dist/jquery.js"></script>
+
+<script src="/web/mbo/includes/bootstrap/dist/js/bootstrap.js"></script>
+
+
+<script src="/web/bootstrap-table.min.js"></script>
+<script src="/web/bootstrap-custom-sorters.js?ver=5"></script>
+
+<style>
+.search input[type=text] {height:30px; width:250px; margin-left:-8px; background-color:lightcyan; margin-top:-8px; border: 1px solid #029ebb;}
+.search input {border-radius: 4px;}
+.pagination-info {margin-left:8px;}
+.pagination {padding-right:4px;}
+.fixed-table-toolbar {float:right;}
+.fixed-table-toolbar .bs-bars, .fixed-table-toolbar .search {padding-left: 12px;}
+.teamtable {}
+.g-u-table .btn {padding: 4px 8px; margin-top: -8px;}
+.g-u-table td .btn {padding: 2px 6px; margin-top: -8px;}
+.dropdown-menu li {font-size:12px;}
+.fixed-table-toolbar .columns label {padding:0px;}
+.dropdown-menu input {margin:4px 5px 4px 0;}
+.grey-cell {font-weight:normal;}
+</style>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
+<script>
+$('#g-u-table-rolestats').bootstrapTable({
+                striped: true,
+                search: true,
+                pagination: true,
+                showColumns: true,
+                showToggle: true,
+                pageSize: 200,
+                pageList: [50, 100, 200, 500, 1000]
+});
+</script>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
+
+[% INCLUDE footer.tt %]

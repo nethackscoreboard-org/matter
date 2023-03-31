@@ -30,19 +30,9 @@ also have their personal statistics put together into one summary view.
 </p>
 
 <p>
-The current NetHack Scoreboard team is Irisha/stella, Tamara/elenmirie and mobileuser.
+The current NetHack Scoreboard team is malor, Tamara Petroff (aka elenmirie) and mobileuser.
 Mandevil created the scoreboard in 2013 and retired in 2020.
-Additional contributors to acknowledge are stenno and spicycat, K2 for hosting this previously.
-Powered by <a href="https://liberta.casa/">libcasa</a>.
-</p>
-
-<p>
-If you have any questions, suggestions, feature requests or bug reports,
-contact stella, elenmirie or mobileuser on IRC: irc.libera.chat/#nethackscoreboard,
-or submit an issue at
-<a href="https://github.com/nethackscoreboard-org">github/nethackscoreboard-org</a>.
-Note, the live site is running the project titled
-<a href="https://github.com/nethackscoreboard-org/matter">matter</a>.
+Additional contributors to acknowledge are stenno and spicycat and aoei, and Keith Simpson (aka K2) is our sysadmin.
 </p>
 
 <hr>
@@ -52,7 +42,7 @@ Note, the live site is running the project titled
 <hr>
 
 <h3>Data Sources</h3>
-<table class="bordered">
+<table id="g-u-table-ascended" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
 
 <tr>
 <th>id</th>
@@ -112,5 +102,54 @@ Note, the live site is running the project titled
 <span class="static">&nbsp;</span>&nbsp;historic data, last entry age not shown &nbsp; 
 </span>
 </p>
+
+<link rel="stylesheet" href="/chewtextim/mbo_assets/css/bootstrap.css?ver=3" id="bscss">
+
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+
+<script src="/web/mbo/includes/jquery/dist/jquery.js"></script>
+
+<script src="/web/mbo/includes/bootstrap/dist/js/bootstrap.js"></script>
+
+
+<script src="/web/bootstrap-table.min.js"></script>
+<script src="/web/bootstrap-custom-sorters.js?ver=5"></script>
+
+<style>
+.search input[type=text] {height:30px; width:250px; margin-left:-8px; background-color:lightcyan; margin-top:-8px; border: 1px solid #029ebb;}
+.search input {border-radius: 4px;}
+.pagination-info {margin-left:8px;}
+.pagination {padding-right:4px;}
+.fixed-table-toolbar {float:right;}
+.fixed-table-toolbar .bs-bars, .fixed-table-toolbar .search {padding-left: 12px;}
+.teamtable {}
+.g-u-table .btn {padding: 4px 8px; margin-top: -8px;}
+.g-u-table td .btn {padding: 2px 6px; margin-top: -8px;}
+.dropdown-menu li {font-size:12px;}
+.fixed-table-toolbar .columns label {padding:0px;}
+.dropdown-menu input {margin:4px 5px 4px 0;}
+.grey-cell {font-weight:normal;}
+</style>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
+<script>
+$('#g-u-table-ascended').bootstrapTable({
+                striped: true,
+                search: true,
+                pagination: true,
+                showColumns: true,
+                showToggle: true,
+                pageSize: 200,
+                pageList: [50, 100, 200, 500]
+});
+</script>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
 
 [% INCLUDE footer.tt %]

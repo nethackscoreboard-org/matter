@@ -27,4 +27,53 @@
 <p>No ascensions for this variant.</p>
 [% END %]
 
+<link rel="stylesheet" href="/chewtextim/mbo_assets/css/bootstrap.css?ver=3" id="bscss">
+
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+
+<script src="/web/mbo/includes/jquery/dist/jquery.js"></script>
+
+<script src="/web/mbo/includes/bootstrap/dist/js/bootstrap.js"></script>
+
+
+<script src="/web/bootstrap-table.min.js"></script>
+<script src="/web/bootstrap-custom-sorters.js?ver=5"></script>
+
+<style>
+.search input[type=text] {height:30px; width:250px; margin-left:-8px; background-color:lightcyan; margin-top:-8px; border: 1px solid #029ebb;}
+.search input {border-radius: 4px;}
+.pagination-info {margin-left:8px;}
+.pagination {padding-right:4px;}
+.fixed-table-toolbar {float:right;}
+.fixed-table-toolbar .bs-bars, .fixed-table-toolbar .search {padding-left: 12px;}
+.teamtable {}
+.g-u-table .btn {padding: 4px 8px; margin-top: -8px;}
+.g-u-table td .btn {padding: 2px 6px; margin-top: -8px;}
+.dropdown-menu li {font-size:12px;}
+.fixed-table-toolbar .columns label {padding:0px;}
+.dropdown-menu input {margin:4px 5px 4px 0;}
+.grey-cell {font-weight:normal;}
+</style>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
+<script>
+$('#g-u-table-ascended').bootstrapTable({
+                striped: true,
+                search: true,
+                pagination: true,
+                showColumns: true,
+                showToggle: true,
+                pageSize: 200,
+                pageList: [50, 100, 200, 500]
+});
+</script>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
+
 [% INCLUDE footer.tt %]

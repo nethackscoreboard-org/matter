@@ -56,7 +56,7 @@ Create cfg/auth.json with the following contents:
     "nhdbstats": "<password>"
 }
 ```
-Copy cfg/nhdb_def.json.example to cfg/nhdb_def.json and edit HTTP root, DB, and log path.
+Copy cfg/nhdb_def.json.example to cfg/nhdb_def and edit HTTP root, DB, and log path.
 If setting up for development, disable most sources and enable only a few.
 ```
 ./nhdb-feeder.pl --static
@@ -77,6 +77,8 @@ Interactive searching for player name (req. *stenno*).
 * **Pseudovariant 'var'** // This would be pseudo-variant that would aggregate all variants but vanilla NetHack.
 
 * **Switch everything to use starting alignment/gender** // Currently we use ending alignment/gender.
+
+* **Use UTC Everywhere** // Currently we use local time which is plain wrong.
 
 * **Per-Player Conduct Achievements** //
 Simple table with all relevant conducts and info whether the player

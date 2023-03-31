@@ -163,47 +163,40 @@ sub conduct
     my %map = $self->config()->get_extended_conducts();
     @conducts = map { $map{$_} } @conducts_long;
 
-    # annoying workaround for K2's annoying unofficial nh37-hdf elberethless conduct,
-    # which has a bitfield but no conductX string >:(
-    if (!grep { $_ eq 'elbe' } @conducts) {
-      my %con_to_val = reverse %{$self->conducts()};
-      if (defined $con_to_val{'elbe'}) {
-        my $bitmask = hex $con_to_val{'elbe'};
-        if ($conduct_bitfield & $bitmask) {
-          push(@conducts, 'elbe');
-        }
-      }
-    }
-  } else {
-    #--- get reverse code-to-value mapping for conducts
-
-    my %con_to_val = reverse %{$self->conducts()};
-    my %ach_to_val = reverse %{$self->achievements() // {}};
-
-    #--- get ordered list of conducts
-
-    for my $c ($self->config()->list_conducts_ordered()) {
-      if(exists $con_to_val{$c} && $conduct_bitfield) {
-        if ($con_to_val{$c} =~ /^0x/) {
-          $con_to_val{$c} = hex $con_to_val{$c};
-        }
-        if($conduct_bitfield & $con_to_val{$c}) {
-          push(@conducts, $c);
-        }
-      } elsif(exists $ach_to_val{$c} && $achieve_bitfield) {
-        if ($ach_to_val{$c} =~ /^0x/) {
-          $ach_to_val{$c} = hex $ach_to_val{$c};
-        }
-        if($achieve_bitfield & $ach_to_val{$c}) {
-          push(@conducts, $c);
-        }
-      }
-    }
+    return wantarray ? @conducts : scalar(@conducts);
   }
 
-  if (!(grep { $_ eq 'elbe' } @conducts) && !(grep { $_ eq '(elbe)' } @conducts) && defined $elbereths && $elbereths == 0) {  
-    push(@conducts, '(elbe)');
-  } else {
+  #--- get reverse code-to-value mapping for conducts
+
+  my %con_to_val = reverse %{$self->conducts()};
+  my %ach_to_val = reverse %{$self->achievements() // {}};
+
+  #--- get ordered list of conducts
+
+  for my $c ($self->config()->list_conducts_ordered()) {
+    if($c eq '(elbe)' && defined $elbereths && !$elbereths) {
+      push(@conducts, $c);
+      last;
+    }
+
+    if(exists $con_to_val{$c} && $conduct_bitfield) {
+      if ($con_to_val{$c} =~ /^0x/) {
+        $con_to_val{$c} = hex $con_to_val{$c};
+      }
+      if($conduct_bitfield & $con_to_val{$c}) {
+        push(@conducts, $c);
+      }
+    }
+
+    elsif(exists $ach_to_val{$c} && $achieve_bitfield) {
+      if ($ach_to_val{$c} =~ /^0x/) {
+        $ach_to_val{$c} = hex $ach_to_val{$c};
+      }
+      if($achieve_bitfield & $ach_to_val{$c}) {
+        push(@conducts, $c);
+      }
+    }
+
   }
 
   if (grep { $_ eq '(elbe)' } @conducts && grep { $_ eq 'elbe' } @conducts) {

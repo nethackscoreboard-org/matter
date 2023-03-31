@@ -101,7 +101,7 @@ CREATE TABLE logfiles (
   tz          varchar(32) DEFAULT 'UTC',
   fpos        bigint,
   lines       int,
-  lastchk     timestamp,
+  lastchk     timestamp with time zone,
   PRIMARY KEY (logfiles_i)
 );
 

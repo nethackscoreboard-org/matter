@@ -1,27 +1,30 @@
-<table class="bordered">
+<table id="g-u-table-recentgames" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
+  <thead>
 
 <tr>
   <th>&nbsp;</th>
 [%- IF NOT devnull -%]
-  <th>srv</th>
-  <th>var</th>
-  <th>ver</th>
+  <th data-sortable="true">srv</th>
+  <th data-sortable="true">var</th>
+  <th data-sortable="true">ver</th>
 [%- END -%]
 [%- IF not name -%]
-  <th>name</th>
+  <th data-sortable="true">name</th>
 [%- END -%]
-  <th>character</th>
-  <th>points</th>
-  <th>turns</th>
-  <th>duration</th>
-  <th>dlvl</th>
-  <th>HP</th>
-  <th>time</th>
-  <th>death reason</th>
+  <th data-sortable="true">character</th>
+  <th data-sortable="true" data-sorter="universal_sorter">points</th>
+  <th data-sortable="true" data-sorter="universal_sorter">turns</th>
+  <th data-sortable="true" data-sorter="universal_durationsorter">duration</th>
+  <th data-sortable="true">dlvl</th>
+  <th data-sortable="true" data-sorter="universal_hpsorter">HP</th>
+  <th data-sortable="true">time</th>
+  <th data-sortable="true">death reason</th>
 [%- IF datetick -%]
   <th class="date"></th>
 [%- END -%]
+  <th data-sortable="true">special</th>
 </tr>
+  </thead>
 
 [% FOREACH row IN result %]
 <tr[% IF row.ascended %] class="win"[% END %]>
@@ -42,7 +45,7 @@
 [%- ELSE -%]
   <td class="numeric">[% number(row.points) %]</td>
 [%- END %]
-  <td class="numeric">[% row.turns %]</td>
+  <td class="numeric">[% number(row.turns) %]</td>
   <td class="numeric">[% row.realtime %]</td>
   <td class="numeric">[% row.deathlev %]/[% row.maxlvl %]</td>
   <td class="numeric">[% row.hp %]/[% row.maxhp %]</td>
@@ -55,6 +58,7 @@
   <td class="date"></td>
 [% END %]
 [% END %]
+  <td>[% IF row.isfirst %] 1st combo[% END %][% IF row.isstreak %] streak of [% row.isstreak %][% END %]</td>
 </tr>
 [% END %]
 

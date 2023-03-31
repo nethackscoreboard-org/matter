@@ -40,7 +40,6 @@ CREATE TABLE games (
   maxlvl        int NOT NULL,
   points        bigint NOT NULL,
   conduct       bigint,
-  conductX      varchar(4096),
   elbereths     integer,
   turns         bigint,
   achieve       integer,
@@ -52,6 +51,9 @@ CREATE TABLE games (
   user_seed     boolean NOT NULL,
   dumplog       varchar(128),
   misc          json,
+  isfirst       boolean,
+  isstreak      smallint,
+  combo         boolean,
   PRIMARY KEY ( rowid )
 );
 
@@ -61,9 +63,11 @@ CREATE INDEX idx_games_endtime ON games (
 );
 CREATE INDEX idx_games_name1 ON games ( name );
 CREATE INDEX idx_games_name2 ON games ( name_orig );
+CREATE INDEX games_combo ON games ( combo );
 GRANT SELECT, INSERT, UPDATE, DELETE ON games TO nhdbfeeder;
 GRANT SELECT ON games TO nhdbstats;
 GRANT USAGE ON games_seq TO nhdbfeeder;
+GRANT UPDATE on games to nhdbstats;
 
 
 ----------------------------------------------------------------------------
@@ -77,8 +81,8 @@ CREATE OR REPLACE VIEW v_games_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, conductX, elbereths, achieve, turns, realtime,
-    games.version, ascended, misc
+    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
+    games.version, ascended, misc, isfirst, isstreak
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
@@ -94,8 +98,8 @@ CREATE OR REPLACE VIEW v_games AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, conductX, elbereths, achieve, turns, realtime,
-    games.version, ascended, misc
+    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
+    games.version, ascended, misc, isfirst, isstreak
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
@@ -111,15 +115,14 @@ CREATE OR REPLACE VIEW v_games_all AS
     gender, gender0, align, align0, endtime,
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, birthdate, deathdate, death, dumplog, deathlev,
-    hp, maxhp, maxlvl, points, conduct, conductX, elbereths, achieve, turns, realtime,
-    games.version, ascended, scummed, misc
+    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
+    games.version, ascended, scummed, misc, isfirst, isstreak
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
   ORDER BY endtime AT TIME ZONE 'UTC' ASC, line ASC;
 
 GRANT SELECT ON v_games_all TO nhdbstats;
-
 
 CREATE OR REPLACE VIEW v_ascended_recent AS
   SELECT
@@ -128,7 +131,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     to_char(endtime AT TIME ZONE 'UTC', 'DD Mon') AS short_date,
     endtime_raw, starttime_raw, birthdate, deathdate, death, deathlev,
-    hp, maxhp, maxlvl, points, conduct, conductX, elbereths, achieve, turns, realtime,
+    hp, maxhp, maxlvl, points, conduct, elbereths, achieve, turns, realtime,
     games.version, ascended, dumplog, misc,
     extract('year'  from age(
       current_timestamp AT TIME ZONE 'UTC',
@@ -149,7 +152,7 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
     round(extract('epoch' from age(
       current_timestamp AT TIME ZONE 'UTC',
       endtime AT TIME ZONE 'UTC')
-    )) AS age_raw
+    )) AS age_raw, isfirst, isstreak
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
@@ -158,7 +161,6 @@ CREATE OR REPLACE VIEW v_ascended_recent AS
 
 GRANT SELECT ON v_ascended_recent TO nhdbstats;
 
-
 CREATE OR REPLACE VIEW v_ascended AS
   SELECT
     rowid, line, logfiles_i, name, name_orig, server, variant, role, race,
@@ -166,7 +168,7 @@ CREATE OR REPLACE VIEW v_ascended AS
     to_char(endtime AT TIME ZONE 'UTC', 'YYYY-MM-DD HH24:MI') AS endtime_fmt,
     endtime_raw, starttime_raw, endtime_raw - starttime_raw AS wallclock,
     birthdate, deathdate, death, dumplog, deathlev, hp, maxhp, maxlvl, points,
-    conduct, conductX, achieve, turns, realtime, games.version, ascended, misc
+    conduct, achieve, turns, realtime, games.version, ascended, misc, isfirst, isstreak
   FROM
     games
     LEFT JOIN logfiles USING ( logfiles_i )
@@ -174,7 +176,6 @@ CREATE OR REPLACE VIEW v_ascended AS
   ORDER BY endtime AT TIME ZONE 'UTC' ASC, line ASC;
 
 GRANT SELECT ON v_ascended TO nhdbstats;
-
 
 ----------------------------------------------------------------------------
 --- functions

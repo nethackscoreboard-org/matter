@@ -1,10 +1,17 @@
 <p id="varmenu">
+  [% IF page == 'firstasc' %]
+    <a href="overallfirstasc.html"><span class="unselected">All</span></a>
+  [% END %]
+
 [% FOREACH var IN variants %]
   [% IF var == 'all'; label = 'All'; ELSE; label = vardef.item(var); END %]
-  [% IF variant == var %]
-    <span class="selected">[% label %]</span>
+  [% IF var == 'all' && page == 'firstasc' %]
   [% ELSE %]
-    <a href="[% page %].[% var %].html"><span class="unselected">[% label %]</span></a>
+	[% IF variant == var %]
+	    <span class="selected">[% label %]</span>
+	  [% ELSE %]
+	    <a href="[% page %].[% var %].html"><span class="unselected">[% label %]</span></a>
+	  [% END %]
   [% END %]
 [% END %]
 </p>

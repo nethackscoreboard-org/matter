@@ -61,7 +61,6 @@
       "realtime",
       "version",
       "dumplog",
-      "conductX",
       "elbereths"
     ],
 
@@ -88,16 +87,11 @@
     "evil",
     "fiq",
     "4k",
-	"gnoll",
     "grunt",
-	"hackem",
     "nh4",
     "spork",
     "spl",
     "un",
-    "xnh",
-    "ndnh",
-	"slashem",
-	"slashthem"
+    "xnh"
   ],
 }

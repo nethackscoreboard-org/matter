@@ -9,11 +9,6 @@
 <head>
   <meta charset="utf-8" />
   <link rel="stylesheet" type="text/css" href="../../default.css">
-[% IF result_ascended.size -%]  
-  <script type="text/javascript" src="../../js/jquery.js"></script>
-  <script type="text/javascript" src="../../js/tablesorter.js"></script>
-  <script type="text/javascript" src="../../js/tabsort.js"></script>
-[% END -%]
   <link rel="icon" type="image/png" href="../../favicon.png">
   <title>[% name %]</title>
 </head>
@@ -206,6 +201,16 @@
 <td class="numeric">[% value %]</td>
 [% END -%]
 </tr>
+
+<tr>
+<th>win %</th>
+[% FOREACH role IN nh_roles -%]
+[%- SET value = result_roles_asc.item(role) -%]
+[%- SET played = result_roles_all.item(role) -%]
+[%- IF value; value = percent((value) / played * 100); END -%]
+<td class="numeric">[% value %]</td>
+[% END -%]
+</tr>
 [% END -%]
 
 </tbody>
@@ -256,6 +261,16 @@
 [% FOREACH race IN nh_races -%]
 [%- SET value = result_races_asc.item(race) -%]
 [%- IF value; value = percent((value) / games_count_asc * 100); END -%]
+<td class="numeric">[% value %]</td>
+[% END -%]
+</tr>
+
+<tr>
+<th>win %</th>
+[% FOREACH race IN nh_races -%]
+[%- SET value = result_races_asc.item(race) -%]
+[%- SET played = result_races_all.item(race) -%]
+[%- IF value; value = percent((value) / played * 100); END -%]
 <td class="numeric">[% value %]</td>
 [% END -%]
 </tr>
@@ -312,6 +327,16 @@
 <td class="numeric">[% value %]</td>
 [% END -%]
 </tr>
+
+<tr>
+<th>win %</th>
+[% FOREACH align IN nh_aligns -%]
+[%- SET value = result_aligns_asc.item(align) -%]
+[%- SET played = result_aligns_all.item(align) -%]
+[%- IF value; value = percent((value) / played * 100); END -%]
+<td class="numeric">[% value %]</td>
+[% END -%]
+</tr>
 [% END -%]
 
 </tbody>
@@ -341,18 +366,21 @@
 [% IF streaks_count.all %]
 <h3>Streaks of Ascensions</h3>
 
-<table class="bordered">
+
+<table id="g-u-table-streaklist" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
+  <thead>
 
 <tr>
 <th></th>
-<th>wins</th>
-<th>srv</th>
-<th>var</th>
-<th>ver</th>
-<th>start</th>
-<th>end</th>
-<th>games</th>
+<th data-sortable="true" data-sorter="universal_sorter">wins</th>
+<th data-sortable="true">srv</th>
+<th data-sortable="true">var</th>
+<th data-sortable="true">ver</th>
+<th data-sortable="true">start</th>
+<th data-sortable="true">end</th>
+<th data-sortable="false">games</th>
 </tr>
+  </thead>
 
 [% FOREACH row IN streaks %]
 [% IF row.wins > 1 %]
@@ -509,5 +537,79 @@
 
 
 [% END %]
+
+<link rel="stylesheet" href="/chewtextim/mbo_assets/css/bootstrap.css?ver=3" id="bscss">
+
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+
+<script src="/web/mbo/includes/jquery/dist/jquery.js"></script>
+
+<script src="/web/mbo/includes/bootstrap/dist/js/bootstrap.js"></script>
+
+
+<script src="/web/bootstrap-table.min.js"></script>
+<script src="/web/bootstrap-custom-sorters.js?ver=5"></script>
+
+<style>
+.search input[type=text] {height:30px; width:250px; margin-left:-8px; background-color:lightcyan; margin-top:-8px; border: 1px solid #029ebb;}
+.search input {border-radius: 4px;}
+.pagination-info {margin-left:8px;}
+.pagination {padding-right:4px;}
+.fixed-table-toolbar {float:right;}
+.fixed-table-toolbar .bs-bars, .fixed-table-toolbar .search {padding-left: 12px;}
+.teamtable {}
+.g-u-table .btn {padding: 4px 8px; margin-top: -8px;}
+.g-u-table td .btn {padding: 2px 6px; margin-top: -8px;}
+.dropdown-menu li {font-size:12px;}
+.fixed-table-toolbar .columns label {padding:0px;}
+.dropdown-menu input {margin:4px 5px 4px 0;}
+.grey-cell {font-weight:normal;}
+</style>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
+<script>
+$('#g-u-table-recentgames').bootstrapTable({
+                striped: true,
+                search: true,
+                pagination: true,
+                showColumns: true,
+                showToggle: true,
+                pageSize: 200,
+                pageList: [20, 50, 100, 200, 500]
+});
+
+[% IF result_ascended.size -%]
+$('#g-u-table-ascended').bootstrapTable({
+                striped: true,
+                search: true,
+                pagination: true,
+                showColumns: true,
+                showToggle: true,
+                pageSize: 200,
+                pageList: [20, 50, 100, 200, 500]
+});
+[% END -%]
+
+[% IF streaks_count.all %]
+$('#g-u-table-streaklist').bootstrapTable({
+                striped: true,
+                search: true,
+                pagination: true,
+                showColumns: true,
+                showToggle: true,
+                pageSize: 200,
+                pageList: [20, 50, 100, 200, 500]
+});
+[% END -%]
+</script>
+
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
 
 [% INCLUDE footer.tt %]

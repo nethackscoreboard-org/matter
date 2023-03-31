@@ -1,0 +1,11 @@
+<tr>
+<td class="numeric">~rank~</td>
+<td class="numeric">~wins~</td>
+<td><a href="players/~letter~/~name~.all.html">~name~</a></td>
+<td class="numeric">~turns~</td>
+<td>~start~</td>
+<td>~end~</td>
+<td>
+~combos~
+</td>
+</tr>

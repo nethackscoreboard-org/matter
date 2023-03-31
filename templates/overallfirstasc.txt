@@ -1,4 +1,5 @@
 [%- MACRO number(n) GET n.chunk(-3).join(',') -%]
+[%- USE percent = format("%0.1f%%") -%]
 <!doctype html>
 
 <html>
@@ -6,28 +7,57 @@
 <head>
   <meta charset="utf-8" />
   <link rel="stylesheet" type="text/css" href="default.css" />
-[% IF result_ascended.size -%]
-  <script type="text/javascript" src="js/jquery.js" />
-  <script type="text/javascript" src="js/tablesorter.js" />
-  <script type="text/javascript" src="js/tabsort.js" />
-[% END -%]
   <link rel="icon" type="image/png" href="favicon.png">
-  <title>Recent Games</title>
+  <title>Overall First Ascensions</title>
 </head>
 
 <body class="page_back">
 
 <div class="page">
 
-[% INCLUDE topmenu.tt mnu="recent" lvl=0 var=variant %]
+[% INCLUDE topmenu.tt mnu="firstasc" lvl=0 var='all' %]
 
 <div class="page_content">
-<h1>Recent Games</h1>
 
-[% INCLUDE varmenu.tt page="recent" %]
+<h1>Overall First Ascensions</h1>
 
-[% IF variant == 'all' || variant == 'nh'; dt_ena=1; END %]
-[% INCLUDE tab_recent.tt datetick=dt_ena %]
+[% INCLUDE varmenu.tt page="firstasc" %]
+
+<table id="g-u-table-overallfirstasc" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
+
+  <thead>
+    <tr>
+      <th>&nbsp;</th>
+      <th data-sortable="true">name</th>
+        [% FOR var IN variants %]
+          <th data-sortable="true" data-sorter="universal_sorter">[% var %]</th>
+        [% END %]
+    </tr>
+  </thead>
+
+  <tbody>
+	[% SET n = 0; SET prev = -1 %]
+    [% FOR plr IN firsts.item('ord').item('all') %]
+	  [% SET next = (firsts.item('val').item(plr).item("all") ? firsts.item('val').item(plr).item("all") : 0) %]
+      [% IF prev != next; SET n = n + 1; SET prev = next; END %]
+      <tr>
+      <td>[% n %]</td>
+      <td><a href="players/[% plr.substr(0,1) %]/[% plr %].html">[% plr %]</a></td>
+
+        [% FOR var IN variants %]
+		[% SET v = firsts.item('val').item(plr).item(var).item("all") %]
+        [% IF firsts.item('_max').item(var).item("all") == v && v %]
+        <td><span class="zscmax">[% v %]</span></td>
+        [% ELSE %]
+        <td>[% v %]</td>
+        [% END %]
+        [% END %]
+
+      </tr>
+    [% END %]
+  </tbody>
+
+</table>
 
 <link rel="stylesheet" href="/chewtextim/mbo_assets/css/bootstrap.css?ver=3" id="bscss">
 
@@ -62,22 +92,13 @@ $.extend($.fn.bootstrapTable.columnDefaults, {
 });
 </script>
 <script>
-$('#g-u-table-recent').bootstrapTable({
+$('#g-u-table-overallfirstasc').bootstrapTable({
                 striped: true,
                 search: true,
                 pagination: true,
                 showColumns: true,
                 showToggle: true,
-                pageSize: 200,
-                pageList: [50, 100, 200, 500]
-});
-$('#g-u-table-recentgames').bootstrapTable({
-                striped: true,
-                search: true,
-                pagination: true,
-                showColumns: true,
-                showToggle: true,
-                pageSize: 200,
+                pageSize: 50,
                 pageList: [50, 100, 200, 500]
 });
 </script>

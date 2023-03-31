@@ -455,33 +455,6 @@ INSERT INTO logfiles (
   'https://www.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
 );
 
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  92, 'hardfought.org (AceHack)', 'hdf', 'ace',
-  'https://www.hardfought.org/xlogfiles/acehack/xlogfile',
-  'hdf.ace.log',
-  'https://www.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  95, 'gnollhack.org', 'hdf', 'gnoll',
-  'https://www.hardfought.org/xlogfiles/gnollhack/xlogfile',
-  'hdf.gnoll.log',
-  'https://www.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  2022, 'HackEm', 'hdf', 'hackem',
-  'https://www.hardfought.org/xlogfiles/hackem/xlogfile',
-  'hdf.hackem.log',
-  'https://www.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.hackem.txt'
-);
-
 -----------------------------------------------------------------------------
 -- hardfought.org Europe/HFE ------------------------------------------------
 -----------------------------------------------------------------------------
@@ -650,33 +623,6 @@ INSERT INTO logfiles (
   'https://eu.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
 );
 
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  93, 'eu.hardfought.org (AceHack)', 'hfe', 'ace',
-  'https://eu.hardfought.org/xlogfiles/acehack/xlogfile',
-  'hfe.ace.log',
-  'https://eu.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  96, 'gnollhack.org', 'hfe', 'gnoll',
-  'https://eu.hardfought.org/xlogfiles/gnollhack/xlogfile',
-  'hfe.gnoll.log',
-  'https://eu.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  2023, 'HackEm', 'hfe', 'hackem',
-  'https://eu.hardfought.org/xlogfiles/hackem/xlogfile',
-  'hfe.hackem.log',
-  'https://eu.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.hackem.txt'
-);
-
 -----------------------------------------------------------------------------
 -- hardfought.org Australia/HFA ---------------------------------------------
 -----------------------------------------------------------------------------
@@ -843,33 +789,6 @@ INSERT INTO logfiles (
   'https://au.hardfought.org/xlogfiles/setseed/xlogfile',
   'hfa.seed.log',
   'https://au.hardfought.org/userdata/%X/%x/setseed/dumplog/%s.seed.html'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  94, 'au.hardfought.org (AceHack)', 'hfa', 'ace',
-  'https://au.hardfought.org/xlogfiles/acehack/xlogfile',
-  'hfa.ace.log',
-  'https://au.hardfought.org/userdata/%X/%x/acehack/dumplog/%s.ace.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  97, 'gnollhack.org', 'hfa', 'gnoll',
-  'https://au.hardfought.org/xlogfiles/gnollhack/xlogfile',
-  'hfa.gnoll.log',
-  'https://au.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt'
-);
-
-INSERT INTO logfiles (
-  logfiles_i, descr, server, variant, logurl, localfile, dumpurl
-) VALUES (
-  2023, 'HackEm', 'hfa', 'hackem',
-  'https://au.hardfought.org/xlogfiles/hackem/xlogfile',
-  'hfa.hackem.log',
-  'https://au.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.hackem.txt'
 );
 
 -----------------------------------------------------------------------------
@@ -1115,3 +1034,94 @@ INSERT INTO logfiles (
   'https://%S.hardfought.org/userdata/%X/%x/tnnt/dumplog/%s.tnnt.html',
   TRUE
 );
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2025, 'gnollhack.org', 'hdf', 'gnoll',
+  'https://www.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hdf.gnoll.log',
+  'https://www.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt',
+  FALSE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2026, 'gnollhack.org', 'hfe', 'gnoll',
+  'https://eu.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hfe.gnoll.log',
+  'https://eu.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt',
+  FALSE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2027, 'gnollhack.org', 'hfa', 'gnoll',
+  'https://au.hardfought.org/xlogfiles/gnollhack/xlogfile',
+  'hfa.gnoll.log',
+  'https://au.hardfought.org/userdata/%X/%x/gnollhack/dumplog/%s.gnoll.txt',
+  FALSE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2028, 'HackEm', 'hdf', 'hackem',
+  'https://www.hardfought.org/xlogfiles/hackem/xlogfile',
+  'hdf.hackem.log',
+  'https://www.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.gnoll.txt',
+  FALSE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2029, 'HackEm', 'hfe', 'hackem',
+  'https://eu.hardfought.org/xlogfiles/hackem/xlogfile',
+  'hfe.hackem.log',
+  'https://eu.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.gnoll.txt',
+  FALSE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2030, 'HackEm', 'hfa', 'hackem',
+  'https://au.hardfought.org/xlogfiles/hackem/xlogfile',
+  'hfa.hackem.log',
+  'https://au.hardfought.org/userdata/%X/%x/hackem/dumplog/%s.gnoll.txt',
+  FALSE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2031, 'gnollhack.org', 'gnoll', 'gnoll',
+  'http://server.gnollhack.com/xlogfile',
+  'gnoll.gnoll.log',
+  'http://server.gnollhack.com/userdata/%x/dumplog/gnollhack.%x.%s.txt',
+  FALSE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2032, 'gnollhack.org', 'gnoll', 'gnoll',
+  'http://eu-server.gnollhack.com/xlogfile',
+  'gnolle.gnoll.log',
+  'http://eu-server.gnollhack.com/userdata/%x/dumplog/gnollhack.%x.%s.txt',
+  FALSE
+);
+
+INSERT INTO logfiles (
+  logfiles_i, descr, server, variant, logurl, localfile, dumpurl, static
+) VALUES (
+  2033, 'gnollhack.org', 'gnoll', 'gnoll',
+  'http://au-server.gnollhack.com/xlogfile',
+  'gnolla.gnoll.log',
+  'http://au-server.gnollhack.com/userdata/%x/dumplog/gnollhack.%x.%s.txt',
+  FALSE
+);
+

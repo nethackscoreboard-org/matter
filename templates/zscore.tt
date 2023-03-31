@@ -25,34 +25,49 @@
 [% INCLUDE varmenu.tt page="zscore" %]
 
 [% IF zscore.item('ord').item(variant).size %]
-<table class="bordered">
+<table id="g-u-table-zscore" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
 
   <thead>
     <tr>
       <th>&nbsp;</th>
-      <th>name</th>
+      <th data-sortable="true">name</th>
+          <th data-sortable="true" data-sorter="universal_sorter">Wins</th>
       [% IF variant == 'all' %]
+          <th data-sortable="true" data-sorter="universal_sorter">Different</th>
         [% FOR var IN variants %]
-          <th>[% var %]</th>
+          <th data-sortable="true" data-sorter="universal_sorter">[% var %]</th>
         [% END %]
       [% ELSE %]
         [% FOR role IN z_roles %]
-          <th>[% role == "all" ? role : role.ucfirst %]</th>
+          <th data-sortable="true" data-sorter="universal_sorter">[% role == "all" ? role : role.ucfirst %]</th>
         [% END %]
       [% END %]
     </tr>
   </thead>
 
   <tbody>
-    [% SET n = 0; SET prev = -1; SET ties = 0 %]
+    [% SET n = 0; SET prev = -1 %]
     [% FOR plr IN zscore.item('ord').item(variant) %]
       [% SET next = (zscore.item('val').item(plr).item(variant).item("all") ? zscore.item('val').item(plr).item(variant).item("all") : 0) %]
-      [% IF prev != next; SET n = n + ties + 1; SET ties = 0; SET prev = next; ELSE; SET ties = ties + 1; END %]
+      [% IF prev != next; SET n = n + 1; SET prev = next; END %]
       <tr>
       <td class="numeric">[% n %]</td>
       <td><a href="players/[% plr.substr(0,1) %]/[% plr %].[% variant %].html">[% plr %]</a></td>
 
       [% IF variant == 'all' %]
+        [% SET v3 = zscore.item('val').item(plr).item('countall').item("all") %]
+        [% IF zscore.item('max').item('countall').item("all") == v3 && v3 %]
+        <td class="numeric"><span class="zscmax">[% v3 %]</span></td>
+        [% ELSE %]
+        <td class="numeric">[% v3 %]</td>
+        [% END %]
+
+        [% SET v2 = zscore.item('val').item(plr).item('different').item("all") %]
+        [% IF zscore.item('max').item('different').item("all") == v2 && v2 %]
+        <td class="numeric"><span class="zscmax">[% v2 %]</span></td>
+        [% ELSE %]
+        <td class="numeric">[% v2 %]</td>
+        [% END %]
 
         [% FOR var IN variants %]
         [% SET v = zscore.item('val').item(plr).item(var).item("all") %]
@@ -64,6 +79,12 @@
         [% END %]
 
       [% ELSE %]
+        [% SET v3 = zscore.item('val').item(plr).item(variant).item('count') %]
+        [% IF zscore.item('max').item(variant).item('count') == v3 && v3 %]
+        <td class="numeric"><span class="zscmax">[% v3 %]</span></td>
+        [% ELSE %]
+        <td class="numeric">[% v3 %]</td>
+        [% END %]
 
         [% FOR role IN z_roles %]
         [% SET v = zscore.item('val').item(plr).item(variant).item(role) ? zscore.item('val').item(plr).item(variant).item(role) : 0 %]
@@ -83,5 +104,54 @@
 [% ELSE %]
 <p>No z-scores for this variant</p>
 [% END %]
+
+<link rel="stylesheet" href="/chewtextim/mbo_assets/css/bootstrap.css?ver=3" id="bscss">
+
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+
+<script src="/web/mbo/includes/jquery/dist/jquery.js"></script>
+
+<script src="/web/mbo/includes/bootstrap/dist/js/bootstrap.js"></script>
+
+
+<script src="/web/bootstrap-table.min.js"></script>
+<script src="/web/bootstrap-custom-sorters.js?ver=5"></script>
+
+<style>
+.search input[type=text] {height:30px; width:250px; margin-left:-8px; background-color:lightcyan; margin-top:-8px; border: 1px solid #029ebb;}
+.search input {border-radius: 4px;}
+.pagination-info {margin-left:8px;}
+.pagination {padding-right:4px;}
+.fixed-table-toolbar {float:right;}
+.fixed-table-toolbar .bs-bars, .fixed-table-toolbar .search {padding-left: 12px;}
+.teamtable {}
+.g-u-table .btn {padding: 4px 8px; margin-top: -8px;}
+.g-u-table td .btn {padding: 2px 6px; margin-top: -8px;}
+.dropdown-menu li {font-size:12px;}
+.fixed-table-toolbar .columns label {padding:0px;}
+.dropdown-menu input {margin:4px 5px 4px 0;}
+.grey-cell {font-weight:normal;}
+</style>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
+<script>
+$('#g-u-table-zscore').bootstrapTable({
+                striped: true,
+                search: true,
+                pagination: true,
+                showColumns: true,
+                showToggle: true,
+                pageSize: 200,
+                pageList: [50, 100, 200, 500]
+});
+</script>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
 
 [% INCLUDE footer.tt %]

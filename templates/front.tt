@@ -25,21 +25,23 @@
 
 <h3>Last Ascension In Each Variant</h3>
 
-<table class="bordered">
-
+<table id="g-u-table-default" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
+  <thead>
 <tr>
-  <th>variant</th>
-  <th>srv</th>
-  <th>name</th>
-  <th>character</th>
-  <th>points</th>
-  <th>turns&nbsp;&nbsp;</th>
-  <th>duration</th>
-  <th>dlvl&nbsp;</th>
-  <th>HP</th>
-  <th>time</th>
-  <th>age</th>
+  <th data-sortable="true"><b>variant</b></th>
+  <th data-sortable="true"><b>srv</b></th>
+  <th data-sortable="true"><b>name</b></th>
+  <th data-sortable="true"><b>character</b></th>
+  <th data-sortable="true" data-sorter="universal_sorter"><b>points</b></th>
+  <th data-sortable="true" data-sorter="universal_sorter"><b>turns</b></th>
+  <th data-sortable="true" data-sorter="universal_durationsorter"><b>duration</b></th>
+  <th data-sortable="true" data-sorter="universal_hpsorter"><b>dlvl</b></th>
+  <th data-sortable="true" data-sorter="universal_hpsorter"><b>HP</b></th>
+  <th data-sortable="true"><b>time</b></th>
+  <th data-sortable="false"><b>age</b></th>
+  <th data-sortable="false"><b>special</b></th>
 </tr>
+  </thead>
 
 [% FOREACH var IN variants %]
 [% NEXT IF !last_ascensions.item(var) %]
@@ -50,16 +52,17 @@
 <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
 <td>[% row.role %]-[% row.race %]-[% row.gender %]-[% row.align %]</td>
 [% IF row.dump -%]
-<td class="numeric" data-sortkey="[% row.points %]"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
+<td align="right"><a href="[% row.dump %]">[% number(row.points) %]</a></td>
 [%- ELSE -%]
-<td class="numeric" data-sortkey="[% row.points %]">[% number(row.points) %]</td>
+<td align="right">[% number(row.points) %]</td>
 [%- END %]
-<td class="numeric">[% row.turns %]</td>
-<td class="numeric" data-sortkey="[% row.realtime_raw %]">[% row.realtime %]</td>
-<td class="numeric" data-sortkey="[%row.maxlvl %]">[% row.deathlev %]/[% row.maxlvl %]</td>
-<td class="numeric" data-sortkey="[% row.maxhp %]">[% row.hp %]/[% row.maxhp %]</td>
+<td align="right">[% number(row.turns) %]</td>
+<td>[% row.realtime %]</td>
+<td>[% row.deathlev %]/[% row.maxlvl %]</td>
+<td>[% row.hp %]/[% row.maxhp %]</td>
 <td>[% row.endtime_fmt %]</td>
 <td>[% row.age %]</td>
+<td>[% IF row.isfirst -%] 1st combo[%- END %][% IF row.isstreak -%] streak of [% row.isstreak %][%- END %]</td>
 </tr>
 [% END %]
 
@@ -97,7 +100,7 @@
 <td>[% row.variant %]</td>
 <td>[% row.version %]</td>
 <td><a href="[% row.plrpage %]">[% row.name %]</a></td>
-<td class="numeric">[% number(row.turns) %]</td>
+<td>[% number(row.turns) %]</td>
 [% IF row.start_dump %]
 <td><a href="[% row.start_dump %]">[% row.start %]</a></td>
 [% ELSE %]
@@ -127,6 +130,56 @@
 </div>
 
 <div class="updatetime">[% cur_time %]</div>
+
+<link rel="stylesheet" href="chewtextim/mbo_assets/css/bootstrap.css?ver=3" id="bscss">
+
+<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css">
+
+<script src="web/mbo/includes/jquery/dist/jquery.js"></script>
+
+<script src="web/mbo/includes/bootstrap/dist/js/bootstrap.js"></script>
+
+
+<script src="web/bootstrap-table.min.js"></script>
+<script src="web/bootstrap-custom-sorters.js?ver=6"></script>
+
+<style>
+.search input[type=text] {height:30px; width:250px; margin-left:-8px; background-color:lightcyan; margin-top:-8px; border: 1px solid #029ebb;}
+.search input {border-radius: 4px;}
+.pagination-info {margin-left:8px;}
+.pagination {padding-right:4px;}
+.fixed-table-toolbar {float:right;}
+.fixed-table-toolbar .bs-bars, .fixed-table-toolbar .search {padding-left: 12px;}
+.teamtable {}
+.g-u-table .btn {padding: 4px 8px; margin-top: -8px;}
+.g-u-table td .btn {padding: 2px 6px; margin-top: -8px;}
+.dropdown-menu li {font-size:12px;}
+.fixed-table-toolbar .columns label {padding:0px;}
+.dropdown-menu input {margin:4px 5px 4px 0;}
+.grey-cell {font-weight:normal;}
+</style>
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
+<script>
+$('#g-u-table-default').bootstrapTable({
+                striped: true,
+                search: true,
+                pagination: true,
+                showColumns: true,
+                showToggle: true,
+                pageSize: 200,
+                pageList: [20, 50, 100, 200]
+});
+</script>
+
+<script>
+$.extend($.fn.bootstrapTable.columnDefaults, {
+  	sortable: true
+});
+</script>
 
 </body>
 

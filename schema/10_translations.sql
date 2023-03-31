@@ -118,3 +118,8 @@ INSERT INTO translations VALUES ('nao', 'ArcGDQ', 'Luxidream');
 INSERT INTO translations VALUES ('nao', 'HeaGDQ', 'Luxidream');
 INSERT INTO translations VALUES ('nao', 'TouGDQ', 'Luxidream');
 INSERT INTO translations VALUES ('nao', 'WizGDQ', 'Luxidream');
+INSERT INTO translations VALUES ('hfe', 'malor2', 'malor');
+INSERT INTO translations VALUES ('hfe', 'malor3', 'malor');
+INSERT INTO translations VALUES ('hfe', 'malor4', 'malor');
+INSERT INTO translations VALUES ('hfe', 'malor5', 'malor');
+INSERT INTO translations VALUES ('hfe', 'malor6', 'malor');

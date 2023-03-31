@@ -61,9 +61,11 @@
 
 [%- IF mnu != "firstasc" -%]
   [% IF var == "all"; SET var2 = "dnh"; END %]
-  [% IF var == "dnh" || var == "nhf" || var == "dyn" || var == "ndnh"; SET var2 = var; END %]
+  [% IF var != "nh"; SET var2 = var; END %]
   [% IF var2 %]
   <a href="[% path %]firstasc.[% var2 %].html">First To Ascend</a> |
+  [%- ELSE -%]
+  <a href="[% path %]firstasc.dnh.html">First To Ascend</a> |
   [% END %]
 [%- END %]
 

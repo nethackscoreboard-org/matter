@@ -1,34 +1,35 @@
 [% IF tabcl; tabcl = tabcl _ ' bordered'; ELSE; tabcl = 'bordered'; END %]
 
-<table[% IF id %] id="[% id %]"[% END %] class="[% tabcl %]">
-
-<thead>
+<table id="g-u-table-ascended" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
+  <thead>
 
 <tr>
   <th data-sorter="true">&nbsp;</th>
 [%- IF NOT devnull -%]
-  <th>srv</th>
-  <th>var</th>
-  <th>ver</th>
+  <th data-sortable="true">srv</th>
+  <th data-sortable="true">var</th>
+  <th data-sortable="true">ver</th>
 [%- END -%]
 [%- IF not name -%]
-  <th>name</th>
+  <th data-sortable="true">name</th>
 [%- END -%]
-  <th data-sorter="true">character</th>
-  <th data-sorter="custkey">points</th>
-  <th data-sorter="true">turns&nbsp;&nbsp;</th>
+  <th data-sortable="true">character</th>
+  <th data-sortable="true" data-sorter="universal_sorter">points</th>
+  <th data-sortable="true" data-sorter="universal_sorter">turns&nbsp;&nbsp;</th>
 [% IF wallclock -%]
-  <th data-sorter="custkey">wallclock</th>
+  <th data-sortable="true">wallclock</th>
 [%- ELSE -%]
-  <th data-sorter="custkey">duration</th>
+  <th data-sortable="true" data-sorter="universal_durationsorter">duration</th>
 [%- END %]
-  <th data-sorter="custkey">dlvl&nbsp;</th>
-  <th data-sorter="custkey">HP</th>
-  <th data-sorter="custkey">time</th>
-  <th colspan="2" data-sorter="true">conducts</th>
+  <th data-sortable="true">dlvl&nbsp;</th>
+  <th data-sortable="true" data-sorter="universal_hpsorter">HP</th>
+  <th data-sortable="true">time</th>
+  <th data-sortable="true">cnd</th>
+  <th data-sortable="true">conducts</th>
 [% IF datetick %]
-  <th class="date"></th>
+  <th class="date" data-sortable="true"></th>
 [% END %]
+  <th data-sortable="true">special</th>
 </tr>
 
 </thead>
@@ -54,7 +55,7 @@
 [%- ELSE -%]
   <td class="numeric" data-sortkey="[% row.points %]">[% number(row.points) %]</td>
 [%- END %]
-  <td class="numeric">[% row.turns %]</td>
+  <td class="numeric">[% number(row.turns) %]</td>
 [% IF wallclock -%]
   <td class="numeric" data-sortkey="[% row.wallclock_raw %]">[% row.wallclock %]</td>
 [%- ELSE -%]
@@ -72,6 +73,7 @@
   <td class="date"></td>
 [% END %]
 [% END %]
+  <td>[% IF row.isfirst %] 1st combo[% END %][% IF row.isstreak %] streak of [% row.isstreak %][% END %]</td>
 </tr>
 [%- END %]
 
