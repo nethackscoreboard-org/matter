@@ -43,17 +43,18 @@ Additional contributors to acknowledge are stenno and spicycat and aoei, and Kei
 
 <h3>Data Sources</h3>
 <table id="g-u-table-ascended" data-toggle="table" data-sort-order="desc" class="bootstrapTable">
-
+<thead>
 <tr>
-<th>id</th>
-<th>srv</th>
-<th>var</th>
-<th>description</th>
-<th>logfile</th>
-<th>recorded games</th>
-<th>lastchk</th>
-<th>lastentry</th>
+<th data-sorter="true">id</th>
+<th data-sorter="true">srv</th>
+<th data-sorter="true">var</th>
+<th data-sorter="true">description</th>
+<th data-sorter="true">logfile</th>
+<th data-sorter="true">recorded games</th>
+<th data-sorter="true">lastchk</th>
+<th data-sorter="true">lastentry</th>
 </tr>
+</thead>
 
 [% FOREACH row IN logfiles -%]
 [%- SET stale = "stale_hi" -%]
