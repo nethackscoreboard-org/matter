@@ -42,7 +42,7 @@
       [% IF prev != next; SET n = n + 1; SET prev = next; END %]
       <tr>
       <td>[% n %]</td>
-      <td><a href="players/[% plr.substr(0,1) %]/[% plr %].html">[% plr %]</a></td>
+      <td><a href="players/[% plr.substr(0,1) %]/[% plr %].all.html">[% plr %]</a></td>
 
         [% FOR var IN variants %]
 		[% SET v = firsts.item('val').item(plr).item(var).item("all") %]
