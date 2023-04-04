@@ -2289,6 +2289,150 @@
       ],
       "genders" : [ "fem", "mal", "nbn" ],
       "aligns" : [ "law", "neu", "cha" ],
+      "enum" : [
+       [ "Arc", "Dop", "Fem", "Neu" ], [ "Arc", "Dop", "Mal", "Neu" ],
+       [ "Arc", "Dwa", "Fem", "Law" ], [ "Arc", "Dwa", "Mal", "Law" ],
+       [ "Arc", "Elf", "Fem", "Law" ], [ "Arc", "Elf", "Mal", "Law" ],
+       [ "Arc", "Elf", "Fem", "Neu" ], [ "Arc", "Elf", "Mal", "Neu" ],
+       [ "Arc", "Gno", "Fem", "Neu" ], [ "Arc", "Gno", "Mal", "Neu" ],
+       [ "Arc", "Hob", "Fem", "Law" ], [ "Arc", "Hob", "Mal", "Law" ],
+       [ "Arc", "Hob", "Fem", "Neu" ], [ "Arc", "Hob", "Mal", "Neu" ],
+       [ "Arc", "Hum", "Fem", "Law" ], [ "Arc", "Hum", "Mal", "Law" ],
+       [ "Arc", "Hum", "Fem", "Neu" ], [ "Arc", "Hum", "Mal", "Neu" ],
+
+       [ "Bar", "Dop", "Fem", "Neu" ], [ "Bar", "Dop", "Mal", "Neu" ],
+       [ "Bar", "Dop", "Fem", "Cha" ], [ "Bar", "Dop", "Mal", "Cha" ],
+       [ "Bar", "Dro", "Fem", "Cha" ], [ "Bar", "Dro", "Mal", "Cha" ],
+       [ "Bar", "Elf", "Fem", "Neu" ], [ "Bar", "Elf", "Mal", "Neu" ],
+       [ "Bar", "Hum", "Fem", "Neu" ], [ "Bar", "Hum", "Mal", "Neu" ],
+       [ "Bar", "Hum", "Fem", "Cha" ], [ "Bar", "Hum", "Mal", "Cha" ],
+       [ "Bar", "Lyc", "Fem", "Cha" ], [ "Bar", "Lyc", "Mal", "Cha" ],
+       [ "Bar", "Orc", "Fem", "Cha" ], [ "Bar", "Orc", "Mal", "Cha" ],
+       [ "Bar", "Vam", "Fem", "Cha" ], [ "Bar", "Vam", "Mal", "Cha" ],
+
+       [ "Cav", "Dop", "Fem", "Neu" ], [ "Cav", "Dop", "Mal", "Neu" ],
+       [ "Cav", "Dwa", "Fem", "Law" ], [ "Cav", "Dwa", "Mal", "Law" ],
+       [ "Cav", "Gno", "Fem", "Neu" ], [ "Cav", "Gno", "Mal", "Neu" ],
+       [ "Cav", "Hum", "Fem", "Law" ], [ "Cav", "Hum", "Mal", "Law" ],
+       [ "Cav", "Hum", "Fem", "Neu" ], [ "Cav", "Hum", "Mal", "Neu" ],
+
+       [ "Fla", "Dop", "Fem", "Neu" ], [ "Fla", "Dop", "Mal", "Neu" ],
+       [ "Fla", "Dop", "Fem", "Cha" ], [ "Fla", "Dop", "Mal", "Cha" ],
+       [ "Fla", "Dro", "Fem", "Cha" ], [ "Fla", "Dro", "Mal", "Cha" ],
+       [ "Fla", "Elf", "Fem", "Law" ], [ "Fla", "Elf", "Mal", "Law" ],
+       [ "Fla", "Elf", "Fem", "Neu" ], [ "Fla", "Elf", "Mal", "Neu" ],
+       [ "Fla", "Gno", "Fem", "Neu" ], [ "Fla", "Gno", "Mal", "Neu" ],
+       [ "Fla", "Hob", "Fem", "Law" ], [ "Fla", "Hob", "Mal", "Law" ],
+       [ "Fla", "Hob", "Fem", "Neu" ], [ "Fla", "Hob", "Mal", "Neu" ],
+       [ "Fla", "Hum", "Fem", "Law" ], [ "Fla", "Hum", "Mal", "Law" ],
+       [ "Fla", "Hum", "Fem", "Neu" ], [ "Fla", "Hum", "Mal", "Neu" ],
+       [ "Fla", "Hum", "Fem", "Cha" ], [ "Fla", "Hum", "Mal", "Cha" ],
+       [ "Fla", "Orc", "Fem", "Cha" ], [ "Fla", "Orc", "Mal", "Cha" ],
+
+       [ "Hea", "Dop", "Fem", "Neu" ], [ "Hea", "Dop", "Mal", "Neu" ],
+       [ "Hea", "Elf", "Fem", "Neu" ], [ "Hea", "Elf", "Mal", "Neu" ],
+       [ "Hea", "Gno", "Fem", "Neu" ], [ "Hea", "Gno", "Mal", "Neu" ],
+       [ "Hea", "Hob", "Fem", "Neu" ], [ "Hea", "Hob", "Mal", "Neu" ],
+       [ "Hea", "Hum", "Fem", "Neu" ], [ "Hea", "Hum", "Mal", "Neu" ],
+
+       [ "Ice", "Dop", "Fem", "Neu" ], [ "Ice", "Dop", "Mal", "Neu" ],
+       [ "Ice", "Dop", "Fem", "Cha" ], [ "Ice", "Dop", "Mal", "Cha" ],
+       [ "Ice", "Dro", "Fem", "Cha" ], [ "Ice", "Dro", "Mal", "Cha" ],
+       [ "Ice", "Elf", "Fem", "Law" ], [ "Ice", "Elf", "Mal", "Law" ],
+       [ "Ice", "Elf", "Fem", "Neu" ], [ "Ice", "Elf", "Mal", "Neu" ],
+       [ "Ice", "Gno", "Fem", "Neu" ], [ "Ice", "Gno", "Mal", "Neu" ],
+       [ "Ice", "Hob", "Fem", "Law" ], [ "Ice", "Hob", "Mal", "Law" ],
+       [ "Ice", "Hob", "Fem", "Neu" ], [ "Ice", "Hob", "Mal", "Neu" ],
+       [ "Ice", "Hum", "Fem", "Law" ], [ "Ice", "Hum", "Mal", "Law" ],
+       [ "Ice", "Hum", "Fem", "Neu" ], [ "Ice", "Hum", "Mal", "Neu" ],
+       [ "Ice", "Hum", "Fem", "Cha" ], [ "Ice", "Hum", "Mal", "Cha" ],
+       [ "Ice", "Orc", "Fem", "Cha" ], [ "Ice", "Orc", "Mal", "Cha" ],
+       [ "Ice", "Vam", "Fem", "Cha" ], [ "Ice", "Vam", "Mal", "Cha" ],
+
+       [ "Kni", "Hum", "Fem", "Law" ], [ "Kni", "Hum", "Mal", "Law" ],
+
+       [ "Mon", "Dop", "Fem", "Neu" ], [ "Mon", "Dop", "Mal", "Neu" ],
+       [ "Mon", "Dop", "Fem", "Cha" ], [ "Mon", "Dop", "Mal", "Cha" ],
+       [ "Mon", "Hob", "Fem", "Law" ], [ "Mon", "Hob", "Mal", "Law" ],
+       [ "Mon", "Hob", "Fem", "Neu" ], [ "Mon", "Hob", "Mal", "Neu" ],
+       [ "Mon", "Hum", "Fem", "Law" ], [ "Mon", "Hum", "Mal", "Law" ],
+       [ "Mon", "Hum", "Fem", "Neu" ], [ "Mon", "Hum", "Mal", "Neu" ],
+       [ "Mon", "Hum", "Fem", "Cha" ], [ "Mon", "Hum", "Mal", "Cha" ],
+
+       [ "Nec", "Dop", "Fem", "Cha" ], [ "Nec", "Dop", "Mal", "Cha" ],
+       [ "Nec", "Dro", "Fem", "Cha" ], [ "Nec", "Dro", "Mal", "Cha" ],
+       [ "Nec", "Hum", "Fem", "Cha" ], [ "Nec", "Hum", "Mal", "Cha" ],
+       [ "Nec", "Orc", "Fem", "Cha" ], [ "Nec", "Orc", "Mal", "Cha" ],
+       [ "Nec", "Vam", "Fem", "Cha" ], [ "Nec", "Vam", "Mal", "Cha" ],
+
+       [ "Pri", "Dop", "Fem", "Neu" ], [ "Pri", "Dop", "Mal", "Neu" ],
+       [ "Pri", "Dop", "Fem", "Cha" ], [ "Pri", "Dop", "Mal", "Cha" ],
+       [ "Pri", "Dro", "Fem", "Cha" ], [ "Pri", "Dro", "Mal", "Cha" ],
+       [ "Pri", "Elf", "Fem", "Law" ], [ "Pri", "Elf", "Mal", "Law" ],
+       [ "Pri", "Elf", "Fem", "Neu" ], [ "Pri", "Elf", "Mal", "Neu" ],
+       [ "Pri", "Hob", "Fem", "Law" ], [ "Pri", "Hob", "Mal", "Law" ],
+       [ "Pri", "Hob", "Fem", "Neu" ], [ "Pri", "Hob", "Mal", "Neu" ],
+       [ "Pri", "Hum", "Fem", "Law" ], [ "Pri", "Hum", "Mal", "Law" ],
+       [ "Pri", "Hum", "Fem", "Neu" ], [ "Pri", "Hum", "Mal", "Neu" ],
+       [ "Pri", "Hum", "Fem", "Cha" ], [ "Pri", "Hum", "Mal", "Cha" ],
+
+       [ "Ran", "Dop", "Fem", "Neu" ], [ "Ran", "Dop", "Mal", "Neu" ],
+       [ "Ran", "Dop", "Fem", "Cha" ], [ "Ran", "Dop", "Mal", "Cha" ],
+       [ "Ran", "Dro", "Fem", "Cha" ], [ "Ran", "Dro", "Mal", "Cha" ],
+       [ "Ran", "Elf", "Fem", "Neu" ], [ "Ran", "Elf", "Mal", "Neu" ],
+       [ "Ran", "Gno", "Fem", "Neu" ], [ "Ran", "Gno", "Mal", "Neu" ],
+       [ "Ran", "Hob", "Fem", "Neu" ], [ "Ran", "Hob", "Mal", "Neu" ],
+       [ "Ran", "Hum", "Fem", "Neu" ], [ "Ran", "Hum", "Mal", "Neu" ],
+       [ "Ran", "Hum", "Fem", "Cha" ], [ "Ran", "Hum", "Mal", "Cha" ],
+       [ "Ran", "Lyc", "Fem", "Cha" ], [ "Ran", "Lyc", "Mal", "Cha" ],
+       [ "Ran", "Orc", "Fem", "Cha" ], [ "Ran", "Orc", "Mal", "Cha" ],
+
+       [ "Rog", "Dop", "Fem", "Cha" ], [ "Rog", "Dop", "Mal", "Cha" ],
+       [ "Rog", "Hum", "Fem", "Cha" ], [ "Rog", "Hum", "Mal", "Cha" ],
+       [ "Rog", "Lyc", "Fem", "Cha" ], [ "Rog", "Lyc", "Mal", "Cha" ],
+       [ "Rog", "Orc", "Fem", "Cha" ], [ "Rog", "Orc", "Mal", "Cha" ],
+       [ "Rog", "Vam", "Fem", "Cha" ], [ "Rog", "Vam", "Mal", "Cha" ],
+
+       [ "Sam", "Hum", "Fem", "Law" ], [ "Sam", "Hum", "Mal", "Law" ],
+
+       [ "Tou", "Dop", "Fem", "Neu" ], [ "Tou", "Dop", "Mal", "Neu" ],
+       [ "Tou", "Hob", "Fem", "Neu" ], [ "Tou", "Hob", "Mal", "Neu" ],
+       [ "Tou", "Hum", "Fem", "Neu" ], [ "Tou", "Hum", "Mal", "Neu" ],
+
+       [ "Und", "Dop", "Fem", "Neu" ], [ "Und", "Dop", "Mal", "Neu" ],
+       [ "Und", "Dop", "Fem", "Cha" ], [ "Und", "Dop", "Mal", "Cha" ],
+       [ "Und", "Dro", "Fem", "Cha" ], [ "Und", "Dro", "Mal", "Cha" ],
+       [ "Und", "Elf", "Fem", "Law" ], [ "Und", "Elf", "Mal", "Law" ],
+       [ "Und", "Elf", "Fem", "Neu" ], [ "Und", "Elf", "Mal", "Neu" ],
+       [ "Und", "Gno", "Fem", "Neu" ], [ "Und", "Gno", "Mal", "Neu" ],
+       [ "Und", "Hob", "Fem", "Law" ], [ "Und", "Hob", "Mal", "Law" ],
+       [ "Und", "Hob", "Fem", "Neu" ], [ "Und", "Hob", "Mal", "Neu" ],
+       [ "Und", "Hum", "Fem", "Law" ], [ "Und", "Hum", "Mal", "Law" ],
+       [ "Und", "Hum", "Fem", "Neu" ], [ "Und", "Hum", "Mal", "Neu" ],
+       [ "Und", "Hum", "Fem", "Cha" ], [ "Und", "Hum", "Mal", "Cha" ],
+       [ "Und", "Lyc", "Fem", "Cha" ], [ "Und", "Lyc", "Mal", "Cha" ],
+       [ "Und", "Orc", "Fem", "Cha" ], [ "Und", "Orc", "Mal", "Cha" ],
+
+       [ "Val", "Dop", "Fem", "Neu" ], [ "Val", "Dop", "Mal", "Neu" ],
+       [ "Val", "Dwa", "Fem", "Law" ], [ "Val", "Dwa", "Mal", "Law" ],
+       [ "Val", "Hum", "Fem", "Law" ], [ "Val", "Hum", "Mal", "Law" ],
+       [ "Val", "Hum", "Fem", "Neu" ], [ "Val", "Hum", "Mal", "Neu" ],
+
+       [ "Wiz", "Dop", "Fem", "Neu" ], [ "Wiz", "Dop", "Mal", "Neu" ],
+       [ "Wiz", "Dop", "Fem", "Cha" ], [ "Wiz", "Dop", "Mal", "Cha" ],
+       [ "Wiz", "Dro", "Fem", "Cha" ], [ "Wiz", "Dro", "Mal", "Cha" ],
+       [ "Wiz", "Elf", "Fem", "Neu" ], [ "Wiz", "Elf", "Mal", "Neu" ],
+       [ "Wiz", "Gno", "Fem", "Neu" ], [ "Wiz", "Gno", "Mal", "Neu" ],
+       [ "Wiz", "Hob", "Fem", "Neu" ], [ "Wiz", "Hob", "Mal", "Neu" ],
+       [ "Wiz", "Hum", "Fem", "Neu" ], [ "Wiz", "Hum", "Mal", "Neu" ],
+       [ "Wiz", "Hum", "Fem", "Cha" ], [ "Wiz", "Hum", "Mal", "Cha" ],
+       [ "Wiz", "Orc", "Fem", "Cha" ], [ "Wiz", "Orc", "Mal", "Cha" ],
+       [ "Wiz", "Vam", "Fem", "Cha" ], [ "Wiz", "Vam", "Mal", "Cha" ],
+
+       [ "Yeo", "Elf", "Fem", "Law" ], [ "Yeo", "Elf", "Mal", "Law" ],
+       [ "Yeo", "Hob", "Fem", "Law" ], [ "Yeo", "Hob", "Mal", "Law" ],
+       [ "Yeo", "Hum", "Fem", "Law" ], [ "Yeo", "Hum", "Mal", "Law" ],
+      ]
     },
 
     "slashthem" : {
@@ -2783,6 +2927,8 @@
         [ "Arc", "Gno", "Mal", "Neu" ], [ "Arc", "Gno", "Fem", "Neu" ], # 5
         [ "Arc", "Hob", "Mal", "Law" ], [ "Arc", "Hob", "Fem", "Law" ], # 6
         [ "Arc", "Hob", "Mal", "Neu" ], [ "Arc", "Hob", "Fem", "Neu" ], # 7
+        [ "Arc", "Trt", "Mal", "Law" ], [ "Arc", "Trt", "Fem", "Law" ],
+        [ "Arc", "Trt", "Mal", "Neu" ], [ "Arc", "Trt", "Fem", "Neu" ],
 
         [ "Bar", "Hum", "Mal", "Neu" ], [ "Bar", "Hum", "Fem", "Neu" ], # 1
         [ "Bar", "Hum", "Mal", "Cha" ], [ "Bar", "Hum", "Fem", "Cha" ], # 2
@@ -2791,7 +2937,8 @@
         [ "Bar", "Gia", "Mal", "Cha" ], [ "Bar", "Gia", "Fem", "Cha" ], # 5
         [ "Bar", "Cen", "Mal", "Neu" ], [ "Bar", "Cen", "Fem", "Neu" ], # 6
         [ "Bar", "Cen", "Mal", "Cha" ], [ "Bar", "Cen", "Fem", "Cha" ], # 7
-        [ "Bar", "Orc", "Mal", "Cha" ], [ "Bar", "Orc", "Fem", "Cha" ], # 8
+        [ "Bar", "Orc", "Mal", "Cha" ], [ "Bar", "Orc", "Fem", "Cha" ],
+        [ "Bar", "Trt", "Mal", "Neu" ], [ "Bar", "Trt", "Fem", "Neu" ],
 
         [ "Cav", "Hum", "Mal", "Law" ], [ "Cav", "Hum", "Fem", "Law" ], # 1
         [ "Cav", "Hum", "Mal", "Neu" ], [ "Cav", "Hum", "Fem", "Neu" ], # 2
@@ -2803,24 +2950,32 @@
 
         [ "Con", "Hum", "Mal", "Cha" ], [ "Con", "Hum", "Fem", "Cha" ], # 1
         [ "Con", "Dwa", "Mal", "Cha" ], [ "Con", "Dwa", "Fem", "Cha" ], # 2
-        [ "Con", "Gia", "Mal", "Cha" ], [ "Con", "Gia", "Fem", "Cha" ], # 3
-        [ "Con", "Hob", "Mal", "Cha" ], [ "Con", "Hob", "Fem", "Cha" ], # 4
+        [ "Con", "Gno", "Mal", "Cha" ], [ "Con", "Gno", "Fem", "Cha" ], # 2
         [ "Con", "Orc", "Mal", "Cha" ], [ "Con", "Orc", "Fem", "Cha" ], # 5
+        [ "Con", "Hob", "Mal", "Cha" ], [ "Con", "Hob", "Fem", "Cha" ], # 4
+        [ "Con", "Ith", "Mal", "Cha" ], [ "Con", "Ith", "Fem", "Cha" ], # 5
         
         [ "Hea", "Hum", "Mal", "Neu" ], [ "Hea", "Hum", "Fem", "Neu" ], # 1
         [ "Hea", "Elf", "Mal", "Neu" ], [ "Hea", "Elf", "Fem", "Neu" ], # 2
         [ "Hea", "Dwa", "Mal", "Neu" ], [ "Hea", "Dwa", "Fem", "Neu" ], # 3
         [ "Hea", "Gno", "Mal", "Neu" ], [ "Hea", "Gno", "Fem", "Neu" ], # 4
         [ "Hea", "Hob", "Mal", "Neu" ], [ "Hea", "Hob", "Fem", "Neu" ], # 5
+        [ "Hea", "Cen", "Mal", "Neu" ], [ "Hea", "Cen", "Fem", "Neu" ], # 5
+        [ "Hea", "Trt", "Mal", "Neu" ], [ "Hea", "Trt", "Fem", "Neu" ], # 5
 
 		[ "Inf", "Hum", "Mal", "Una" ], [ "Inf", "Hum", "Fem", "Una" ], # 1
+		[ "Inf", "Elf", "Mal", "Una" ], [ "Inf", "Elf", "Fem", "Una" ], # 1
 		[ "Inf", "Orc", "Mal", "Una" ], [ "Inf", "Orc", "Fem", "Una" ], # 2
+		[ "Inf", "Gia", "Mal", "Una" ], [ "Inf", "Gia", "Fem", "Una" ], # 2
+		[ "Inf", "Cen", "Mal", "Una" ], [ "Inf", "Cen", "Fem", "Una" ], # 2
 		[ "Inf", "Ith", "Mal", "Una" ], [ "Inf", "Ith", "Fem", "Una" ], # 3
-		[ "Inf", "Dem", "Mal", "Una" ], [ "Inf", "Dem", "Fem", "Una" ], # 4
 		
         [ "Kni", "Hum", "Mal", "Law" ], [ "Kni", "Hum", "Fem", "Law" ], # 1
         [ "Kni", "Hum", "Mal", "Cha" ], [ "Kni", "Hum", "Fem", "Cha" ], # 2
         [ "Kni", "Elf", "Mal", "Cha" ], [ "Kni", "Elf", "Fem", "Cha" ], # 3
+        [ "Kni", "Dwa", "Mal", "Law" ], [ "Kni", "Dwa", "Fem", "Law" ], # 1
+        [ "Kni", "Orc", "Mal", "Cha" ], [ "Kni", "Orc", "Fem", "Cha" ], # 3
+        [ "Kni", "Cen", "Mal", "Cha" ], [ "Kni", "Cen", "Fem", "Cha" ], # 3
 
         [ "Mon", "Hum", "Mal", "Law" ], [ "Mon", "Hum", "Fem", "Law" ], # 1
         [ "Mon", "Hum", "Mal", "Neu" ], [ "Mon", "Hum", "Fem", "Neu" ], # 2
@@ -2834,6 +2989,8 @@
         [ "Mon", "Gia", "Mal", "Cha" ], [ "Mon", "Gia", "Fem", "Cha" ], # 10
         [ "Mon", "Cen", "Mal", "Neu" ], [ "Mon", "Cen", "Fem", "Neu" ], # 11
         [ "Mon", "Cen", "Mal", "Cha" ], [ "Mon", "Cen", "Fem", "Cha" ], # 12
+        [ "Mon", "Trt", "Mal", "Law" ], [ "Mon", "Trt", "Fem", "Law" ], # 1
+        [ "Mon", "Trt", "Mal", "Neu" ], [ "Mon", "Trt", "Fem", "Neu" ], # 2
 
         [ "Pri", "Hum", "Mal", "Law" ], [ "Pri", "Hum", "Fem", "Law" ], # 1
         [ "Pri", "Hum", "Mal", "Neu" ], [ "Pri", "Hum", "Fem", "Neu" ], # 2
@@ -2851,6 +3008,8 @@
         [ "Pri", "Cen", "Mal", "Cha" ], [ "Pri", "Cen", "Fem", "Cha" ], # 14
         [ "Pri", "Orc", "Mal", "Cha" ], [ "Pri", "Orc", "Fem", "Cha" ], # 15
         [ "Pri", "Ith", "Mal", "Cha" ], [ "Pri", "Ith", "Fem", "Cha" ], # 16
+        [ "Pri", "Trt", "Mal", "Law" ], [ "Pri", "Trt", "Fem", "Law" ], # 1
+        [ "Pri", "Trt", "Mal", "Neu" ], [ "Pri", "Trt", "Fem", "Neu" ], # 2
 
         [ "Ran", "Hum", "Mal", "Neu" ], [ "Ran", "Hum", "Fem", "Neu" ], # 1
         [ "Ran", "Hum", "Mal", "Cha" ], [ "Ran", "Hum", "Fem", "Cha" ], # 2
@@ -2869,6 +3028,8 @@
         [ "Rog", "Elf", "Mal", "Cha" ], [ "Rog", "Elf", "Fem", "Cha" ], # 4
         [ "Rog", "Hob", "Mal", "Neu" ], [ "Rog", "Hob", "Fem", "Neu" ], # 5
         [ "Rog", "Orc", "Mal", "Cha" ], [ "Rog", "Orc", "Fem", "Cha" ], # 6
+        [ "Rog", "Gno", "Mal", "Neu" ], [ "Rog", "Gno", "Fem", "Neu" ], # 1
+        [ "Rog", "Gno", "Mal", "Cha" ], [ "Rog", "Gno", "Fem", "Cha" ], # 2
 
         [ "Sam", "Hum", "Mal", "Law" ], [ "Sam", "Hum", "Fem", "Law" ],
         [ "Sam", "Dwa", "Mal", "Law" ], [ "Sam", "Dwa", "Mal", "Law" ],
@@ -2876,6 +3037,8 @@
 
         [ "Tou", "Hum", "Mal", "Neu" ], [ "Tou", "Hum", "Fem", "Neu" ],
         [ "Tou", "Hob", "Mal", "Neu" ], [ "Tou", "Hob", "Fem", "Neu" ],
+        [ "Tou", "Gno", "Mal", "Neu" ], [ "Tou", "Gno", "Fem", "Neu" ],
+        [ "Tou", "Trt", "Mal", "Neu" ], [ "Tou", "Trt", "Fem", "Neu" ],
 
                                         [ "Val", "Hum", "Fem", "Law" ], # 1
                                         [ "Val", "Hum", "Fem", "Neu" ], # 2
@@ -2897,6 +3060,7 @@
         [ "Wiz", "Hob", "Mal", "Neu" ], [ "Wiz", "Hob", "Fem", "Neu" ], # 10
         [ "Wiz", "Orc", "Mal", "Cha" ], [ "Wiz", "Orc", "Fem", "Cha" ], # 11
         [ "Wiz", "Ith", "Mal", "Cha" ], [ "Wiz", "Ith", "Fem", "Cha" ], # 12
+        [ "Wiz", "Trt", "Mal", "Neu" ], [ "Wiz", "Trt", "Fem", "Neu" ],
       ],
     },
   }

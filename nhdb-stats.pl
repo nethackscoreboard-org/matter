@@ -2170,7 +2170,7 @@ sub gen_page_first_to_ascend
 
   $data{'variant'}  = $variant;
   $data{'cur_time'} = scalar(localtime());
-  $data{'variants'} = [ $nhdb->first_to_ascend() ];
+  $data{'variants'} = [ 'all', $nh->variants() ];
   $data{'vardef'}   = $nh->variant_names();
   $data{'variant'}  = $variant;
 
