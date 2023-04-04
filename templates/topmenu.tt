@@ -15,62 +15,17 @@
   <b><a href="devnull/[% devlink %]/">/dev/null/nethack [% devlink %]</a></b> |
 [%- END -%]
 
-[%- IF mnu != "front" -%]
-  [%- IF lvl == 2 -%]
-    <a href="[% path %]">Overview</a> |
-  [%- ELSE -%]
-    <a href="./">Overview</a> |
-  [%- END -%]
-[%- END -%]
-
-[%- IF mnu != "recent" -%]
-  <a href="[% path %]recent.[% var %].html">Recent Games</a> |
-[%- END %]
-
-[%- IF mnu != "ascended" -%]
-  <a href="[% path %]ascended.[% var %].html">Ascended Games</a> |
-[%- END %]
-
-[%- IF mnu != "streaks" -%]
-  <a href="[% path %]streaks.[% var %].html">Streaks</a> |
-[%- END %]
-
-[%- IF mnu != "zscore" -%]
-  <a href="[% path %]zscore.[% var %].html">Z-scores</a> |
-[%- END %]
-
-[%- IF mnu != "conduct" -%]
-  <a href="[% path %]conduct.[% var %].html">Conducts</a> |
-[%- END %]
-
-[%- IF mnu != "lowscore" -%]
-  <a href="[% path %]lowscore.[% var %].html">Low Score</a> |
-[%- END %]
-
-[%- IF mnu != "turncount" -%]
-  <a href="[% path %]turncount.[% var %].html">Low Turncount</a> |
-[%- END %]
-
-[%- IF mnu != "realtime" -%]
-  <a href="[% path %]realtime.[% var %].html">Fastest Realtime</a> |
-[%- END %]
-
-[%- IF mnu != "wallclock" -%]
-  <a href="[% path %]wallclock.[% var %].html">Fastest Wallclock</a> |
-[%- END %]
-
-[%- IF mnu != "firstasc" -%]
-  [% IF var == "all"; SET var2 = "dnh"; END %]
-  [% IF var != "nh"; SET var2 = var; END %]
-  [% IF var2 %]
-  <a href="[% path %]firstasc.[% var2 %].html">First To Ascend</a> |
-  [%- ELSE -%]
-  <a href="[% path %]firstasc.dnh.html">First To Ascend</a> |
-  [% END %]
-[%- END %]
-
-[%- IF mnu != "about" -%]
-  <a href="[% path %]about.html">About</a>
-[%- END -%]
+<a href="[% path %]">Overview</a> |
+<a href="[% path %]recent.[% var %].html">Recent Games</a> |
+<a href="[% path %]ascended.[% var %].html">Ascended Games</a> |
+<a href="[% path %]streaks.[% var %].html">Streaks</a> |
+<a href="[% path %]zscore.[% var %].html">Z-scores</a> |
+<a href="[% path %]conduct.[% var %].html">Conducts</a> |
+<a href="[% path %]lowscore.[% var %].html">Low Score</a> |
+<a href="[% path %]turncount.[% var %].html">Low Turncount</a> |
+<a href="[% path %]realtime.[% var %].html">Fastest Realtime</a> |
+<a href="[% path %]wallclock.[% var %].html">Fastest Wallclock</a> |
+<a href="[% path %]firstasc.[% var2 %].html">First To Ascend</a> |
+<a href="[% path %]about.html">About</a>
 
 </div>
